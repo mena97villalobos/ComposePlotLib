@@ -31,7 +31,11 @@ subprojects {
         pluginManager.withPlugin("maven-publish") {
             extensions.configure<PublishingExtension> {
                 repositories {
-                    val githubRepo = System.getenv("GITHUB_REPOSITORY")
+                    // GitHub Actions sets GITHUB_REPOSITORY. Locally, set the env var or
+                    // composeplotlib.github.repository in gradle.properties (owner/repo).
+                    val githubRepo =
+                        providers.environmentVariable("GITHUB_REPOSITORY").orNull?.takeIf { it.isNotBlank() }
+                            ?: (findProperty("composeplotlib.github.repository") as? String)?.takeIf { it.isNotBlank() }
                     if (!githubRepo.isNullOrBlank()) {
                         maven {
                             name = "GitHubPackages"

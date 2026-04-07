@@ -7,11 +7,14 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.dropbox.differ.SimpleImageComparator
+import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
@@ -24,6 +27,24 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+
+/**
+ * Default Roborazzi verification requires 0% differing pixels. Goldens are often recorded on macOS
+ * while CI runs on Linux; Robolectric font/renderer output differs enough to fail that check. This
+ * comparator allows small cross-host drift while still catching meaningful visual changes.
+ */
+private val showcaseRoborazziOptions =
+    RoborazziOptions(
+        compareOptions =
+            RoborazziOptions.CompareOptions(
+                changeThreshold = 0.02f,
+                imageComparator = SimpleImageComparator(maxDistance = 0.04f),
+            ),
+    )
+
+private fun SemanticsNodeInteraction.captureShowcaseRoboImage() {
+    captureRoboImage(roborazziOptions = showcaseRoborazziOptions)
+}
 
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -41,7 +62,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -53,7 +74,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -65,7 +86,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -82,7 +103,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -94,7 +115,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -106,7 +127,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -118,7 +139,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -130,7 +151,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -142,7 +163,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -159,7 +180,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -171,7 +192,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -183,7 +204,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -195,7 +216,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -207,7 +228,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -219,7 +240,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -231,7 +252,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -243,7 +264,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -255,7 +276,7 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -265,7 +286,7 @@ class ShowcaseRoborazziTest {
                 ShowcaseApp()
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 
     @Test
@@ -277,6 +298,6 @@ class ShowcaseRoborazziTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureShowcaseRoboImage()
     }
 }
