@@ -189,4 +189,21 @@ object VisibleRangeCalculator {
         val right = centerXPx + half
         return left <= plotBounds.right + slack + FpMath.EPS && right >= plotBounds.left - slack - FpMath.EPS
     }
+
+    /**
+     * True if a horizontal bar row centered at [centerYPx] with total thickness [barHeightPx] in pixels
+     * could intersect [plotBounds] vertically (category band culling).
+     */
+    fun barRowIntersectsPlotVertically(
+        centerYPx: Double,
+        barHeightPx: Double,
+        plotBounds: RectD,
+        plotEdgeSlackPx: Double = BAR_COLUMN_PLOT_EDGE_SLACK_PX,
+    ): Boolean {
+        val slack = plotEdgeSlackPx.coerceAtLeast(0.0)
+        val half = (barHeightPx / 2.0).coerceAtLeast(0.0)
+        val top = centerYPx - half
+        val bottom = centerYPx + half
+        return top <= plotBounds.bottom + slack + FpMath.EPS && bottom >= plotBounds.top - slack - FpMath.EPS
+    }
 }

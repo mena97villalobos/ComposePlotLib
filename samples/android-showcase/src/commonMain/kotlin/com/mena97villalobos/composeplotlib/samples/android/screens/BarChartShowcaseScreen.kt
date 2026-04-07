@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,23 +24,39 @@ import com.mena97villalobos.composeplotlib.chart.BarChart
 import com.mena97villalobos.composeplotlib.chart.ChartCustomAccessibilityAction
 import com.mena97villalobos.composeplotlib.chart.ChartNoDataDefaults
 import com.mena97villalobos.composeplotlib.chart.DefaultChartMarker
+import com.mena97villalobos.composeplotlib.chart.StackedBarChart
 import com.mena97villalobos.composeplotlib.chart.defaultViewport
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.model.BarEntry
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyBarChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleBarChartSpec
+import com.mena97villalobos.composeplotlib.samples.android.data.sampleHorizontalClusteredBarChartSpec
+import com.mena97villalobos.composeplotlib.samples.android.data.sampleStackedBarChartSpec
 
 @Composable
 fun BarChartShowcaseScreen() {
     var variant by remember { mutableStateOf(BarShowcaseVariant.Styled) }
+    val stackedSpec = remember { sampleStackedBarChartSpec() }
     val spec =
-        when (variant) {
-            BarShowcaseVariant.Styled -> sampleBarChartSpec()
-            BarShowcaseVariant.Empty -> emptyBarChartSpec()
+        remember(variant) {
+            when (variant) {
+                BarShowcaseVariant.Styled -> sampleBarChartSpec()
+                BarShowcaseVariant.Empty -> emptyBarChartSpec()
+                BarShowcaseVariant.Stacked -> stackedSpec.toBarChartSpec()
+                BarShowcaseVariant.Horizontal -> sampleHorizontalClusteredBarChartSpec()
+            }
         }
-    val viewportState = rememberChartViewportState(initialViewport = defaultViewport(spec))
+    val viewportState =
+        rememberChartViewportState(
+            initialViewport = defaultViewport(spec),
+            domain = defaultViewport(spec),
+        )
     val selectionState = rememberChartSelectionState()
+
+    LaunchedEffect(variant) {
+        selectionState.clear()
+    }
 
     Column(
         modifier =
@@ -59,13 +76,19 @@ fun BarChartShowcaseScreen() {
         Text(
             text =
                 "This screen validates the bar-chart slice: pan, zoom, selection, legend, and stronger axis planning. " +
-                    "The Empty variant uses noDataUi presets; use the noData { } slot on BarChart for a fully custom empty layout. " +
-                    "Styled data opts into focus for keyboard/switch navigation (no arrow-key semantics yet).",
+                    "Use Stacked or Horizontal to exercise those layouts; Empty uses noDataUi presets. " +
+                    "Styled data opts into focus for keyboard/switch navigation.",
             style = MaterialTheme.typography.bodyLarge,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = { variant = BarShowcaseVariant.Styled }) {
                 Text("Styled")
+            }
+            Button(onClick = { variant = BarShowcaseVariant.Stacked }) {
+                Text("Stacked")
+            }
+            Button(onClick = { variant = BarShowcaseVariant.Horizontal }) {
+                Text("Horizontal")
             }
             Button(onClick = { variant = BarShowcaseVariant.Empty }) {
                 Text("Empty")
@@ -89,32 +112,55 @@ fun BarChartShowcaseScreen() {
                 Text("Center On")
             }
         }
-        BarChart(
-            spec = spec,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(320.dp)
-                    .padding(top = 8.dp),
-            viewportState = viewportState,
-            selectionState = selectionState,
-            marker = { markerData ->
-                DefaultChartMarker(markerData)
-            },
-            noDataUi =
-                if (variant == BarShowcaseVariant.Empty) {
-                    ChartNoDataDefaults.barChart()
-                } else {
-                    null
+        if (variant == BarShowcaseVariant.Stacked) {
+            StackedBarChart(
+                spec = stackedSpec,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(320.dp)
+                        .padding(top = 8.dp),
+                viewportState = viewportState,
+                selectionState = selectionState,
+                marker = { markerData ->
+                    DefaultChartMarker(markerData)
                 },
-            accessibilityCustomActions =
-                listOf(
-                    ChartCustomAccessibilityAction("Reset viewport") {
-                        viewportState.reset()
-                        selectionState.clear()
+                accessibilityCustomActions =
+                    listOf(
+                        ChartCustomAccessibilityAction("Reset viewport") {
+                            viewportState.reset()
+                            selectionState.clear()
+                        },
+                    ),
+            )
+        } else {
+            BarChart(
+                spec = spec,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(320.dp)
+                        .padding(top = 8.dp),
+                viewportState = viewportState,
+                selectionState = selectionState,
+                marker = { markerData ->
+                    DefaultChartMarker(markerData)
+                },
+                noDataUi =
+                    if (variant == BarShowcaseVariant.Empty) {
+                        ChartNoDataDefaults.barChart()
+                    } else {
+                        null
                     },
-                ),
-        )
+                accessibilityCustomActions =
+                    listOf(
+                        ChartCustomAccessibilityAction("Reset viewport") {
+                            viewportState.reset()
+                            selectionState.clear()
+                        },
+                    ),
+            )
+        }
         Text(
             text =
                 selectionState.selection?.let { selection ->
@@ -132,5 +178,7 @@ fun BarChartShowcaseScreen() {
 
 private enum class BarShowcaseVariant {
     Styled,
+    Stacked,
+    Horizontal,
     Empty,
 }

@@ -19,6 +19,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.marker.buildLineMarker
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildPieMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildScatterMarkerData
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartLiveRegionMode
@@ -407,7 +408,12 @@ private fun defaultBarChartSemanticSummary(spec: BarChartSpec): String =
             val names = spec.groups.joinToString { it.label }
             val keys = keyboardHint(spec.accessibility)
             val mf = markerFocusHint(spec.accessibility.requestFocusOnMarker)
-            "Bar chart. Groups: $names. Use pinch to zoom and drag to pan. Tap a bar to select.$keys$mf"
+            val orient =
+                when (spec.orientation) {
+                    BarChartOrientation.Vertical -> "vertical"
+                    BarChartOrientation.Horizontal -> "horizontal"
+                }
+            "Bar chart ($orient). Groups: $names. Use pinch to zoom and drag to pan. Tap a bar to select.$keys$mf"
         }
     }
 

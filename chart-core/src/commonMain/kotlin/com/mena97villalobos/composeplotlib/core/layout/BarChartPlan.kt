@@ -1,6 +1,7 @@
 package com.mena97villalobos.composeplotlib.core.layout
 
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 
 /**
  * @property barSegments Geometry in **draw order** (earlier entries are beneath later ones at overlaps).
@@ -9,6 +10,7 @@ import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 data class BarChartPlan(
     val layout: ChartLayoutPlan,
     val selection: ChartSelection? = null,
+    val orientation: BarChartOrientation = BarChartOrientation.Vertical,
     val barSegments: List<PlannedBarSegment> = emptyList(),
 ) {
     /** Topmost-first order for tap hit-testing (reverse of typical painter z-order). */

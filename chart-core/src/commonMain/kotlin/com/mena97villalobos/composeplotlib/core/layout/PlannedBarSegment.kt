@@ -3,6 +3,7 @@ package com.mena97villalobos.composeplotlib.core.layout
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.model.BarEntry
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 
 /**
@@ -16,6 +17,7 @@ data class PlannedBarSegment(
     val entry: BarEntry,
     val bounds: RectD,
     val fillColor: ChartColor,
+    val orientation: BarChartOrientation = BarChartOrientation.Vertical,
     val barLayoutMode: BarLayoutMode = BarLayoutMode.Independent,
     val layerId: String? = null,
 )

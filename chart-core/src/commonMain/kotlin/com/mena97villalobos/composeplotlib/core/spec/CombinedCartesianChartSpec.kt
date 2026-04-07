@@ -31,6 +31,7 @@ sealed class CombinedCartesianLayer {
         override val id: String,
         override val yAxisBinding: CombinedCartesianYAxisBinding,
         val groups: List<BarGroup>,
+        val orientation: BarChartOrientation = BarChartOrientation.Vertical,
         val barLayout: BarLayoutMode = BarLayoutMode.Independent,
         val clusterBarGapPx: Double = 4.0,
     ) : CombinedCartesianLayer()

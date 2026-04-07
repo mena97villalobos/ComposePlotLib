@@ -8,7 +8,7 @@ Continuous series with optional point markers. Strong **`LineRenderSpec`** contr
 
 ## Bar
 
-Grouped or stacked columns; **`BarGroup`** + **`BarEntry`** with per-group **`BarStyle`**. Hit-testing resolves bars in pixel space; selection overlay matches the tapped **`seriesId`** / entry.
+Grouped or stacked columns or rows; **`BarChartOrientation`** selects vertical columns vs horizontal bars. **`BarGroup`** + **`BarEntry`** (`x` = category position, `y` = value) with per-group **`BarStyle`**. **`BarLayoutMode`** chooses independent, clustered, or stacked placement. **`StackedBarChart`** / **`StackedBarChartSpec`** are thin presets over **`BarChart`** with stacking enabled when group sizes match. Hit-testing resolves bars in pixel space; selection overlay matches the tapped **`seriesId`** / entry.
 
 ## Scatter
 
@@ -30,5 +30,5 @@ Radial **`PieChartSlice`** list; arcs + optional donut **`holeRadiusRatio`**. Pa
 
 ## Samples
 
-- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → scatter → pie → combined → domain axes.
+- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → stacked bar → horizontal bar → scatter → pie → combined → domain axes.
 - **`samples/android-showcase`** — richer demos and Roborazzi baselines (Android).

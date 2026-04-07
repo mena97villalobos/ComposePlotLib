@@ -5,7 +5,9 @@ import com.mena97villalobos.composeplotlib.core.model.BarGroup
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.BarStyle
 import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
@@ -13,6 +15,7 @@ import com.mena97villalobos.composeplotlib.core.spec.GridSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendStyle
 import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
+import com.mena97villalobos.composeplotlib.core.spec.StackedBarChartSpec
 
 fun sampleBarChartSpec(): BarChartSpec =
     BarChartSpec(
@@ -59,6 +62,148 @@ fun sampleBarChartSpec(): BarChartSpec =
             AxisSpec(
                 labelFormatter = { value -> "\$${value.toInt()}k" },
                 labelStyle = AxisLabelStyle(color = ChartColor.Green),
+            ),
+        grid =
+            GridSpec(
+                lineStyle = GridLineStyle(color = ChartColor.LightGray),
+            ),
+        legend =
+            LegendSpec(
+                style =
+                    LegendStyle(
+                        textColor = ChartColor.Gray,
+                        indicatorRadius = 5.0,
+                    ),
+            ),
+        selectionStyle =
+            SelectionStyle(
+                lineColor = ChartColor.Red,
+                lineStrokeWidth = 2.0,
+                pointColor = ChartColor.Red,
+                pointRadius = 6.0,
+            ),
+        valueFormatter = { entry ->
+            "${barQuarterLabel(entry.x)} revenue: \$${entry.y.toInt()}k"
+        },
+    )
+
+fun sampleStackedBarChartSpec(): StackedBarChartSpec =
+    StackedBarChartSpec(
+        groups =
+            listOf(
+                BarGroup(
+                    id = "sales",
+                    label = "Sales",
+                    style = BarStyle(color = ChartColor.Green, barWidth = 22.0),
+                    entries =
+                        listOf(
+                            BarEntry(0.0, 10.0),
+                            BarEntry(1.0, 14.0),
+                            BarEntry(2.0, 12.0),
+                            BarEntry(3.0, 18.0),
+                            BarEntry(4.0, 16.0),
+                        ),
+                ),
+                BarGroup(
+                    id = "returns",
+                    label = "Returns",
+                    style = BarStyle(color = ChartColor.Red, barWidth = 22.0),
+                    entries =
+                        listOf(
+                            BarEntry(0.0, 4.0),
+                            BarEntry(1.0, 5.0),
+                            BarEntry(2.0, 3.0),
+                            BarEntry(3.0, 6.0),
+                            BarEntry(4.0, 5.0),
+                        ),
+                ),
+            ),
+        accessibility =
+            ChartAccessibilitySpec(
+                contentDescription = "Showcase stacked bar chart: Sales and Returns by quarter.",
+                requestFocusForAccessibility = true,
+            ),
+        xAxis =
+            AxisSpec(
+                labelFormatter = { value -> barQuarterLabel(value) },
+                labelStyle = AxisLabelStyle(color = ChartColor.Red),
+            ),
+        yAxis =
+            AxisSpec(
+                labelFormatter = { value -> "\$${value.toInt()}k" },
+                labelStyle = AxisLabelStyle(color = ChartColor.Green),
+            ),
+        grid =
+            GridSpec(
+                lineStyle = GridLineStyle(color = ChartColor.LightGray),
+            ),
+        legend =
+            LegendSpec(
+                style =
+                    LegendStyle(
+                        textColor = ChartColor.Gray,
+                        indicatorRadius = 5.0,
+                    ),
+            ),
+        selectionStyle =
+            SelectionStyle(
+                lineColor = ChartColor.Red,
+                lineStrokeWidth = 2.0,
+                pointColor = ChartColor.Red,
+                pointRadius = 6.0,
+            ),
+        valueFormatter = { entry ->
+            "${barQuarterLabel(entry.x)} revenue: \$${entry.y.toInt()}k"
+        },
+    )
+
+fun sampleHorizontalClusteredBarChartSpec(): BarChartSpec =
+    BarChartSpec(
+        orientation = BarChartOrientation.Horizontal,
+        barLayout = BarLayoutMode.Clustered,
+        groups =
+            listOf(
+                BarGroup(
+                    id = "sales",
+                    label = "Sales",
+                    style = BarStyle(color = ChartColor.Green, barWidth = 16.0),
+                    entries =
+                        listOf(
+                            BarEntry(0.0, 10.0),
+                            BarEntry(1.0, 14.0),
+                            BarEntry(2.0, 12.0),
+                            BarEntry(3.0, 18.0),
+                            BarEntry(4.0, 16.0),
+                        ),
+                ),
+                BarGroup(
+                    id = "returns",
+                    label = "Returns",
+                    style = BarStyle(color = ChartColor.Red, barWidth = 16.0),
+                    entries =
+                        listOf(
+                            BarEntry(0.0, 4.0),
+                            BarEntry(1.0, 5.0),
+                            BarEntry(2.0, 3.0),
+                            BarEntry(3.0, 6.0),
+                            BarEntry(4.0, 5.0),
+                        ),
+                ),
+            ),
+        accessibility =
+            ChartAccessibilitySpec(
+                contentDescription = "Showcase horizontal clustered bar chart.",
+                requestFocusForAccessibility = true,
+            ),
+        xAxis =
+            AxisSpec(
+                labelFormatter = { value -> "\$${value.toInt()}k" },
+                labelStyle = AxisLabelStyle(color = ChartColor.Green),
+            ),
+        yAxis =
+            AxisSpec(
+                labelFormatter = { value -> barQuarterLabel(value) },
+                labelStyle = AxisLabelStyle(color = ChartColor.Red),
             ),
         grid =
             GridSpec(

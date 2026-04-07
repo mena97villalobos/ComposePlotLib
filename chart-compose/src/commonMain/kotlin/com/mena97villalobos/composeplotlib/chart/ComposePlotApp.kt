@@ -37,7 +37,9 @@ import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.BarStyle
 import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
@@ -53,10 +55,11 @@ import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieSliceLabelsSpec
 import com.mena97villalobos.composeplotlib.core.spec.PointStyle
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.StackedBarChartSpec
 
 /**
- * Minimal multiplatform preview host: cycles [LineChart], [BarChart], [ScatterChart], [PieChart],
- * [CombinedCartesianChart], and a short **domain axes** demo (category, long-label truncation,
+ * Minimal multiplatform preview host: cycles [LineChart], [BarChart], [StackedBarChart], horizontal [BarChart],
+ * [ScatterChart], [PieChart], [CombinedCartesianChart], and a short **domain axes** demo (category, long-label truncation,
  * epoch-millis time, UTC weekday tick policy), with selection hints.
  *
  * Intended for `composeApp` and tooling previews, not as a production root composable.
@@ -73,11 +76,16 @@ fun ComposePlotApp() {
         val lineSpecVariantB = remember(palette) { previewLineChartSpecDataB().withMaterialSeriesColors(palette) }
         var lineSpecForPreview by remember { mutableStateOf(lineSpecVariantA) }
         val barSpec = remember(palette) { previewBarChartSpec().withMaterialGroupColors(palette) }
+        val stackedBarSpec = remember(palette) { previewStackedBarChartSpec().withMaterialGroupColors(palette) }
+        val horizontalBarSpec = remember(palette) { previewHorizontalBarChartSpec().withMaterialGroupColors(palette) }
         val scatterSpec = remember(palette) { previewScatterChartSpec().withMaterialScatterSeriesColors(palette) }
         val pieSpec = remember { previewPieChartSpec() }
         val combinedSpec = remember { previewCombinedCartesianSpec() }
         val lineViewport = rememberChartViewportState(initialViewport = defaultViewport(lineSpecVariantA))
         val barViewport = rememberChartViewportState(initialViewport = defaultViewport(barSpec))
+        val stackedBarViewport =
+            rememberChartViewportState(initialViewport = defaultViewport(stackedBarSpec.toBarChartSpec()))
+        val horizontalBarViewport = rememberChartViewportState(initialViewport = defaultViewport(horizontalBarSpec))
         val scatterViewport = rememberChartViewportState(initialViewport = defaultViewport(scatterSpec))
         val pieViewport = rememberChartViewportState(initialViewport = defaultViewport(pieSpec))
         val combinedViewport = rememberChartViewportState(initialViewport = defaultViewport(combinedSpec))
@@ -94,6 +102,8 @@ fun ComposePlotApp() {
             rememberChartViewportState(initialViewport = defaultViewport(domainWeekdayTimeSpec))
         val lineSelection = rememberChartSelectionState()
         val barSelection = rememberChartSelectionState()
+        val stackedBarSelection = rememberChartSelectionState()
+        val horizontalBarSelection = rememberChartSelectionState()
         val scatterSelection = rememberChartSelectionState()
         val pieSelection = rememberChartSelectionState()
         val combinedSelection = rememberChartSelectionState()
@@ -116,8 +126,8 @@ fun ComposePlotApp() {
             )
             Text(
                 text =
-                    "Shared host: line, bar, scatter (cartesian), pie/donut (radial), combined (bar + dual-axis line), " +
-                        "and domain axes (category + time). Android showcase adds richer demos.",
+                    "Shared host: line, bar, stacked bar, horizontal bar, scatter (cartesian), pie/donut (radial), " +
+                        "combined (bar + dual-axis line), and domain axes (category + time). Android showcase adds richer demos.",
                 style = MaterialTheme.typography.bodyLarge,
             )
             OutlinedButton(
@@ -125,7 +135,9 @@ fun ComposePlotApp() {
                     screen =
                         when (screen) {
                             PreviewScreen.Line -> PreviewScreen.Bar
-                            PreviewScreen.Bar -> PreviewScreen.Scatter
+                            PreviewScreen.Bar -> PreviewScreen.StackedBar
+                            PreviewScreen.StackedBar -> PreviewScreen.HorizontalBar
+                            PreviewScreen.HorizontalBar -> PreviewScreen.Scatter
                             PreviewScreen.Scatter -> PreviewScreen.Pie
                             PreviewScreen.Pie -> PreviewScreen.Combined
                             PreviewScreen.Combined -> PreviewScreen.DomainAxes
@@ -137,7 +149,9 @@ fun ComposePlotApp() {
                 Text(
                     when (screen) {
                         PreviewScreen.Line -> "Switch to Bar Preview"
-                        PreviewScreen.Bar -> "Switch to Scatter Preview"
+                        PreviewScreen.Bar -> "Switch to Stacked Bar Preview"
+                        PreviewScreen.StackedBar -> "Switch to Horizontal Bar Preview"
+                        PreviewScreen.HorizontalBar -> "Switch to Scatter Preview"
                         PreviewScreen.Scatter -> "Switch to Pie Preview"
                         PreviewScreen.Pie -> "Switch to Combined Preview"
                         PreviewScreen.Combined -> "Switch to Domain Axes Preview"
@@ -239,6 +253,56 @@ fun ComposePlotApp() {
                                 entry?.let { "Selected $label: x=${it.x}, y=${it.y}" }
                                     ?: "Selected $label"
                             } ?: "Tap a bar to select (pan/zoom with two fingers).",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+
+                PreviewScreen.StackedBar -> {
+                    StackedBarChart(
+                        spec = stackedBarSpec,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(320.dp)
+                                .padding(top = 8.dp),
+                        viewportState = stackedBarViewport,
+                        selectionState = stackedBarSelection,
+                        marker = { markerData -> DefaultChartMarker(markerData) },
+                    )
+                    Text(
+                        text =
+                            stackedBarSelection.selection?.let { sel ->
+                                val group = stackedBarSpec.groups.firstOrNull { it.id == sel.target.seriesId }
+                                val entry = group?.entries?.getOrNull(sel.target.pointIndex)
+                                val label = group?.label ?: sel.target.seriesId
+                                entry?.let { "Selected $label: x=${it.x}, y=${it.y}" }
+                                    ?: "Selected $label"
+                            } ?: "Tap a stacked segment (pan/zoom with two fingers).",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+
+                PreviewScreen.HorizontalBar -> {
+                    BarChart(
+                        spec = horizontalBarSpec,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(320.dp)
+                                .padding(top = 8.dp),
+                        viewportState = horizontalBarViewport,
+                        selectionState = horizontalBarSelection,
+                        marker = { markerData -> DefaultChartMarker(markerData) },
+                    )
+                    Text(
+                        text =
+                            horizontalBarSelection.selection?.let { sel ->
+                                val group = horizontalBarSpec.groups.firstOrNull { it.id == sel.target.seriesId }
+                                val entry = group?.entries?.getOrNull(sel.target.pointIndex)
+                                val label = group?.label ?: sel.target.seriesId
+                                entry?.let { "Selected $label: category=${it.x}, value=${it.y}" }
+                                    ?: "Selected $label"
+                            } ?: "Tap a horizontal bar (pan/zoom with two fingers).",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -664,9 +728,75 @@ private fun previewBarChartSpec(): BarChartSpec =
             ),
     )
 
+private fun previewStackedBarChartSpec(): StackedBarChartSpec =
+    StackedBarChartSpec(
+        groups =
+            listOf(
+                BarGroup(
+                    id = "sales",
+                    label = "Sales",
+                    style = BarStyle(color = ChartColor.Green),
+                    entries =
+                        listOf(
+                            BarEntry(0.0, 10.0),
+                            BarEntry(1.0, 16.0),
+                            BarEntry(2.0, 12.0),
+                            BarEntry(3.0, 19.0),
+                        ),
+                ),
+                BarGroup(
+                    id = "returns",
+                    label = "Returns",
+                    style = BarStyle(color = ChartColor.Red),
+                    entries =
+                        listOf(
+                            BarEntry(0.0, 4.0),
+                            BarEntry(1.0, 5.0),
+                            BarEntry(2.0, 3.0),
+                            BarEntry(3.0, 6.0),
+                        ),
+                ),
+            ),
+    )
+
+private fun previewHorizontalBarChartSpec(): BarChartSpec =
+    BarChartSpec(
+        orientation = BarChartOrientation.Horizontal,
+        barLayout = BarLayoutMode.Clustered,
+        groups =
+            listOf(
+                BarGroup(
+                    id = "sales",
+                    label = "Sales",
+                    style = BarStyle(color = ChartColor.Green),
+                    entries =
+                        listOf(
+                            BarEntry(0.0, 10.0),
+                            BarEntry(1.0, 16.0),
+                            BarEntry(2.0, 12.0),
+                            BarEntry(3.0, 19.0),
+                        ),
+                ),
+                BarGroup(
+                    id = "returns",
+                    label = "Returns",
+                    style = BarStyle(color = ChartColor.Red),
+                    entries =
+                        listOf(
+                            BarEntry(0.0, 4.0),
+                            BarEntry(1.0, 5.0),
+                            BarEntry(2.0, 3.0),
+                            BarEntry(3.0, 6.0),
+                        ),
+                ),
+            ),
+    )
+
 private enum class PreviewScreen {
     Line,
     Bar,
+    StackedBar,
+    HorizontalBar,
     Scatter,
     Pie,
     Combined,

@@ -12,6 +12,7 @@ import com.mena97villalobos.composeplotlib.core.layout.BarChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedCartesianChartPlan
 import com.mena97villalobos.composeplotlib.core.selection.KeyboardSelectionRoam
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
@@ -86,10 +87,19 @@ internal fun Modifier.chartBarKeyboardSelectionRoam(
         if (!event.isShiftPressed) return@onKeyEvent false
         val plan = barPlan() ?: return@onKeyEvent false
         val delta =
-            when (event.key) {
-                Key.DirectionLeft -> -1
-                Key.DirectionRight -> 1
-                else -> return@onKeyEvent false
+            when (plan.orientation) {
+                BarChartOrientation.Vertical ->
+                    when (event.key) {
+                        Key.DirectionLeft -> -1
+                        Key.DirectionRight -> 1
+                        else -> return@onKeyEvent false
+                    }
+                BarChartOrientation.Horizontal ->
+                    when (event.key) {
+                        Key.DirectionUp -> -1
+                        Key.DirectionDown -> 1
+                        else -> return@onKeyEvent false
+                    }
             }
         val next =
             KeyboardSelectionRoam.barChartRoam(

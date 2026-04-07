@@ -9,6 +9,7 @@ import com.mena97villalobos.composeplotlib.core.layout.CombinedHitTestLayer
 import com.mena97villalobos.composeplotlib.core.layout.PlannedBarSegment
 import com.mena97villalobos.composeplotlib.core.layout.forHitTestFromDrawOrder
 import com.mena97villalobos.composeplotlib.core.model.toXyPoints
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
@@ -18,6 +19,7 @@ import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import com.mena97villalobos.composeplotlib.core.viewport.normalizedNonDegenerate
+import kotlin.math.max
 
 /**
  * Pure selection-step helpers for **keyboard roam** (Shift+arrows on the chart surface). Uses full
@@ -141,7 +143,12 @@ object KeyboardSelectionRoam {
         if (delta == 0) return current
         val ordered =
             plan.barSegmentsForHitTest()
-                .sortedBy { (it.bounds.left + it.bounds.right) * 0.5 }
+                .sortedBy { seg ->
+                    when (plan.orientation) {
+                        BarChartOrientation.Vertical -> (seg.bounds.left + seg.bounds.right) * 0.5
+                        BarChartOrientation.Horizontal -> (seg.bounds.top + seg.bounds.bottom) * 0.5
+                    }
+                }
         if (ordered.isEmpty()) return null
 
         val currentIdx =
@@ -280,7 +287,12 @@ object KeyboardSelectionRoam {
                     val payload = hitById[layer.id] as? CombinedHitTestLayer.Bars ?: continue
                     val ordered =
                         payload.segmentsDrawOrder.forHitTestFromDrawOrder()
-                            .sortedBy { (it.bounds.left + it.bounds.right) * 0.5 }
+                            .sortedBy { seg ->
+                                when (layer.orientation) {
+                                    BarChartOrientation.Vertical -> (seg.bounds.left + seg.bounds.right) * 0.5
+                                    BarChartOrientation.Horizontal -> (seg.bounds.top + seg.bounds.bottom) * 0.5
+                                }
+                            }
                     for (seg in ordered) {
                         val sel = chartSelectionForBarSegment(seg) ?: continue
                         out.add(
@@ -300,7 +312,15 @@ object KeyboardSelectionRoam {
 
     private fun chartSelectionForBarSegment(hit: PlannedBarSegment): ChartSelection? {
         if (!hit.bounds.left.isFinite() || !hit.bounds.top.isFinite()) return null
-        val topCenter = OffsetD((hit.bounds.left + hit.bounds.right) * 0.5, hit.bounds.top)
+        val topCenter =
+            when (hit.orientation) {
+                BarChartOrientation.Vertical ->
+                    OffsetD((hit.bounds.left + hit.bounds.right) * 0.5, hit.bounds.top)
+                BarChartOrientation.Horizontal -> {
+                    val outerX = max(hit.bounds.left, hit.bounds.right)
+                    OffsetD(outerX, (hit.bounds.top + hit.bounds.bottom) * 0.5)
+                }
+            }
         return ChartSelection(
             target =
                 HighlightTarget(

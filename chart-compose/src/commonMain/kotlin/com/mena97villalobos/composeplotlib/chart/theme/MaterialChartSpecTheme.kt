@@ -5,6 +5,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PointStyle
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.StackedBarChartSpec
 
 /**
  * Ordered accent colors for cycling across series or bar groups. Use with [withMaterialSeriesColors] /
@@ -47,6 +48,19 @@ fun LineChartSpec.withMaterialSeriesColors(
  * Applies [palette] bar fill colors per group in order.
  */
 fun BarChartSpec.withMaterialGroupColors(palette: MaterialChartPalette): BarChartSpec {
+    val accents = palette.seriesAccentColors()
+    val newGroups =
+        groups.mapIndexed { index, g ->
+            val c = accents[index % accents.size]
+            g.copy(style = g.style.copy(color = c))
+        }
+    return copy(groups = newGroups)
+}
+
+/**
+ * Applies [palette] bar fill colors per group in order (same as [BarChartSpec.withMaterialGroupColors]).
+ */
+fun StackedBarChartSpec.withMaterialGroupColors(palette: MaterialChartPalette): StackedBarChartSpec {
     val accents = palette.seriesAccentColors()
     val newGroups =
         groups.mapIndexed { index, g ->

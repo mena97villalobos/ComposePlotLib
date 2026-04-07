@@ -12,12 +12,12 @@ Use this before tagging a release or publishing artifacts. Canonical API narrati
 
 Treat these as the **supported** app-facing API (names may grow; update this list when you add types):
 
-- **Charts:** `LineChart`, `BarChart`, `ScatterChart`, `PieChart`, `CombinedCartesianChart`, `ComposePlotApp`
+- **Charts:** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `PieChart`, `CombinedCartesianChart`, `ComposePlotApp`
 - **State:** `ChartViewportState`, `ChartSelectionState`, `rememberChartViewportState`, `rememberChartSelectionState`, `ViewportChangeOrigin`
 - **Viewport helpers:** `defaultViewport(...)` overloads (`chart/ChartViewports.kt`)
 - **Gestures:** `ChartGestureConfig`, presets on its companion (`cartesianInteractive`, `cartesianInteractiveFullExploration`, …)
 - **Animation:** `ChartAnimationPolicy`
-- **Chrome / theme:** `ChartChromeTheme`, `materialChartPalette()`, `MaterialChartPalette`, `Color.toChartColor()`, `ColorScheme.toMaterialChartPalette()`, `seriesAccentColors()`, `LineChartSpec.withMaterialSeriesColors`, `BarChartSpec.withMaterialGroupColors`, `ScatterChartSpec.withMaterialScatterSeriesColors`
+- **Chrome / theme:** `ChartChromeTheme`, `materialChartPalette()`, `MaterialChartPalette`, `Color.toChartColor()`, `ColorScheme.toMaterialChartPalette()`, `seriesAccentColors()`, `LineChartSpec.withMaterialSeriesColors`, `BarChartSpec.withMaterialGroupColors`, `StackedBarChartSpec.withMaterialGroupColors`, `ScatterChartSpec.withMaterialScatterSeriesColors`
 - **Markers / no-data:** `ChartMarker`, `ChartMarkerPlacement`, `ChartMarkerCalloutLeader` / `ChartMarkerCustomCallout`, `ChartMarkerData` builders, rect helpers (`nudgeAxisAlignedRectToAvoidOverlap`, `stackAxisAlignedRectBelow`), `ChartNoData*` / `DefaultNoDataOverlay`
 - **Accessibility:** `ChartCustomAccessibilityAction`, `chartViewportAccessibilityActions`
 - **Planner hook (advanced):** `ChartPlanner.computeCartesianTickValuePass` — documented in **`api-and-state.md`**
@@ -43,7 +43,7 @@ Summarize against **[`module-guide.md`](module-guide.md)** and **`api-and-state.
 
 ## Cross-platform
 
-- [ ] **`ComposePlotApp()`** cycle on **`composeApp`** and **`iosApp`** matches docs: **line → bar → scatter → pie → combined → domain axes** (**`AGENTS.md`** obligations).
+- [ ] **`ComposePlotApp()`** cycle on **`composeApp`** and **`iosApp`** matches docs: **line → bar → stacked bar → horizontal bar → scatter → pie → combined → domain axes** (**`AGENTS.md`** obligations).
 - [ ] **Android showcase** + **Roborazzi** are **Android-only**; iOS validation stays manual (**[`ios-host-runbook.md`](ios-host-runbook.md)**).
 
 ## Documentation when the API changes

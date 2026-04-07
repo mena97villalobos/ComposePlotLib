@@ -15,6 +15,7 @@ import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.selection.HighlightTarget
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.AxisTickDensity
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.BarStyle
@@ -683,6 +684,67 @@ class ChartPlannerTest {
         val top = lines.single().start.y
         assertEquals(top, lines.single().end.y, 1e-9)
         assertTrue(lines.single().start.x < lines.single().end.x)
+    }
+
+    @Test
+    fun barChartHorizontalSelectionAddsVerticalStrokeOnOuterValueEdge() {
+        val spec =
+            BarChartSpec(
+                orientation = BarChartOrientation.Horizontal,
+                barLayout = BarLayoutMode.Clustered,
+                groups =
+                    listOf(
+                        BarGroup(
+                            id = "g1",
+                            label = "Group 1",
+                            style = BarStyle(color = ChartColor.Green, barWidth = 24.0),
+                            entries =
+                                listOf(
+                                    BarEntry(0.0, 5.0),
+                                    BarEntry(1.0, 3.0),
+                                ),
+                        ),
+                        BarGroup(
+                            id = "g2",
+                            label = "Group 2",
+                            style = BarStyle(color = ChartColor.Red, barWidth = 24.0),
+                            entries =
+                                listOf(
+                                    BarEntry(0.0, 2.0),
+                                    BarEntry(1.0, 4.0),
+                                ),
+                        ),
+                    ),
+                xAxis = AxisSpec(showGridLines = false),
+                yAxis = AxisSpec(showGridLines = false),
+            )
+        val selection =
+            ChartSelection(
+                target = HighlightTarget(seriesId = "g1", pointIndex = 0, point = XyPoint(0.0, 5.0)),
+                pixelOffset = OffsetD(0.0, 0.0),
+            )
+
+        val plan =
+            ChartPlanner.planBarChart(
+                input =
+                    ChartLayoutInput(
+                        canvasSize = SizeD(320.0, 240.0),
+                        viewport =
+                            ChartViewport(
+                                xRange = ClosedRangeD(0.0, 8.0),
+                                yRange = ClosedRangeD(0.0, 2.0),
+                            ),
+                    ),
+                spec = spec,
+                selection = selection,
+            )
+
+        assertEquals(BarChartOrientation.Horizontal, plan.orientation)
+        val lines = plan.layout.plotDrawCommands.filterIsInstance<DrawCommand.Line>()
+        assertEquals(1, lines.size)
+        val line = lines.single()
+        assertEquals(line.start.x, line.end.x, 1e-9)
+        assertTrue(line.start.y != line.end.y)
     }
 
     @Test

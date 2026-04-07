@@ -4,6 +4,8 @@ import com.mena97villalobos.composeplotlib.core.domain.XyPoint
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.PlannedBarSegment
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
+import kotlin.math.max
 
 /**
  * Resolves a tap to the first [BarHitTarget] whose [BarHitTarget.bounds] contains the touch point.
@@ -25,7 +27,15 @@ object BarHitResolver {
             segmentsHitTestFirst.firstOrNull { segment ->
                 segment.bounds.isValidForAxisAlignedHit() && segment.bounds.contains(touchPoint)
             } ?: return null
-        val topCenter = OffsetD((hit.bounds.left + hit.bounds.right) / 2.0, hit.bounds.top)
+        val topCenter =
+            when (hit.orientation) {
+                BarChartOrientation.Vertical ->
+                    OffsetD((hit.bounds.left + hit.bounds.right) / 2.0, hit.bounds.top)
+                BarChartOrientation.Horizontal -> {
+                    val outerX = max(hit.bounds.left, hit.bounds.right)
+                    OffsetD(outerX, (hit.bounds.top + hit.bounds.bottom) / 2.0)
+                }
+            }
         return ChartSelection(
             target =
                 HighlightTarget(

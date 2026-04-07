@@ -71,7 +71,7 @@ It currently contains:
 - `transform`
   Domain-to-pixel and pixel-to-domain conversion
 - `visible`
-  Visible range derivation from viewport (line windowing uses the domain **x × y** rectangle; bars use pixel bar width plus a small horizontal slack at plot edges; scatter/line vertex markers keep points whose **disc** intersects the plot in pixels via `RectD.intersectsDisc`)
+  Visible range derivation from viewport (line windowing uses the domain **x × y** rectangle; vertical bars use pixel bar width plus a small horizontal slack at plot edges; horizontal bars use vertical band slack; scatter/line vertex markers keep points whose **disc** intersects the plot in pixels via `RectD.intersectsDisc`)
 - `selection`
   Highlight target and nearest-point resolution
 - `model`
@@ -85,7 +85,7 @@ It currently contains:
 `chart-compose` is the public Compose-facing module.
 
 It currently contains:
-- public chart composables: `LineChart`, `BarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`
+- public chart composables: `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`
 - public state types: `ChartViewportState`, `ChartSelectionState`
 - helpers: default viewport, gesture config (**`ChartGestureConfig`** + companion presets for hosts / iOS QA), markers + **`ChartMarkerPlacement`** / **`ChartMarkerCalloutLeader`**, no-data, **`ChartAnimationPolicy`** (opt-in programmatic viewport easing, optional gesture chase, marker highlight fade in/out on selection / clear, optional **`LineChart`** data morph), **`MaterialChartPalette`** / **`withMaterialSeriesColors`**-style helpers (`materialChartPalette()`, `Color.toChartColor()`), custom accessibility actions
 - internal gesture adapter, fling runtime, accessibility semantics (including optional **marker focus handoff** when `ChartAccessibilitySpec.requestFocusOnMarker` is set on a spec, and optional **Shift+arrow selection roam** when `keyboardSelectionRoamEnabled` is set)
@@ -96,7 +96,7 @@ This module is allowed to depend on Compose types, pointer input, text measureme
 
 ## Host Modules
 ### `composeApp`
-This is the thin shared app host. It should remain a lightweight way to preview the current milestone. It runs **`ComposePlotApp()`**, which **must** cycle **line, bar, scatter, pie, combined, and domain axes** previews on Android and iOS (see **`AGENTS.md` → Obligations** when adding chart families). **`samples/android-showcase`** adds richer demos and Roborazzi.
+This is the thin shared app host. It should remain a lightweight way to preview the current milestone. It runs **`ComposePlotApp()`**, which **must** cycle **line, bar, stacked bar, horizontal bar, scatter, pie, combined, and domain axes** previews on Android and iOS (see **`AGENTS.md` → Obligations** when adding chart families). **`samples/android-showcase`** adds richer demos and Roborazzi.
 
 ### `samples/android-showcase`
 This is the main demo surface and should be treated as the visual verification app.
@@ -104,13 +104,13 @@ This is the main demo surface and should be treated as the visual verification a
 It currently contains:
 - sample data providers
 - dedicated chart showcase screens
-- a small host that can switch between **line**, **bar**, **scatter**, **pie**, and **domain axes** demos
+- a small host that can switch between **line**, **bar**, **stacked bar**, **horizontal bar**, **scatter**, **pie**, and **domain axes** demos
 - Android **Roborazzi** screenshot tests for regression detection (`verifyRoborazziDebug`)
 
 ## Current Rendering Pipeline
 The current rendering pipeline is:
 
-1. App builds `LineChartSpec`, `BarChartSpec`, `ScatterChartSpec`, or `PieChartSpec`
+1. App builds `LineChartSpec`, `BarChartSpec`, `StackedBarChartSpec`, `ScatterChartSpec`, or `PieChartSpec`
 2. Composable resolves a default viewport if no state is supplied
 3. `ChartPlanner` runs on `ChartLayoutInput` (with **`labelLayoutScale`** aligned to host font scale in built-in composables); Compose typically performs a **measured second pass** after `TextMeasurer` fills tick/legend metrics (and **pie slice label** metrics when `PieChartSpec.sliceLabels` is enabled). Cartesian composables reuse **`ChartPlanner.computeCartesianTickValuePass`** (`TickValuePass`) across those passes when the viewport and primary axes are unchanged, then the planner computes:
    - plot bounds

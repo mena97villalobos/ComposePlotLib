@@ -19,13 +19,13 @@ alwaysApply: true
 - `chart-compose`
   Owns public Compose APIs, Compose-managed interaction state, gesture adapters, and Compose canvas rendering.
 - `composeApp`
-  Thin shared host for previewing the current milestone (`ComposePlotApp` cycles **line, bar, scatter, pie, combined**, and the **domain axes** demo; extend when new chart families ship).
+  Thin shared host for previewing the current milestone (`ComposePlotApp` cycles **line, bar, stacked bar, horizontal bar, scatter, pie, combined**, and the **domain axes** demo; extend when new chart families ship).
 - `samples/android-showcase`
   Primary showcase app for feature demos and manual verification (line, bar, scatter, pie, combined, domain axes screens; Roborazzi).
 
 ## Expected Data Flow
 
-1. App code constructs immutable specs such as `LineChartSpec`, `BarChartSpec`, `ScatterChartSpec`, `CombinedCartesianChartSpec`, or `PieChartSpec`.
+1. App code constructs immutable specs such as `LineChartSpec`, `BarChartSpec`, `StackedBarChartSpec`, `ScatterChartSpec`, `CombinedCartesianChartSpec`, or `PieChartSpec`.
 2. `chart-compose` creates or receives `ChartViewportState` and `ChartSelectionState`.
 3. `ChartPlanner` in `chart-core` converts spec + viewport + selection into a `ChartLayoutPlan` (or `CombinedCartesianChartPlan` wrapping one).
 4. `ComposeCanvasAdapter` renders `DrawCommand` values onto a Compose `Canvas`.
@@ -60,6 +60,7 @@ Fit new features into this flow instead of bypassing it.
 - `chart-core/src/commonMain/kotlin/.../layout/ChartLayoutPlan.kt`
 - `chart-compose/src/commonMain/kotlin/.../chart/LineChart.kt`
 - `chart-compose/src/commonMain/kotlin/.../chart/BarChart.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/StackedBarChart.kt`
 - `chart-compose/src/commonMain/kotlin/.../chart/ScatterChart.kt`
 - `chart-compose/src/commonMain/kotlin/.../chart/PieChart.kt`
 - `chart-compose/src/commonMain/kotlin/.../chart/CombinedCartesianChart.kt`

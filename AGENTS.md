@@ -19,9 +19,9 @@ Current priorities:
 - `chart-core`
   Owns non-UI math, geometry, ranges, domains, viewport state, transforms, visible-range logic, selection models, immutable chart specs, and layout planning.
 - `chart-compose`
-  Owns public Compose APIs (`LineChart`, `BarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`), Compose-managed interaction state, gesture adapters, and Compose canvas rendering.
+  Owns public Compose APIs (`LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`), Compose-managed interaction state, gesture adapters, and Compose canvas rendering.
 - `composeApp`
-  Thin shared host for previewing the current milestone; entry **`ComposePlotApp()`** must include **every** shipped chart family (line, bar, scatter, pie/donut, **combined cartesian**) plus the small **domain axes** demo tab (category, long-label truncation, epoch time, UTC weekday tick policy); extend the cycle when new chart families ship.
+  Thin shared host for previewing the current milestone; entry **`ComposePlotApp()`** must include **every** shipped chart family (line, bar, stacked bar, horizontal bar, scatter, pie/donut, **combined cartesian**) plus the small **domain axes** demo tab (category, long-label truncation, epoch time, UTC weekday tick policy); extend the cycle when new chart families ship.
 - `samples/android-showcase`
   Primary showcase app for feature demos and manual verification.
 
@@ -40,7 +40,7 @@ Current priorities:
 ## Current Data Flow
 The current implementation follows this flow:
 
-1. App code constructs immutable specs such as `LineChartSpec`, `BarChartSpec`, `ScatterChartSpec`, `CombinedCartesianChartSpec`, or `PieChartSpec`.
+1. App code constructs immutable specs such as `LineChartSpec`, `BarChartSpec`, `StackedBarChartSpec`, `ScatterChartSpec`, `CombinedCartesianChartSpec`, or `PieChartSpec`.
 2. `chart-compose` creates or receives `ChartViewportState` and `ChartSelectionState`.
 3. `ChartPlanner` in `chart-core` converts spec + viewport + selection into a `ChartLayoutPlan` (or `CombinedCartesianChartPlan` wrapping one).
 4. `ComposeCanvasAdapter` renders `DrawCommand` values onto a Compose `Canvas`.

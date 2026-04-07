@@ -7,10 +7,12 @@ import com.mena97villalobos.composeplotlib.core.model.BarGroup
  * Immutable configuration for a grouped bar chart: [BarGroup] list, axes, grid, legend, and formatting.
  *
  * @property groups Logical series (each with [BarGroup.entries]); may be empty for no-data handling upstream.
+ * @property orientation Whether bars are drawn as vertical columns or horizontal rows (see [BarChartOrientation]).
  * @property valueFormatter Formats the selected [com.mena97villalobos.composeplotlib.core.model.BarEntry] for markers.
  */
 data class BarChartSpec(
     val groups: List<BarGroup>,
+    val orientation: BarChartOrientation = BarChartOrientation.Vertical,
     val barLayout: BarLayoutMode = BarLayoutMode.Independent,
     /**
      * Horizontal gap in **pixels** between bars inside one clustered category (see [BarLayoutMode.Clustered]).

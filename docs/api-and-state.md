@@ -8,6 +8,7 @@ The current public surface is intentionally small.
 ### Charts
 - `LineChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)`
 - `BarChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)`
+- `StackedBarChart(spec, …)` — same parameters as `BarChart`; `spec` is `StackedBarChartSpec` (always stacked when group entry counts match; see `StackedBarChartSpec.toBarChartSpec()`).
 - `ScatterChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — point-only cartesian chart; same gesture/marker/no-data/a11y shape as line/bar (`spec` is `ScatterChartSpec`).
 - `PieChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — radial pie/donut; **pan/zoom/fling default off** (`ChartTransformGesturePolicy(enabled = false)`). Tap uses `PieHitResolver` in the planner’s `plotBounds`.
 - `CombinedCartesianChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — multi-layer cartesian overlay (`CombinedCartesianChartSpec`); tap hit-testing is **top-layer-first** (`CombinedCartesianHitResolver`). **Secondary *Y*** is data-derived in `chart-core` on each plan (min/max of secondary-bound layers; not an independent zoom target in `ChartViewportState` v1). See **`docs/design-combined-cartesian-layers.md`** §3.1.
@@ -30,14 +31,14 @@ The current public surface is intentionally small.
 ### Helpers
 - `ChartPlanner.computeCartesianTickValuePass(viewport, xAxis, yAxis)` → `TickValuePass` (pass-2 domain tick values before pixel thinning). Cartesian composables reuse it across the measurement pre-pass and final pass when the viewport and primary axes are unchanged. Optional `tickValuePass` on `ChartPlanner.planLineChart`, `planBarChart`, `planScatterChart`, and `planCombinedCartesianChart` (default: compute internally).
 - `defaultViewport(LineChartSpec)`
-- `defaultViewport(BarChartSpec)`
+- `defaultViewport(BarChartSpec)` — vertical: *X* spans categories (`entry.x`), *Y* spans values with zero included; horizontal: *X* spans values, *Y* spans categories.
 - `defaultViewport(ScatterChartSpec)`
 - `defaultViewport(CombinedCartesianChartSpec)` — primary *X* / **shared *Y*** from layers bound to `CombinedCartesianYAxisBinding.SharedY`; secondary *Y* range is still computed in the planner.
 - `defaultViewport(PieChartSpec)` — placeholder `0..1` ranges (layout ignores axes; keeps measurement passes consistent).
 - `ChartGestureConfig(...)` — optional **presets** on the companion object: `CartesianDefault` (same as `ChartGestureConfig()` for cartesian charts), `PieDefault` (`PieChart` default), `readOnly()`, `exploreOnly(...)`, `cartesianInteractive(...)` (double-tap zoom-in + optional fling; used by **`ComposePlotApp`** line tab and the Android line showcase), `cartesianInteractiveFullExploration()` (zoom in/out + reset + fling for full device QA). See **`docs/ios-gesture-validation.md`** for iOS QA matrices.
 
 ### Shared host (`composeApp`)
-- `ComposePlotApp()` in `chart-compose` is the cross-platform milestone demo: **line → bar → scatter → pie → combined → domain axes** (category + epoch-ms time line previews; gestures, selection, marker) used by Android `MainActivity` and the iOS `MainViewController`. Adding a new chart family **must** include a preview here (**`AGENTS.md` → Obligations**). The **Android showcase** adds richer demos—including **Combined (multi-layer)**—and Roborazzi (`ShowcaseApp`).
+- `ComposePlotApp()` in `chart-compose` is the cross-platform milestone demo: **line → bar → stacked bar → horizontal bar → scatter → pie → combined → domain axes** (category + epoch-ms time line previews; gestures, selection, marker) used by Android `MainActivity` and the iOS `MainViewController`. Adding a new chart family **must** include a preview here (**`AGENTS.md` → Obligations**). The **Android showcase** adds richer demos—including **Combined (multi-layer)**—and Roborazzi (`ShowcaseApp`).
 - Xcode integration and manual checks: `docs/ios-host-runbook.md`.
 
 ## Current Spec Model
@@ -119,6 +120,8 @@ Compose:
 ### Bar chart
 Main types:
 - `BarChartSpec`
+- `StackedBarChartSpec` — same fields as `BarChartSpec` except layout is fixed to stacked (`BarLayoutMode.Stacked` via `toBarChartSpec()`); falls back to independent layout when group entry counts differ (same rule as `BarChartSpec.resolvedBarLayout()`).
+- `BarChartOrientation` — `Vertical` (default) or `Horizontal` (category on chart Y, value on chart X; domain `BarEntry` is still `x` = category, `y` = value).
 - `BarGroup`
 - `BarEntry`
 - `AxisSpec`
@@ -126,6 +129,9 @@ Main types:
 - `LegendSpec`
 
 `BarChartSpec` now supports:
+- `orientation: BarChartOrientation` — bar columns vs rows (`Horizontal` swaps value/category axes in the planner; assign category vs value `AxisSpec` accordingly).
+- `barLayout: BarLayoutMode` — `Independent`, `Clustered`, or `Stacked`
+- `clusterBarGapPx` — pixel gap between clustered bars in a category band (horizontal gap when `Vertical`, vertical gap when `Horizontal`)
 - `accessibility: ChartAccessibilitySpec` (`contentDescription`, `exposeSelectionState`, `requestFocusForAccessibility`, `keyboardViewportNudgeEnabled`, `keyboardSelectionRoamEnabled`, `requestFocusOnMarker`, `selectionLiveRegionMode`)
 - `valueFormatter: (BarEntry) -> String`
 - `selectionStyle: SelectionStyle`
@@ -193,7 +199,7 @@ The model covers point-like series, pie slices, and **bar segments** (independen
 
 **Line** and **scatter** charts use **nearest-point** resolution in pixel space (`NearestPointResolver`); scatter (and combined scatter layers) restrict candidates to the same set of indices the planner renders: marker discs that intersect plot bounds in pixel space (`ScatterPlotPoints.indexedInPlotBounds`, radius-aware). Combined cartesian line/scatter layers use the same `LineRenderPipeline` / `ScatterRenderPipeline` preparation as drawing so taps stay aligned when decimation caps apply. Samples with non-finite domain *x*/*y* are skipped; when two candidates tie on distance, the **lower point index** wins (stable for accessibility and tests).
 
-**Bar** charts use **direct rect** hit testing (`BarHitResolver.resolvePlanned`) on `PlannedBarSegment` bounds — the same pixel rectangles the planner draws (`DrawCommand.Rect`). Hit-test order is **top segment first** (`List<PlannedBarSegment>.forHitTestFromDrawOrder()`, same policy as `BarChartPlan.barSegmentsForHitTest()`). Segments with non-finite rectangle edges or inverted axis alignment (`left` > `right` or `top` > `bottom`) are ignored. **`ChartSelection`:** for bars, `pixelOffset` is the top-center of the selection stroke; `markerAnchor` is typically the bar rect center; `hitBounds` is the segment bounds.
+**Bar** charts use **direct rect** hit testing (`BarHitResolver.resolvePlanned`) on `PlannedBarSegment` bounds — the same pixel rectangles the planner draws (`DrawCommand.Rect`). Hit-test order is **top segment first** (`List<PlannedBarSegment>.forHitTestFromDrawOrder()`, same policy as `BarChartPlan.barSegmentsForHitTest()`). Segments carry `orientation` for selection stroke and marker anchoring. Segments with non-finite rectangle edges or inverted axis alignment (`left` > `right` or `top` > `bottom`) are ignored. **`ChartSelection`:** for vertical bars, `pixelOffset` is top-center of the selection stroke; for horizontal bars, outer value-edge center; `markerAnchor` is typically the bar rect center; `hitBounds` is the segment bounds. Keyboard roam: **Shift+Left/Right** steps categories when `Vertical`; **Shift+Up/Down** when `Horizontal`.
 
 ## Marker API
 `chart-compose` now supports an optional marker slot for selected values.

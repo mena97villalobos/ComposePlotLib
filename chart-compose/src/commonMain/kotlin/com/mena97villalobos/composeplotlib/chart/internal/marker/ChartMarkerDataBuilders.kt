@@ -4,6 +4,7 @@ import com.mena97villalobos.composeplotlib.chart.ChartMarkerData
 import com.mena97villalobos.composeplotlib.core.model.BarEntry
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
@@ -130,25 +131,30 @@ internal fun buildCombinedMarkerData(
                     layer.barLayout
                 }
             val groupIndex = layer.groups.indexOfFirst { it.id == group.id }.let { if (it < 0) 0 else it }
+            val (xLab, yLab) =
+                when (layer.orientation) {
+                    BarChartOrientation.Vertical ->
+                        spec.xAxis.labelFormatter(entry.x) to yAxisForLayer.labelFormatter(entry.y)
+                    BarChartOrientation.Horizontal ->
+                        spec.xAxis.labelFormatter(entry.y) to yAxisForLayer.labelFormatter(entry.x)
+                }
             val accessibilitySummary =
                 when (layout) {
                     BarLayoutMode.Stacked -> {
                         val stackDepth = layer.groups.size
                         "Selected stacked segment ${groupIndex + 1} of $stackDepth, ${group.label}. " +
-                            "${spec.barValueFormatter(entry)}. Category $categoryOrdinal, X ${spec.xAxis.labelFormatter(entry.x)}, " +
-                            "segment value Y ${yAxisForLayer.labelFormatter(entry.y)}."
+                            "${spec.barValueFormatter(entry)}. Category $categoryOrdinal, X $xLab, segment value Y $yLab."
                     }
                     BarLayoutMode.Clustered ->
-                        "Selected ${group.label}, category $categoryOrdinal. ${spec.barValueFormatter(entry)}. " +
-                            "X ${spec.xAxis.labelFormatter(entry.x)}, Y ${yAxisForLayer.labelFormatter(entry.y)}."
+                        "Selected ${group.label}, category $categoryOrdinal. ${spec.barValueFormatter(entry)}. X $xLab, Y $yLab."
                     BarLayoutMode.Independent -> null
                 }
             ChartMarkerData(
                 selection = selection,
                 seriesId = group.id,
                 seriesLabel = group.label,
-                xLabel = spec.xAxis.labelFormatter(entry.x),
-                yLabel = yAxisForLayer.labelFormatter(entry.y),
+                xLabel = xLab,
+                yLabel = yLab,
                 valueLabel = spec.barValueFormatter(entry),
                 accessibilitySummary = accessibilitySummary,
             )
@@ -182,25 +188,30 @@ internal fun buildBarMarkerData(
     val categoryOrdinal = selection.target.pointIndex + 1
     val layout = spec.resolvedBarLayout()
     val groupIndex = spec.groups.indexOfFirst { it.id == group.id }.let { if (it < 0) 0 else it }
+    val (xLab, yLab) =
+        when (spec.orientation) {
+            BarChartOrientation.Vertical ->
+                spec.xAxis.labelFormatter(entry.x) to spec.yAxis.labelFormatter(entry.y)
+            BarChartOrientation.Horizontal ->
+                spec.xAxis.labelFormatter(entry.y) to spec.yAxis.labelFormatter(entry.x)
+        }
     val accessibilitySummary =
         when (layout) {
             BarLayoutMode.Stacked -> {
                 val stackDepth = spec.groups.size
                 "Selected stacked segment ${groupIndex + 1} of $stackDepth, ${group.label}. " +
-                    "${spec.valueFormatter(entry)}. Category $categoryOrdinal, X ${spec.xAxis.labelFormatter(entry.x)}, " +
-                    "segment value Y ${spec.yAxis.labelFormatter(entry.y)}."
+                    "${spec.valueFormatter(entry)}. Category $categoryOrdinal, X $xLab, segment value Y $yLab."
             }
             BarLayoutMode.Clustered ->
-                "Selected ${group.label}, category $categoryOrdinal. ${spec.valueFormatter(entry)}. " +
-                    "X ${spec.xAxis.labelFormatter(entry.x)}, Y ${spec.yAxis.labelFormatter(entry.y)}."
+                "Selected ${group.label}, category $categoryOrdinal. ${spec.valueFormatter(entry)}. X $xLab, Y $yLab."
             BarLayoutMode.Independent -> null
         }
     return ChartMarkerData(
         selection = selection,
         seriesId = group.id,
         seriesLabel = group.label,
-        xLabel = spec.xAxis.labelFormatter(entry.x),
-        yLabel = spec.yAxis.labelFormatter(entry.y),
+        xLabel = xLab,
+        yLabel = yLab,
         valueLabel = spec.valueFormatter(entry),
         accessibilitySummary = accessibilitySummary,
     )

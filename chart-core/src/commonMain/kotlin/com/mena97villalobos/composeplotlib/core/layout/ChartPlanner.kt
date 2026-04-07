@@ -23,6 +23,7 @@ import com.mena97villalobos.composeplotlib.core.model.toXyPoints
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
+import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
@@ -503,6 +504,7 @@ object ChartPlanner {
                 groups = spec.groups,
                 layoutMode = effectiveBarLayout,
                 clusterBarGapPx = spec.clusterBarGapPx,
+                orientation = spec.orientation,
                 viewport = frame.viewport,
                 transform = frame.transform,
                 plotBounds = frame.plotBounds,
@@ -537,6 +539,7 @@ object ChartPlanner {
                     overlayDrawCommands = overlayCommands,
                 ),
             selection = selection,
+            orientation = spec.orientation,
             barSegments = barSegments,
         )
     }
@@ -620,6 +623,7 @@ object ChartPlanner {
         groups: List<BarGroup>,
         layoutMode: BarLayoutMode,
         clusterBarGapPx: Double,
+        orientation: BarChartOrientation,
         viewport: ChartViewport,
         transform: ChartTransform,
         plotBounds: RectD,
@@ -629,46 +633,92 @@ object ChartPlanner {
             return emptyList()
         }
         val raw =
-            when (layoutMode) {
-                BarLayoutMode.Independent ->
-                    buildIndependentBarSegments(
-                        groups,
-                        viewport,
-                        transform,
-                        plotBounds,
-                        layoutMode,
-                        layerId,
-                    )
-                BarLayoutMode.Clustered ->
-                    buildClusteredBarSegments(
-                        groups,
-                        clusterBarGapPx,
-                        viewport,
-                        transform,
-                        plotBounds,
-                        layoutMode,
-                        layerId,
-                    )
-                BarLayoutMode.Stacked ->
-                    buildStackedBarSegments(
-                        groups,
-                        viewport,
-                        transform,
-                        plotBounds,
-                        layoutMode,
-                        layerId,
-                    )
+            when (orientation) {
+                BarChartOrientation.Vertical ->
+                    when (layoutMode) {
+                        BarLayoutMode.Independent ->
+                            buildIndependentBarSegments(
+                                groups,
+                                viewport,
+                                transform,
+                                plotBounds,
+                                layoutMode,
+                                layerId,
+                            )
+                        BarLayoutMode.Clustered ->
+                            buildClusteredBarSegments(
+                                groups,
+                                clusterBarGapPx,
+                                viewport,
+                                transform,
+                                plotBounds,
+                                layoutMode,
+                                layerId,
+                            )
+                        BarLayoutMode.Stacked ->
+                            buildStackedBarSegments(
+                                groups,
+                                viewport,
+                                transform,
+                                plotBounds,
+                                layoutMode,
+                                layerId,
+                            )
+                    }
+                BarChartOrientation.Horizontal ->
+                    when (layoutMode) {
+                        BarLayoutMode.Independent ->
+                            buildHorizontalIndependentBarSegments(
+                                groups,
+                                viewport,
+                                transform,
+                                plotBounds,
+                                layoutMode,
+                                layerId,
+                            )
+                        BarLayoutMode.Clustered ->
+                            buildHorizontalClusteredBarSegments(
+                                groups,
+                                clusterBarGapPx,
+                                viewport,
+                                transform,
+                                plotBounds,
+                                layoutMode,
+                                layerId,
+                            )
+                        BarLayoutMode.Stacked ->
+                            buildHorizontalStackedBarSegments(
+                                groups,
+                                viewport,
+                                transform,
+                                plotBounds,
+                                layoutMode,
+                                layerId,
+                            )
+                    }
             }
         val hSlack = VisibleRangeCalculator.BAR_COLUMN_PLOT_EDGE_SLACK_PX
         val plotHitSlack =
-            plotBounds.inset(
-                InsetsD(
-                    left = -(hSlack + FpMath.EPS),
-                    top = -FpMath.EPS,
-                    right = -(hSlack + FpMath.EPS),
-                    bottom = -FpMath.EPS,
-                ),
-            )
+            when (orientation) {
+                BarChartOrientation.Vertical ->
+                    plotBounds.inset(
+                        InsetsD(
+                            left = -(hSlack + FpMath.EPS),
+                            top = -FpMath.EPS,
+                            right = -(hSlack + FpMath.EPS),
+                            bottom = -FpMath.EPS,
+                        ),
+                    )
+                BarChartOrientation.Horizontal ->
+                    plotBounds.inset(
+                        InsetsD(
+                            left = -FpMath.EPS,
+                            top = -(hSlack + FpMath.EPS),
+                            right = -FpMath.EPS,
+                            bottom = -(hSlack + FpMath.EPS),
+                        ),
+                    )
+            }
         return raw.filter { it.bounds.intersects(plotHitSlack) }
     }
 
@@ -692,6 +742,45 @@ object ChartPlanner {
                     entry = entry,
                     bounds = barRectForVerticalColumn(group, entry.x, entry.y, viewport, transform, plotBounds),
                     fillColor = group.style.color,
+                    orientation = BarChartOrientation.Vertical,
+                    barLayoutMode = barLayoutMode,
+                    layerId = layerId,
+                )
+            }
+        }
+    }
+
+    private fun buildHorizontalIndependentBarSegments(
+        groups: List<BarGroup>,
+        viewport: ChartViewport,
+        transform: ChartTransform,
+        plotBounds: RectD,
+        barLayoutMode: BarLayoutMode,
+        layerId: String?,
+    ): List<PlannedBarSegment> {
+        val x0 = viewport.xRange.start
+        return groups.flatMap { group ->
+            group.entries.mapIndexedNotNull { index, entry ->
+                val centerYPx = transform.toPixel(XyPoint(x0, entry.x)).y
+                if (!VisibleRangeCalculator.barRowIntersectsPlotVertically(centerYPx, group.style.barWidth, plotBounds)) {
+                    return@mapIndexedNotNull null
+                }
+                PlannedBarSegment(
+                    groupId = group.id,
+                    categoryIndex = index,
+                    entry = entry,
+                    bounds =
+                        barRectForHorizontalRow(
+                            group = group,
+                            categoryDomain = entry.x,
+                            valueDomain = entry.y,
+                            viewport = viewport,
+                            transform = transform,
+                            plotBounds = plotBounds,
+                            centerYPx = centerYPx,
+                        ),
+                    fillColor = group.style.color,
+                    orientation = BarChartOrientation.Horizontal,
                     barLayoutMode = barLayoutMode,
                     layerId = layerId,
                 )
@@ -733,11 +822,67 @@ object ChartPlanner {
                         entry = entry,
                         bounds = rect,
                         fillColor = group.style.color,
+                        orientation = BarChartOrientation.Vertical,
                         barLayoutMode = barLayoutMode,
                         layerId = layerId,
                     ),
                 )
                 xLeft += w + if (gi < groups.lastIndex) gap else 0.0
+            }
+        }
+        return out
+    }
+
+    private fun buildHorizontalClusteredBarSegments(
+        groups: List<BarGroup>,
+        clusterBarGapPx: Double,
+        viewport: ChartViewport,
+        transform: ChartTransform,
+        plotBounds: RectD,
+        barLayoutMode: BarLayoutMode,
+        layerId: String?,
+    ): List<PlannedBarSegment> {
+        val x0 = viewport.xRange.start
+        val n = groups.first().entries.size
+        val gap = clusterBarGapPx.coerceAtLeast(0.0)
+        val out = mutableListOf<PlannedBarSegment>()
+        for (j in 0 until n) {
+            val categoryY = groups.first().entries[j].x
+            val thicknesses = groups.map { it.style.barWidth }
+            val totalH = thicknesses.sum() + gap * max(0, groups.size - 1)
+            val cy = transform.toPixel(XyPoint(x0, categoryY)).y
+            var yTop = cy - totalH / 2.0
+            for ((gi, group) in groups.withIndex()) {
+                val h = group.style.barWidth
+                val barCenterY = yTop + h / 2.0
+                val entry = group.entries[j]
+                if (!VisibleRangeCalculator.barRowIntersectsPlotVertically(barCenterY, h, plotBounds)) {
+                    yTop += h + if (gi < groups.lastIndex) gap else 0.0
+                    continue
+                }
+                val rect =
+                    barRectForHorizontalRow(
+                        group = group,
+                        categoryDomain = categoryY,
+                        valueDomain = entry.y,
+                        viewport = viewport,
+                        transform = transform,
+                        plotBounds = plotBounds,
+                        centerYPx = barCenterY,
+                    )
+                out.add(
+                    PlannedBarSegment(
+                        groupId = group.id,
+                        categoryIndex = j,
+                        entry = entry,
+                        bounds = rect,
+                        fillColor = group.style.color,
+                        orientation = BarChartOrientation.Horizontal,
+                        barLayoutMode = barLayoutMode,
+                        layerId = layerId,
+                    ),
+                )
+                yTop += h + if (gi < groups.lastIndex) gap else 0.0
             }
         }
         return out
@@ -781,6 +926,54 @@ object ChartPlanner {
                         entry = entry,
                         bounds = rect,
                         fillColor = group.style.color,
+                        orientation = BarChartOrientation.Vertical,
+                        barLayoutMode = barLayoutMode,
+                        layerId = layerId,
+                    ),
+                )
+            }
+        }
+        return out
+    }
+
+    private fun buildHorizontalStackedBarSegments(
+        groups: List<BarGroup>,
+        viewport: ChartViewport,
+        transform: ChartTransform,
+        plotBounds: RectD,
+        barLayoutMode: BarLayoutMode,
+        layerId: String?,
+    ): List<PlannedBarSegment> {
+        val n = groups.first().entries.size
+        val x0 = viewport.xRange.start
+        val out = mutableListOf<PlannedBarSegment>()
+        for (j in 0 until n) {
+            val categoryY = groups.first().entries[j].x
+            val columnCenterY = transform.toPixel(XyPoint(x0, categoryY)).y
+            val columnBarThickness = groups.maxOf { it.style.barWidth }
+            if (!VisibleRangeCalculator.barRowIntersectsPlotVertically(columnCenterY, columnBarThickness, plotBounds)) {
+                continue
+            }
+            var cumulative = x0
+            for (group in groups) {
+                val entry = group.entries[j]
+                val xLo = cumulative
+                val xHi = cumulative + entry.y
+                cumulative = xHi
+                val pLeft = transform.toPixel(XyPoint(xLo, categoryY))
+                val pRight = transform.toPixel(XyPoint(xHi, categoryY))
+                val leftX = min(pLeft.x, pRight.x).coerceAtLeast(plotBounds.left)
+                val rightX = max(pLeft.x, pRight.x).coerceAtMost(plotBounds.right)
+                val half = group.style.barWidth / 2.0
+                val rect = RectD(leftX, columnCenterY - half, rightX, columnCenterY + half)
+                out.add(
+                    PlannedBarSegment(
+                        groupId = group.id,
+                        categoryIndex = j,
+                        entry = entry,
+                        bounds = rect,
+                        fillColor = group.style.color,
+                        orientation = BarChartOrientation.Horizontal,
                         barLayoutMode = barLayoutMode,
                         layerId = layerId,
                     ),
@@ -831,6 +1024,52 @@ object ChartPlanner {
         )
     }
 
+    /**
+     * Horizontal bar: category on Y ([categoryDomain]), value length along X from [viewport.xRange.start].
+     */
+    private fun barRectForHorizontalRow(
+        group: BarGroup,
+        categoryDomain: Double,
+        valueDomain: Double,
+        viewport: ChartViewport,
+        transform: ChartTransform,
+        plotBounds: RectD,
+        centerYPx: Double,
+    ): RectD {
+        return barRectWithPixelCenterHorizontal(
+            group = group,
+            categoryDomain = categoryDomain,
+            valueDomain = valueDomain,
+            viewport = viewport,
+            transform = transform,
+            plotBounds = plotBounds,
+            centerYPx = centerYPx,
+        )
+    }
+
+    private fun barRectWithPixelCenterHorizontal(
+        group: BarGroup,
+        categoryDomain: Double,
+        valueDomain: Double,
+        viewport: ChartViewport,
+        transform: ChartTransform,
+        plotBounds: RectD,
+        centerYPx: Double,
+    ): RectD {
+        val x0 = viewport.xRange.start
+        val left = transform.toPixel(XyPoint(x0, categoryDomain))
+        val right = transform.toPixel(XyPoint(x0 + valueDomain, categoryDomain))
+        val leftX = min(left.x, right.x).coerceAtLeast(plotBounds.left)
+        val rightX = max(left.x, right.x).coerceAtMost(plotBounds.right)
+        val half = group.style.barWidth / 2.0
+        return RectD(
+            left = leftX,
+            top = centerYPx - half,
+            right = rightX,
+            bottom = centerYPx + half,
+        )
+    }
+
     private fun buildBarDrawCommands(
         segments: List<PlannedBarSegment>,
         selection: ChartSelection?,
@@ -839,15 +1078,27 @@ object ChartPlanner {
         return segments.flatMap { seg ->
             val rect = DrawCommand.Rect(bounds = seg.bounds, color = seg.fillColor)
             if (selection != null && selectionMatchesSegment(selection, seg)) {
-                listOf(
-                    rect,
-                    DrawCommand.Line(
-                        start = OffsetD(seg.bounds.left, seg.bounds.top),
-                        end = OffsetD(seg.bounds.right, seg.bounds.top),
-                        color = selectionStyle.lineColor,
-                        strokeWidth = selectionStyle.lineStrokeWidth,
-                    ),
-                )
+                val accent =
+                    when (seg.orientation) {
+                        BarChartOrientation.Vertical ->
+                            DrawCommand.Line(
+                                start = OffsetD(seg.bounds.left, seg.bounds.top),
+                                end = OffsetD(seg.bounds.right, seg.bounds.top),
+                                color = selectionStyle.lineColor,
+                                strokeWidth = selectionStyle.lineStrokeWidth,
+                            )
+                        BarChartOrientation.Horizontal -> {
+                            // Value-outer edge: max X in plot space (stack grows from the X baseline).
+                            val outerX = max(seg.bounds.left, seg.bounds.right)
+                            DrawCommand.Line(
+                                start = OffsetD(outerX, seg.bounds.top),
+                                end = OffsetD(outerX, seg.bounds.bottom),
+                                color = selectionStyle.lineColor,
+                                strokeWidth = selectionStyle.lineStrokeWidth,
+                            )
+                        }
+                    }
+                listOf(rect, accent)
             } else {
                 listOf(rect)
             }
@@ -1283,6 +1534,7 @@ object ChartPlanner {
                             groups = layer.groups,
                             layoutMode = effectiveLayout,
                             clusterBarGapPx = layer.clusterBarGapPx,
+                            orientation = layer.orientation,
                             viewport = vp,
                             transform = t,
                             plotBounds = frame.plotBounds,
