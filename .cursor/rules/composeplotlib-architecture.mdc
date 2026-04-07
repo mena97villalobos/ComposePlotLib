@@ -1,0 +1,77 @@
+---
+description: ComposePlotLib architecture and workflow guidance
+alwaysApply: true
+---
+
+# ComposePlotLib Guidance
+
+- **AI agents and contributors:** When adding a **new chart family**, wire a preview into **`ComposePlotApp`** and update **`AGENTS.md`** + relevant **`docs/*.md`** so documentation matches the code (`AGENTS.md` → Obligations).
+- `chart-core` owns platform-agnostic math and planning only. Do not introduce Compose UI types such as `Modifier`, `Color`, `Dp`, `Offset`, `Rect`, `Path`, `Canvas`, or `TextStyle` into `chart-core`.
+- Keep public APIs in `chart-compose` declarative and immutable-first. Prefer new spec/model types over mutable setters.
+- Keep interaction state explicit. Pan/zoom/selection should live in `ChartViewportState` and `ChartSelectionState`, not be hidden inside composables.
+- Extend the planner before extending the renderer. If a feature changes layout or chart semantics, update `chart-core` planning types first, then adapt `chart-compose`.
+- Prefer shared primitives over chart-specific duplication. Reuse geometry, transforms, draw commands, tick generation, and selection logic whenever possible.
+
+## Module Responsibilities
+
+- `chart-core`
+  Owns non-UI math, geometry, ranges, domains, viewport state, transforms, visible-range logic, selection models, immutable chart specs, and layout planning.
+- `chart-compose`
+  Owns public Compose APIs, Compose-managed interaction state, gesture adapters, and Compose canvas rendering.
+- `composeApp`
+  Thin shared host for previewing the current milestone (`ComposePlotApp` cycles **line, bar, scatter, pie, combined**, and the **domain axes** demo; extend when new chart families ship).
+- `samples/android-showcase`
+  Primary showcase app for feature demos and manual verification (line, bar, scatter, pie, combined, domain axes screens; Roborazzi).
+
+## Expected Data Flow
+
+1. App code constructs immutable specs such as `LineChartSpec`, `BarChartSpec`, `ScatterChartSpec`, `CombinedCartesianChartSpec`, or `PieChartSpec`.
+2. `chart-compose` creates or receives `ChartViewportState` and `ChartSelectionState`.
+3. `ChartPlanner` in `chart-core` converts spec + viewport + selection into a `ChartLayoutPlan` (or `CombinedCartesianChartPlan` wrapping one).
+4. `ComposeCanvasAdapter` renders `DrawCommand` values onto a Compose `Canvas`.
+5. Gesture handlers update viewport or selection state.
+
+Fit new features into this flow instead of bypassing it.
+
+## Editing Strategy
+
+- For new shared behavior, start in `chart-core`.
+- For public API changes, update `chart-compose` public files first, then internal adapters.
+- For a **new chart family** composable, update **`ComposePlotApp`**, `samples/android-showcase` / `ShowcaseApp` as needed, and **`AGENTS.md` + docs** (see Obligations above).
+- For a new showcase-only feature, add sample data, then a dedicated screen in `samples/android-showcase`, then wire it into `ShowcaseApp`.
+
+## Testing
+
+- Add or update `chart-core` tests for math, transform, tick-generation, or selection logic.
+- Build at least:
+  `./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :composeApp:assembleDebug`
+- On macOS, when touching shared model or Compose paths used on iOS, also run `:composeApp:compileKotlinIosSimulatorArm64`.
+- Use the showcase app as a manual verification surface for rendering changes; see `docs/ios-host-runbook.md` for the iOS host.
+
+## Read First
+
+- `docs/production-readiness-next-steps.md` (primary production backlog)
+- `AGENTS.md`
+- `docs/README.md`
+- `docs/architecture.md`
+- `docs/api-and-state.md`
+- `docs/viewport-configuration.md`
+- `chart-core/src/commonMain/kotlin/.../layout/ChartPlanner.kt`
+- `chart-core/src/commonMain/kotlin/.../layout/ChartLayoutPlan.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/LineChart.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/BarChart.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/ScatterChart.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/PieChart.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/CombinedCartesianChart.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/internal/canvas/ComposeCanvasAdapter.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/state/ChartViewportState.kt`
+- `samples/android-showcase/src/commonMain/kotlin/.../ShowcaseApp.kt`
+- `chart-compose/src/commonMain/kotlin/.../chart/ComposePlotApp.kt`
+- `docs/ios-host-runbook.md`
+
+## Current limitations
+
+- Layout/text is measurement-assisted but still imperfect; ticks are numeric-first.
+- Marker/tooltip placement and viewport-edge behavior are still basic.
+- Accessibility: semantics + focus opt-in + custom actions + optional cartesian keyboard viewport shortcuts + configurable selection live region; keyboard selection roam and marker focus handoff are light; animation transitions not implemented.
+- iOS: same pipeline as Android; Roborazzi is Android-only; device soak is manual.

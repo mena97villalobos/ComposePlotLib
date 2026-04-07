@@ -1,0 +1,17 @@
+root = true
+
+[*.{kt,kts}]
+insert_final_newline = true
+max_line_length = 200
+# Compose code uses camelCase `const val` in objects/companions; keep library lint practical
+ktlint_standard_property-naming = disabled
+
+# Compose previews and Android entry points often use PascalCase names
+[composeApp/src/**/*.kt]
+ktlint_standard_function-naming = disabled
+
+[samples/android-showcase/src/**/*.kt]
+ktlint_standard_function-naming = disabled
+
+[chart-compose/src/**/*.kt]
+ktlint_standard_function-naming = disabled
