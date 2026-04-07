@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
@@ -258,10 +259,29 @@ private fun DrawScope.drawDrawCommands(
                         null -> command.position.toComposeOffset()
                         else -> baselineAlignedTopLeft(command.position, b, layout)
                     }
-                drawText(
-                    textLayoutResult = layout,
-                    topLeft = topLeft,
-                )
+                val rotationDegrees = command.rotationDegrees
+                if (rotationDegrees == 0.0) {
+                    drawText(
+                        textLayoutResult = layout,
+                        topLeft = topLeft,
+                    )
+                } else {
+                    val pivot =
+                        command.rotationPivot?.toComposeOffset()
+                            ?: Offset(
+                                x = topLeft.x + layout.size.width / 2f,
+                                y = topLeft.y + layout.size.height / 2f,
+                            )
+                    rotate(
+                        degrees = rotationDegrees.toFloat(),
+                        pivot = pivot,
+                    ) {
+                        drawText(
+                            textLayoutResult = layout,
+                            topLeft = topLeft,
+                        )
+                    }
+                }
             }
 
             is DrawCommand.Path -> {

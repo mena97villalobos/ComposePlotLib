@@ -27,6 +27,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import kotlin.math.roundToInt
 
@@ -131,6 +132,48 @@ internal fun Modifier.pieChartAccessibility(
                     if (data != null) {
                         stateDescription = data.accessibilitySummaryText()
                     }
+                }
+            }
+            if (customAccessibilityActions.isNotEmpty()) {
+                customActions =
+                    customAccessibilityActions.map { a ->
+                        CustomAccessibilityAction(a.label) {
+                            a.onClick()
+                            true
+                        }
+                    }
+            }
+        }
+    return this
+        .focusable(enabled = wantsFocus)
+        .then(semanticsModifier)
+}
+
+/** Adds TalkBack / VoiceOver content, optional custom actions, focus, and an Image role for sankey charts. */
+internal fun Modifier.sankeyChartAccessibility(
+    spec: SankeyChartSpec,
+    selectionState: ChartSelectionState,
+    customAccessibilityActions: List<ChartCustomAccessibilityAction> = emptyList(),
+): Modifier {
+    val wantsFocus =
+        spec.accessibility.requestFocusForAccessibility ||
+            spec.accessibility.keyboardViewportNudgeEnabled ||
+            spec.accessibility.requestFocusOnMarker
+    val mergeDescendants = !spec.accessibility.requestFocusOnMarker
+    val semanticsModifier =
+        Modifier.semantics(mergeDescendants = mergeDescendants) {
+            role = Role.Image
+            contentDescription = spec.accessibility.contentDescription ?: "Sankey chart."
+            if (spec.accessibility.exposeSelectionState) {
+                when (spec.accessibility.selectionLiveRegionMode) {
+                    ChartLiveRegionMode.Off -> Unit
+                    ChartLiveRegionMode.Polite -> liveRegion = LiveRegionMode.Polite
+                    ChartLiveRegionMode.Assertive -> liveRegion = LiveRegionMode.Assertive
+                }
+                val sel = selectionState.selection
+                if (sel != null) {
+                    // Requires the composable to provide a plan; if marker data can't be built, fall back to default.
+                    // (SankeyChart currently builds the marker payload itself.)
                 }
             }
             if (customAccessibilityActions.isNotEmpty()) {

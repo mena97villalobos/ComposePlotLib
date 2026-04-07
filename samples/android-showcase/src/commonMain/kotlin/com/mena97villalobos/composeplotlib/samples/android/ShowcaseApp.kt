@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -28,6 +30,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesSho
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +68,7 @@ fun ShowcaseApp() {
                                 .fillMaxSize()
                                 .semantics {
                                     contentDescription =
-                                        "ComposePlotLib showcase home. Open line, bar, scatter, pie, combined, or domain-axis demos."
+                                        "ComposePlotLib showcase home. Open line, bar, scatter, pie, combined, sankey, or domain-axis demos."
                                 },
                         onOpenDestination = { destination = it },
                     )
@@ -89,6 +92,10 @@ fun ShowcaseApp() {
                     Column(detailModifier) {
                         CombinedChartShowcaseScreen()
                     }
+                ShowcaseDestination.Sankey ->
+                    Column(detailModifier) {
+                        SankeyChartShowcaseScreen()
+                    }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
                         DomainAxesShowcaseScreen()
@@ -104,7 +111,7 @@ private fun ShowcaseHomeScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
@@ -146,6 +153,12 @@ private fun ShowcaseHomeScreen(
             Text("Combined (multi-layer)")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Sankey) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Sankey chart")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -161,5 +174,6 @@ private enum class ShowcaseDestination(val title: String) {
     Scatter("Scatter chart"),
     Pie("Pie chart"),
     Combined("Combined chart"),
+    Sankey("Sankey chart"),
     DomainAxes("Domain axes"),
 }

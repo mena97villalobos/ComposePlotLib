@@ -11,6 +11,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendStyle
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 
 @Composable
@@ -87,6 +88,21 @@ internal fun chartLabelTextStyles(spec: CombinedCartesianChartSpec): ChartLabelT
         legend = legend,
         pieSliceLabel = legend,
         yAxisSecondaryTick = ySecondary,
+    )
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: SankeyChartSpec): ChartLabelTextStyles {
+    val typo = MaterialTheme.typography
+    val legend = legendStyleFrom(typo, spec.legend.style)
+    val label = legend
+    return ChartLabelTextStyles(
+        xAxis = label,
+        yAxis = label,
+        legend = legend,
+        pieSliceLabel = label,
+        yAxisSecondaryTick = label,
     )
 }
 

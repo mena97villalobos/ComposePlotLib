@@ -127,7 +127,7 @@ fun ComposePlotApp() {
             Text(
                 text =
                     "Shared host: line, bar, stacked bar, horizontal bar, scatter (cartesian), pie/donut (radial), " +
-                        "combined (bar + dual-axis line), and domain axes (category + time). Android showcase adds richer demos.",
+                        "combined (bar + dual-axis line), sankey (flow), and domain axes (category + time). Android showcase adds richer demos.",
                 style = MaterialTheme.typography.bodyLarge,
             )
             OutlinedButton(
@@ -140,7 +140,8 @@ fun ComposePlotApp() {
                             PreviewScreen.HorizontalBar -> PreviewScreen.Scatter
                             PreviewScreen.Scatter -> PreviewScreen.Pie
                             PreviewScreen.Pie -> PreviewScreen.Combined
-                            PreviewScreen.Combined -> PreviewScreen.DomainAxes
+                            PreviewScreen.Combined -> PreviewScreen.Sankey
+                            PreviewScreen.Sankey -> PreviewScreen.DomainAxes
                             PreviewScreen.DomainAxes -> PreviewScreen.Line
                         }
                 },
@@ -154,7 +155,8 @@ fun ComposePlotApp() {
                         PreviewScreen.HorizontalBar -> "Switch to Scatter Preview"
                         PreviewScreen.Scatter -> "Switch to Pie Preview"
                         PreviewScreen.Pie -> "Switch to Combined Preview"
-                        PreviewScreen.Combined -> "Switch to Domain Axes Preview"
+                        PreviewScreen.Combined -> "Switch to Sankey Preview"
+                        PreviewScreen.Sankey -> "Switch to Domain Axes Preview"
                         PreviewScreen.DomainAxes -> "Switch to Line Preview"
                     },
                 )
@@ -351,6 +353,65 @@ fun ComposePlotApp() {
                                 val layer = sel.target.layerId ?: "?"
                                 "${sel.target.seriesId} (layer $layer): index ${sel.target.pointIndex}"
                             } ?: "Tap bars or line (dual Y). Top layer wins. Pan/zoom with two fingers.",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+
+                PreviewScreen.Sankey -> {
+                    val sankeySpec =
+                        com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec(
+                            id = "sankey",
+                            nodes =
+                                listOf(
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Applications", column = 0, label = "Applications (total)"),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Rejected", column = 1, label = "Rejected (screening)"),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Interviews", column = 1, label = "Interviews"),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("NoAnswer", column = 1, label = "No answer / ghosted"),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Offers", column = 2, label = "Offers extended"),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Accepted", column = 3, label = "Accepted offer"),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Declined", column = 3, label = "Declined offer"),
+                                ),
+                            links =
+                                listOf(
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Applications", "Rejected", 9.0),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Applications", "Interviews", 4.0),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Applications", "NoAnswer", 4.0),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Interviews", "Offers", 2.0),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Interviews", "Rejected", 2.0),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Offers", "Accepted", 1.0),
+                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Offers", "Declined", 1.0),
+                                ),
+                            layout =
+                                com.mena97villalobos.composeplotlib.core.spec.SankeyLayoutSpec(
+                                    columnVerticalAlignment = com.mena97villalobos.composeplotlib.core.spec.SankeyColumnVerticalAlignment.Justify,
+                                    outgoingLinkOrder = com.mena97villalobos.composeplotlib.core.spec.SankeyLinkOrder.TargetTopToBottom,
+                                    incomingLinkOrder = com.mena97villalobos.composeplotlib.core.spec.SankeyLinkOrder.SourceTopToBottom,
+                                ),
+                        )
+                    val sankeyViewport =
+                        rememberChartViewportState(
+                            initialViewport =
+                                com.mena97villalobos.composeplotlib.core.viewport.ChartViewport(
+                                    com.mena97villalobos.composeplotlib.core.range.ClosedRangeD(0.0, 1.0),
+                                    com.mena97villalobos.composeplotlib.core.range.ClosedRangeD(0.0, 1.0),
+                                ),
+                        )
+                    val sankeySelection = rememberChartSelectionState()
+                    SankeyChart(
+                        spec = sankeySpec,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(320.dp)
+                                .padding(top = 8.dp),
+                        viewportState = sankeyViewport,
+                        selectionState = sankeySelection,
+                        gestureConfig = ChartGestureConfig.cartesianInteractiveFullExploration(),
+                        marker = { markerData -> DefaultChartMarker(markerData, showCoordinateLine = false) },
+                    )
+                    Text(
+                        text = sankeySelection.selection?.let { "Selected ${it.target.layerId} index ${it.target.pointIndex}" }
+                            ?: "Tap nodes or links to select. Pan/zoom with two fingers.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -800,5 +861,6 @@ private enum class PreviewScreen {
     Scatter,
     Pie,
     Combined,
+    Sankey,
     DomainAxes,
 }

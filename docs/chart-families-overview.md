@@ -24,11 +24,15 @@ Single canvas overlay of line, bar, and/or scatter layers with shared *X* and sh
 
 Radial **`PieChartSlice`** list; arcs + optional donut **`holeRadiusRatio`**. Pan/zoom defaults are off (**`ChartTransformGesturePolicy(enabled = false)`**). Optional **`PieSliceLabelsSpec`** adds leader polylines and labels planned in **`chart-core`**. **`PieHitResolver`** for wedge taps.
 
+## Sankey (flow)
+
+Explicit-column Sankey diagram: **`SankeyChartSpec`** provides nodes with a `column` index and weighted links between node ids. Layout is planned in normalized domain space (commonly `x=0..1`, `y=0..1`) so pan/zoom reuses **`ChartViewportState`**; hit-testing supports node and link selection. **`SankeyLayoutSpec`** adds SankeyMATIC-like controls for node ordering, per-column vertical alignment, deterministic link stacking via outgoing/incoming link ordering, and optional node/link labels.
+
 ## Domain axes (not a separate chart type)
 
 **`AxisScale.Category`** and **`AxisScale.TimeEpochMillis`** work on line (and other cartesian) specs. See **`axis-category-time-cookbook.md`** and the **Domain axes** tab in **`ComposePlotApp`**.
 
 ## Samples
 
-- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → stacked bar → horizontal bar → scatter → pie → combined → domain axes.
+- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → stacked bar → horizontal bar → scatter → pie → combined → sankey → domain axes.
 - **`samples/android-showcase`** — richer demos and Roborazzi baselines (Android).

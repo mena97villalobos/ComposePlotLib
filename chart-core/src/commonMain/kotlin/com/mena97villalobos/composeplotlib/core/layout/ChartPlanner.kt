@@ -11,6 +11,7 @@ import com.mena97villalobos.composeplotlib.core.layout.planning.TickDensityReduc
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePass
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePlanner
 import com.mena97villalobos.composeplotlib.core.layout.planning.axisTickLabel
+import com.mena97villalobos.composeplotlib.core.layout.planning.ellipsizeDisplayLabel
 import com.mena97villalobos.composeplotlib.core.layout.planning.plannerFinalizeYTicksForCanvas
 import com.mena97villalobos.composeplotlib.core.layout.planning.plannerMinimumCapFromMeasuredLabelWidth
 import com.mena97villalobos.composeplotlib.core.layout.planning.toPlanningBounds
@@ -37,6 +38,11 @@ import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
+import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.SankeyColumnVerticalAlignment
+import com.mena97villalobos.composeplotlib.core.spec.SankeyLinkOrder
+import com.mena97villalobos.composeplotlib.core.spec.SankeyNodeLabelOrientation
+import com.mena97villalobos.composeplotlib.core.spec.SankeyNodeOrder
 import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
 import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
@@ -461,6 +467,604 @@ object ChartPlanner {
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = emptyList(),
                 ),
+            selection = selection,
+        )
+    }
+
+    /**
+     * Sankey chart (explicit columns): emits:
+     * - one [DrawCommand.Path] fill per link (ribbon)
+     * - one [DrawCommand.RoundRect] fill per node (column rectangle)
+     *
+     * Axes are not used; [ChartLayoutPlan.xTicks] and [ChartLayoutPlan.yTicks] stay empty.
+     */
+    fun planSankeyChart(
+        input: ChartLayoutInput,
+        spec: SankeyChartSpec,
+        selection: ChartSelection?,
+    ): SankeyChartPlan {
+        val labelScale = input.labelLayoutScale.normalizedLabelLayoutScale()
+        val bounds = input.toPlanningBounds()
+
+        val legendEntries =
+            buildLegendEntries(
+                labels = emptyList(),
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                textMeasurements = input.textMeasurements,
+                legendSpec = spec.legend,
+                labelLayoutScale = labelScale,
+            )
+        val reservedRegions =
+            buildReservedRegions(
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                xTickLabels = emptyList(),
+                yTickLabels = emptyList(),
+                legendEntries = legendEntries,
+                textMeasurements = input.textMeasurements,
+                xAxisEnabled = false,
+                yAxisEnabled = false,
+                labelLayoutScale = labelScale,
+            )
+        val plotBounds = bounds.canvasBounds.inset(reservedRegions.contentInsets)
+
+        val layout = spec.layout
+        val pad = layout.plotPaddingFraction.coerceIn(0.0, 0.45)
+        val innerLeft = pad
+        val innerRight = 1.0 - pad
+        val innerTop = pad
+        val innerBottom = 1.0 - pad
+        val innerWidth = max(innerRight - innerLeft, FpMath.EPS_SPAN)
+        val innerHeight = max(innerBottom - innerTop, FpMath.EPS_SPAN)
+
+        val nodeWidth = layout.nodeWidth.coerceIn(0.0, innerWidth)
+        val nodeGap = layout.nodeGap.coerceAtLeast(0.0)
+        val nodeCornerR = layout.nodeCornerRadius.coerceAtLeast(0.0)
+
+        val nodesById = spec.nodes.associateBy { it.id }
+        val columns: Map<Int, List<Int>> =
+            spec.nodes
+                .withIndex()
+                .groupBy({ it.value.column }, { it.index })
+                .entries
+                .sortedBy { it.key }
+                .associate { it.key to it.value }
+        val columnKeys = columns.keys.toList()
+        val maxColumnIndex = columnKeys.maxOrNull() ?: 0
+        val columnCount = (maxColumnIndex + 1).coerceAtLeast(1)
+
+        val nodeValueById: Map<String, Double> =
+            spec.nodes.associate { n ->
+                val out = spec.links.filter { it.sourceNodeId == n.id }.sumOf { it.value.coerceAtLeast(0.0) }
+                val inc = spec.links.filter { it.targetNodeId == n.id }.sumOf { it.value.coerceAtLeast(0.0) }
+                n.id to max(out, inc)
+            }
+        val nodeOutgoingById: Map<String, Double> =
+            spec.nodes.associate { n ->
+                n.id to spec.links.filter { it.sourceNodeId == n.id }.sumOf { it.value.coerceAtLeast(0.0) }
+            }
+        val nodeIncomingById: Map<String, Double> =
+            spec.nodes.associate { n ->
+                n.id to spec.links.filter { it.targetNodeId == n.id }.sumOf { it.value.coerceAtLeast(0.0) }
+            }
+        val maxColumnTotal =
+            columns.entries.maxOfOrNull { (_, nodeIdxs) ->
+                nodeIdxs.sumOf { idx -> nodeValueById[spec.nodes[idx].id] ?: 0.0 }
+            } ?: 0.0
+        val availableHeightForValues =
+            columns.entries.maxOfOrNull { (_, nodeIdxs) ->
+                val gaps = max(0, nodeIdxs.size - 1)
+                max(innerHeight - gaps * nodeGap, 0.0)
+            } ?: innerHeight
+        val valueToHeight =
+            if (maxColumnTotal > 0.0) {
+                availableHeightForValues / maxColumnTotal
+            } else {
+                0.0
+            }
+
+        data class NodeDomainBox(
+            val nodeId: String,
+            val column: Int,
+            val label: String,
+            val x0: Double,
+            val x1: Double,
+            val y0: Double,
+            val y1: Double,
+        )
+
+        val nodeBoxes = mutableListOf<NodeDomainBox>()
+        val xPositions =
+            if (columnCount == 1) {
+                doubleArrayOf(innerLeft)
+            } else {
+                DoubleArray(columnCount) { c ->
+                    val t = c.toDouble() / (columnCount - 1).toDouble()
+                    innerLeft + t * (innerWidth - nodeWidth)
+                }
+            }
+
+        fun orderedNodeIndices(
+            nodeIdxs: List<Int>,
+        ): List<Int> {
+            if (nodeIdxs.size <= 1) return nodeIdxs
+            val stableTieBreaker: (Int) -> Int = { idx -> idx }
+            return when (layout.nodeOrder) {
+                SankeyNodeOrder.Input -> nodeIdxs
+                SankeyNodeOrder.ValueDesc ->
+                    nodeIdxs.sortedWith(
+                        compareByDescending<Int> { idx -> nodeValueById[spec.nodes[idx].id] ?: 0.0 }
+                            .thenBy(stableTieBreaker),
+                    )
+
+                SankeyNodeOrder.IncomingDesc ->
+                    nodeIdxs.sortedWith(
+                        compareByDescending<Int> { idx -> nodeIncomingById[spec.nodes[idx].id] ?: 0.0 }
+                            .thenBy(stableTieBreaker),
+                    )
+
+                SankeyNodeOrder.OutgoingDesc ->
+                    nodeIdxs.sortedWith(
+                        compareByDescending<Int> { idx -> nodeOutgoingById[spec.nodes[idx].id] ?: 0.0 }
+                            .thenBy(stableTieBreaker),
+                    )
+
+                SankeyNodeOrder.LabelAsc ->
+                    nodeIdxs.sortedWith(
+                        compareBy<Int> { idx -> spec.nodes[idx].label.lowercase() }
+                            .thenBy(stableTieBreaker),
+                    )
+            }
+        }
+
+        for ((col, nodeIdxsUnordered) in columns) {
+            val nodeIdxs = orderedNodeIndices(nodeIdxsUnordered)
+            val x0 = xPositions[col.coerceIn(0, columnCount - 1)]
+            val x1 = x0 + nodeWidth
+            val gaps = max(0, nodeIdxs.size - 1)
+            val usable = max(innerHeight - gaps * nodeGap, 0.0)
+            val total = nodeIdxs.sumOf { idx -> nodeValueById[spec.nodes[idx].id] ?: 0.0 }
+            val scale =
+                when {
+                    total > 0.0 && valueToHeight > 0.0 -> valueToHeight
+                    nodeIdxs.isNotEmpty() -> usable / nodeIdxs.size.toDouble()
+                    else -> 0.0
+                }
+            val nodeHeights: List<Double> =
+                nodeIdxs.map { idx ->
+                    val n = spec.nodes[idx]
+                    val v = (nodeValueById[n.id] ?: 0.0).coerceAtLeast(0.0)
+                    if (total > 0.0 && valueToHeight > 0.0) {
+                        max(v * scale, 0.0)
+                    } else {
+                        max(scale, 0.0)
+                    }
+                }
+            val usedHeight = nodeHeights.sum() + gaps * nodeGap
+            val extraSpace = max(innerHeight - usedHeight, 0.0)
+            val effectiveGap =
+                when (layout.columnVerticalAlignment) {
+                    SankeyColumnVerticalAlignment.Justify ->
+                        if (nodeIdxs.size >= 2) {
+                            nodeGap + (extraSpace / gaps.toDouble().coerceAtLeast(1.0))
+                        } else {
+                            nodeGap
+                        }
+                    else -> nodeGap
+                }
+            val yStart =
+                when (layout.columnVerticalAlignment) {
+                    SankeyColumnVerticalAlignment.Top,
+                    SankeyColumnVerticalAlignment.Justify,
+                    -> innerTop
+                    SankeyColumnVerticalAlignment.Center -> innerTop + extraSpace / 2.0
+                    SankeyColumnVerticalAlignment.Bottom -> innerTop + extraSpace
+                }
+            var y = yStart.coerceIn(innerTop, innerBottom)
+            for ((pos, idx) in nodeIdxs.withIndex()) {
+                val n = spec.nodes[idx]
+                val h = nodeHeights[pos]
+                nodeBoxes +=
+                    NodeDomainBox(
+                        nodeId = n.id,
+                        column = n.column,
+                        label = n.label,
+                        x0 = x0,
+                        x1 = x1,
+                        y0 = y,
+                        y1 = min(y + h, innerBottom),
+                    )
+                y = min(y + h + effectiveGap, innerBottom)
+            }
+        }
+
+        val nodeBoxById = nodeBoxes.associateBy { it.nodeId }
+
+        data class LinkDomainBox(
+            val sourceNodeId: String,
+            val targetNodeId: String,
+            val value: Double,
+            val sx: Double,
+            val tx: Double,
+            val sy0: Double,
+            val sy1: Double,
+            val ty0: Double,
+            val ty1: Double,
+            val color: ChartColor,
+        )
+
+        val minTh = layout.minLinkThickness.coerceAtLeast(0.0)
+        data class IndexedLink(
+            val index: Int,
+            val link: com.mena97villalobos.composeplotlib.core.spec.SankeyLink,
+        )
+        val indexedLinks =
+            spec.links.withIndex().map { IndexedLink(it.index, it.value) }
+        val outgoingBySource: Map<String, List<IndexedLink>> =
+            indexedLinks
+                .filter { (nodeBoxById[it.link.sourceNodeId] != null) && (nodeBoxById[it.link.targetNodeId] != null) && it.link.value > 0.0 }
+                .groupBy { it.link.sourceNodeId }
+        val incomingByTarget: Map<String, List<IndexedLink>> =
+            indexedLinks
+                .filter { (nodeBoxById[it.link.sourceNodeId] != null) && (nodeBoxById[it.link.targetNodeId] != null) && it.link.value > 0.0 }
+                .groupBy { it.link.targetNodeId }
+
+        fun compareLinks(
+            order: SankeyLinkOrder,
+            a: IndexedLink,
+            b: IndexedLink,
+        ): Int {
+            val av = a.link.value.coerceAtLeast(0.0)
+            val bv = b.link.value.coerceAtLeast(0.0)
+            val at = nodeBoxById[a.link.targetNodeId]
+            val bt = nodeBoxById[b.link.targetNodeId]
+            val asrc = nodeBoxById[a.link.sourceNodeId]
+            val bsrc = nodeBoxById[b.link.sourceNodeId]
+            fun midY(box: NodeDomainBox?): Double = if (box == null) 0.0 else (box.y0 + box.y1) / 2.0
+            val primary =
+                when (order) {
+                    SankeyLinkOrder.SpecOrder -> a.index.compareTo(b.index)
+                    SankeyLinkOrder.ValueDesc -> bv.compareTo(av)
+                    SankeyLinkOrder.ValueAsc -> av.compareTo(bv)
+                    SankeyLinkOrder.TargetTopToBottom -> midY(at).compareTo(midY(bt))
+                    SankeyLinkOrder.TargetBottomToTop -> midY(bt).compareTo(midY(at))
+                    SankeyLinkOrder.SourceTopToBottom -> midY(asrc).compareTo(midY(bsrc))
+                    SankeyLinkOrder.SourceBottomToTop -> midY(bsrc).compareTo(midY(asrc))
+                }
+            return if (primary != 0) primary else a.index.compareTo(b.index)
+        }
+
+        // Allocate per-end stacking offsets in sorted adjacency order.
+        val linkThicknessByIndex = DoubleArray(spec.links.size) { i ->
+            val v = spec.links[i].value.coerceAtLeast(0.0)
+            if (v <= 0.0) 0.0 else max(v * valueToHeight, minTh)
+        }
+        val syByIndex = Array(spec.links.size) { DoubleArray(2) { 0.0 } } // [sy0, sy1]
+        val tyByIndex = Array(spec.links.size) { DoubleArray(2) { 0.0 } } // [ty0, ty1]
+
+        val outgoingOffsetByNode = mutableMapOf<String, Double>()
+        for ((nodeId, list) in outgoingBySource) {
+            val s = nodeBoxById[nodeId] ?: continue
+            val sorted = list.sortedWith { a, b -> compareLinks(layout.outgoingLinkOrder, a, b) }
+            var offset = outgoingOffsetByNode.getOrPut(nodeId) { 0.0 }
+            for (il in sorted) {
+                val th = linkThicknessByIndex[il.index]
+                if (th <= 0.0) continue
+                val y0 = min(s.y0 + offset, s.y1)
+                val y1 = min(y0 + th, s.y1)
+                syByIndex[il.index][0] = y0
+                syByIndex[il.index][1] = y1
+                offset += th
+            }
+            outgoingOffsetByNode[nodeId] = offset
+        }
+
+        val incomingOffsetByNode = mutableMapOf<String, Double>()
+        for ((nodeId, list) in incomingByTarget) {
+            val t = nodeBoxById[nodeId] ?: continue
+            val sorted = list.sortedWith { a, b -> compareLinks(layout.incomingLinkOrder, a, b) }
+            var offset = incomingOffsetByNode.getOrPut(nodeId) { 0.0 }
+            for (il in sorted) {
+                val th = linkThicknessByIndex[il.index]
+                if (th <= 0.0) continue
+                val y0 = min(t.y0 + offset, t.y1)
+                val y1 = min(y0 + th, t.y1)
+                tyByIndex[il.index][0] = y0
+                tyByIndex[il.index][1] = y1
+                offset += th
+            }
+            incomingOffsetByNode[nodeId] = offset
+        }
+
+        val linkBoxes = mutableListOf<LinkDomainBox>()
+        for ((i, link) in spec.links.withIndex()) {
+            val s = nodeBoxById[link.sourceNodeId] ?: continue
+            val t = nodeBoxById[link.targetNodeId] ?: continue
+            val v = link.value.coerceAtLeast(0.0)
+            if (v <= 0.0) continue
+            val sy0 = syByIndex[i][0]
+            val sy1 = syByIndex[i][1]
+            val ty0 = tyByIndex[i][0]
+            val ty1 = tyByIndex[i][1]
+            linkBoxes +=
+                LinkDomainBox(
+                    sourceNodeId = s.nodeId,
+                    targetNodeId = t.nodeId,
+                    value = v,
+                    sx = s.x1,
+                    tx = t.x0,
+                    sy0 = sy0,
+                    sy1 = sy1,
+                    ty0 = ty0,
+                    ty1 = ty1,
+                    color = link.color ?: layout.defaultLinkColor,
+                )
+        }
+
+        val transform = ChartTransform.forPlotBounds(input.viewport, plotBounds)
+        fun px(x: Double, y: Double): OffsetD = transform.toPixel(XyPoint(x, y))
+
+        val plannedNodes = mutableListOf<PlannedSankeyNode>()
+        val nodeCommands = mutableListOf<DrawCommand>()
+        val nodeLabelCommands = mutableListOf<DrawCommand>()
+        for (box in nodeBoxes) {
+            val topLeft = px(box.x0, box.y0)
+            val bottomRight = px(box.x1, box.y1)
+            val rect =
+                RectD(
+                    left = min(topLeft.x, bottomRight.x),
+                    top = min(topLeft.y, bottomRight.y),
+                    right = max(topLeft.x, bottomRight.x),
+                    bottom = max(topLeft.y, bottomRight.y),
+                )
+            val anchor = OffsetD((rect.left + rect.right) / 2.0, (rect.top + rect.bottom) / 2.0)
+            plannedNodes +=
+                PlannedSankeyNode(
+                    nodeId = box.nodeId,
+                    column = box.column,
+                    label = box.label,
+                    pixelBounds = rect,
+                    markerAnchor = anchor,
+                )
+            val corner =
+                min(
+                    nodeCornerR * min(plotBounds.width, plotBounds.height),
+                    min(rect.width, rect.height) / 2.0,
+                )
+            val nodeColor = nodesById[box.nodeId]?.color ?: layout.defaultNodeColor
+            nodeCommands +=
+                DrawCommand.RoundRect(
+                    bounds = rect,
+                    cornerRadius = corner,
+                    style = ShapeDrawStyle.Fill(nodeColor),
+                )
+
+            val nodeLabels = layout.nodeLabels
+            if (nodeLabels.enabled) {
+                val padPx = (nodeLabels.paddingFractionOfNodeWidth.coerceAtLeast(0.0) * rect.width).coerceAtLeast(0.0)
+                when (nodeLabels.orientation) {
+                    SankeyNodeLabelOrientation.Horizontal -> {
+                        val availW = max(rect.width - 2.0 * padPx, 0.0)
+                        val availH = max(rect.height - 2.0 * padPx, 0.0)
+                        val m = input.textMeasurements.tickLabelMetrics(box.label)
+                        val fits = m.width > 0.0 && m.height > 0.0 && m.width <= availW && m.height <= availH
+                        if (fits) {
+                            val x = (rect.left + padPx).coerceIn(plotBounds.left, plotBounds.right)
+                            val y = (rect.center.y - (m.height / 2.0)).coerceIn(plotBounds.top, plotBounds.bottom)
+                            nodeLabelCommands +=
+                                DrawCommand.Text(
+                                    text = box.label,
+                                    position = OffsetD(x, y),
+                                    color = nodeLabels.color,
+                                    firstBaselineFromTop = m.firstBaselineFromTop,
+                                )
+                        }
+                    }
+                    SankeyNodeLabelOrientation.Vertical -> {
+                        val availW = max(rect.width - 2.0 * padPx, 0.0)
+                        val availH = max(rect.height - 2.0 * padPx, 0.0)
+                        val m = input.textMeasurements.tickLabelMetrics(box.label)
+                        // Rotated -90°: text width consumes vertical space; text height consumes horizontal space.
+                        val fits = m.width > 0.0 && m.height > 0.0 && m.width <= availH && m.height <= availW
+                        if (fits) {
+                            val x = (rect.center.x - (m.width / 2.0)).coerceIn(plotBounds.left, plotBounds.right)
+                            val y = (rect.center.y - (m.height / 2.0)).coerceIn(plotBounds.top, plotBounds.bottom)
+                            nodeLabelCommands +=
+                                DrawCommand.Text(
+                                    text = box.label,
+                                    position = OffsetD(x, y),
+                                    color = nodeLabels.color,
+                                    firstBaselineFromTop = m.firstBaselineFromTop,
+                                    rotationDegrees = -90.0,
+                                )
+                        }
+                    }
+                }
+            }
+        }
+
+        fun boundsOf(points: List<OffsetD>): RectD {
+            var minX = Double.POSITIVE_INFINITY
+            var minY = Double.POSITIVE_INFINITY
+            var maxX = Double.NEGATIVE_INFINITY
+            var maxY = Double.NEGATIVE_INFINITY
+            for (p in points) {
+                minX = min(minX, p.x)
+                minY = min(minY, p.y)
+                maxX = max(maxX, p.x)
+                maxY = max(maxY, p.y)
+            }
+            if (!minX.isFinite() || !minY.isFinite() || !maxX.isFinite() || !maxY.isFinite()) {
+                return RectD(0.0, 0.0, 0.0, 0.0)
+            }
+            return RectD(minX, minY, maxX, maxY)
+        }
+
+        val plannedLinks = mutableListOf<PlannedSankeyLink>()
+        val linkCommands = mutableListOf<DrawCommand>()
+        val linkLabelCommands = mutableListOf<DrawCommand>()
+        val curvature = layout.linkCurvature.coerceIn(0.0, 1.0)
+        for (l in linkBoxes) {
+            val sxTop = px(l.sx, l.sy0)
+            val sxBottom = px(l.sx, l.sy1)
+            val txTop = px(l.tx, l.ty0)
+            val txBottom = px(l.tx, l.ty1)
+            val dx = txTop.x - sxTop.x
+            val c1x = sxTop.x + dx * curvature
+            val c2x = txTop.x - dx * curvature
+            val cTop1 = OffsetD(c1x, sxTop.y)
+            val cTop2 = OffsetD(c2x, txTop.y)
+            val cBot1 = OffsetD(c2x, txBottom.y)
+            val cBot2 = OffsetD(c1x, sxBottom.y)
+            val polygon =
+                listOf(
+                    sxTop,
+                    cTop1,
+                    cTop2,
+                    txTop,
+                    txBottom,
+                    cBot1,
+                    cBot2,
+                    sxBottom,
+                )
+            val segments =
+                listOf(
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.MoveTo(sxTop),
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.CubicTo(cTop1, cTop2, txTop),
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.LineTo(txBottom),
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.CubicTo(cBot1, cBot2, sxBottom),
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.Close,
+                )
+            linkCommands +=
+                DrawCommand.Path(
+                    segments = segments,
+                    style = com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle.Fill(l.color),
+                )
+            val bb = boundsOf(listOf(sxTop, cTop1, cTop2, txTop, txBottom, cBot1, cBot2, sxBottom))
+            val anchor = OffsetD((sxTop.x + txTop.x) / 2.0, (sxTop.y + sxBottom.y + txTop.y + txBottom.y) / 4.0)
+            plannedLinks +=
+                PlannedSankeyLink(
+                    sourceNodeId = l.sourceNodeId,
+                    targetNodeId = l.targetNodeId,
+                    value = l.value,
+                    pixelBounds = bb,
+                    pixelPolygon = polygon,
+                    markerAnchor = anchor,
+                )
+
+            val linkLabels = layout.linkLabels
+            if (linkLabels.enabled) {
+                val sLabel = nodesById[l.sourceNodeId]?.label ?: l.sourceNodeId
+                val tLabel = nodesById[l.targetNodeId]?.label ?: l.targetNodeId
+                val rawText = linkLabels.formatter(sLabel, tLabel, l.value)
+                val m = input.textMeasurements.tickLabelMetrics(rawText)
+                // All-or-nothing: if the full label doesn't fit inside the link's pixel bounds, don't draw it.
+                val fits = m.width > 0.0 && m.height > 0.0 && m.width <= bb.width && m.height <= bb.height
+                if (fits) {
+                    val x = anchor.x - m.width / 2.0
+                    val y = anchor.y - m.height / 2.0
+                    val alpha = linkLabels.alpha.coerceIn(0.0, 1.0)
+                    linkLabelCommands +=
+                        DrawCommand.Group(
+                            alpha = alpha,
+                            children =
+                                listOf(
+                                    DrawCommand.Text(
+                                        text = rawText,
+                                        position = OffsetD(x, y),
+                                        color = linkLabels.color,
+                                        firstBaselineFromTop = m.firstBaselineFromTop,
+                                    ),
+                                ),
+                        )
+                }
+            }
+        }
+
+        val basePlotCommands = mutableListOf<DrawCommand>()
+        if (layout.linksBehindNodes) {
+            basePlotCommands += linkCommands
+            basePlotCommands += linkLabelCommands
+            basePlotCommands += nodeCommands
+            basePlotCommands += nodeLabelCommands
+        } else {
+            basePlotCommands += nodeCommands
+            basePlotCommands += nodeLabelCommands
+            basePlotCommands += linkCommands
+            basePlotCommands += linkLabelCommands
+        }
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (selection != null && selection.target.seriesId == spec.id) {
+            // SankeyMATIC-like focus: dim the full diagram when something is selected.
+            plotCommands += DrawCommand.Group(alpha = 0.55, children = basePlotCommands)
+        } else {
+            plotCommands += basePlotCommands
+        }
+
+        // Selection overlay: draw an alpha highlight over the matching node/link.
+        if (selection != null && selection.target.seriesId == spec.id) {
+            val layer = selection.target.layerId
+            val idx = selection.target.pointIndex
+            val highlight =
+                when (layer) {
+                    com.mena97villalobos.composeplotlib.core.selection.SankeyHitResolver.LayerNode ->
+                        plannedNodes.getOrNull(idx)?.let { n ->
+                            DrawCommand.Group(
+                                alpha = 0.35,
+                                children =
+                                    listOf(
+                                        DrawCommand.RoundRect(
+                                            bounds = n.pixelBounds,
+                                            cornerRadius = min(n.pixelBounds.width, n.pixelBounds.height) / 6.0,
+                                            style = ShapeDrawStyle.Fill(spec.selectionStyle.pointColor),
+                                        ),
+                                    ),
+                            )
+                        }
+
+                    com.mena97villalobos.composeplotlib.core.selection.SankeyHitResolver.LayerLink ->
+                        plannedLinks.getOrNull(idx)?.let { l ->
+                            val sx = l.pixelPolygon.firstOrNull() ?: return@let null
+                            val ex = l.pixelPolygon.getOrNull(3) ?: sx
+                            val anchorY = l.markerAnchor.y
+                            // Recreate a stroke highlight along the centerline for readability.
+                            DrawCommand.Path(
+                                segments =
+                                    listOf(
+                                        com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.MoveTo(OffsetD(sx.x, anchorY)),
+                                        com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.LineTo(OffsetD(ex.x, anchorY)),
+                                    ),
+                                style =
+                                    com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle.Stroke(
+                                        color = spec.selectionStyle.pointColor,
+                                        strokeWidth = 3.0,
+                                    ),
+                            )
+                        }
+
+                    else -> null
+                }
+            if (highlight != null) {
+                plotCommands += highlight
+            }
+        }
+
+        return SankeyChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = reservedRegions,
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = legendEntries,
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = emptyList(),
+                ),
+            nodes = plannedNodes,
+            links = plannedLinks,
             selection = selection,
         )
     }

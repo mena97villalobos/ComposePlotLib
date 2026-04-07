@@ -56,6 +56,10 @@ sealed interface DrawCommand {
         /** When true, the Compose renderer uses pie slice label typography instead of axis labels. */
         val isPieSliceLabel: Boolean = false,
         val firstBaselineFromTop: Double? = null,
+        /** Rotation in degrees, applied by the host renderer around [rotationPivot] (or a host default). */
+        val rotationDegrees: Double = 0.0,
+        /** Optional pivot point in pixel space for [rotationDegrees]. When null, hosts may rotate around text center. */
+        val rotationPivot: OffsetD? = null,
     ) : DrawCommand
 
     /**
