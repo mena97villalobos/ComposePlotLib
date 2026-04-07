@@ -54,6 +54,8 @@ import com.mena97villalobos.composeplotlib.core.spec.LineStyle
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieSliceLabelsSpec
 import com.mena97villalobos.composeplotlib.core.spec.PointStyle
+import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.RadarSeries
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.StackedBarChartSpec
 
@@ -80,6 +82,7 @@ fun ComposePlotApp() {
         val horizontalBarSpec = remember(palette) { previewHorizontalBarChartSpec().withMaterialGroupColors(palette) }
         val scatterSpec = remember(palette) { previewScatterChartSpec().withMaterialScatterSeriesColors(palette) }
         val pieSpec = remember { previewPieChartSpec() }
+        val radarSpec = remember { previewRadarChartSpec() }
         val combinedSpec = remember { previewCombinedCartesianSpec() }
         val lineViewport = rememberChartViewportState(initialViewport = defaultViewport(lineSpecVariantA))
         val barViewport = rememberChartViewportState(initialViewport = defaultViewport(barSpec))
@@ -88,6 +91,7 @@ fun ComposePlotApp() {
         val horizontalBarViewport = rememberChartViewportState(initialViewport = defaultViewport(horizontalBarSpec))
         val scatterViewport = rememberChartViewportState(initialViewport = defaultViewport(scatterSpec))
         val pieViewport = rememberChartViewportState(initialViewport = defaultViewport(pieSpec))
+        val radarViewport = rememberChartViewportState(initialViewport = defaultViewport(radarSpec))
         val combinedViewport = rememberChartViewportState(initialViewport = defaultViewport(combinedSpec))
         val domainCategorySpec = remember { previewCategoryAxisLineSpec() }
         val domainLongCategorySpec = remember { previewLongCategoryAxisLineSpec() }
@@ -106,6 +110,7 @@ fun ComposePlotApp() {
         val horizontalBarSelection = rememberChartSelectionState()
         val scatterSelection = rememberChartSelectionState()
         val pieSelection = rememberChartSelectionState()
+        val radarSelection = rememberChartSelectionState()
         val combinedSelection = rememberChartSelectionState()
         val domainCategorySelection = rememberChartSelectionState()
         val domainLongCategorySelection = rememberChartSelectionState()
@@ -127,7 +132,7 @@ fun ComposePlotApp() {
             Text(
                 text =
                     "Shared host: line, bar, stacked bar, horizontal bar, scatter (cartesian), pie/donut (radial), " +
-                        "combined (bar + dual-axis line), sankey (flow), and domain axes (category + time). Android showcase adds richer demos.",
+                        "radar/spider (radial), combined (bar + dual-axis line), sankey (flow), and domain axes (category + time). Android showcase adds richer demos.",
                 style = MaterialTheme.typography.bodyLarge,
             )
             OutlinedButton(
@@ -139,7 +144,8 @@ fun ComposePlotApp() {
                             PreviewScreen.StackedBar -> PreviewScreen.HorizontalBar
                             PreviewScreen.HorizontalBar -> PreviewScreen.Scatter
                             PreviewScreen.Scatter -> PreviewScreen.Pie
-                            PreviewScreen.Pie -> PreviewScreen.Combined
+                            PreviewScreen.Pie -> PreviewScreen.Radar
+                            PreviewScreen.Radar -> PreviewScreen.Combined
                             PreviewScreen.Combined -> PreviewScreen.Sankey
                             PreviewScreen.Sankey -> PreviewScreen.DomainAxes
                             PreviewScreen.DomainAxes -> PreviewScreen.Line
@@ -154,7 +160,8 @@ fun ComposePlotApp() {
                         PreviewScreen.StackedBar -> "Switch to Horizontal Bar Preview"
                         PreviewScreen.HorizontalBar -> "Switch to Scatter Preview"
                         PreviewScreen.Scatter -> "Switch to Pie Preview"
-                        PreviewScreen.Pie -> "Switch to Combined Preview"
+                        PreviewScreen.Pie -> "Switch to Radar Preview"
+                        PreviewScreen.Radar -> "Switch to Combined Preview"
                         PreviewScreen.Combined -> "Switch to Sankey Preview"
                         PreviewScreen.Sankey -> "Switch to Domain Axes Preview"
                         PreviewScreen.DomainAxes -> "Switch to Line Preview"
@@ -439,6 +446,31 @@ fun ComposePlotApp() {
                     )
                 }
 
+                PreviewScreen.Radar -> {
+                    RadarChart(
+                        spec = radarSpec,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(320.dp)
+                                .padding(top = 8.dp),
+                        viewportState = radarViewport,
+                        selectionState = radarSelection,
+                        marker = { markerData -> DefaultChartMarker(markerData) },
+                    )
+                    Text(
+                        text =
+                            radarSelection.selection?.let { sel ->
+                                val series = radarSpec.series.firstOrNull { it.id == sel.target.seriesId }
+                                val axis = radarSpec.axes.getOrNull(sel.target.pointIndex)
+                                val label = series?.label ?: sel.target.seriesId
+                                axis?.let { "Selected $label: ${radarSpec.axisValueFormatter(it, sel.target.point.y)}" }
+                                    ?: "Selected $label"
+                            } ?: "Tap a vertex to select.",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+
                 PreviewScreen.DomainAxes -> {
                     Column(
                         modifier =
@@ -512,6 +544,31 @@ private fun previewPieChartSpec(): PieChartSpec =
         holeRadiusRatio = 0.35,
         sliceGapDegrees = 2.0,
         sliceLabels = PieSliceLabelsSpec(enabled = true, labelColor = ChartColor.Black),
+    )
+
+private fun previewRadarChartSpec(): RadarChartSpec =
+    RadarChartSpec(
+        id = "demo_radar",
+        axes = listOf("Speed", "Quality", "Cost", "Reliability", "UX", "Support"),
+        series =
+            listOf(
+                RadarSeries(
+                    id = "current",
+                    label = "Current",
+                    values = listOf(6.0, 7.0, 5.0, 6.5, 7.5, 6.0),
+                    lineStyle = LineStyle(color = ChartColor.Blue, strokeWidth = 2.5),
+                    pointStyle = PointStyle(visible = true, radius = 4.0, color = ChartColor.Blue),
+                    fillColor = ChartColor(0x331565C0L),
+                ),
+                RadarSeries(
+                    id = "target",
+                    label = "Target",
+                    values = listOf(8.0, 8.5, 6.0, 8.0, 9.0, 8.5),
+                    lineStyle = LineStyle(color = ChartColor.Green, strokeWidth = 2.5),
+                    pointStyle = PointStyle(visible = true, radius = 4.0, color = ChartColor.Green),
+                    fillColor = ChartColor(0x332E7D32L),
+                ),
+            ),
     )
 
 private fun previewLineChartSpec(): LineChartSpec =
@@ -860,6 +917,7 @@ private enum class PreviewScreen {
     HorizontalBar,
     Scatter,
     Pie,
+    Radar,
     Combined,
     Sankey,
     DomainAxes,

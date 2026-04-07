@@ -17,6 +17,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.marker.buildBarMarkerD
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildCombinedMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildLineMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildPieMarkerData
+import com.mena97villalobos.composeplotlib.chart.internal.marker.buildRadarMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildScatterMarkerData
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
@@ -27,6 +28,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import kotlin.math.roundToInt
@@ -129,6 +131,61 @@ internal fun Modifier.pieChartAccessibility(
                 val selection = selectionState.selection
                 if (selection != null) {
                     val data = buildPieMarkerData(spec, selection)
+                    if (data != null) {
+                        stateDescription = data.accessibilitySummaryText()
+                    }
+                }
+            }
+            if (customAccessibilityActions.isNotEmpty()) {
+                customActions =
+                    customAccessibilityActions.map { a ->
+                        CustomAccessibilityAction(a.label) {
+                            a.onClick()
+                            true
+                        }
+                    }
+            }
+        }
+    return this
+        .focusable(enabled = wantsFocus)
+        .then(semanticsModifier)
+}
+
+/** Adds TalkBack / VoiceOver content, optional custom actions, focus, and an Image role for radar / spider charts. */
+internal fun Modifier.radarChartAccessibility(
+    spec: RadarChartSpec,
+    selectionState: ChartSelectionState,
+    emptyStateDescription: String? = null,
+    customAccessibilityActions: List<ChartCustomAccessibilityAction> = emptyList(),
+): Modifier {
+    val wantsFocus =
+        spec.accessibility.requestFocusForAccessibility ||
+            spec.accessibility.keyboardViewportNudgeEnabled ||
+            spec.accessibility.keyboardSelectionRoamEnabled ||
+            spec.accessibility.requestFocusOnMarker
+    val mergeDescendants = !spec.accessibility.requestFocusOnMarker
+    val semanticsModifier =
+        Modifier.semantics(mergeDescendants = mergeDescendants) {
+            role = Role.Image
+            val summary =
+                spec.accessibility.contentDescription
+                    ?: defaultRadarChartSemanticSummary(spec)
+            val noData = spec.series.isEmpty() || spec.axes.isEmpty()
+            contentDescription =
+                if (noData) {
+                    emptyStateDescription ?: "$summary $ACCESSIBILITY_NO_DATA_SUFFIX"
+                } else {
+                    summary
+                }
+            if (spec.accessibility.exposeSelectionState) {
+                when (spec.accessibility.selectionLiveRegionMode) {
+                    ChartLiveRegionMode.Off -> Unit
+                    ChartLiveRegionMode.Polite -> liveRegion = LiveRegionMode.Polite
+                    ChartLiveRegionMode.Assertive -> liveRegion = LiveRegionMode.Assertive
+                }
+                val selection = selectionState.selection
+                if (selection != null) {
+                    val data = buildRadarMarkerData(spec, selection)
                     if (data != null) {
                         stateDescription = data.accessibilitySummaryText()
                     }
@@ -409,6 +466,19 @@ private fun defaultPieChartSemanticSummary(spec: PieChartSpec): String =
                 val rk = selectionRoamHint(spec.accessibility)
                 "Pie chart. Slices: $names. Tap a slice to select.$mf$rk"
             }
+        }
+    }
+
+private fun defaultRadarChartSemanticSummary(spec: RadarChartSpec): String =
+    when {
+        spec.axes.isEmpty() -> "Radar chart with no axes."
+        spec.series.isEmpty() -> "Radar chart with no series."
+        else -> {
+            val axes = spec.axes.joinToString()
+            val series = spec.series.joinToString { it.label }
+            val mf = markerFocusHint(spec.accessibility.requestFocusOnMarker)
+            val rk = selectionRoamHint(spec.accessibility)
+            "Radar chart. Axes: $axes. Series: $series. Tap a vertex to select.$mf$rk"
         }
     }
 

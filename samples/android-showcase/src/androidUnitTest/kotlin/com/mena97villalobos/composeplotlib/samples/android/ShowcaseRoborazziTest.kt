@@ -21,6 +21,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChart
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 import org.junit.Rule
@@ -274,6 +275,18 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     PieChartShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun radarChartShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    RadarChartShowcaseScreen()
                 }
             }
         }

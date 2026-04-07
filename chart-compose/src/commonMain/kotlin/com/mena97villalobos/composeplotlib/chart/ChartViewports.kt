@@ -10,6 +10,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.math.abs
@@ -59,6 +60,17 @@ fun defaultViewport(spec: ScatterChartSpec): ChartViewport {
  * Present so [ChartLayoutInput] and measurement passes stay aligned with other families.
  */
 fun defaultViewport(spec: PieChartSpec): ChartViewport {
+    return ChartViewport(
+        xRange = ClosedRangeD(0.0, 1.0),
+        yRange = ClosedRangeD(0.0, 1.0),
+    )
+}
+
+/**
+ * Dummy [ChartViewport] for radar/spider charts (radial; pan/zoom are normally disabled via [ChartGestureConfig]).
+ * Present so [ChartLayoutInput] and measurement passes stay aligned with other families.
+ */
+fun defaultViewport(spec: RadarChartSpec): ChartViewport {
     return ChartViewport(
         xRange = ClosedRangeD(0.0, 1.0),
         yRange = ClosedRangeD(0.0, 1.0),

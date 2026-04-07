@@ -85,7 +85,7 @@ It currently contains:
 `chart-compose` is the public Compose-facing module.
 
 It currently contains:
-- public chart composables: `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`, `SankeyChart`
+- public chart composables: `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`
 - public state types: `ChartViewportState`, `ChartSelectionState`
 - helpers: default viewport, gesture config (**`ChartGestureConfig`** + companion presets for hosts / iOS QA), markers + **`ChartMarkerPlacement`** / **`ChartMarkerCalloutLeader`**, no-data, **`ChartAnimationPolicy`** (opt-in programmatic viewport easing, optional gesture chase, marker highlight fade in/out on selection / clear, optional **`LineChart`** data morph), **`MaterialChartPalette`** / **`withMaterialSeriesColors`**-style helpers (`materialChartPalette()`, `Color.toChartColor()`), custom accessibility actions
 - internal gesture adapter, fling runtime, accessibility semantics (including optional **marker focus handoff** when `ChartAccessibilitySpec.requestFocusOnMarker` is set on a spec, and optional **Shift+arrow selection roam** when `keyboardSelectionRoamEnabled` is set)
@@ -96,7 +96,7 @@ This module is allowed to depend on Compose types, pointer input, text measureme
 
 ## Host Modules
 ### `composeApp`
-This is the thin shared app host. It should remain a lightweight way to preview the current milestone. It runs **`ComposePlotApp()`**, which **must** cycle **line, bar, stacked bar, horizontal bar, scatter, pie, combined, and domain axes** previews on Android and iOS (see **`AGENTS.md` → Obligations** when adding chart families). **`samples/android-showcase`** adds richer demos and Roborazzi.
+This is the thin shared app host. It should remain a lightweight way to preview the current milestone. It runs **`ComposePlotApp()`**, which **must** cycle **line, bar, stacked bar, horizontal bar, scatter, pie, radar, combined, sankey, and domain axes** previews on Android and iOS (see **`AGENTS.md` → Obligations** when adding chart families). **`samples/android-showcase`** adds richer demos and Roborazzi.
 
 ### `samples/android-showcase`
 This is the main demo surface and should be treated as the visual verification app.
@@ -104,7 +104,7 @@ This is the main demo surface and should be treated as the visual verification a
 It currently contains:
 - sample data providers
 - dedicated chart showcase screens
-- a small host that can switch between **line**, **bar**, **stacked bar**, **horizontal bar**, **scatter**, **pie**, and **domain axes** demos
+- a small host that can switch between **line**, **bar**, **scatter**, **pie**, **radar**, **combined**, **sankey**, and **domain axes** demos
 - Android **Roborazzi** screenshot tests for regression detection (`verifyRoborazziDebug`)
 
 ## Current Rendering Pipeline

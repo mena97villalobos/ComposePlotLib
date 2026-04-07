@@ -6,6 +6,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.PolylineRectClip
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.draw.ShapeDrawStyle
+import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
 import com.mena97villalobos.composeplotlib.core.layout.planning.CartesianLayoutPlanner
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickDensityReducer
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePass
@@ -35,6 +36,7 @@ import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
@@ -466,6 +468,237 @@ object ChartPlanner {
                     legendEntries = legendEntries,
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = emptyList(),
+                ),
+            selection = selection,
+        )
+    }
+
+    /**
+     * Radar / spider chart: polygon grid (rings) + spokes + series polygons.
+     *
+     * Axes are not cartesian; [ChartLayoutPlan.xTicks] and [ChartLayoutPlan.yTicks] stay empty and there is no
+     * cartesian axis chrome. Category labels are emitted as [DrawCommand.Text] near the outer vertices.
+     */
+    fun planRadarChart(
+        input: ChartLayoutInput,
+        spec: RadarChartSpec,
+        selection: ChartSelection?,
+    ): RadarChartPlan {
+        val labelScale = input.labelLayoutScale.normalizedLabelLayoutScale()
+        val bounds = input.toPlanningBounds()
+
+        val legendEntries =
+            buildLegendEntries(
+                labels = spec.series.map { it.label to it.lineStyle.color },
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                textMeasurements = input.textMeasurements,
+                legendSpec = spec.legend,
+                labelLayoutScale = labelScale,
+            )
+        val reservedRegions =
+            buildReservedRegions(
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                xTickLabels = emptyList(),
+                yTickLabels = emptyList(),
+                legendEntries = legendEntries,
+                textMeasurements = input.textMeasurements,
+                xAxisEnabled = false,
+                yAxisEnabled = false,
+                labelLayoutScale = labelScale,
+            )
+        val plotBounds = bounds.canvasBounds.inset(reservedRegions.contentInsets)
+        val radial = PieChartLayoutMath.layout(plotBounds, holeRadiusRatio = null)
+        val axisCount = spec.axes.size
+        val angles = RadarChartLayoutMath.spokeAnglesDegrees(axisCount, spec.startAngleDegrees)
+
+        // Auto radial range from all series values.
+        val all = buildList {
+            for (s in spec.series) {
+                // Only consider values aligned to the axes list.
+                if (s.values.size != axisCount) continue
+                for (v in s.values) if (v.isFinite()) add(v)
+            }
+        }
+        val minV0 = all.minOrNull() ?: 0.0
+        val maxV0 = all.maxOrNull() ?: 1.0
+        val minV = min(0.0, minV0)
+        val maxV =
+            when {
+                maxV0 == minV -> minV + FpMath.DEFAULT_DEGENERATE_PAD
+                else -> maxV0
+            }
+        val span = max(maxV - minV, FpMath.EPS_SPAN)
+
+        fun valueToRadiusPx(v: Double): Double {
+            val safe = if (v.isFinite()) v else minV
+            val t = ((safe - minV) / span).coerceIn(0.0, 1.0)
+            return radial.outerRadius * t
+        }
+
+        fun polygonPointsForRadius(radiusPx: Double): List<OffsetD> =
+            List(axisCount) { i -> RadarChartLayoutMath.polarToPixel(radial.center, radiusPx, angles[i]) }
+
+        val plotCommands = mutableListOf<DrawCommand>()
+
+        // Grid first (behind series).
+        val grid = spec.grid
+        if (grid.enabled && axisCount >= 3 && radial.outerRadius > 0.0) {
+            val rings = grid.ringCount.coerceAtLeast(0)
+            if (rings > 0) {
+                for (ri in 1..rings) {
+                    val r = radial.outerRadius * (ri.toDouble() / rings.toDouble())
+                    val ringPoints = polygonPointsForRadius(r)
+                    val segments =
+                        buildList<PathSegment>(ringPoints.size + 2) {
+                            add(PathSegment.MoveTo(ringPoints.first()))
+                            for (i in 1 until ringPoints.size) add(PathSegment.LineTo(ringPoints[i]))
+                            add(PathSegment.Close)
+                        }
+                    plotCommands +=
+                        DrawCommand.Path(
+                            segments = segments,
+                            style =
+                                com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle.Stroke(
+                                    color = grid.ringLineStyle.color,
+                                    strokeWidth = grid.ringLineStyle.strokeWidth,
+                                    strokeStyle = grid.ringLineStyle.strokeStyle,
+                                ),
+                        )
+                }
+            }
+            if (grid.showSpokes) {
+                for (i in 0 until axisCount) {
+                    val end = RadarChartLayoutMath.polarToPixel(radial.center, radial.outerRadius, angles[i])
+                    plotCommands +=
+                        DrawCommand.Line(
+                            start = radial.center,
+                            end = end,
+                            color = grid.spokeLineStyle.color,
+                            strokeWidth = grid.spokeLineStyle.strokeWidth,
+                            strokeStyle = grid.spokeLineStyle.strokeStyle,
+                        )
+                }
+            }
+        }
+
+        // Series polygons.
+        if (axisCount >= 3 && radial.outerRadius > 0.0) {
+            for (s in spec.series) {
+                if (s.values.size != axisCount) continue
+                val pts =
+                    List(axisCount) { i ->
+                        RadarChartLayoutMath.polarToPixel(
+                            center = radial.center,
+                            radiusPx = valueToRadiusPx(s.values[i]),
+                            angleDegrees = angles[i],
+                        )
+                    }
+                val segments =
+                    buildList<PathSegment>(pts.size + 2) {
+                        add(PathSegment.MoveTo(pts.first()))
+                        for (i in 1 until pts.size) add(PathSegment.LineTo(pts[i]))
+                        add(PathSegment.Close)
+                    }
+                if (s.fillColor != null) {
+                    plotCommands +=
+                        DrawCommand.Path(
+                            segments = segments,
+                            style = com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle.Fill(s.fillColor),
+                        )
+                }
+                plotCommands +=
+                    DrawCommand.Path(
+                        segments = segments,
+                        style =
+                            com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle.Stroke(
+                                color = s.lineStyle.color,
+                                strokeWidth = s.lineStyle.strokeWidth,
+                            ),
+                    )
+
+                if (s.pointStyle.visible) {
+                    val r = s.pointStyle.radius.coerceAtLeast(0.0)
+                    val c = s.pointStyle.color ?: s.lineStyle.color
+                    plotCommands +=
+                        pts.map { p ->
+                            DrawCommand.Circle(
+                                center = p,
+                                radius = r,
+                                color = c,
+                            )
+                        }
+                }
+            }
+        }
+
+        // Selection overlay: emphasize the selected vertex.
+        if (selection != null) {
+            val selSeriesId = selection.target.seriesId
+            val axisIndex = selection.target.pointIndex
+            val series = spec.series.firstOrNull { it.id == selSeriesId }
+            if (series != null && series.values.size == axisCount && axisIndex in 0 until axisCount) {
+                val px =
+                    RadarChartLayoutMath.polarToPixel(
+                        center = radial.center,
+                        radiusPx = valueToRadiusPx(series.values[axisIndex]),
+                        angleDegrees = angles[axisIndex],
+                    )
+                plotCommands +=
+                    DrawCommand.Circle(
+                        center = px,
+                        radius = spec.selectionStyle.pointRadius,
+                        color = spec.selectionStyle.pointColor,
+                    )
+            }
+        }
+
+        // Axis labels: simple quadrant-based placement near outer vertices.
+        val overlayCommands = mutableListOf<DrawCommand>()
+        if (grid.showAxisLabels && axisCount >= 3 && radial.outerRadius > 0.0) {
+            val pad = 8.0 * labelScale
+            for (i in 0 until axisCount) {
+                val label = spec.axes[i]
+                val m = input.textMeasurements.tickLabelMetrics(label)
+                if (m.width <= 0.0 || m.height <= 0.0) continue
+                val rim = RadarChartLayoutMath.polarToPixel(radial.center, radial.outerRadius + pad, angles[i])
+                // Use the direction vector (from center to rim) to decide anchoring.
+                val dx = rim.x - radial.center.x
+                val dy = rim.y - radial.center.y
+                val left =
+                    if (dx >= 0.0) {
+                        rim.x
+                    } else {
+                        rim.x - m.width
+                    }
+                val top =
+                    if (dy >= 0.0) {
+                        rim.y
+                    } else {
+                        rim.y - m.height
+                    }
+                overlayCommands +=
+                    DrawCommand.Text(
+                        text = label,
+                        position = OffsetD(left, top),
+                        color = spec.axisLabelStyle.color,
+                        firstBaselineFromTop = m.firstBaselineFromTop,
+                    )
+            }
+        }
+
+        return RadarChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = reservedRegions,
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = legendEntries,
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
                 ),
             selection = selection,
         )

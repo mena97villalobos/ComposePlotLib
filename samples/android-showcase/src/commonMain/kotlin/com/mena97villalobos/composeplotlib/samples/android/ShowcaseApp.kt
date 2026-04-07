@@ -29,6 +29,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChart
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 
@@ -68,7 +69,7 @@ fun ShowcaseApp() {
                                 .fillMaxSize()
                                 .semantics {
                                     contentDescription =
-                                        "ComposePlotLib showcase home. Open line, bar, scatter, pie, combined, sankey, or domain-axis demos."
+                                        "ComposePlotLib showcase home. Open line, bar, scatter, pie, radar, combined, sankey, or domain-axis demos."
                                 },
                         onOpenDestination = { destination = it },
                     )
@@ -87,6 +88,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Pie ->
                     Column(detailModifier) {
                         PieChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Radar ->
+                    Column(detailModifier) {
+                        RadarChartShowcaseScreen()
                     }
                 ShowcaseDestination.Combined ->
                     Column(detailModifier) {
@@ -147,6 +152,12 @@ private fun ShowcaseHomeScreen(
             Text("Pie chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Radar) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Radar chart")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.Combined) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -173,6 +184,7 @@ private enum class ShowcaseDestination(val title: String) {
     Bar("Bar chart"),
     Scatter("Scatter chart"),
     Pie("Pie chart"),
+    Radar("Radar chart"),
     Combined("Combined chart"),
     Sankey("Sankey chart"),
     DomainAxes("Domain axes"),

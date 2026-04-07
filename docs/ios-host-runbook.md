@@ -1,6 +1,6 @@
 # iOS host runbook (ComposePlotLib)
 
-This runbook validates the shared milestone UI (`ComposePlotApp` in `chart-compose` via `composeApp`) on an iOS simulator or device. **`ComposePlotApp` cycles line → bar → scatter → pie → combined → domain axes** (button). Shared KMP code paths are covered by the iOS compile tasks below. **`samples/android-showcase`** adds richer demos and Roborazzi (still Android-focused).
+This runbook validates the shared milestone UI (`ComposePlotApp` in `chart-compose` via `composeApp`) on an iOS simulator or device. **`ComposePlotApp` cycles line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → domain axes** (button). Shared KMP code paths are covered by the iOS compile tasks below. **`samples/android-showcase`** adds richer demos and Roborazzi (still Android-focused).
 
 **Integrating charts in your own KMP+iOS app** (framework wiring, `ComposeUIViewController`, SwiftUI bridge): **[`ios-library-usage.md`](ios-library-usage.md)**.
 
@@ -49,11 +49,15 @@ On simulator or device, exercise `ComposePlotApp`:
 
 1. **Line screen**: pinch zoom and two-finger pan; tap to select a point; confirm marker and subtitle update; **double-tap inside the plot zooms in** (`ChartGestureConfig.cartesianInteractive()` — match this preset in your own app when comparing behavior).
 2. **Bar screen**: same gestures; tap bars (including overlapping series); confirm marker and subtitle.
-3. **Scatter screen**: switch until the scatter preview appears; pinch/pan; tap to select a point; confirm marker and subtitle.
-4. **Pie screen**: tap-to-select; pan/pinch inactive by default.
-5. **Combined screen**: bar + dual-axis line overlay; tap bars or line (top layer wins); pinch/pan on primary viewport.
-6. **Domain axes**: category and time line demos render and accept gestures.
-7. **Switch** through the full cycle back to line; confirm no crash and state feels reasonable when returning to a screen.
+3. **Stacked bar screen**: tap a stacked segment; confirm marker and subtitle.
+4. **Horizontal bar screen**: tap a horizontal bar; confirm marker and subtitle.
+5. **Scatter screen**: switch until the scatter preview appears; pinch/pan; tap to select a point; confirm marker and subtitle.
+6. **Pie screen**: tap-to-select; pan/pinch inactive by default.
+7. **Radar screen**: tap a vertex to select; confirm marker and subtitle.
+8. **Combined screen**: bar + dual-axis line overlay; tap bars or line (top layer wins); pinch/pan on primary viewport.
+9. **Sankey screen**: tap nodes or links; pinch/pan when enabled.
+10. **Domain axes**: category and time line demos render and accept gestures.
+11. **Switch** through the full cycle back to line; confirm no crash and state feels reasonable when returning to a screen.
 
 When adding a **new chart family**, extend **`ComposePlotApp`** and this checklist (**`AGENTS.md` → Obligations**).
 

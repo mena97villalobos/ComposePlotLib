@@ -12,6 +12,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import kotlin.math.round
 
@@ -73,6 +74,27 @@ internal fun buildPieMarkerData(
         yLabel = "value=${slice.value}",
         valueLabel = valueLabel,
         accessibilitySummary = "Selected ${slice.label}. $valueLabel. $pctLabel of chart.",
+    )
+}
+
+/** Builds [ChartMarkerData] for the selected radar vertex. */
+internal fun buildRadarMarkerData(
+    spec: RadarChartSpec,
+    selection: ChartSelection,
+): ChartMarkerData? {
+    val series = spec.series.firstOrNull { it.id == selection.target.seriesId } ?: return null
+    val axisIndex = selection.target.pointIndex
+    val axisLabel = spec.axes.getOrNull(axisIndex) ?: return null
+    val value = selection.target.point.y
+    val valueLabel = spec.axisValueFormatter(axisLabel, value)
+    return ChartMarkerData(
+        selection = selection,
+        seriesId = series.id,
+        seriesLabel = series.label,
+        xLabel = axisLabel,
+        yLabel = "",
+        valueLabel = valueLabel,
+        accessibilitySummary = "Selected ${series.label}, $axisLabel. $valueLabel.",
     )
 }
 
