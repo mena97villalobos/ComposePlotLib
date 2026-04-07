@@ -7,7 +7,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBindi
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 
 /**
- * Hit-test payload per layer (draw order: [segmentsDrawOrder] is bottom → top for bars).
+ * Hit-test payload per layer (draw order: `segmentsDrawOrder` is bottom → top for bars).
  */
 sealed class CombinedHitTestLayer {
     abstract val layerId: String
@@ -35,7 +35,7 @@ sealed class CombinedHitTestLayer {
 /**
  * Plan for [com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec].
  *
- * Secondary Y tick geometry lives in [yTicksSecondary] (drawn after primary overlay); [layout.yTicks] stays primary.
+ * Secondary Y tick geometry lives in [yTicksSecondary] (drawn after primary overlay); `layout.yTicks` stays primary.
  */
 data class CombinedCartesianChartPlan(
     val layout: ChartLayoutPlan,

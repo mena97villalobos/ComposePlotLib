@@ -10,6 +10,7 @@ plugins {
 dokka {
     dokkaPublications.html {
         moduleName.set("chart-core")
+        failOnWarning.set(false)
     }
 }
 

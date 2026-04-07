@@ -4,7 +4,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import kotlin.math.min
 
-/** Center, outer radius, and optional inner radius (donut) for a pie laid out in [plotBounds]. */
+/** Center, outer radius, and optional inner radius (donut) for a pie laid out in `plotBounds`. */
 data class PieRadialLayout(
     val center: OffsetD,
     val outerRadius: Double,

@@ -19,7 +19,7 @@ internal data class SelectionMarkerAppearance(
 )
 
 /**
- * Marker appearance: [alpha] tracks selection (fade in/out), and [contentData] keeps the last marker payload
+ * Marker appearance: `alpha` tracks selection (fade in/out), and `contentData` keeps the last marker payload
  * during fade-out when [enabled] and [durationMillis] > 0 so the overlay stays composed until alpha reaches zero.
  */
 @Composable

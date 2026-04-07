@@ -4,18 +4,33 @@ import com.mena97villalobos.composeplotlib.core.math.FpMath
 import kotlin.math.max
 import kotlin.math.min
 
-/** Axis-aligned rectangle in double pixel or layout units ([left] ≤ [right], [top] ≤ [bottom]). */
+/**
+ * Axis-aligned rectangle in double pixel or layout units (`left` ≤ `right`, `top` ≤ `bottom`).
+ *
+ * @property left Left edge (x).
+ * @property top Top edge (y).
+ * @property right Right edge (x).
+ * @property bottom Bottom edge (y).
+ */
 data class RectD(
     val left: Double,
     val top: Double,
     val right: Double,
     val bottom: Double,
 ) {
+    /** Non-negative width (`right - left`). */
     val width: Double get() = (right - left).coerceAtLeast(0.0)
+
+    /** Non-negative height (`bottom - top`). */
     val height: Double get() = (bottom - top).coerceAtLeast(0.0)
+
+    /** Top-left corner (`left`, `top`). */
     val topLeft: OffsetD get() = OffsetD(left, top)
+
+    /** Center point of the rectangle. */
     val center: OffsetD get() = OffsetD(left + width / 2.0, top + height / 2.0)
 
+    /** True when [offset] lies inside this rectangle (inclusive edges). */
     fun contains(offset: OffsetD): Boolean {
         return offset.x in left..right && offset.y in top..bottom
     }
@@ -47,8 +62,10 @@ data class RectD(
         return dx * dx + dy * dy <= r * r + FpMath.EPS
     }
 
+    /** True when this rectangle intersects [other] (inclusive edges). */
     fun intersects(other: RectD): Boolean = left <= other.right && right >= other.left && top <= other.bottom && bottom >= other.top
 
+    /** Returns this rectangle inset by [insets] on each side. */
     fun inset(insets: InsetsD): RectD =
         RectD(
             left = left + insets.left,
@@ -58,6 +75,7 @@ data class RectD(
         )
 
     companion object {
+        /** Returns a rectangle from `(0,0)` to [size]. */
         fun fromSize(size: SizeD): RectD =
             RectD(
                 left = 0.0,

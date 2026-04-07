@@ -7,4 +7,3 @@ data class RadarChartPlan(
     val layout: ChartLayoutPlan,
     val selection: ChartSelection?,
 )
-

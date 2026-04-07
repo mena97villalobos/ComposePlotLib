@@ -6,7 +6,7 @@ import com.mena97villalobos.composeplotlib.core.model.LineSeries
 /**
  * Immutable configuration for a line chart: one or more [LineSeries], axes, grid, legend, and formatting.
  *
- * Prefer creating new instances when configuration changes; the Compose layer replans when [spec] changes.
+ * Prefer creating new instances when configuration changes; the Compose layer replans when `spec` changes.
  *
  * @property series Data sets to plot; empty lists are allowed and typically show a no-data UI in `chart-compose`.
  * @property accessibility Host-agnostic strings for accessibility (mapped to semantics in Compose).

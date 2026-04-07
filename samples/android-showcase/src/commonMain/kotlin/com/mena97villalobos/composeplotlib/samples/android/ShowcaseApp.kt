@@ -30,8 +30,8 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesSho
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
-import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

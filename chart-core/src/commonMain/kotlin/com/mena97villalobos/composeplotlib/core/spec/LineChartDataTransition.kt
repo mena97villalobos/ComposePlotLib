@@ -3,7 +3,7 @@ package com.mena97villalobos.composeplotlib.core.spec
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
 
 /**
- * Whether [LineChart] can morph between [from] and [to] by linearly interpolating matching series points
+ * Whether `LineChart` can morph between [from] and [to] by linearly interpolating matching series points
  * (same series count, ids, and point counts per series).
  */
 fun canMorphLineSpecs(

@@ -5,14 +5,13 @@ import com.mena97villalobos.composeplotlib.core.geometry.InsetsD
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.PolylineRectClip
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
-import com.mena97villalobos.composeplotlib.core.layout.draw.ShapeDrawStyle
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
+import com.mena97villalobos.composeplotlib.core.layout.draw.ShapeDrawStyle
 import com.mena97villalobos.composeplotlib.core.layout.planning.CartesianLayoutPlanner
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickDensityReducer
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePass
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePlanner
 import com.mena97villalobos.composeplotlib.core.layout.planning.axisTickLabel
-import com.mena97villalobos.composeplotlib.core.layout.planning.ellipsizeDisplayLabel
 import com.mena97villalobos.composeplotlib.core.layout.planning.plannerFinalizeYTicksForCanvas
 import com.mena97villalobos.composeplotlib.core.layout.planning.plannerMinimumCapFromMeasuredLabelWidth
 import com.mena97villalobos.composeplotlib.core.layout.planning.toPlanningBounds
@@ -37,14 +36,14 @@ import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
-import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
-import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
-import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyColumnVerticalAlignment
 import com.mena97villalobos.composeplotlib.core.spec.SankeyLinkOrder
 import com.mena97villalobos.composeplotlib.core.spec.SankeyNodeLabelOrientation
 import com.mena97villalobos.composeplotlib.core.spec.SankeyNodeOrder
+import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
+import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
 import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
 import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
@@ -306,9 +305,9 @@ object ChartPlanner {
      * When [PieChartSpec.sliceLabels] is enabled, appends [DrawCommand.Polyline] leaders and [DrawCommand.Text] callouts
      * per eligible slice (uses [ChartTextMeasurementInput.pieSliceLabelMeasurements] from the measurement pass).
      *
-     * @param selection optional slice highlight: matches when [ChartSelection.target.seriesId] equals [PieChartSpec.id]
-     * and [ChartSelection.target.pointIndex] is the slice index in [PieChartSpec.slices]. A translucent overlay arc
-     * is appended for the selected slice when its [PieChartSlice.value] is positive.
+     * @param selection optional slice highlight: matches when `selection.target.seriesId` equals [PieChartSpec.id]
+     * and `selection.target.pointIndex` is the slice index in [PieChartSpec.slices]. A translucent overlay arc
+     * is appended for the selected slice when its `value` is positive.
      */
     fun planPieChart(
         input: ChartLayoutInput,
@@ -514,13 +513,14 @@ object ChartPlanner {
         val angles = RadarChartLayoutMath.spokeAnglesDegrees(axisCount, spec.startAngleDegrees)
 
         // Auto radial range from all series values.
-        val all = buildList {
-            for (s in spec.series) {
-                // Only consider values aligned to the axes list.
-                if (s.values.size != axisCount) continue
-                for (v in s.values) if (v.isFinite()) add(v)
+        val all =
+            buildList {
+                for (s in spec.series) {
+                    // Only consider values aligned to the axes list.
+                    if (s.values.size != axisCount) continue
+                    for (v in s.values) if (v.isFinite()) add(v)
+                }
             }
-        }
         val minV0 = all.minOrNull() ?: 0.0
         val maxV0 = all.maxOrNull() ?: 1.0
         val minV = min(0.0, minV0)
@@ -537,8 +537,7 @@ object ChartPlanner {
             return radial.outerRadius * t
         }
 
-        fun polygonPointsForRadius(radiusPx: Double): List<OffsetD> =
-            List(axisCount) { i -> RadarChartLayoutMath.polarToPixel(radial.center, radiusPx, angles[i]) }
+        fun polygonPointsForRadius(radiusPx: Double): List<OffsetD> = List(axisCount) { i -> RadarChartLayoutMath.polarToPixel(radial.center, radiusPx, angles[i]) }
 
         val plotCommands = mutableListOf<DrawCommand>()
 
@@ -818,9 +817,7 @@ object ChartPlanner {
                 }
             }
 
-        fun orderedNodeIndices(
-            nodeIdxs: List<Int>,
-        ): List<Int> {
+        fun orderedNodeIndices(nodeIdxs: List<Int>): List<Int> {
             if (nodeIdxs.size <= 1) return nodeIdxs
             val stableTieBreaker: (Int) -> Int = { idx -> idx }
             return when (layout.nodeOrder) {
@@ -928,6 +925,7 @@ object ChartPlanner {
         )
 
         val minTh = layout.minLinkThickness.coerceAtLeast(0.0)
+
         data class IndexedLink(
             val index: Int,
             val link: com.mena97villalobos.composeplotlib.core.spec.SankeyLink,
@@ -954,6 +952,7 @@ object ChartPlanner {
             val bt = nodeBoxById[b.link.targetNodeId]
             val asrc = nodeBoxById[a.link.sourceNodeId]
             val bsrc = nodeBoxById[b.link.sourceNodeId]
+
             fun midY(box: NodeDomainBox?): Double = if (box == null) 0.0 else (box.y0 + box.y1) / 2.0
             val primary =
                 when (order) {
@@ -969,10 +968,11 @@ object ChartPlanner {
         }
 
         // Allocate per-end stacking offsets in sorted adjacency order.
-        val linkThicknessByIndex = DoubleArray(spec.links.size) { i ->
-            val v = spec.links[i].value.coerceAtLeast(0.0)
-            if (v <= 0.0) 0.0 else max(v * valueToHeight, minTh)
-        }
+        val linkThicknessByIndex =
+            DoubleArray(spec.links.size) { i ->
+                val v = spec.links[i].value.coerceAtLeast(0.0)
+                if (v <= 0.0) 0.0 else max(v * valueToHeight, minTh)
+            }
         val syByIndex = Array(spec.links.size) { DoubleArray(2) { 0.0 } } // [sy0, sy1]
         val tyByIndex = Array(spec.links.size) { DoubleArray(2) { 0.0 } } // [ty0, ty1]
 
@@ -1036,7 +1036,11 @@ object ChartPlanner {
         }
 
         val transform = ChartTransform.forPlotBounds(input.viewport, plotBounds)
-        fun px(x: Double, y: Double): OffsetD = transform.toPixel(XyPoint(x, y))
+
+        fun px(
+            x: Double,
+            y: Double,
+        ): OffsetD = transform.toPixel(XyPoint(x, y))
 
         val plannedNodes = mutableListOf<PlannedSankeyNode>()
         val nodeCommands = mutableListOf<DrawCommand>()
@@ -1862,7 +1866,7 @@ object ChartPlanner {
     }
 
     /**
-     * Horizontal bar: category on Y ([categoryDomain]), value length along X from [viewport.xRange.start].
+     * Horizontal bar: category on Y ([categoryDomain]), value length along X from `viewport.xRange.start`.
      */
     private fun barRectForHorizontalRow(
         group: BarGroup,
@@ -2141,7 +2145,8 @@ object ChartPlanner {
     }
 
     /**
-     * @param reserveRightYAxisSpace When true, reserves canvas width for [spec.yAxisSecondary] tick labels (after measurement pass).
+     * @param reserveRightYAxisSpace When true, reserves canvas width for [CombinedCartesianChartSpec.yAxisSecondary]
+     * tick labels (after measurement pass).
      * @param tickValuePass optional precomputed pass-2 tick values for [spec]'s primary X / shared Y axes (default: compute).
      */
     fun planCombinedCartesianChart(

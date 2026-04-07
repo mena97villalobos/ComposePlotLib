@@ -16,7 +16,7 @@ data class PointStyle(
     val color: ChartColor? = null,
 )
 
-/** Fill and width for bars in a [BarGroup]. */
+/** Fill and width for bars in a [com.mena97villalobos.composeplotlib.core.model.BarGroup]. */
 data class BarStyle(
     val color: ChartColor = ChartColor.Green,
     val barWidth: Double = 16.0,

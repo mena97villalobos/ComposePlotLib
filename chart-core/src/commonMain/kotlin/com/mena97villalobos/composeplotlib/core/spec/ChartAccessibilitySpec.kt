@@ -10,7 +10,7 @@ data class ChartAccessibilitySpec(
      */
     val contentDescription: String? = null,
     /**
-     * When false, selection changes do not update semantics [stateDescription] on the chart.
+     * When false, selection changes do not update semantics `stateDescription` on the chart.
      */
     val exposeSelectionState: Boolean = true,
     /**
@@ -40,7 +40,7 @@ data class ChartAccessibilitySpec(
     val requestFocusOnMarker: Boolean = false,
     /**
      * Live-region behavior when [exposeSelectionState] is true. Use [ChartLiveRegionMode.Off] to avoid
-     * announcements for dynamic [stateDescription] updates.
+     * announcements for dynamic `stateDescription` updates.
      */
     val selectionLiveRegionMode: ChartLiveRegionMode = ChartLiveRegionMode.Polite,
 )

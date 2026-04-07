@@ -65,7 +65,7 @@ import com.mena97villalobos.composeplotlib.core.spec.StackedBarChartSpec
  * epoch-millis time, UTC weekday tick policy), with selection hints.
  *
  * Intended for `composeApp` and tooling previews, not as a production root composable.
- * When adding a new chart family, wire a preview here and update [AGENTS.md] and files under the `docs` directory per **Obligations**.
+ * When adding a new chart family, wire a preview here and update `AGENTS.md` and files under the `docs` directory per **Obligations**.
  */
 @Composable
 @Preview
@@ -417,8 +417,9 @@ fun ComposePlotApp() {
                         marker = { markerData -> DefaultChartMarker(markerData, showCoordinateLine = false) },
                     )
                     Text(
-                        text = sankeySelection.selection?.let { "Selected ${it.target.layerId} index ${it.target.pointIndex}" }
-                            ?: "Tap nodes or links to select. Pan/zoom with two fingers.",
+                        text =
+                            sankeySelection.selection?.let { "Selected ${it.target.layerId} index ${it.target.pointIndex}" }
+                                ?: "Tap nodes or links to select. Pan/zoom with two fingers.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }

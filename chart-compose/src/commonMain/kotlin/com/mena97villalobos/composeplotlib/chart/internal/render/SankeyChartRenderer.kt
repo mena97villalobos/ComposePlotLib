@@ -5,7 +5,7 @@ import androidx.compose.ui.text.TextMeasurer
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.core.layout.SankeyChartPlan
 
-/** [ComposeCanvasAdapter] bridge for [SankeyChartPlan]. */
+/** [com.mena97villalobos.composeplotlib.chart.internal.canvas.ComposeCanvasAdapter] bridge for [SankeyChartPlan]. */
 internal object SankeyChartRenderer : ChartRenderer<SankeyChartPlan> {
     override fun DrawScope.render(
         plan: SankeyChartPlan,
@@ -18,4 +18,3 @@ internal object SankeyChartRenderer : ChartRenderer<SankeyChartPlan> {
         renderLegend(plan.layout, textMeasurer, renderStyles)
     }
 }
-

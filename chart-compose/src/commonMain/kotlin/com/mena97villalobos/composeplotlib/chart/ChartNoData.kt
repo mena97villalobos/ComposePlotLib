@@ -16,8 +16,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 /**
- * Declarative copy and optional semantics for an empty chart; use with [LineChart]/[BarChart] [noDataUi]
- * when you do not need a fully custom [noData] composable (line, bar, scatter, and pie charts).
+ * Declarative copy and optional semantics for an empty chart; use with [LineChart]/[BarChart] `noDataUi`
+ * when you do not need a fully custom `noData` composable (line, bar, scatter, and pie charts).
  */
 data class ChartNoDataUi(
     val message: String,
@@ -66,7 +66,7 @@ object ChartNoDataDefaults {
 /**
  * Centered Material-styled placeholder for empty charts.
  *
- * Prefer [noData] for full custom layouts; use [ChartNoDataUi] + this composable for consistent title/body.
+ * Prefer `noData` for full custom layouts; use [ChartNoDataUi] + this composable for consistent title/body.
  */
 @Composable
 fun BoxScope.DefaultNoDataOverlay(

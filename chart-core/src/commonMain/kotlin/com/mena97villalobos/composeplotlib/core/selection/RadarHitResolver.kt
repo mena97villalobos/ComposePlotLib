@@ -12,7 +12,7 @@ import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
- * Resolves a tap in plot pixels to the nearest radar vertex among all series, within [maxDistancePx].
+ * Resolves a tap in plot pixels to the nearest radar vertex among all series, within `maxDistancePx`.
  *
  * Selection target conventions:
  * - [HighlightTarget.seriesId] is the matching [com.mena97villalobos.composeplotlib.core.spec.RadarSeries.id]
@@ -35,12 +35,13 @@ object RadarHitResolver {
         if (radial.outerRadius <= 0.0) return null
         val angles = RadarChartLayoutMath.spokeAnglesDegrees(axisCount, spec.startAngleDegrees)
 
-        val allValues = buildList {
-            for (s in spec.series) {
-                if (s.values.size != axisCount) continue
-                for (v in s.values) if (v.isFinite()) add(v)
+        val allValues =
+            buildList {
+                for (s in spec.series) {
+                    if (s.values.size != axisCount) continue
+                    for (v in s.values) if (v.isFinite()) add(v)
+                }
             }
-        }
         val minV0 = allValues.minOrNull() ?: 0.0
         val maxV0 = allValues.maxOrNull() ?: 1.0
         val minV = min(0.0, minV0)
@@ -99,4 +100,3 @@ object RadarHitResolver {
         return if (d.isFinite()) d else Double.POSITIVE_INFINITY
     }
 }
-

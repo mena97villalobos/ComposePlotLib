@@ -32,4 +32,3 @@ data class PlannedSankeyLink(
     /** Anchor for markers. */
     val markerAnchor: OffsetD,
 )
-

@@ -94,4 +94,3 @@ private fun pointInPolygon(
     }
     return inside
 }
-

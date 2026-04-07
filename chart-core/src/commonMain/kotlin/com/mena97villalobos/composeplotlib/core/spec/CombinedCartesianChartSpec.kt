@@ -7,7 +7,7 @@ import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
 
 /**
  * Which Y scale a [CombinedCartesianLayer] maps through when [CombinedCartesianChartSpec.yAxisSecondary] is set.
- * Layers must use [SharedY] when no secondary axis is configured.
+ * Layers must use [CombinedCartesianYAxisBinding.SharedY] when no secondary axis is configured.
  */
 enum class CombinedCartesianYAxisBinding {
     SharedY,
@@ -48,7 +48,8 @@ sealed class CombinedCartesianLayer {
  *
  * When any layer uses [CombinedCartesianYAxisBinding.SecondaryY], [yAxisSecondary] must be non-null.
  * Secondary Y domain is **data-derived** from secondary-bound layers (not independently panned/zoomed in v1): on each
- * planning pass the planner recomputes min/max **Y** from all points in layers bound to [SecondaryY] (with the same
+ * planning pass the planner recomputes min/max **Y** from all points in layers bound to
+ * [CombinedCartesianYAxisBinding.SecondaryY] (with the same
  * degenerate-span expansion as single-family charts). The shared **X** window always follows the **primary**
  * viewport **X** range passed into planning; secondary **Y** ticks and transforms update whenever that **X** range,
  * the primary **Y** window, or the **spec’s** secondary-layer data changes (v1 has no independent secondary-**Y** zoom

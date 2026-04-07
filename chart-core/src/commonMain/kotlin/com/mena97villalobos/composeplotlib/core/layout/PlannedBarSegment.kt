@@ -26,7 +26,8 @@ data class PlannedBarSegment(
  * Converts **draw-ordered** bar segments to **hit-test order** (topmost segment first).
  *
  * The list [ChartPlanner] produces for drawing is **bottom → top** at overlaps (e.g. stacked bars:
- * lower slice first in the list, upper slice last). [BarHitResolver.resolvePlanned] must receive
+ * lower slice first in the list, upper slice last).
+ * [com.mena97villalobos.composeplotlib.core.selection.BarHitResolver.resolvePlanned] must receive
  * segments in **top-first** order so the correct slice wins when rects overlap in pixel space.
  *
  * @see BarChartPlan.barSegments

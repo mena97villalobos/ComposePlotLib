@@ -18,7 +18,7 @@ data class ChartTapGesturePolicy(
  * [doubleTapZoomOutEnabled]: zooms **out** by [doubleTapZoomOutScale] (< 1) around the double-tap point.
  *
  * [doubleTapResetViewportEnabled]: double-tap inside the plot resets the viewport to the chart domain (same as
- * [com.mena97villalobos.composeplotlib.chart.state.ChartViewportState.reset] / [fitToData]).
+ * [com.mena97villalobos.composeplotlib.chart.state.ChartViewportState.reset] / `fitToData`).
  *
  * If more than one double-tap behavior is enabled, resolution order is **reset viewport**, then **zoom out**,
  * then **zoom in**.
@@ -66,7 +66,8 @@ data class ChartFlingGesturePolicy(
  * Prefer the **companion object** presets (`CartesianDefault`, `PieDefault`, `readOnly()`, `exploreOnly()`, `cartesianInteractive()`, `cartesianInteractiveFullExploration()`)
  * when you want documented bundles (hosts, iOS QA); use the primary constructor when you need a one-off mix.
  *
- * [ViewportAxisPolicy] on [com.mena97villalobos.composeplotlib.chart.state.ChartViewportState] can still
+ * [com.mena97villalobos.composeplotlib.core.viewport.ViewportAxisPolicy] on
+ * [com.mena97villalobos.composeplotlib.chart.state.ChartViewportState] can still
  * lock an axis to the full domain; that policy disables the corresponding pan/zoom directions in practice.
  */
 data class ChartGestureConfig(
@@ -117,7 +118,7 @@ data class ChartGestureConfig(
          * Interactive cartesian preset used by shared hosts: double-tap zoom-in inside the plot
          * (see [ChartTransformGesturePolicy]) and optional inertial pan.
          *
-         * Pair with the same [ViewportAxisPolicy] / constraints you ship in production when validating
+         * Pair with the same [com.mena97villalobos.composeplotlib.core.viewport.ViewportAxisPolicy] / constraints you ship in production when validating
          * iOS touch parity (`docs/ios-gesture-validation.md`).
          */
         fun cartesianInteractive(

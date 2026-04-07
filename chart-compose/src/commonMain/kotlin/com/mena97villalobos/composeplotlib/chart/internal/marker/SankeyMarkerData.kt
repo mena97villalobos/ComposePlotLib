@@ -45,4 +45,3 @@ internal fun buildSankeyMarkerData(
         else -> null
     }
 }
-

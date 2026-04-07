@@ -41,7 +41,7 @@ data class MaterialChartPalette(
 /**
  * Maps a Compose [Color] in any color space to sRGB ARGB and wraps it as [ChartColor].
  *
- * @param fallback used when [color] is [Color.Unspecified] (Material placeholders).
+ * @param fallback used when this is `Color.Unspecified` (Material placeholders).
  */
 fun Color.toChartColor(fallback: ChartColor = ChartColor.Black): ChartColor =
     if (isUnspecified) {

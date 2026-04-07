@@ -29,6 +29,70 @@ Current modules:
 - `:composeApp`
 - `:samples:android-showcase`
 
+## Install (GitHub Packages)
+
+This repo publishes artifacts to **GitHub Packages** from the Release workflow (tags like `v1.2.3` publish version `1.2.3`).
+
+### 1) Add the repository
+
+In your consumer project’s `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        google()
+        maven {
+            url = uri("https://maven.pkg.github.com/OWNER/REPO")
+            credentials {
+                // Use Gradle properties (recommended) or env vars.
+                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_ACTOR")
+                password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+```
+
+In `~/.gradle/gradle.properties` (or your project’s `gradle.properties`):
+
+```properties
+gpr.user=YOUR_GITHUB_USERNAME
+gpr.key=YOUR_TOKEN_WITH_read:packages
+```
+
+### 2) Add dependencies (Compose Multiplatform / KMP)
+
+Most apps only need `chart-compose` (it has an `api` dependency on `chart-core`):
+
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("com.mena97villalobos.composeplotlib:chart-compose:VERSION")
+        }
+    }
+}
+```
+
+If you want planner-only usage (no Compose), depend on `chart-core`:
+
+```kotlin
+implementation("com.mena97villalobos.composeplotlib:chart-core:VERSION")
+```
+
+### Notes about iOS artifacts
+
+Linux CI does not publish Kotlin/Native iOS klibs. If you need Apple artifacts in GitHub Packages, publish from a macOS job (or publish locally from a Mac).
+
+## Quick start (Compose)
+
+1. Build an immutable spec (e.g. `LineChartSpec`)
+2. Render it with a chart composable (e.g. `LineChart`)
+3. Keep interaction state explicit (`ChartViewportState`, `ChartSelectionState`)
+
+See the Dokka **Quick start** page for a copy-pasteable sample.
+
 ## Current Project Layout
 
 - [`chart-core`](./chart-core/src) contains the non-UI chart engine and planner.

@@ -5,7 +5,7 @@ import androidx.compose.ui.text.TextMeasurer
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.core.layout.PieChartPlan
 
-/** [ComposeCanvasAdapter] bridge for [PieChartPlan]. */
+/** [com.mena97villalobos.composeplotlib.chart.internal.canvas.ComposeCanvasAdapter] bridge for [PieChartPlan]. */
 internal object PieChartRenderer : ChartRenderer<PieChartPlan> {
     override fun DrawScope.render(
         plan: PieChartPlan,

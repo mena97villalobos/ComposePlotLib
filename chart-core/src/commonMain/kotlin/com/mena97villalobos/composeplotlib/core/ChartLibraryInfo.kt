@@ -4,6 +4,10 @@ package com.mena97villalobos.composeplotlib.core
  * Lightweight metadata describing the published library name and targets.
  *
  * For version information, use your build system (Gradle version catalog / POM), not this type.
+ *
+ * @property name Human-readable library name.
+ * @property supportedTargets Platform targets the published artifacts are intended to support.
+ * @property plannedModules High-level module names (diagnostic/roadmap hint; not a dependency graph).
  */
 data class ChartLibraryInfo(
     val name: String,

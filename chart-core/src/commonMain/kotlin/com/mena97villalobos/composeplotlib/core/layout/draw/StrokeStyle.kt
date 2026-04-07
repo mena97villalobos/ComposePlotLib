@@ -3,7 +3,7 @@ package com.mena97villalobos.composeplotlib.core.layout.draw
 /**
  * Optional stroke appearance; `null` on a [com.mena97villalobos.composeplotlib.core.layout.DrawCommand] means solid stroke.
  *
- * @param dashIntervals Alternating on/off lengths in **pixels** along the stroke (Compose [PathEffect] style).
+ * @param dashIntervals Alternating on/off lengths in **pixels** along the stroke (Compose `PathEffect` style).
  */
 data class StrokeStyle(
     val dashIntervals: List<Double>? = null,

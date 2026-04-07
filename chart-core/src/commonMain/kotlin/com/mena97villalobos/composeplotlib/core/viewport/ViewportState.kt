@@ -12,7 +12,7 @@ data class ViewportState(
     val viewport: ChartViewport,
     val constraints: ViewportConstraints = ViewportConstraints(),
 ) {
-    /** Clamps [nextViewport] into [domain] and applies [constraints]. */
+    /** Clamps [nextViewport] into `domain` and applies [constraints]. */
     fun withViewport(
         nextViewport: ChartViewport,
         domain: ChartViewport,
@@ -22,7 +22,7 @@ data class ViewportState(
         return copy(viewport = next)
     }
 
-    /** Pans in domain units, then clamps to [domain]. */
+    /** Pans in domain units, then clamps to `domain`. */
     fun pan(
         deltaX: Double,
         deltaY: Double,
@@ -43,7 +43,7 @@ data class ViewportState(
 
     /**
      * Zooms each axis around a domain-space pivot. [scaleX]/[scaleY] greater than `1` zoom **in**
-     * (smaller visible span). Results are span-clamped and fit inside [domain].
+     * (smaller visible span). Results are span-clamped and fit inside `domain`.
      */
     fun zoom(
         scaleX: Double,
@@ -78,7 +78,7 @@ data class ViewportState(
     }
 }
 
-/** Per-axis span limits that are simultaneously satisfiable with [domain] (cannot zoom wider than an axis domain). */
+/** Per-axis span limits that are simultaneously satisfiable with `domain` (cannot zoom wider than an axis domain). */
 private data class EffectiveViewportConstraints(
     val minXSpan: Double,
     val maxXSpan: Double,

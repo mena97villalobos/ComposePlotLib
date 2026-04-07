@@ -50,6 +50,7 @@ enum class SankeyColumnVerticalAlignment {
     Top,
     Center,
     Bottom,
+
     /** Distributes extra vertical space into gaps (when a column has ≥2 nodes). */
     Justify,
 }
@@ -143,4 +144,3 @@ data class SankeyLayoutSpec(
     /** Default link color when [SankeyLink.color] is null. */
     val defaultLinkColor: ChartColor = ChartColor(0x80455A64),
 )
-

@@ -12,6 +12,11 @@ plugins {
 dokka {
     dokkaPublications.html {
         moduleName.set("chart-compose")
+        failOnWarning.set(false)
+        includes.from(rootProject.layout.projectDirectory.file("docs/dokka/chart-compose-quick-start.md"))
+    }
+    dokkaSourceSets.configureEach {
+        includes.from(rootProject.layout.projectDirectory.file("docs/dokka/chart-compose-quick-start.md"))
     }
 }
 

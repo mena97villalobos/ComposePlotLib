@@ -7,7 +7,7 @@ import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 
 /**
  * Points eligible for scatter hit-testing: same inclusion rule as plotted circles — the marker disc
- * (center + [radiusPx]) must intersect [plotBounds], not only lie inside it.
+ * (center + `radiusPx`) must intersect `plotBounds`, not only lie inside it.
  */
 object ScatterPlotPoints {
     fun indexedInPlotBounds(
@@ -26,7 +26,7 @@ object ScatterPlotPoints {
             }
         }
 
-    /** Keeps only prepared domain points whose marker disc intersects [plotBounds] in pixel space. */
+    /** Keeps only prepared domain points whose marker disc intersects `plotBounds` in pixel space. */
     fun filterPreparedToPlotDisc(
         prepared: List<Pair<Int, XyPoint>>,
         transform: ChartTransform,

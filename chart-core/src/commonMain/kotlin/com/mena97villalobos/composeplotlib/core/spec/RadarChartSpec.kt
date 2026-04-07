@@ -60,6 +60,4 @@ data class RadarGridSpec(
     val spokeLineStyle: GridLineStyle = GridLineStyle(color = ChartColor.LightGray, strokeWidth = 1.0),
 )
 
-fun RadarChartSpec.hasDrawableSeries(): Boolean =
-    axes.isNotEmpty() && series.any { it.values.size == axes.size && it.values.any { v -> v.isFinite() } }
-
+fun RadarChartSpec.hasDrawableSeries(): Boolean = axes.isNotEmpty() && series.any { it.values.size == axes.size && it.values.any { v -> v.isFinite() } }

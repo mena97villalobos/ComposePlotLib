@@ -6,7 +6,7 @@ import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import kotlin.math.sqrt
 
 /**
- * Resolves a tap in plot pixels to the nearest [XyPoint] in a single line series, within [maxDistancePx].
+ * Resolves a tap in plot pixels to the nearest [XyPoint] in a single line series, within `maxDistancePx`.
  */
 object NearestPointResolver {
     /**
@@ -50,7 +50,7 @@ object NearestPointResolver {
     }
 
     /**
-     * @return [ChartSelection] for the closest in-range point, or `null` if none within [maxDistancePx].
+     * @return [ChartSelection] for the closest in-range point, or `null` if none within `maxDistancePx`.
      */
     fun resolve(
         seriesId: String,

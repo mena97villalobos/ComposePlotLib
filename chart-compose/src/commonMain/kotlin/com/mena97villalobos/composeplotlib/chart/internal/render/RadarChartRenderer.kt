@@ -5,7 +5,7 @@ import androidx.compose.ui.text.TextMeasurer
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.core.layout.RadarChartPlan
 
-/** [ComposeCanvasAdapter] bridge for [RadarChartPlan]. */
+/** [com.mena97villalobos.composeplotlib.chart.internal.canvas.ComposeCanvasAdapter] bridge for [RadarChartPlan]. */
 internal object RadarChartRenderer : ChartRenderer<RadarChartPlan> {
     override fun DrawScope.render(
         plan: RadarChartPlan,
@@ -18,4 +18,3 @@ internal object RadarChartRenderer : ChartRenderer<RadarChartPlan> {
         renderLegend(plan.layout, textMeasurer, renderStyles)
     }
 }
-

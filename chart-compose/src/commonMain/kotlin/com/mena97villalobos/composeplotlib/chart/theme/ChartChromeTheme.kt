@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 /**
  * Visual chrome for chart canvas rendering: plot frame, legend panel, and clipping.
  * Pass a custom instance to [com.mena97villalobos.composeplotlib.chart.LineChart] /
- * [com.mena97villalobos.composeplotlib.chart.BarChart] via [chromeTheme], or use [chartChromeTheme] for Material 3 defaults.
+ * [com.mena97villalobos.composeplotlib.chart.BarChart] via `chromeTheme`, or use [chartChromeTheme] for Material 3 defaults.
  */
 data class ChartChromeTheme(
     /** Stroke around the plot area; set [plotBorderStrokeWidthPx] to `0` to hide. */

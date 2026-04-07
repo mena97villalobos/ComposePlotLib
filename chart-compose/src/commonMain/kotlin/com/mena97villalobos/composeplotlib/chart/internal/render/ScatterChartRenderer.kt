@@ -5,7 +5,7 @@ import androidx.compose.ui.text.TextMeasurer
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.core.layout.ScatterChartPlan
 
-/** [ComposeCanvasAdapter] bridge for [ScatterChartPlan]. */
+/** [com.mena97villalobos.composeplotlib.chart.internal.canvas.ComposeCanvasAdapter] bridge for [ScatterChartPlan]. */
 internal object ScatterChartRenderer : ChartRenderer<ScatterChartPlan> {
     override fun DrawScope.render(
         plan: ScatterChartPlan,

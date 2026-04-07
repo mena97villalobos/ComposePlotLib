@@ -41,7 +41,8 @@ data class ChartAnimationPolicy(
     val gestureViewportChaseStiffness: Float = 0.22f,
     /**
      * When true, [LineChart] interpolates **series point coordinates** between the previous and new
-     * [com.mena97villalobos.composeplotlib.core.spec.LineChartSpec] when structure matches ([canMorphLineSpecs]).
+     * [com.mena97villalobos.composeplotlib.core.spec.LineChartSpec] when structure matches
+     * ([com.mena97villalobos.composeplotlib.core.spec.canMorphLineSpecs]).
      */
     val dataTransitionEnabled: Boolean = false,
     /** Duration for line data coordinate morph (milliseconds). */

@@ -23,8 +23,8 @@ import com.mena97villalobos.composeplotlib.chart.internal.animation.rememberAnim
 import com.mena97villalobos.composeplotlib.chart.internal.animation.rememberSelectionMarkerAppearance
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.chartLabelTextStyles
-import com.mena97villalobos.composeplotlib.chart.internal.gesture.effectiveTransformFlags
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartGestures
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.effectiveTransformFlags
 import com.mena97villalobos.composeplotlib.chart.internal.layout.chartLayoutBaseInput
 import com.mena97villalobos.composeplotlib.chart.internal.layout.measuredLayoutInput
 import com.mena97villalobos.composeplotlib.chart.internal.marker.ChartMarkerOverlay
@@ -235,4 +235,3 @@ private fun defaultViewport(): ChartViewport =
         xRange = com.mena97villalobos.composeplotlib.core.range.ClosedRangeD(0.0, 1.0),
         yRange = com.mena97villalobos.composeplotlib.core.range.ClosedRangeD(0.0, 1.0),
     )
-

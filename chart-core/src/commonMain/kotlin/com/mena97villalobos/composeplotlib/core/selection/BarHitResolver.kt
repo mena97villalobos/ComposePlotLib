@@ -14,7 +14,7 @@ import kotlin.math.max
  */
 object BarHitResolver {
     /**
-     * Hit-tests segments from [ChartPlanner] in **hit-test order** (top segment first), e.g.
+     * Hit-tests segments from [com.mena97villalobos.composeplotlib.core.layout.ChartPlanner] in **hit-test order** (top segment first), e.g.
      * [com.mena97villalobos.composeplotlib.core.layout.BarChartPlan.barSegmentsForHitTest] or
      * [com.mena97villalobos.composeplotlib.core.layout.forHitTestFromDrawOrder] on draw-ordered lists.
      */
@@ -80,7 +80,7 @@ object BarHitResolver {
     }
 }
 
-/** True when [RectD] edges are finite and axis-aligned with [left] ≤ [right], [top] ≤ [bottom]. */
+/** True when [RectD] edges are finite and axis-aligned with `left` ≤ `right`, `top` ≤ `bottom`. */
 private fun RectD.isValidForAxisAlignedHit(): Boolean =
     left.isFinite() && top.isFinite() && right.isFinite() && bottom.isFinite() &&
         left <= right && top <= bottom

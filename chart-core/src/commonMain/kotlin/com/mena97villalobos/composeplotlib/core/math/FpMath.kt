@@ -47,7 +47,8 @@ object FpMath {
 
     /**
      * `true` if [span] should be treated as a zero-length axis (non-finite or within [EPS_SPAN] of zero).
-     * Use for [ClosedRangeD] spans and pixel extents, consistent with [ClosedRangeD.expandedIfDegenerate].
+     * Use for [com.mena97villalobos.composeplotlib.core.range.ClosedRangeD] spans and pixel extents, consistent with
+     * [com.mena97villalobos.composeplotlib.core.range.ClosedRangeD.expandedIfDegenerate].
      */
     fun isDegenerateSpan(span: Double): Boolean = !span.isFinite() || abs(span) <= EPS_SPAN
 

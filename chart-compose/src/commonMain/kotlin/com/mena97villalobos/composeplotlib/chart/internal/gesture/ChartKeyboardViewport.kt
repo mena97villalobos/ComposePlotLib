@@ -16,7 +16,7 @@ private const val KeyZoomFactor = 1.15
 
 /**
  * Arrow-key pan, + / − zoom at the visible center, and Escape to clear selection when [tapSelectionEnabled].
- * Only active when the chart node is focused ([keyboardViewportNudgeEnabled] / focus flags on the spec).
+ * Only active when the chart node is focused (`keyboardViewportNudgeEnabled` / focus flags on the spec).
  */
 internal fun Modifier.chartCartesianKeyboardViewport(
     enabled: Boolean,
@@ -25,7 +25,7 @@ internal fun Modifier.chartCartesianKeyboardViewport(
     viewportState: ChartViewportState,
     tapSelectionEnabled: Boolean,
     onClearSelection: () -> Unit,
-    /** When true, arrow keys with **Shift** are left to [chartKeyboardSelectionRoam] (selection step). */
+    /** When true, arrow keys with **Shift** are left to `chartKeyboardSelectionRoam` (selection step). */
     reserveShiftDirectionKeysForSelectionRoam: Boolean = false,
 ): Modifier {
     if (!enabled || !transformEnabled) return this

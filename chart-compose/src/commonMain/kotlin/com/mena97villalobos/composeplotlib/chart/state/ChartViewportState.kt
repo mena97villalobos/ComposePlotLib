@@ -16,7 +16,7 @@ import com.mena97villalobos.composeplotlib.core.viewport.withAxisPolicy
  * [axisPolicy] can pin an axis to the full domain after each gesture (e.g. horizontal-only exploration).
  * Update it with [updateAxisPolicy]; zoom limits with [updateConstraints].
  *
- * Obtain via [rememberChartViewportState]. You may pass a wider [domain] than [initialViewport] to allow
+ * Obtain via [rememberChartViewportState]. You may pass a wider [domain] than `initialViewport` to allow
  * zooming out to a known data extent while starting zoomed in.
  */
 class ChartViewportState(

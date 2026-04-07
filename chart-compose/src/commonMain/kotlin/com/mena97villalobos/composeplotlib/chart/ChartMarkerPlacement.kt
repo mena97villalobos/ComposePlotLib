@@ -33,7 +33,7 @@ enum class ChartMarkerContainment {
  * Supplies a **custom** callout polyline in chart pixels when [ChartMarkerCalloutLeader.customCallout] is set.
  *
  * Return at least two points for a visible stroke, or an empty list to skip drawing.
- * Points are in the same coordinate space as [ChartMarkerOverlay] (chart/canvas pixels).
+ * Points are in the same coordinate space as `ChartMarkerOverlay` (chart/canvas pixels).
  */
 fun interface ChartMarkerCustomCallout {
     fun polyline(
@@ -53,7 +53,7 @@ fun interface ChartMarkerCustomCallout {
  * its [ChartMarkerCustomCallout.polyline] is used; otherwise the built-in **elbow** geometry is used
  * (same as historical behavior).
  *
- * Geometry uses the same chart-pixel space as [ChartMarkerOverlay] after flip/slide placement.
+ * Geometry uses the same chart-pixel space as `ChartMarkerOverlay` after flip/slide placement.
  */
 data class ChartMarkerCalloutLeader(
     val enabled: Boolean = false,

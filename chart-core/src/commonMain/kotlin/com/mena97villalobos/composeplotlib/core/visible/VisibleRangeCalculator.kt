@@ -174,8 +174,8 @@ object VisibleRangeCalculator {
     }
 
     /**
-     * True if a vertical bar column centered at [domainX] with total width [barWidthPx] in pixels
-     * could intersect [plotBounds] horizontally (after mapping [domainX] through [centerXPx]).
+     * True if a vertical bar column centered at `domainX` with total width `barWidthPx` in pixels
+     * could intersect `plotBounds` horizontally (after mapping `domainX` through `centerXPx`).
      */
     fun barColumnIntersectsPlotHorizontally(
         centerXPx: Double,

@@ -5,7 +5,7 @@ import androidx.compose.ui.text.TextMeasurer
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.core.layout.LineChartPlan
 
-/** [ComposeCanvasAdapter] bridge for [LineChartPlan]. */
+/** [com.mena97villalobos.composeplotlib.chart.internal.canvas.ComposeCanvasAdapter] bridge for [LineChartPlan]. */
 internal object LineChartRenderer : ChartRenderer<LineChartPlan> {
     override fun DrawScope.render(
         plan: LineChartPlan,

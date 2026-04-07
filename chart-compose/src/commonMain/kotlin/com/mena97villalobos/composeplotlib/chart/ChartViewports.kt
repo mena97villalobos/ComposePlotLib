@@ -57,7 +57,7 @@ fun defaultViewport(spec: ScatterChartSpec): ChartViewport {
 
 /**
  * Dummy [ChartViewport] for pie/donut charts (radial; pan/zoom are normally disabled via [ChartGestureConfig]).
- * Present so [ChartLayoutInput] and measurement passes stay aligned with other families.
+ * Present so [com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput] and measurement passes stay aligned with other families.
  */
 fun defaultViewport(spec: PieChartSpec): ChartViewport {
     return ChartViewport(
@@ -68,7 +68,7 @@ fun defaultViewport(spec: PieChartSpec): ChartViewport {
 
 /**
  * Dummy [ChartViewport] for radar/spider charts (radial; pan/zoom are normally disabled via [ChartGestureConfig]).
- * Present so [ChartLayoutInput] and measurement passes stay aligned with other families.
+ * Present so [com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput] and measurement passes stay aligned with other families.
  */
 fun defaultViewport(spec: RadarChartSpec): ChartViewport {
     return ChartViewport(

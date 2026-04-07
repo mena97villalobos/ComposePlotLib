@@ -1,7 +1,7 @@
 package com.mena97villalobos.composeplotlib.samples.android.screens
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,11 +18,11 @@ import com.mena97villalobos.composeplotlib.chart.SankeyChart
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
-import com.mena97villalobos.composeplotlib.core.spec.SankeyColumnVerticalAlignment
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.SankeyColumnVerticalAlignment
+import com.mena97villalobos.composeplotlib.core.spec.SankeyLayoutSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyLink
 import com.mena97villalobos.composeplotlib.core.spec.SankeyLinkOrder
-import com.mena97villalobos.composeplotlib.core.spec.SankeyLayoutSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyNode
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 
@@ -86,11 +86,11 @@ fun SankeyChartShowcaseScreen() {
             marker = { markerData -> DefaultChartMarker(markerData, showCoordinateLine = false) },
         )
         Text(
-            text = selection.selection?.let { "Selected ${it.target.layerId} index ${it.target.pointIndex}" }
-                ?: "Tap nodes or links. Pan/zoom with two fingers.",
+            text =
+                selection.selection?.let { "Selected ${it.target.layerId} index ${it.target.pointIndex}" }
+                    ?: "Tap nodes or links. Pan/zoom with two fingers.",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 12.dp),
         )
     }
 }
-

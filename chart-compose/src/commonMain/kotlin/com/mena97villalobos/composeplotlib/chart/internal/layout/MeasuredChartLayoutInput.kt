@@ -43,7 +43,7 @@ internal fun measuredLayoutInput(
     pieChartSpec: PieChartSpec? = null,
     /** Extra axis strings to measure (e.g. combined secondary Y tick labels not in [preliminaryLayout]). */
     extraTickLabels: List<String> = emptyList(),
-    /** When true, measures [extraTickLabels] with [ChartLabelTextStyles.yAxisSecondaryTick]. */
+    /** When true, measures [extraTickLabels] with `ChartLabelTextStyles.yAxisSecondaryTick`. */
     extraTickLabelsUseSecondaryStyle: Boolean = false,
 ): ChartLayoutInput {
     val labelStyles = renderStyles.labels

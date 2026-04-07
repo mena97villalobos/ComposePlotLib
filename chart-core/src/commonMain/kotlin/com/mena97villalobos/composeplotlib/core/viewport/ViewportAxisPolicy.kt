@@ -7,17 +7,17 @@ package com.mena97villalobos.composeplotlib.core.viewport
  * Used by the Compose layer for horizontal-only or vertical-only exploration and by gesture code so pan/zoom
  * on a locked axis are ignored.
  *
- * Update at runtime with [com.mena97villalobos.composeplotlib.chart.state.ChartViewportState.updateAxisPolicy].
+ * Update at runtime with `ChartViewportState.updateAxisPolicy` (in `chart-compose`).
  *
  * See **docs/viewport-configuration.md** for presets ([HorizontalExploration], [VerticalExploration]) and examples.
  */
 data class ViewportAxisPolicy(
     /**
-     * When true, after each update the visible y-range is replaced with [ChartViewportState.domain].yRange.
+     * When true, after each update the visible y-range is replaced with `ChartViewportState.domain.yRange`.
      */
     val lockYToDomain: Boolean = false,
     /**
-     * When true, after each update the visible x-range is replaced with [ChartViewportState.domain].xRange.
+     * When true, after each update the visible x-range is replaced with `ChartViewportState.domain.xRange`.
      */
     val lockXToDomain: Boolean = false,
 ) {

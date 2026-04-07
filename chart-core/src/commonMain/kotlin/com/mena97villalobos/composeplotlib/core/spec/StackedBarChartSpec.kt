@@ -8,7 +8,7 @@ import com.mena97villalobos.composeplotlib.core.model.BarGroup
  * [BarLayoutMode.Stacked] (falling back to [BarLayoutMode.Independent] when group entry counts differ —
  * see [resolvedBarLayout] / [BarChartSpec.resolvedBarLayout]).
  *
- * Use [toBarChartSpec] with [com.mena97villalobos.composeplotlib.chart.BarChart] or the [StackedBarChart] composable.
+ * Use [toBarChartSpec] with the `BarChart` composable (in `chart-compose`) or the `StackedBarChart` composable.
  */
 data class StackedBarChartSpec(
     val groups: List<BarGroup>,

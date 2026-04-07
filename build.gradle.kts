@@ -78,6 +78,7 @@ dokka {
     dokkaPublications.html {
         moduleName.set("ComposePlotLib")
         outputDirectory.set(layout.buildDirectory.dir("dokka/html"))
+        includes.from(layout.projectDirectory.file("docs/dokka/quick-start.md"))
     }
 }
 

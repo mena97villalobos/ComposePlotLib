@@ -3,11 +3,11 @@ package com.mena97villalobos.composeplotlib.core.viewport
 /**
  * **Stable public API** — bounds on each axis **visible span** after pinch-zoom in [ViewportState.zoom].
  *
- * Configure via [com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState] (Compose) or by
+ * Configure via `rememberChartViewportState` (in `chart-compose`) or by
  * building [ViewportState] in chart-core tests/tools. Values apply on every zoom and after programmatic
  * viewport updates that go through [ViewportState].
  *
- * UI layers mirror the same values into [com.mena97villalobos.composeplotlib.chart.state.ChartViewportState]
+ * UI layers mirror the same values into `ChartViewportState`
  * so apps can cap maximum zoom-out or minimum zoom-in without touching gesture math.
  *
  * See **docs/viewport-configuration.md** in the repo for end-to-end usage (constraints + axis lock + gestures).

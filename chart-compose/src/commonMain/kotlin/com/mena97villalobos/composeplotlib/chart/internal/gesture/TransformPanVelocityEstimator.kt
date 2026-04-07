@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 import kotlin.time.ComparableTimeMark
 import kotlin.time.TimeSource
 
-/** Estimates pan velocity (px/s) from recent [detectTransformGestures] pan deltas and timestamps. */
+/** Estimates pan velocity (px/s) from recent `detectTransformGestures` pan deltas and timestamps. */
 internal class TransformPanVelocityEstimator(
     private val maxSamples: Int = 8,
     private val zoomPanSlop: Float = 0.012f,
