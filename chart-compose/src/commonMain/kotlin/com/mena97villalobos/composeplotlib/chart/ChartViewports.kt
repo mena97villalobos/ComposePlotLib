@@ -8,6 +8,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
+import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
@@ -192,6 +193,21 @@ fun defaultViewport(spec: BarChartSpec): ChartViewport {
             )
         }
     }
+}
+
+/**
+ * [ChartViewport] that centers each cell on its integer index.
+ *
+ * The X range spans `[-0.5, columnCount - 0.5]` and Y range `[-0.5, rowCount - 0.5]` so that each
+ * category tick falls at the center of its cell. Uses a 1-cell default range when the spec is empty.
+ */
+fun defaultViewport(spec: HeatmapChartSpec): ChartViewport {
+    val cols = spec.columnLabels.size.coerceAtLeast(1)
+    val rows = spec.rowLabels.size.coerceAtLeast(1)
+    return ChartViewport(
+        xRange = ClosedRangeD(-0.5, cols - 0.5),
+        yRange = ClosedRangeD(-0.5, rows - 0.5),
+    )
 }
 
 private fun Double.ensureSpan(min: Double): Double = if (this == min || abs(this - min) < FpMath.EPS) this + FpMath.DEFAULT_DEGENERATE_PAD else this

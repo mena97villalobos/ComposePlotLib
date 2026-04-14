@@ -10,6 +10,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
+import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
@@ -236,5 +237,24 @@ internal fun buildBarMarkerData(
         yLabel = yLab,
         valueLabel = spec.valueFormatter(entry),
         accessibilitySummary = accessibilitySummary,
+    )
+}
+
+/** Builds [ChartMarkerData] for the selected heatmap cell using spec formatters. */
+internal fun buildHeatmapMarkerData(
+    spec: HeatmapChartSpec,
+    selection: ChartSelection,
+): ChartMarkerData? {
+    val cell = spec.cells.getOrNull(selection.target.pointIndex) ?: return null
+    val colLabel = spec.columnLabels.getOrElse(cell.col) { cell.col.toString() }
+    val rowLabel = spec.rowLabels.getOrElse(cell.row) { cell.row.toString() }
+    return ChartMarkerData(
+        selection = selection,
+        seriesId = spec.id,
+        seriesLabel = "$colLabel / $rowLabel",
+        xLabel = colLabel,
+        yLabel = rowLabel,
+        valueLabel = spec.valueFormatter(cell),
+        accessibilitySummary = "Selected $colLabel, $rowLabel: ${spec.valueFormatter(cell)}.",
     )
 }

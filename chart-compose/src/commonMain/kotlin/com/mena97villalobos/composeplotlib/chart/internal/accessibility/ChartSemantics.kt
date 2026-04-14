@@ -15,6 +15,7 @@ import com.mena97villalobos.composeplotlib.chart.ChartCustomAccessibilityAction
 import com.mena97villalobos.composeplotlib.chart.accessibilitySummaryText
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildBarMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildCombinedMarkerData
+import com.mena97villalobos.composeplotlib.chart.internal.marker.buildHeatmapMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildLineMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildPieMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildRadarMarkerData
@@ -26,6 +27,7 @@ import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartLiveRegionMode
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
+import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
@@ -536,6 +538,56 @@ private fun markerFocusHint(requestFocusOnMarker: Boolean): String =
     } else {
         ""
     }
+
+/** Adds TalkBack / VoiceOver content, optional custom actions, focus, and an Image role for heatmap charts. */
+internal fun Modifier.heatmapChartAccessibility(
+    spec: HeatmapChartSpec,
+    selectionState: ChartSelectionState,
+    emptyStateDescription: String? = null,
+    customAccessibilityActions: List<ChartCustomAccessibilityAction> = emptyList(),
+): Modifier {
+    val wantsFocus =
+        spec.accessibility.requestFocusForAccessibility ||
+                spec.accessibility.requestFocusOnMarker
+    val mergeDescendants = !spec.accessibility.requestFocusOnMarker
+    val semanticsModifier =
+        Modifier.semantics(mergeDescendants = mergeDescendants) {
+            role = Role.Image
+            val baseDescription =
+                spec.accessibility.contentDescription
+                    ?: "Heatmap chart with ${spec.rowLabels.size} rows and ${spec.columnLabels.size} columns."
+            contentDescription =
+                if (spec.cells.isEmpty()) {
+                    emptyStateDescription ?: "$baseDescription $ACCESSIBILITY_NO_DATA_SUFFIX"
+                } else {
+                    baseDescription
+                }
+            if (spec.accessibility.exposeSelectionState) {
+                when (spec.accessibility.selectionLiveRegionMode) {
+                    ChartLiveRegionMode.Off -> Unit
+                    ChartLiveRegionMode.Polite -> liveRegion = LiveRegionMode.Polite
+                    ChartLiveRegionMode.Assertive -> liveRegion = LiveRegionMode.Assertive
+                }
+                val selection = selectionState.selection
+                if (selection != null) {
+                    val data = buildHeatmapMarkerData(spec, selection)
+                    if (data != null) stateDescription = data.accessibilitySummaryText()
+                }
+            }
+            if (customAccessibilityActions.isNotEmpty()) {
+                customActions =
+                    customAccessibilityActions.map { a ->
+                        CustomAccessibilityAction(a.label) {
+                            a.onClick()
+                            true
+                        }
+                    }
+            }
+        }
+    return this
+        .focusable(enabled = wantsFocus)
+        .then(semanticsModifier)
+}
 
 private fun keyboardHint(accessibility: ChartAccessibilitySpec): String {
     val viewport =

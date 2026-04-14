@@ -4,16 +4,21 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.RequestFocusWhenChartMarkerShown
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.chartMarkerFocusContainer
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.pieChartAccessibility
@@ -39,13 +44,18 @@ import com.mena97villalobos.composeplotlib.chart.theme.chartChromeTheme
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.SizeD
 import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner
+import com.mena97villalobos.composeplotlib.core.layout.PieChartLayoutMath
 import com.mena97villalobos.composeplotlib.core.selection.PieHitResolver
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.hasDrawableSlices
+import kotlin.math.roundToInt
 
 /**
  * Pie / donut chart: radial layout via [ChartPlanner.planPieChart], tap slice selection, optional marker overlay.
  *
+ * @param centerContent optional composable rendered at the center of the chart. For donut charts
+ *   ([PieChartSpec.holeRadiusRatio] > 0) the overlay is sized to fit exactly inside the hole and its content is
+ *   centered. For solid pies the overlay is unconstrained and centered at the pie center point.
  * @param markerPlacement same flip/slide containment as cartesian charts ([ChartMarkerPlacement] defaults to plot bounds).
  *
  * Pan/zoom are **off** by default ([ChartGestureConfig.transform] disabled) because this family does not use the
@@ -59,6 +69,7 @@ fun PieChart(
     viewportState: ChartViewportState = rememberChartViewportState(initialViewport = defaultViewport(spec)),
     selectionState: ChartSelectionState = rememberChartSelectionState(),
     gestureConfig: ChartGestureConfig = ChartGestureConfig.PieDefault,
+    centerContent: (@Composable BoxScope.() -> Unit)? = null,
     marker: (@Composable BoxScope.(ChartMarkerData) -> Unit)? = null,
     markerPlacement: ChartMarkerPlacement = ChartMarkerPlacement.Default,
     noData: (@Composable BoxScope.() -> Unit)? = null,
@@ -90,7 +101,8 @@ fun PieChart(
         }
 
     var canvasSize by remember { mutableStateOf(SizeD.Zero) }
-    val fontScale = LocalDensity.current.fontScale
+    val density = LocalDensity.current
+    val fontScale = density.fontScale
     val plan =
         remember(spec, renderViewport, selectionState.selection, canvasSize, textMeasurer, labelStyles, fontScale) {
             if (canvasSize == SizeD.Zero) {
@@ -117,6 +129,12 @@ fun PieChart(
                 )
             }
         }
+
+    val radialLayout =
+        remember(plan) {
+            plan?.layout?.plotBounds?.let { PieChartLayoutMath.layout(it, spec.holeRadiusRatio) }
+        }
+    var centerContentSize by remember { mutableStateOf(IntSize.Zero) }
 
     val markerFocusRequester = rememberChartMarkerFocusRequester()
     val latestPlan = rememberUpdatedState(plan)
@@ -173,6 +191,46 @@ fun PieChart(
             if (!spec.hasDrawableSlices()) return@Canvas
             with(PieChartRenderer) {
                 render(currentPlan, textMeasurer, renderStyles)
+            }
+        }
+
+        if (centerContent != null && radialLayout != null) {
+            val cx = radialLayout.center.x
+            val cy = radialLayout.center.y
+            val innerR = radialLayout.innerRadius
+            if (innerR != null) {
+                // Donut: constrain to the hole diameter and center within it.
+                val holeDiameter = with(density) { (innerR * 2).toFloat().toDp() }
+                Box(
+                    modifier =
+                        Modifier
+                            .size(holeDiameter)
+                            .offset {
+                                IntOffset(
+                                    (cx - innerR).roundToInt(),
+                                    (cy - innerR).roundToInt(),
+                                )
+                            },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    centerContent()
+                }
+            } else {
+                // Solid pie: measure content size first, then center at the pie midpoint.
+                Box(
+                    modifier =
+                        Modifier
+                            .onSizeChanged { centerContentSize = it }
+                            .offset {
+                                IntOffset(
+                                    (cx - centerContentSize.width / 2.0).roundToInt(),
+                                    (cy - centerContentSize.height / 2.0).roundToInt(),
+                                )
+                            },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    centerContent()
+                }
             }
         }
 

@@ -8,6 +8,7 @@ import androidx.compose.ui.text.TextStyle
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendStyle
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
@@ -119,6 +120,20 @@ internal fun chartLabelTextStyles(spec: RadarChartSpec): ChartLabelTextStyles {
         legend = legend,
         pieSliceLabel = legend,
         yAxisSecondaryTick = axis,
+    )
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: HeatmapChartSpec): ChartLabelTextStyles {
+    val typo = MaterialTheme.typography
+    val legend = legendStyleFrom(typo, spec.legend.style)
+    return ChartLabelTextStyles(
+        xAxis = tickStyleFrom(typo, spec.xAxis.labelStyle),
+        yAxis = tickStyleFrom(typo, spec.yAxis.labelStyle),
+        legend = legend,
+        pieSliceLabel = legend,
+        yAxisSecondaryTick = tickStyleFrom(typo, spec.xAxis.labelStyle),
     )
 }
 

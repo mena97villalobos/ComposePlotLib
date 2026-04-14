@@ -19,9 +19,15 @@ Current priorities:
 - `chart-core`
   Owns non-UI math, geometry, ranges, domains, viewport state, transforms, visible-range logic, selection models, immutable chart specs, and layout planning.
 - `chart-compose`
- Owns public Compose APIs (`LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`), Compose-managed interaction state, gesture adapters, and Compose canvas rendering.
+  Owns public Compose APIs (`LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+  `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`, `HeatmapChart`),
+  Compose-managed interaction state, gesture adapters, and Compose canvas rendering.
 - `composeApp`
- Thin shared host for previewing the current milestone; entry **`ComposePlotApp()`** must include **every** shipped chart family (line, bar, stacked bar, horizontal bar, scatter, pie/donut, **radar/spider**, **combined cartesian**, **sankey**) plus the small **domain axes** demo tab (category, long-label truncation, epoch time, UTC weekday tick policy); extend the cycle when new chart families ship.
+  Thin shared host for previewing the current milestone; entry **`ComposePlotApp()`** must include *
+  *every** shipped chart family (line, bar, stacked bar, horizontal bar, scatter, pie/donut, *
+  *radar/spider**, **combined cartesian**, **sankey**, **heatmap**) plus the small **domain axes**
+  demo tab (category, long-label truncation, epoch time, UTC weekday tick policy); extend the cycle
+  when new chart families ship.
 - `samples/android-showcase`
   Primary showcase app for feature demos and manual verification.
 
@@ -99,6 +105,10 @@ Prefer this order (see `docs/production-readiness-next-steps.md` → **New Chart
 1. **Scatter** — **shipped**; same cartesian pipeline as line/bar (`ScatterChartSpec`, `planScatterChart`, `ScatterChart`).
 2. **Pie / donut** — **shipped**; radial planning, `DrawCommand.Arc` (+ optional `innerRadius`), `PieHitResolver`, `PieChart`, hosts/showcase (**`AGENTS.md` → Obligations**).
 3. **Combined** — **shipped** (`CombinedCartesianChartSpec`, `planCombinedCartesianChart`, `CombinedCartesianChart`); design reference **`docs/design-combined-cartesian-layers.md`**. Do not layer pie with cartesian until both are solid alone.
+4. **Heatmap** — **shipped** (`HeatmapChartSpec`, `HeatmapColorScale`, `HeatmapCell`,
+   `planHeatmapChart`, `HeatmapChart`); 2-D grid of colored cells; color encodes value via linear
+   channel lerp; `AxisScale.Category` forced on both axes; tap-only gesture config; selection
+   highlights selected cell with a stroke border.
 
 ## Planner structure (`chart-core`)
 Cartesian planning is split for clarity: tick/chrome (`ChartChromeLayout.kt`), final frame (`CartesianLayoutPlanner.kt`, `CartesianFrame`), orchestration + draw commands (`ChartPlanner.kt`). See **`docs/architecture.md`** → *Planner passes*.
@@ -130,3 +140,43 @@ Cartesian planning is split for clarity: tick/chrome (`ChartChromeLayout.kt`), f
 - **`docs/architecture.md`**, **`docs/api-and-state.md`**, **`docs/api-checklist.md`**, **`docs/viewport-configuration.md`**, **`docs/style-and-theme.md`**, **`docs/marker-tooltip-placement.md`**, **`docs/chart-families-overview.md`**, **`docs/module-guide.md`**, **`docs/showcase-guide.md`**  
 - **`docs/ios-host-runbook.md`**, **`docs/ios-library-usage.md`** — iOS validation and KMP+iOS integration
 - **`docs/implementation-roadmap.md`**, **`docs/feature-inventory.md`**, **`docs/android-showcase-plan.md`** — long-range scope and showcase IA
+
+<!-- code-review-graph MCP tools -->
+
+## MCP Tools: code-review-graph
+
+**IMPORTANT: This project has a knowledge graph. ALWAYS use the
+code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
+the codebase.** The graph is faster, cheaper (fewer tokens), and gives
+you structural context (callers, dependents, test coverage) that file
+scanning cannot.
+
+### When to use graph tools FIRST
+
+- **Exploring code**: `semantic_search_nodes` or `query_graph` instead of Grep
+- **Understanding impact**: `get_impact_radius` instead of manually tracing imports
+- **Code review**: `detect_changes` + `get_review_context` instead of reading entire files
+- **Finding relationships**: `query_graph` with callers_of/callees_of/imports_of/tests_for
+- **Architecture questions**: `get_architecture_overview` + `list_communities`
+
+Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
+
+### Key Tools
+
+| Tool                        | Use when                                               |
+|-----------------------------|--------------------------------------------------------|
+| `detect_changes`            | Reviewing code changes — gives risk-scored analysis    |
+| `get_review_context`        | Need source snippets for review — token-efficient      |
+| `get_impact_radius`         | Understanding blast radius of a change                 |
+| `get_affected_flows`        | Finding which execution paths are impacted             |
+| `query_graph`               | Tracing callers, callees, imports, tests, dependencies |
+| `semantic_search_nodes`     | Finding functions/classes by name or keyword           |
+| `get_architecture_overview` | Understanding high-level codebase structure            |
+| `refactor_tool`             | Planning renames, finding dead code                    |
+
+### Workflow
+
+1. The graph auto-updates on file changes (via hooks).
+2. Use `detect_changes` for code review.
+3. Use `get_affected_flows` to understand impact.
+4. Use `query_graph` pattern="tests_for" to check coverage.

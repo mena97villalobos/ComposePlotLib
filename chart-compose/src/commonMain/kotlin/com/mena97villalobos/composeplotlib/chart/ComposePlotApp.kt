@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionState
@@ -31,6 +32,7 @@ import com.mena97villalobos.composeplotlib.core.model.BarEntry
 import com.mena97villalobos.composeplotlib.core.model.BarGroup
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
+import com.mena97villalobos.composeplotlib.core.model.HeatmapCell
 import com.mena97villalobos.composeplotlib.core.model.LineSeries
 import com.mena97villalobos.composeplotlib.core.model.PieChartSlice
 import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
@@ -48,6 +50,8 @@ import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBindi
 import com.mena97villalobos.composeplotlib.core.spec.EpochMillisTickPolicy
 import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
 import com.mena97villalobos.composeplotlib.core.spec.GridSpec
+import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.HeatmapColorScale
 import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineStyle
@@ -84,6 +88,7 @@ fun ComposePlotApp() {
         val pieSpec = remember { previewPieChartSpec() }
         val radarSpec = remember { previewRadarChartSpec() }
         val combinedSpec = remember { previewCombinedCartesianSpec() }
+        val heatmapSpec = remember { previewHeatmapChartSpec() }
         val lineViewport = rememberChartViewportState(initialViewport = defaultViewport(lineSpecVariantA))
         val barViewport = rememberChartViewportState(initialViewport = defaultViewport(barSpec))
         val stackedBarViewport =
@@ -93,6 +98,7 @@ fun ComposePlotApp() {
         val pieViewport = rememberChartViewportState(initialViewport = defaultViewport(pieSpec))
         val radarViewport = rememberChartViewportState(initialViewport = defaultViewport(radarSpec))
         val combinedViewport = rememberChartViewportState(initialViewport = defaultViewport(combinedSpec))
+        val heatmapViewport = rememberChartViewportState(initialViewport = defaultViewport(heatmapSpec))
         val domainCategorySpec = remember { previewCategoryAxisLineSpec() }
         val domainLongCategorySpec = remember { previewLongCategoryAxisLineSpec() }
         val domainTimeSpec = remember { previewEpochMillisLineSpec() }
@@ -112,6 +118,7 @@ fun ComposePlotApp() {
         val pieSelection = rememberChartSelectionState()
         val radarSelection = rememberChartSelectionState()
         val combinedSelection = rememberChartSelectionState()
+        val heatmapSelection = rememberChartSelectionState()
         val domainCategorySelection = rememberChartSelectionState()
         val domainLongCategorySelection = rememberChartSelectionState()
         val domainTimeSelection = rememberChartSelectionState()
@@ -147,7 +154,8 @@ fun ComposePlotApp() {
                             PreviewScreen.Pie -> PreviewScreen.Radar
                             PreviewScreen.Radar -> PreviewScreen.Combined
                             PreviewScreen.Combined -> PreviewScreen.Sankey
-                            PreviewScreen.Sankey -> PreviewScreen.DomainAxes
+                            PreviewScreen.Sankey -> PreviewScreen.Heatmap
+                            PreviewScreen.Heatmap -> PreviewScreen.DomainAxes
                             PreviewScreen.DomainAxes -> PreviewScreen.Line
                         }
                 },
@@ -163,7 +171,8 @@ fun ComposePlotApp() {
                         PreviewScreen.Pie -> "Switch to Radar Preview"
                         PreviewScreen.Radar -> "Switch to Combined Preview"
                         PreviewScreen.Combined -> "Switch to Sankey Preview"
-                        PreviewScreen.Sankey -> "Switch to Domain Axes Preview"
+                        PreviewScreen.Sankey -> "Switch to Heatmap Preview"
+                        PreviewScreen.Heatmap -> "Switch to Domain Axes Preview"
                         PreviewScreen.DomainAxes -> "Switch to Line Preview"
                     },
                 )
@@ -424,6 +433,32 @@ fun ComposePlotApp() {
                     )
                 }
 
+                PreviewScreen.Heatmap -> {
+                    HeatmapChart(
+                        spec = heatmapSpec,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(320.dp)
+                                .padding(top = 8.dp),
+                        viewportState = heatmapViewport,
+                        selectionState = heatmapSelection,
+                        marker = { markerData -> DefaultChartMarker(markerData) },
+                    )
+                    Text(
+                        text =
+                            heatmapSelection.selection?.let { sel ->
+                                val cell = heatmapSpec.cells.getOrNull(sel.target.pointIndex)
+                                cell?.let { c ->
+                                    val col = heatmapSpec.columnLabels.getOrElse(c.col) { c.col.toString() }
+                                    val row = heatmapSpec.rowLabels.getOrElse(c.row) { c.row.toString() }
+                                    "Selected $col / $row: ${heatmapSpec.valueFormatter(c)}"
+                                } ?: "Selected cell ${sel.target.pointIndex}"
+                            } ?: "Tap a cell to select it.",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+
                 PreviewScreen.Pie -> {
                     PieChart(
                         spec = pieSpec,
@@ -435,6 +470,19 @@ fun ComposePlotApp() {
                         viewportState = pieViewport,
                         selectionState = pieSelection,
                         marker = { markerData -> DefaultChartMarker(markerData) },
+                        centerContent = {
+                            val total = pieSpec.slices.sumOf { it.value }
+                            val label =
+                                pieSelection.selection?.let { sel ->
+                                    val slice = pieSpec.slices.getOrNull(sel.target.pointIndex)
+                                    slice?.let { "%.0f%%".format(it.value / total * 100) }
+                                } ?: "%.0f\ntotal".format(total)
+                            Text(
+                                text = label,
+                                style = MaterialTheme.typography.labelLarge,
+                                textAlign = TextAlign.Center,
+                            )
+                        },
                     )
                     Text(
                         text =
@@ -442,7 +490,7 @@ fun ComposePlotApp() {
                                 val slice = pieSpec.slices.getOrNull(sel.target.pointIndex)
                                 slice?.let { "${it.label}: ${pieSpec.sliceValueFormatter(it)}" }
                                     ?: "Selected slice ${sel.target.pointIndex + 1}"
-                            } ?: "Tap a slice to select.",
+                            } ?: "Tap a slice to see its percentage in the donut hole.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -911,6 +959,29 @@ private fun previewHorizontalBarChartSpec(): BarChartSpec =
             ),
     )
 
+private fun previewHeatmapChartSpec(): HeatmapChartSpec =
+    HeatmapChartSpec(
+        id = "activity",
+        columnLabels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+        rowLabels = listOf("Week 1", "Week 2", "Week 3", "Week 4"),
+        cells =
+            listOf(
+                HeatmapCell(0, 0, 20.0), HeatmapCell(1, 0, 45.0), HeatmapCell(2, 0, 80.0),
+                HeatmapCell(3, 0, 55.0), HeatmapCell(4, 0, 70.0), HeatmapCell(5, 0, 10.0),
+                HeatmapCell(6, 0, 5.0),
+                HeatmapCell(0, 1, 60.0), HeatmapCell(1, 1, 75.0), HeatmapCell(2, 1, 90.0),
+                HeatmapCell(3, 1, 85.0), HeatmapCell(4, 1, 50.0), HeatmapCell(5, 1, 30.0),
+                HeatmapCell(6, 1, 15.0),
+                HeatmapCell(0, 2, 40.0), HeatmapCell(1, 2, 65.0), HeatmapCell(2, 2, 100.0),
+                HeatmapCell(3, 2, 95.0), HeatmapCell(4, 2, 80.0), HeatmapCell(5, 2, 25.0),
+                HeatmapCell(6, 2, 20.0),
+                HeatmapCell(0, 3, 35.0), HeatmapCell(1, 3, 55.0), HeatmapCell(2, 3, 70.0),
+                HeatmapCell(3, 3, 60.0), HeatmapCell(4, 3, 45.0), HeatmapCell(5, 3, 40.0),
+                HeatmapCell(6, 3, 30.0),
+            ),
+        colorScale = HeatmapColorScale(0.0, 100.0, ChartColor.LightGray, ChartColor.Blue),
+    )
+
 private enum class PreviewScreen {
     Line,
     Bar,
@@ -921,5 +992,6 @@ private enum class PreviewScreen {
     Radar,
     Combined,
     Sankey,
+    Heatmap,
     DomainAxes,
 }

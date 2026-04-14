@@ -19,6 +19,7 @@ import com.github.takahirom.roborazzi.captureRoboImage
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.HeatmapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
@@ -310,6 +311,18 @@ class ShowcaseRoborazziTest {
         composeRule.setContent {
             Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                 ShowcaseApp()
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun heatmapChartShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    HeatmapChartShowcaseScreen()
+                }
             }
         }
         composeRule.onRoot().captureShowcaseRoboImage()

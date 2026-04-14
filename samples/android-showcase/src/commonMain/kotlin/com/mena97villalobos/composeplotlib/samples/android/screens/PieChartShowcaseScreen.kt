@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.chart.ChartCustomAccessibilityAction
 import com.mena97villalobos.composeplotlib.chart.ChartNoDataDefaults
@@ -39,6 +40,7 @@ fun PieChartShowcaseScreen() {
         when (variant) {
             PieShowcaseVariant.Pie -> samplePieChartSpec()
             PieShowcaseVariant.Donut -> sampleDonutChartSpec()
+            PieShowcaseVariant.DonutCenter -> sampleDonutChartSpec()
             PieShowcaseVariant.Empty -> emptyPieChartSpec()
         }
     val viewportState = rememberChartViewportState(initialViewport = defaultViewport(spec))
@@ -70,6 +72,9 @@ fun PieChartShowcaseScreen() {
             Button(onClick = { variant = PieShowcaseVariant.Donut }) {
                 Text("Donut")
             }
+            Button(onClick = { variant = PieShowcaseVariant.DonutCenter }) {
+                Text("Center")
+            }
             Button(onClick = { variant = PieShowcaseVariant.Empty }) {
                 Text("Empty")
             }
@@ -94,6 +99,24 @@ fun PieChartShowcaseScreen() {
             marker = { markerData ->
                 DefaultChartMarker(markerData)
             },
+            centerContent =
+                if (variant == PieShowcaseVariant.DonutCenter) {
+                    {
+                        val total = spec.slices.sumOf { it.value }
+                        val label =
+                            selectionState.selection?.let { sel ->
+                                val slice = spec.slices.getOrNull(sel.target.pointIndex)
+                                slice?.let { "%.0f%%".format(it.value / total * 100) }
+                            } ?: "%.0f\ntotal".format(total)
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.labelLarge,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                } else {
+                    null
+                },
             noDataUi =
                 if (variant == PieShowcaseVariant.Empty) {
                     ChartNoDataDefaults.pieChart()
@@ -114,7 +137,12 @@ fun PieChartShowcaseScreen() {
                     slice?.let { s ->
                         "${s.label}: ${spec.sliceValueFormatter(s)}"
                     } ?: "Selected slice ${selection.target.pointIndex + 1}"
-                } ?: "Tap a slice to inspect selection.",
+                } ?: when (variant) {
+                    PieShowcaseVariant.DonutCenter ->
+                        "Tap a slice — its percentage appears in the donut hole via centerContent."
+
+                    else -> "Tap a slice to inspect selection."
+                },
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -123,5 +151,6 @@ fun PieChartShowcaseScreen() {
 private enum class PieShowcaseVariant {
     Pie,
     Donut,
+    DonutCenter,
     Empty,
 }

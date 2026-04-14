@@ -5,6 +5,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.InsetsD
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.PolylineRectClip
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
+import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner.computeCartesianTickValuePass
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
 import com.mena97villalobos.composeplotlib.core.layout.draw.ShapeDrawStyle
 import com.mena97villalobos.composeplotlib.core.layout.planning.CartesianLayoutPlanner
@@ -20,9 +21,9 @@ import com.mena97villalobos.composeplotlib.core.model.BarGroup
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.LineSeries
 import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
-import com.mena97villalobos.composeplotlib.core.model.toXyPoints
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
+import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
@@ -31,6 +32,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
 import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
+import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineRenderSpec
@@ -2520,6 +2522,106 @@ object ChartPlanner {
         return ChartViewport(
             xRange = primaryViewport.xRange,
             yRange = ClosedRangeD(yLow, maxY),
+        )
+    }
+
+    // ── Heatmap ──────────────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Plans a heatmap chart: a 2-D grid of colored cells where each cell's color encodes a value.
+     *
+     * Both axes are forced to [AxisScale.Category] using [HeatmapChartSpec.columnLabels] and
+     * [HeatmapChartSpec.rowLabels]. The [HeatmapChartSpec.xAxis] and [HeatmapChartSpec.yAxis] fields
+     * control styling (label color, line visibility) but their [AxisSpec.scale] is ignored.
+     *
+     * Cells that reference out-of-range column/row indices are silently skipped.
+     */
+    fun planHeatmapChart(
+        input: ChartLayoutInput,
+        spec: HeatmapChartSpec,
+        selection: ChartSelection? = null,
+        tickValuePass: TickValuePass? = null,
+    ): HeatmapChartPlan {
+        val cols = spec.columnLabels.size
+        val rows = spec.rowLabels.size
+
+        val xAxisWithCat = spec.xAxis.copy(scale = AxisScale.Category(spec.columnLabels))
+        val yAxisWithCat = spec.yAxis.copy(scale = AxisScale.Category(spec.rowLabels))
+
+        val frame =
+            layoutCartesianFrame(
+                input = input,
+                xAxis = xAxisWithCat,
+                yAxis = yAxisWithCat,
+                legend = spec.legend,
+                contentPadding = spec.contentPadding,
+                legendLabelColors = emptyList(),
+                tickValuePass = tickValuePass,
+            )
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        val cellW = if (cols > 0) frame.plotBounds.width / cols else 0.0
+        val cellH = if (rows > 0) frame.plotBounds.height / rows else 0.0
+        val halfGap = spec.cellGapPx / 2.0
+
+        val plannedCells = mutableListOf<PlannedHeatmapCell>()
+        spec.cells.forEachIndexed { idx, cell ->
+            if (cell.col < 0 || cell.col >= cols || cell.row < 0 || cell.row >= rows) return@forEachIndexed
+            val left = frame.plotBounds.left + cell.col * cellW + halfGap
+            val right = left + cellW - spec.cellGapPx
+            val bottom = frame.plotBounds.bottom - cell.row * cellH - halfGap
+            val top = bottom - cellH + spec.cellGapPx
+            if (right <= left || bottom <= top) return@forEachIndexed
+            val bounds = RectD(left, top, right, bottom)
+            val color = spec.colorScale.colorFor(cell.value)
+            plannedCells += PlannedHeatmapCell(cell.col, cell.row, cell.value, color, bounds, idx)
+            plotCommands += DrawCommand.Rect(bounds, color)
+        }
+
+        // Selection highlight: stroke border drawn on top of the selected cell
+        if (selection != null) {
+            val selCell =
+                plannedCells.firstOrNull {
+                    it.cellIndex == selection.target.pointIndex &&
+                            selection.target.seriesId == spec.id
+                }
+            if (selCell != null) {
+                plotCommands +=
+                    DrawCommand.RoundRect(
+                        bounds = selCell.bounds,
+                        cornerRadius = 0.0,
+                        style =
+                            ShapeDrawStyle.Stroke(
+                                color = spec.selectionStyle.lineColor,
+                                strokeWidth = spec.selectionStyle.lineStrokeWidth * 2,
+                            ),
+                    )
+            }
+        }
+
+        val overlayCommands =
+            buildAxisAndTickLabelsOverlay(
+                frame.plotBounds,
+                xAxisWithCat,
+                yAxisWithCat,
+                frame.xTicks,
+                frame.yTicks,
+            )
+
+        return HeatmapChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = frame.canvasBounds,
+                    plotBounds = frame.plotBounds,
+                    reservedRegions = frame.reservedRegions,
+                    xTicks = frame.xTicks,
+                    yTicks = frame.yTicks,
+                    legendEntries = frame.legendEntries,
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
+                ),
+            selection = selection,
+            heatmapCells = plannedCells,
         )
     }
 }

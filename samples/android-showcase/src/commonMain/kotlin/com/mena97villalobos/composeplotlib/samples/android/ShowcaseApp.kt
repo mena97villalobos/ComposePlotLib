@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.HeatmapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
@@ -69,7 +70,7 @@ fun ShowcaseApp() {
                                 .fillMaxSize()
                                 .semantics {
                                     contentDescription =
-                                        "ComposePlotLib showcase home. Open line, bar, scatter, pie, radar, combined, sankey, or domain-axis demos."
+                                        "ComposePlotLib showcase home. Open line, bar, scatter, pie, radar, combined, sankey, heatmap, or domain-axis demos."
                                 },
                         onOpenDestination = { destination = it },
                     )
@@ -100,6 +101,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Sankey ->
                     Column(detailModifier) {
                         SankeyChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Heatmap ->
+                    Column(detailModifier) {
+                        HeatmapChartShowcaseScreen()
                     }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
@@ -170,6 +175,12 @@ private fun ShowcaseHomeScreen(
             Text("Sankey chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Heatmap) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Heatmap chart")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -187,5 +198,6 @@ private enum class ShowcaseDestination(val title: String) {
     Radar("Radar chart"),
     Combined("Combined chart"),
     Sankey("Sankey chart"),
+    Heatmap("Heatmap chart"),
     DomainAxes("Domain axes"),
 }
