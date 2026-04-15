@@ -38,6 +38,10 @@ data class HeatmapChartSpec(
     val legend: LegendSpec = LegendSpec(enabled = false),
     val selectionStyle: SelectionStyle = SelectionStyle(),
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 24.0, right = 24.0, bottom = 40.0),
-    val valueFormatter: (HeatmapCell) -> String = { "%.1f".format(it.value) },
+    val valueFormatter: (HeatmapCell) -> String = { cell ->
+        val sign = if (cell.value < 0) "-" else ""
+        val absRounded = kotlin.math.round(kotlin.math.abs(cell.value) * 10)
+        "$sign${absRounded / 10}.${absRounded % 10}"
+    },
     val accessibility: ChartAccessibilitySpec = ChartAccessibilitySpec(),
 )

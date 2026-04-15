@@ -117,6 +117,12 @@ code.
   renderer changes in `chart-compose`.
 - **When in doubt about placement**: no-UI + reusable → `chart-core`; Compose/canvas dependency →
   `chart-compose`; demo-only → `samples/android-showcase`.
+- **Every line must be KMP-compatible**: `chart-core` and `chart-compose` target Android *and* iOS
+  via `commonMain`. Never use JVM/Android-only APIs there. Common violations to avoid:
+  - `String.format` / `"...".format(...)` — JVM-only; use `kotlin.math` + manual string building.
+  - `java.*` imports of any kind in `commonMain`.
+  - `android.*` / `androidx.*` types outside `androidMain` source sets.
+  Verify any stdlib symbol resolves in `kotlin-stdlib-common` or a KMP-compatible library.
 
 ### Shipped Chart Families
 

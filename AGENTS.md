@@ -42,6 +42,13 @@ Current priorities:
   If a new chart feature changes layout or semantics, update `chart-core` planning types first, then adapt rendering in `chart-compose`.
 - Prefer shared primitives over chart-specific duplication.
   Reuse geometry, transforms, draw commands, tick generation, and selection logic whenever possible.
+- **Every line of code must be Kotlin Multiplatform compatible.**
+  `chart-core` and `chart-compose` both target Android **and** iOS via KMP `commonMain`. Never use
+  JVM/Android-only APIs in `commonMain` source sets. Common violations to avoid:
+  - `String.format` / `"...".format(...)` — JVM-only; use `kotlin.math` + manual string building instead.
+  - `java.*` imports of any kind.
+  - Android SDK types (`android.*`, `androidx.*`) outside of `androidMain` source sets.
+  When in doubt, check that the symbol resolves in `kotlin-stdlib-common` or a KMP-compatible library.
 
 ## Current Data Flow
 The current implementation follows this flow:
