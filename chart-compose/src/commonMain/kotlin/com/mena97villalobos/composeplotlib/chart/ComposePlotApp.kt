@@ -475,8 +475,8 @@ fun ComposePlotApp() {
                             val label =
                                 pieSelection.selection?.let { sel ->
                                     val slice = pieSpec.slices.getOrNull(sel.target.pointIndex)
-                                    slice?.let { "%.0f%%".format(it.value / total * 100) }
-                                } ?: "%.0f\ntotal".format(total)
+                                    slice?.let { "${kotlin.math.round(it.value / total * 100)}%" }
+                                } ?: "${kotlin.math.round(total)}\ntotal"
                             Text(
                                 text = label,
                                 style = MaterialTheme.typography.labelLarge,
