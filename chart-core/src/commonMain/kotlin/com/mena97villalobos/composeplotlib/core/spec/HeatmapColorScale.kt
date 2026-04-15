@@ -51,8 +51,8 @@ private fun lerpColor(
     }
     return ChartColor(
         (channel(24) shl 24) or
-                (channel(16) shl 16) or
-                (channel(8) shl 8) or
-                channel(0),
+            (channel(16) shl 16) or
+            (channel(8) shl 8) or
+            channel(0),
     )
 }

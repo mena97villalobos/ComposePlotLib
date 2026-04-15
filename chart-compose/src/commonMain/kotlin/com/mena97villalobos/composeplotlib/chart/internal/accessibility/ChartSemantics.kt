@@ -548,7 +548,7 @@ internal fun Modifier.heatmapChartAccessibility(
 ): Modifier {
     val wantsFocus =
         spec.accessibility.requestFocusForAccessibility ||
-                spec.accessibility.requestFocusOnMarker
+            spec.accessibility.requestFocusOnMarker
     val mergeDescendants = !spec.accessibility.requestFocusOnMarker
     val semanticsModifier =
         Modifier.semantics(mergeDescendants = mergeDescendants) {

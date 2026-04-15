@@ -2583,7 +2583,7 @@ object ChartPlanner {
             val selCell =
                 plannedCells.firstOrNull {
                     it.cellIndex == selection.target.pointIndex &&
-                            selection.target.seriesId == spec.id
+                        selection.target.seriesId == spec.id
                 }
             if (selCell != null) {
                 plotCommands +=
