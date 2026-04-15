@@ -49,9 +49,10 @@ fun HeatmapChartShowcaseScreen() {
                 .verticalScroll(rememberScrollState()),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             HeatmapShowcaseVariant.entries.forEach { v ->
