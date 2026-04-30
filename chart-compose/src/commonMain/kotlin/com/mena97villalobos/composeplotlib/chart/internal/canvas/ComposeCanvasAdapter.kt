@@ -38,6 +38,16 @@ import kotlin.math.sin
 import androidx.compose.ui.graphics.StrokeCap as ComposeStrokeCap
 import androidx.compose.ui.graphics.StrokeJoin as ComposeStrokeJoin
 
+// Reused across every draw call to avoid per-frame GC pressure.
+// Safe because Compose Canvas rendering is synchronous on the main thread:
+// each command is fully drawn before the next iteration resets these objects.
+private val scratchPath = Path()
+private val scratchPaint = Paint()
+
+// Caches PathEffect conversions from StrokeStyle — dash pattern objects are constant
+// per chart config, so this map stays small (typically < 5 entries per chart).
+private val dashPathEffectCache = HashMap<StrokeStyle, PathEffect?>(8)
+
 /** Maps core [DrawCommand] values to [DrawScope] and Compose [Color]/geometry. */
 internal object ComposeCanvasAdapter {
     @OptIn(ExperimentalTextApi::class)
@@ -205,7 +215,8 @@ private fun DrawScope.drawDrawCommands(
             is DrawCommand.Polyline -> {
                 if (command.points.size < 2) return@forEach
                 val path =
-                    Path().apply {
+                    scratchPath.apply {
+                        reset()
                         val first = command.points.first()
                         moveTo(first.x.toFloat(), first.y.toFloat())
                         for (i in 1 until command.points.size) {
@@ -285,7 +296,7 @@ private fun DrawScope.drawDrawCommands(
             }
 
             is DrawCommand.Path -> {
-                val path = command.segments.toComposePath()
+                val path = command.segments.populatePath(scratchPath)
                 when (val style = command.style) {
                     is PathDrawStyle.Stroke ->
                         drawPath(
@@ -328,7 +339,7 @@ private fun DrawScope.drawDrawCommands(
                 if (effective <= 0.0) return@forEach
                 if (a < 1.0 && a > 0.0 && chrome.layerCompositingForTranslucentGroups) {
                     drawIntoCanvas { canvas ->
-                        val paint = Paint().apply { alpha = a.toFloat() }
+                        val paint = scratchPaint.apply { alpha = a.toFloat() }
                         val bounds =
                             Rect(
                                 0f,
@@ -391,6 +402,7 @@ private fun DrawScope.drawDrawCommands(
                 if (useAnnulus) {
                     val path =
                         annulusSectorPath(
+                            scratchPath,
                             center = command.center,
                             outerR = command.radius,
                             innerR = inner,
@@ -456,12 +468,14 @@ private fun DrawScope.drawDrawCommands(
 
 /** Donut slice: outer elliptical arc, radial segment, inner arc (reverse sweep), close. Angles match [DrawScope.drawArc]. */
 private fun annulusSectorPath(
+    path: Path,
     center: OffsetD,
     outerR: Double,
     innerR: Double,
     startAngleDegrees: Double,
     sweepAngleDegrees: Double,
 ): Path {
+    path.reset()
     val cx = center.x.toFloat()
     val cy = center.y.toFloat()
     val ro = outerR.toFloat().coerceAtLeast(0.0001f)
@@ -470,7 +484,6 @@ private fun annulusSectorPath(
     val endRad = (startAngleDegrees + sweepAngleDegrees) * PI / 180.0
     val x0 = cx + ro * cos(startRad).toFloat()
     val y0 = cy + ro * sin(startRad).toFloat()
-    val path = Path()
     path.moveTo(x0, y0)
     val ovalOuter = Rect(cx - ro, cy - ro, cx + ro, cy + ro)
     path.arcTo(
@@ -521,16 +534,23 @@ private fun StrokeStyle?.toComposeStrokeJoin(): ComposeStrokeJoin =
 
 private fun StrokeStyle?.toDashPathEffect(): PathEffect? {
     val style = this ?: return null
-    val intervals = style.dashIntervals ?: return null
-    if (intervals.isEmpty()) return null
-    return PathEffect.dashPathEffect(
-        intervals = FloatArray(intervals.size) { intervals[it].toFloat() },
-        phase = style.dashPhase.toFloat(),
-    )
+    if (dashPathEffectCache.containsKey(style)) return dashPathEffectCache[style]
+    val intervals = style.dashIntervals
+    val effect =
+        if (intervals.isNullOrEmpty()) {
+            null
+        } else {
+            PathEffect.dashPathEffect(
+                intervals = FloatArray(intervals.size) { intervals[it].toFloat() },
+                phase = style.dashPhase.toFloat(),
+            )
+        }
+    dashPathEffectCache[style] = effect
+    return effect
 }
 
-private fun List<PathSegment>.toComposePath(): Path {
-    val path = Path()
+private fun List<PathSegment>.populatePath(path: Path): Path {
+    path.reset()
     for (segment in this) {
         when (segment) {
             is PathSegment.MoveTo -> path.moveTo(segment.point.x.toFloat(), segment.point.y.toFloat())

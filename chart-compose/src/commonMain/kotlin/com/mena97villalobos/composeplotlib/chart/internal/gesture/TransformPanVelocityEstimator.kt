@@ -3,7 +3,6 @@ package com.mena97villalobos.composeplotlib.chart.internal.gesture
 import androidx.compose.ui.geometry.Offset
 import kotlin.math.abs
 import kotlin.math.hypot
-import kotlin.math.sqrt
 import kotlin.time.ComparableTimeMark
 import kotlin.time.TimeSource
 
@@ -80,6 +79,6 @@ internal class TransformPanVelocityEstimator(
 
     fun speedPxPerSec(): Float {
         val v = estimateVelocityPxPerSec()
-        return sqrt(v.x * v.x + v.y * v.y)
+        return hypot(v.x, v.y)
     }
 }
