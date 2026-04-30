@@ -140,6 +140,23 @@ jobs:
           :chart-compose:publishIosSimulatorArm64PublicationToGitHubPackagesRepository
           :chart-compose:publishKotlinMultiplatformPublicationToGitHubPackagesRepository
 
+  notify-bom:
+    needs: [build-and-release, publish-ios]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify BOM repository
+        run: |
+          curl -X POST https://api.github.com/repos/mena97villalobos/ComposeLibsBom/dispatches \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.BOM_REPO_TOKEN }}" \
+            -d '{
+              "event_type": "library-released",
+              "client_payload": {
+                "artifact": "ComposePlotLib",
+                "version": "'${{ github.ref_name }}'"
+              }
+            }'
+
   deploy-pages:
     needs: build-and-release
     runs-on: ubuntu-latest
