@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.rememberTextMeasurer
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.RequestFocusWhenChartMarkerShown
+import com.mena97villalobos.composeplotlib.chart.internal.accessibility.candlestickChartAccessibility
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.chartMarkerFocusContainer
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.rememberChartMarkerFocusRequester
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.resolveChartAnimationPolicy
@@ -62,6 +63,7 @@ import kotlin.math.max
  * @param markerPlacement flip/slide tooltip placement; see [ChartMarkerPlacement]
  * @param noData custom empty state when every series has no points; if non-null, takes precedence over [noDataUi]
  * @param noDataUi structured empty copy when [noData] is null; otherwise a plain [DefaultNoDataOverlay]
+ * @param accessibilityCustomActions optional TalkBack / VoiceOver actions (e.g. reset viewport)
  * @param animation optional programmatic viewport easing and marker fade-in; [ChartAnimationPolicy.respectSystemReducedMotion] is applied first
  * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
  */
@@ -76,6 +78,7 @@ fun CandlestickChart(
     markerPlacement: ChartMarkerPlacement = ChartMarkerPlacement.Default,
     noData: (@Composable BoxScope.() -> Unit)? = null,
     noDataUi: ChartNoDataUi? = null,
+    accessibilityCustomActions: List<ChartCustomAccessibilityAction> = emptyList(),
     animation: ChartAnimationPolicy = ChartAnimationPolicy.Default,
     chromeTheme: ChartChromeTheme? = null,
 ) {
@@ -87,6 +90,18 @@ fun CandlestickChart(
     val renderStyles =
         remember(spec, labelStyles, chromeResolved) {
             ChartRenderStyles(labelStyles, chromeResolved)
+        }
+    val emptyStateDescription: String? =
+        if (!spec.series.all { it.points.isEmpty() }) {
+            null
+        } else {
+            when {
+                noData != null -> null
+                noDataUi != null ->
+                    noDataUi.contentDescription
+                        ?: listOfNotNull(noDataUi.title, noDataUi.message).joinToString(". ")
+                else -> null
+            }
         }
     var canvasSize by remember { mutableStateOf(SizeD.Zero) }
     val fontScale = LocalDensity.current.fontScale
@@ -146,7 +161,12 @@ fun CandlestickChart(
     Box(
         modifier =
             modifier
-                .chartCartesianKeyboardViewport(
+                .candlestickChartAccessibility(
+                    spec,
+                    selectionState,
+                    emptyStateDescription,
+                    accessibilityCustomActions,
+                ).chartCartesianKeyboardViewport(
                     enabled = spec.accessibility.keyboardViewportNudgeEnabled,
                     transformEnabled = gestureConfig.transform.enabled,
                     flags = transformFlags,

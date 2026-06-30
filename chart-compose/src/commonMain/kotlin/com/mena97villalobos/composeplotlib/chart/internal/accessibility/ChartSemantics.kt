@@ -14,6 +14,7 @@ import androidx.compose.ui.semantics.stateDescription
 import com.mena97villalobos.composeplotlib.chart.ChartCustomAccessibilityAction
 import com.mena97villalobos.composeplotlib.chart.accessibilitySummaryText
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildBarMarkerData
+import com.mena97villalobos.composeplotlib.chart.internal.marker.buildCandlestickMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildCombinedMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildHeatmapMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildLineMarkerData
@@ -23,6 +24,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.marker.buildScatterMar
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartLiveRegionMode
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
@@ -434,6 +436,65 @@ internal fun Modifier.barChartAccessibility(
         .then(semanticsModifier)
 }
 
+/** Adds TalkBack / VoiceOver content, optional custom actions, focus, and an Image role for candlestick / OHLC charts. */
+internal fun Modifier.candlestickChartAccessibility(
+    spec: CandlestickChartSpec,
+    selectionState: ChartSelectionState,
+    emptyStateDescription: String? = null,
+    customAccessibilityActions: List<ChartCustomAccessibilityAction> = emptyList(),
+): Modifier {
+    // No keyboardSelectionRoamEnabled: candlestick wires viewport-nudge keys but no selection-roam handler.
+    val wantsFocus =
+        spec.accessibility.requestFocusForAccessibility ||
+            spec.accessibility.keyboardViewportNudgeEnabled ||
+            spec.accessibility.requestFocusOnMarker
+    val mergeDescendants = !spec.accessibility.requestFocusOnMarker
+    val semanticsModifier =
+        Modifier.semantics(mergeDescendants = mergeDescendants) {
+            role = Role.Image
+            val summary =
+                spec.accessibility.contentDescription
+                    ?: defaultCandlestickChartSemanticSummary(spec)
+            val noData = spec.series.all { it.points.isEmpty() }
+            contentDescription =
+                if (noData) {
+                    emptyStateDescription ?: "$summary $ACCESSIBILITY_NO_DATA_SUFFIX"
+                } else {
+                    summary
+                }
+            if (spec.accessibility.exposeSelectionState) {
+                when (spec.accessibility.selectionLiveRegionMode) {
+                    ChartLiveRegionMode.Off -> Unit
+                    ChartLiveRegionMode.Polite -> {
+                        liveRegion = LiveRegionMode.Polite
+                    }
+                    ChartLiveRegionMode.Assertive -> {
+                        liveRegion = LiveRegionMode.Assertive
+                    }
+                }
+                val selection = selectionState.selection
+                if (selection != null) {
+                    val data = buildCandlestickMarkerData(spec, selection)
+                    if (data != null) {
+                        stateDescription = data.accessibilitySummaryText()
+                    }
+                }
+            }
+            if (customAccessibilityActions.isNotEmpty()) {
+                customActions =
+                    customAccessibilityActions.map { a ->
+                        CustomAccessibilityAction(a.label) {
+                            a.onClick()
+                            true
+                        }
+                    }
+            }
+        }
+    return this
+        .focusable(enabled = wantsFocus)
+        .then(semanticsModifier)
+}
+
 private const val ACCESSIBILITY_NO_DATA_SUFFIX = "No data to display."
 
 private fun defaultLineChartSemanticSummary(spec: LineChartSpec): String =
@@ -529,6 +590,19 @@ private fun defaultBarChartSemanticSummary(spec: BarChartSpec): String =
                     BarChartOrientation.Horizontal -> "horizontal"
                 }
             "Bar chart ($orient). Groups: $names. Use pinch to zoom and drag to pan. Tap a bar to select.$keys$mf"
+        }
+    }
+
+private fun defaultCandlestickChartSemanticSummary(spec: CandlestickChartSpec): String =
+    when {
+        spec.series.isEmpty() -> "Candlestick chart with no series."
+        else -> {
+            val names = spec.series.joinToString { it.label }
+            // Candlestick wires the viewport-nudge keyboard handler but no selection-roam, so suppress the
+            // roam hint (which keyboardHint would otherwise advertise when keyboardSelectionRoamEnabled is set).
+            val keys = keyboardHint(spec.accessibility.copy(keyboardSelectionRoamEnabled = false))
+            val mf = markerFocusHint(spec.accessibility.requestFocusOnMarker)
+            "Candlestick chart. Series: $names. Use pinch to zoom and drag to pan. Tap a candle to select.$keys$mf"
         }
     }
 
