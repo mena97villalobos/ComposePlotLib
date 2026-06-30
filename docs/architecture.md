@@ -77,7 +77,7 @@ It currently contains:
 - `model`
   Immutable chart data like `LineSeries`, `ScatterSeries`, `BarGroup`, `PieChartSlice`, `ChartPoint`
 - `spec`
-  Immutable chart configuration such as `LineChartSpec`, `ScatterChartSpec`, `BarChartSpec`, `PieChartSpec`, `SankeyChartSpec`, `AxisSpec`, `ChartAccessibilitySpec` / `ChartLiveRegionMode`
+  Immutable chart configuration such as `LineChartSpec`, `ScatterChartSpec`, `BarChartSpec`, `PieChartSpec`, `RadarChartSpec`, `SankeyChartSpec`, `HeatmapChartSpec`, `CandlestickChartSpec`, `GaugeChartSpec`, `AxisSpec`, `ChartAccessibilitySpec` / `ChartLiveRegionMode`; additive 1.1.0 types `ReferenceLine` / `ReferenceOrientation`, `MarkerShape`, `AreaFillMode`
 - `layout`
   Planner inputs, outputs, ticks, legend entries, and draw commands
 
@@ -85,7 +85,7 @@ It currently contains:
 `chart-compose` is the public Compose-facing module.
 
 It currently contains:
-- public chart composables: `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`
+- public chart composables: `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`, `HeatmapChart`, `CandlestickChart`, `GaugeChart`, `Sparkline`
 - public state types: `ChartViewportState`, `ChartSelectionState`
 - helpers: default viewport, gesture config (**`ChartGestureConfig`** + companion presets for hosts / iOS QA), markers + **`ChartMarkerPlacement`** / **`ChartMarkerCalloutLeader`**, no-data, **`ChartAnimationPolicy`** (opt-in programmatic viewport easing, optional gesture chase, marker highlight fade in/out on selection / clear, optional **`LineChart`** data morph), **`MaterialChartPalette`** / **`withMaterialSeriesColors`**-style helpers (`materialChartPalette()`, `Color.toChartColor()`), custom accessibility actions
 - internal gesture adapter, fling runtime, accessibility semantics (including optional **marker focus handoff** when `ChartAccessibilitySpec.requestFocusOnMarker` is set on a spec, and optional **Shift+arrow selection roam** when `keyboardSelectionRoamEnabled` is set)
@@ -96,7 +96,7 @@ This module is allowed to depend on Compose types, pointer input, text measureme
 
 ## Host Modules
 ### `composeApp`
-This is the thin shared app host. It should remain a lightweight way to preview the current milestone. It runs **`ComposePlotApp()`**, which **must** cycle **line, bar, stacked bar, horizontal bar, scatter, pie, radar, combined, sankey, and domain axes** previews on Android and iOS (see **`AGENTS.md` → Obligations** when adding chart families). **`samples/android-showcase`** adds richer demos and Roborazzi.
+This is the thin shared app host. It should remain a lightweight way to preview the current milestone. It runs **`ComposePlotApp()`**, which **must** cycle **line, bar, stacked bar, horizontal bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, sparkline, and domain axes** previews on Android and iOS (see **`AGENTS.md` → Obligations** when adding chart families). **`samples/android-showcase`** adds richer demos and Roborazzi.
 
 ### `samples/android-showcase`
 This is the main demo surface and should be treated as the visual verification app.
@@ -104,13 +104,13 @@ This is the main demo surface and should be treated as the visual verification a
 It currently contains:
 - sample data providers
 - dedicated chart showcase screens
-- a small host that can switch between **line**, **bar**, **scatter**, **pie**, **radar**, **combined**, **sankey**, and **domain axes** demos
+- a small host that can switch between **line**, **bar**, **scatter**, **pie**, **radar**, **combined**, **sankey**, **heatmap**, **gauge**, **candlestick**, and **domain axes** demos (the showcase has no dedicated Sparkline screen)
 - Android **Roborazzi** screenshot tests for regression detection (`verifyRoborazziDebug`)
 
 ## Current Rendering Pipeline
 The current rendering pipeline is:
 
-1. App builds `LineChartSpec`, `BarChartSpec`, `StackedBarChartSpec`, `ScatterChartSpec`, `PieChartSpec`, or `SankeyChartSpec`
+1. App builds `LineChartSpec`, `BarChartSpec`, `StackedBarChartSpec`, `ScatterChartSpec`, `PieChartSpec`, `RadarChartSpec`, `SankeyChartSpec`, `HeatmapChartSpec`, `CandlestickChartSpec`, or `GaugeChartSpec`
 2. Composable resolves a default viewport if no state is supplied
 3. `ChartPlanner` runs on `ChartLayoutInput` (with **`labelLayoutScale`** aligned to host font scale in built-in composables); Compose typically performs a **measured second pass** after `TextMeasurer` fills tick/legend metrics (and **pie slice label** metrics when `PieChartSpec.sliceLabels` is enabled). Cartesian composables reuse **`ChartPlanner.computeCartesianTickValuePass`** (`TickValuePass`) across those passes when the viewport and primary axes are unchanged, then the planner computes:
    - plot bounds
@@ -131,16 +131,16 @@ The planner matches a **multi-pass** shape (measurement is host-driven; core rea
 | Tick values | Domain ticks before pixel density | `TickValuePass`, `ChartPlanner.computeCartesianTickValuePass` |
 | Chrome | Legend rows + reserved insets for axes | `ChartChromeLayout.kt` (`buildLegendEntries`, `buildReservedRegions`) |
 | Final cartesian layout | Plot `RectD`, `ChartTransform`, resolved `AxisTick` lists | `CartesianLayoutPlanner` → `CartesianFrame` |
-| Draw plan | `DrawCommand` lists (grid, series, axes, selection) | `ChartPlanner.planLineChart` / `planBarChart` / `planScatterChart` / `planCombinedCartesianChart` / `planSankeyChart` |
+| Draw plan | `DrawCommand` lists (grid, series, axes, selection) | `ChartPlanner.planLineChart` / `planBarChart` / `planScatterChart` / `planCombinedCartesianChart` / `planSankeyChart` / `planHeatmapChart` / `planCandlestickChart` / `planGaugeChart` |
 
 `planPieChart` uses chrome helpers + radial layout only (empty axis ticks). See **`docs/production-readiness-next-steps.md`** → **Planner evolution** for the roadmap diagram.
 
 ## Important Current Constraints
 - Text placement still uses some fixed offsets and heuristic optical alignment
 - Legend and axis ticks use measurement-assisted layout, but long labels, extreme font scale, and iOS parity remain stress cases
-- Draw commands stay a small sealed set (`Line` through `Arc`, plus `Path`, `ClipRect`, `Group`); new paint features should extend this set before ad-hoc canvas code
+- Draw commands stay a small sealed set (`Line` through `Arc`, plus `Path`, `ClipRect`, `Group`); new paint features should extend this set before ad-hoc canvas code. **1.1.0** added exactly one new draw primitive — **`PathDrawStyle.VerticalGradientFill`** for line area / threshold-band gradient fill; the pipeline is otherwise unchanged.
 - The selection model is point-based and sufficient for line/scatter/bar first slices, but not yet generalized
-- **Chart families (product order):** scatter, **pie/donut**, and **combined** cartesian (multi-layer) are **shipped**; see **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)** and [`production-readiness-next-steps.md`](production-readiness-next-steps.md) (**New Chart Families**).
+- **Chart families (product order):** scatter, **pie/donut**, and **combined** cartesian (multi-layer) are **shipped**; **1.1.0** adds **heatmap** (color grid), **gauge** (radial progress ring), and **candlestick** (OHLC) families plus a thin **sparkline** wrapper over `LineChart`; see **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)** and [`production-readiness-next-steps.md`](production-readiness-next-steps.md) (**New Chart Families**).
 
 ## Combined cartesian layers (shipped)
 **Combined** charts overlay line, bar, and/or scatter layers with shared *X* and one or two *Y* scales. Planning entry point: **`ChartPlanner.planCombinedCartesianChart`** → **`CombinedCartesianChartPlan`** (wraps a single **`ChartLayoutPlan`** for the adapter; secondary *Y* ticks live on the plan wrapper). Compose: **`CombinedCartesianChart`**. Semantics and extension options: **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)**.

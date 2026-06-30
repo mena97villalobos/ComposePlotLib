@@ -3,7 +3,7 @@
 ## Purpose
 This document lists the major capability areas from MPAndroidChart that should be considered for `ComposePlotLib`. It is intended to guide scoping, not to force one-to-one API parity.
 
-**Implementation order in this repo:** **scatter** and **pie/donut** *(implemented)* → **combined** (multi-layer planner). See **`production-readiness-next-steps.md` → New Chart Families**.
+**Implementation order in this repo:** **scatter**, **pie/donut**, **radar**, **combined** (multi-layer), **sankey**, and **heatmap** are shipped; **1.1.0** added **gauge**, **candlestick**, and the **sparkline** wrapper. See **`production-readiness-next-steps.md` → New Chart Families**.
 
 ## Chart Families
 
@@ -14,10 +14,14 @@ This document lists the major capability areas from MPAndroidChart that should b
 - Pie or donut chart *(radial; shipped — polish in production-readiness backlog)*
 
 ### Secondary chart families
-- Horizontal bar chart
-- Bubble chart
-- Radar chart
-- Candlestick chart
+- Horizontal bar chart *(shipped — `BarChartOrientation.Horizontal`)*
+- Bubble chart *(shipped 1.1.0 — per-point `markerRadius` on `ScatterChart`)*
+- Radar chart *(shipped — `RadarChart`)*
+- Sankey / flow chart *(shipped — `SankeyChart`)*
+- Heatmap chart *(shipped — `HeatmapChart` color grid)*
+- Candlestick chart *(shipped 1.1.0 — `CandlestickChart`, fully previewed and screenshot-tested here; only downstream app adoption is gated on a live OHLC feed)*
+- Gauge / progress-ring chart *(shipped 1.1.0 — `GaugeChart`)*
+- Sparkline *(shipped 1.1.0 — axis-less `LineChart` wrapper)*
 - Combined cartesian chart *(shipped — planner/rendering polish in production-readiness backlog)*
 
 ## Shared Data Model
@@ -43,7 +47,7 @@ Implement reusable component systems for:
 - Grid lines
 - Axis lines
 - Tick labels
-- Limit or reference lines
+- Limit or reference lines *(shipped 1.1.0 — `ReferenceLine` via `referenceLines` on line/bar/scatter/combined specs)*
 - Legend
 - Description or subtitle text
 - Empty state
@@ -84,7 +88,7 @@ Implement customization surfaces for:
 - Value label formatting
 - Tooltip content formatting
 - Series colors
-- Line stroke, point markers, and fills
+- Line stroke, point markers, and fills *(1.1.0: `LineStyle` area / threshold-band fill + gradient; `MarkerShape` + per-point `ChartPoint` overrides)*
 - Bar fills and stack colors
 - Pie slice colors and label style
 - Grid and axis style
@@ -107,7 +111,7 @@ The library should ship with:
 
 - A separate Android showcase app *(shipped: `samples:android-showcase`)*
 - Curated demo datasets
-- Reference screens for each chart family *(line, bar, scatter, and pie shipped in showcase; combined still future)*
+- Reference screens for each chart family *(line, bar, scatter, pie, radar, combined, sankey, heatmap, gauge, and candlestick have showcase screens; Sparkline is previewed in `ComposePlotApp` rather than a dedicated showcase screen)*
 - Performance demo screens
 - Docs linked to showcase examples
 - Generated screenshots for the docs
@@ -123,9 +127,13 @@ The library should ship with:
 - Android and iOS Compose Multiplatform support
 
 ## Recommended Post-v1 Scope
-- Bubble chart
-- Radar chart
-- Candlestick chart
+- Bubble chart *(shipped 1.1.0)*
+- Radar chart *(shipped)*
+- Sankey / flow chart *(shipped)*
+- Heatmap chart *(shipped)*
+- Candlestick chart *(shipped 1.1.0; downstream app adoption gated on a live OHLC feed)*
+- Gauge / progress-ring chart *(shipped 1.1.0)*
+- Sparkline *(shipped 1.1.0)*
 - Full combined chart support
 - Advanced radial gestures
 - Export APIs

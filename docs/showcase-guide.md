@@ -8,7 +8,7 @@ Path:
 
 ## Current Structure
 - `ShowcaseApp.kt`
-  The root screen that switches between available chart demos (line, bar, scatter, pie, combined, domain axes)
+  The root screen that switches between available chart demos (line, bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, domain axes)
 - `data/SampleLineChartData.kt`
   Curated sample data for the line chart
 - `data/SampleBarChartData.kt`
@@ -27,8 +27,18 @@ Path:
   End-to-end scatter-chart demo
 - `screens/PieChartShowcaseScreen.kt`
   End-to-end pie and donut demo
+- `screens/RadarChartShowcaseScreen.kt`
+  End-to-end radar / spider demo
 - `screens/CombinedChartShowcaseScreen.kt`
   Multi-layer cartesian (bar + line) demo
+- `screens/SankeyChartShowcaseScreen.kt`
+  Explicit-column flow / Sankey demo
+- `screens/HeatmapChartShowcaseScreen.kt`
+  Color-grid heatmap demo
+- `screens/GaugeChartShowcaseScreen.kt`
+  Radial progress / gauge demo
+- `screens/CandlestickChartShowcaseScreen.kt`
+  OHLC candlestick demo
 - `screens/DomainAxesShowcaseScreen.kt`
   Category-scale and epoch-ms time-scale line charts (`AxisScale`)
 

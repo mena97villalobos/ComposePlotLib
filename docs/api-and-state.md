@@ -14,6 +14,10 @@ The current public surface is intentionally small.
 - `RadarChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — radial radar/spider chart (multi-series polygons); **pan/zoom/fling default off** (`PieDefault`). Tap selects the nearest vertex via `RadarHitResolver`.
 - `SankeyChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, accessibilityCustomActions, animation, chromeTheme)` — explicit-column flow diagram (`SankeyChartSpec`); tap supports selecting nodes and links; pan/zoom reuse `ChartViewportState` (normalized `0..1` domain by default).
 - `CombinedCartesianChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — multi-layer cartesian overlay (`CombinedCartesianChartSpec`); tap hit-testing is **top-layer-first** (`CombinedCartesianHitResolver`). **Secondary *Y*** is data-derived in `chart-core` on each plan (min/max of secondary-bound layers; not an independent zoom target in `ChartViewportState` v1). See **`docs/design-combined-cartesian-layers.md`** §3.1.
+- `CandlestickChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — cartesian OHLC chart (`CandlestickChartSpec`); draws bodies + wicks with bull/bear coloring, supports pan/zoom, **decimation** (`CandlestickRenderSpec`), and a **tap-to-OHLC** marker. Same gesture/marker/no-data/a11y shape as line/bar/scatter, including chart-level **`accessibilityCustomActions`** and **Shift+arrow keyboard selection-roam** (see **Accessibility**).
+- `HeatmapChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — 2-D grid of colored cells (`HeatmapChartSpec`); each cell's color encodes a numeric value via `HeatmapColorScale`. Column labels map to the X axis, row labels to the Y axis (row 0 at the bottom). Tap selects a cell via `HeatmapHitResolver`; pan/zoom reuse `ChartViewportState`. Same marker/no-data/a11y shape as the other cartesian charts (Image role + optional `accessibilityCustomActions`; no keyboard selection-roam).
+- `GaugeChart(spec, modifier, centerContent)` — radial progress / gauge ring (`GaugeChartSpec`); track + progress arc with optional rounded caps and an optional **`centerContent`** slot. **Non-interactive**: no viewport, selection, or gesture parameters.
+- `Sparkline(...)` — thin convenience wrapper over `LineChart` with **axes, grid, and legend off**, zero padding, and **non-interactive** defaults; optional area fill. Intended for inline/compact trend rendering.
 
 **Markers:** `ChartMarkerPlacement` / `ChartMarkerContainment` (`PlotBounds` default) control flip/slide tooltip placement inside the layout plan; optional **`ChartMarkerCalloutLeader`** draws an elbow (default) or **`ChartMarkerCustomCallout`** polyline from the anchor to the marker box; **`nudgeAxisAlignedRectToAvoidOverlap`** / **`stackAxisAlignedRectBelow`** help lay out multiple overlay boxes in chart pixels. See **`docs/marker-tooltip-placement.md`**. `DefaultChartMarker` supports optional outline and hiding label rows.
 
@@ -38,11 +42,12 @@ The current public surface is intentionally small.
 - `defaultViewport(CombinedCartesianChartSpec)` — primary *X* / **shared *Y*** from layers bound to `CombinedCartesianYAxisBinding.SharedY`; secondary *Y* range is still computed in the planner.
 - `defaultViewport(PieChartSpec)` — placeholder `0..1` ranges (layout ignores axes; keeps measurement passes consistent).
 - `defaultViewport(RadarChartSpec)` — placeholder `0..1` ranges (layout ignores cartesian axes; keeps measurement passes consistent).
+- `defaultViewport(HeatmapChartSpec)` — *X* spans the column count, *Y* spans the row count (category indices; row 0 at the bottom).
 - `SankeyLayoutSpec` — sankey layout controls: per-column node ordering and vertical alignment; per-node outgoing/incoming link ordering for ribbon stacking; optional node and link labels (`nodeLabels.enabled` / `linkLabels.enabled`). Node labels support `SankeyNodeLabelOrientation` (default vertical) and are measured via the standard two-pass `TextMeasurer` path.
 - `ChartGestureConfig(...)` — optional **presets** on the companion object: `CartesianDefault` (same as `ChartGestureConfig()` for cartesian charts), `PieDefault` (`PieChart` default), `readOnly()`, `exploreOnly(...)`, `cartesianInteractive(...)` (double-tap zoom-in + optional fling; used by **`ComposePlotApp`** line tab and the Android line showcase), `cartesianInteractiveFullExploration()` (zoom in/out + reset + fling for full device QA). See **`docs/ios-gesture-validation.md`** for iOS QA matrices.
 
 ### Shared host (`composeApp`)
-- `ComposePlotApp()` in `chart-compose` is the cross-platform milestone demo: **line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → domain axes** (category + epoch-ms time line previews; gestures, selection, marker) used by Android `MainActivity` and the iOS `MainViewController`. Adding a new chart family **must** include a preview here (**`AGENTS.md` → Obligations**). The **Android showcase** adds richer demos—including **Combined (multi-layer)**—and Roborazzi (`ShowcaseApp`).
+- `ComposePlotApp()` in `chart-compose` is the cross-platform milestone demo: **line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes** (category + epoch-ms time line previews; gestures, selection, marker) used by Android `MainActivity` and the iOS `MainViewController`. Adding a new chart family **must** include a preview here (**`AGENTS.md` → Obligations**). The **Android showcase** adds richer demos—including **Combined (multi-layer)**—and Roborazzi (`ShowcaseApp`).
 - Xcode integration and manual checks: `docs/ios-host-runbook.md`.
 
 ## Current Spec Model
@@ -71,12 +76,25 @@ Main types:
 - `accessibility: ChartAccessibilitySpec` (`contentDescription`, `exposeSelectionState`, `requestFocusForAccessibility`, `keyboardViewportNudgeEnabled`, `keyboardSelectionRoamEnabled`, `requestFocusOnMarker`, `selectionLiveRegionMode`)
 - `valueFormatter: (ChartPoint) -> String`
 - `selectionStyle: SelectionStyle`
+- `referenceLines: List<ReferenceLine>` — optional horizontal/vertical threshold lines drawn under the series (see **Reference lines** below)
 
 `LineSeries` now groups visual styling with:
-- `lineStyle: LineStyle`
-- `pointStyle: PointStyle`
+- `lineStyle: LineStyle` — stroke plus optional **area / threshold-band fill** (`areaFill`, optional `areaFillEnd` vertical gradient end, and `areaFillMode` = `ToPlotBottom` / `ToBaseline(value)` / `BelowThreshold(value)`; see **Area fill and reference lines** below)
+- `pointStyle: PointStyle` — point visibility, radius, optional color, and `shape: MarkerShape` (see **Marker shapes and per-point styling** below)
 
 `LineChartSpec.lineRender` (`LineRenderSpec`) controls viewport windowing (domain **x and y** ranges, continuity padding, optional decimation caps) before pixel-space polyline clipping to `plotBounds`. Set an explicit positive `maxPointsPerSeries` to cap vertices, or enable `usePlotWidthPixelBudget` (with `maxPointsPerSeries <= 0`) so `LineChart` supplies a cap from plot width via `LineRenderSpec.autoMaxPointsForPlotWidthPx` (default oversample `DEFAULT_PLOT_WIDTH_OVERSAMPLE`, ~2.25 samples per horizontal pixel before clamping to 256–16384). `LineDecimationStrategy` chooses uniform index spacing vs per-bucket min/max **y** retention (better for spiky data).
+
+### Area fill, reference lines, and marker shapes
+These additive options (1.1.0) extend existing cartesian charts; defaults preserve prior stroke/point behavior.
+
+**Area / threshold-band fill** (`LineStyle`):
+- `areaFill: ChartColor?` — fill color under the line (null = stroke only, prior behavior)
+- `areaFillEnd: ChartColor?` — optional vertical-gradient end color (paired with `areaFill`)
+- `areaFillMode: AreaFillMode` — `ToPlotBottom` (default; fill to plot bottom), `ToBaseline(value)` (fill between the line and a baseline value, e.g. `0.0`), or `BelowThreshold(value)` (fill only where the line is below `value` — a shortfall band)
+
+**Reference / threshold lines** (`ReferenceLine`): `orientation: ReferenceOrientation` (`Horizontal` / `Vertical`), `value`, `color`, `strokeWidth`, optional `dashIntervals` (null = solid), and optional `label`. Supplied via `referenceLines: List<ReferenceLine>` on `LineChartSpec`, `BarChartSpec`, `ScatterChartSpec`, and `CombinedCartesianChartSpec`; the planner maps each `value` to pixels and draws lines under the series so they track pan/zoom.
+
+**Marker shapes + per-point styling**: `MarkerShape` = `Circle` / `Square` / `Triangle` / `Diamond`. Set a series default via `PointStyle.shape`; override per point with `ChartPoint.markerShape`, `ChartPoint.markerColor`, and `ChartPoint.markerRadius` (each null falls back to the series `PointStyle`). On `ScatterChart`, a per-point `markerRadius` override drives **bubble** charts (point size encodes a third dimension).
 
 ### Scatter chart
 Main types:
@@ -92,10 +110,12 @@ Main types:
 - `accessibility: ChartAccessibilitySpec` (same semantics as line/bar, including keyboard shortcuts, live-region policy, and optional `requestFocusOnMarker`)
 - `valueFormatter: (ChartPoint) -> String` (same `LineValueFormatter` / defaults as `LineChartSpec`)
 - `selectionStyle: SelectionStyle`
+- `referenceLines: List<ReferenceLine>` — optional horizontal/vertical threshold lines (see **Area fill, reference lines, and marker shapes**)
 - The planner emits **circles only** (no connecting segments). The same disc test is used for line-series vertex markers.
 
 `ScatterSeries` carries:
-- `pointStyle: PointStyle` (visibility, radius, optional color; legend uses `pointStyle.color` or a default when null)
+- `pointStyle: PointStyle` (visibility, radius, optional color, `shape: MarkerShape`; legend uses `pointStyle.color` or a default when null)
+- Per-point overrides via `ChartPoint.markerShape` / `markerColor` / `markerRadius`; a per-point `markerRadius` enables **bubble** charts (point size encodes magnitude)
 
 Core planning:
 - `ChartPlanner.planScatterChart(...)` → `ScatterChartPlan` (`layout: ChartLayoutPlan`, `selection`)
@@ -103,7 +123,7 @@ Core planning:
 
 ### Combined cartesian (multi-layer)
 Main types:
-- `CombinedCartesianChartSpec` — ordered `layers: List<CombinedCartesianLayer>` (`Line` / `Bar` / `Scatter` variants), shared `xAxis` / `yAxis`, optional `yAxisSecondary` when any layer uses `CombinedCartesianYAxisBinding.SecondaryY`, `lineRender` (line layers), `scatterRender` (scatter layers), `valueFormatter` / `barValueFormatter`, `grid`, `legend`, `selectionStyle`, `contentPadding`, `accessibility: ChartAccessibilitySpec`.
+- `CombinedCartesianChartSpec` — ordered `layers: List<CombinedCartesianLayer>` (`Line` / `Bar` / `Scatter` variants), shared `xAxis` / `yAxis`, optional `yAxisSecondary` when any layer uses `CombinedCartesianYAxisBinding.SecondaryY`, `lineRender` (line layers), `scatterRender` (scatter layers), `valueFormatter` / `barValueFormatter`, `grid`, `legend`, `selectionStyle`, `contentPadding`, `referenceLines: List<ReferenceLine>`, `accessibility: ChartAccessibilitySpec`.
 - `CombinedCartesianChartPlan` — `layout: ChartLayoutPlan`, `yTicksSecondary`, `secondaryViewport` (domain window for secondary *Y*), `allBarSegments`, `hitTestLayers`, `selection` echo. Right-axis tick **`DrawCommand.Text`** uses `isSecondaryYAxisTick` so renderers apply **`yAxisSecondary.labelStyle`** (not the primary *Y* tick style slot).
 - `ChartPlanner.planCombinedCartesianChart(input, spec, selection, reserveRightYAxisSpace)` — merges grid + layers in list order (earlier layers draw beneath later layers); appends line-style selection overlay when the selection is not a bar match.
 
@@ -120,6 +140,24 @@ Main types:
 
 Compose:
 - `PieChart` wires two-pass measured planning (including pie slice label measurement when enabled), canvas render (`PieChartRenderer`), tap selection, marker (`buildPieMarkerData`), a11y (`pieChartAccessibility`; when `sliceLabels.enabled`, default chart summary includes slice percentages), and no-data (`ChartNoDataDefaults.pieChart()`).
+
+### Radar / spider
+Main types:
+- `RadarChartSpec` — `axes: List<String>` (ordered spokes), `series: List<RadarSeries>`, `id`, `startAngleDegrees` (axis 0 rotation; 12 o'clock default), `grid: RadarGridSpec`, `axisLabelStyle`, `accessibility: ChartAccessibilitySpec`, `legend`, `selectionStyle`, `contentPadding`, `axisValueFormatter: (axisLabel, value) -> String`.
+- `RadarSeries` — `id`, `label`, `values: List<Double>` (aligned to `axes` order), `lineStyle`, `pointStyle`, optional polygon `fillColor`.
+- `RadarGridSpec` — `enabled`, `ringCount` (polygon rings between center and outer radius), and grid styling.
+
+Radial multi-series polygon chart; **pan/zoom/fling default off** (`PieDefault`). Selection uses `RadarSeries.id` as `seriesId` and the axis index as `pointIndex`; tap selects the nearest vertex via `RadarHitResolver`. Compose entry: `RadarChart`; a11y via `radarChartAccessibility` (Image role; Shift+Left/Right selection roam when enabled).
+
+### Sankey
+Main types:
+- `SankeyChartSpec` — `id`, `nodes: List<SankeyNode>`, `links: List<SankeyLink>`, `layout: SankeyLayoutSpec`, `contentPadding`, `legend`, `selectionStyle`, `accessibility: ChartAccessibilitySpec` (validates unique node ids and that every link references a known node).
+- `SankeyNode` — `id`, `column` (explicit column index), `label`, optional `color`.
+- `SankeyLink` — `sourceNodeId`, `targetNodeId`, `value`, optional `color`.
+- `SankeyLayoutSpec` — per-column node ordering and vertical alignment, per-node outgoing/incoming link ordering for ribbon stacking, and optional node / link labels (`SankeyNodeLabelsSpec` / `SankeyLinkLabelsSpec`).
+- Layout enums: `SankeyNodeOrder`, `SankeyColumnVerticalAlignment`, `SankeyLinkOrder`, `SankeyNodeLabelOrientation`.
+
+Explicit-column flow diagram; tap selects nodes and links; pan/zoom reuse `ChartViewportState` (normalized `0..1` domain by default). Compose entry: `SankeyChart`; a11y via `sankeyChartAccessibility` (Image role).
 
 ### Bar chart
 Main types:
@@ -139,6 +177,7 @@ Main types:
 - `accessibility: ChartAccessibilitySpec` (`contentDescription`, `exposeSelectionState`, `requestFocusForAccessibility`, `keyboardViewportNudgeEnabled`, `keyboardSelectionRoamEnabled`, `requestFocusOnMarker`, `selectionLiveRegionMode`)
 - `valueFormatter: (BarEntry) -> String`
 - `selectionStyle: SelectionStyle`
+- `referenceLines: List<ReferenceLine>` — optional horizontal/vertical threshold lines (see **Area fill, reference lines, and marker shapes**)
 
 `BarGroup` now groups visual styling with:
 - `style: BarStyle`
@@ -152,6 +191,45 @@ Shared grouped style types now include:
 - `GridLineStyle` (`strokeWidth`, optional `strokeStyle` with dash intervals / cap / join for major grid lines)
 - `LegendStyle`
 - `SelectionStyle`
+
+Additional shared model / style types (1.1.0):
+- `MarkerShape` — `Circle` / `Square` / `Triangle` / `Diamond`; series default via `PointStyle.shape`, per-point override on `ChartPoint.markerShape`
+- `AreaFillMode` — `ToPlotBottom` / `ToBaseline(value)` / `BelowThreshold(value)`; selected by `LineStyle.areaFillMode` (with `LineStyle.areaFill` / `areaFillEnd`)
+- `ReferenceLine` / `ReferenceOrientation` (`Horizontal` / `Vertical`) — added via `referenceLines` on `LineChartSpec` / `BarChartSpec` / `ScatterChartSpec` / `CombinedCartesianChartSpec`
+
+### Candlestick chart
+Main types:
+- `CandlestickChartSpec` — `series: List<CandlestickSeries>`, `candleRender: CandlestickRenderSpec`, `accessibility: ChartAccessibilitySpec`, `xAxis` / `yAxis` (`AxisSpec`), `valueFormatter` (`CandlestickValueFormatter`), `grid` (`GridSpec`), `legend` (`LegendSpec`), `selectionStyle` (`SelectionStyle`), `contentPadding`.
+- `OHLCPoint` — `x`, `open`, `high`, `low`, `close`.
+- `CandlestickSeries` — `id`, `label`, `points: List<OHLCPoint>`, `style: CandlestickStyle`.
+- `CandlestickStyle` — `bullColor`, `bearColor`, `bodyWidth`, `wickWidth`, `wickColorFollowsBody`, `wickColor`.
+- `CandlestickRenderSpec` — `maxCandles` (decimation cap for long series), `viewportContinuityPadding`.
+
+Cartesian family on the shared line/bar/scatter axis + viewport stack: bodies + wicks with bull/bear coloring, **pan/zoom**, **decimation**, and a **tap-to-OHLC** marker. Compose entry: `CandlestickChart`.
+
+**Accessibility / keyboard:** `CandlestickChart` exposes chart-level **Image-role** semantics (default summary lists the series; `stateDescription` reflects the selected candle when `exposeSelectionState` is on), an optional **`accessibilityCustomActions`** parameter, and **keyboard selection-roam** when `ChartAccessibilitySpec.keyboardSelectionRoamEnabled` is on and tap selection is enabled: **Shift+Left/Right** steps between candles within a series in domain (x/time) order, **Shift+Up/Down** switches series, and plain arrows pan (when `keyboardViewportNudgeEnabled`). Roam is backed by the public `KeyboardSelectionRoam.candlestickChartRoam(plan, current, deltaPoint, deltaSeries)`, which walks `plan.candles` by stable global point index (decimation-safe; both axes clamp, no wrap).
+
+### Heatmap
+Main types:
+- `HeatmapChartSpec` — `cells: List<HeatmapCell>`, `columnLabels` / `rowLabels` (lengths set the grid size), `id`, `colorScale: HeatmapColorScale`, `xAxis` / `yAxis` (`AxisSpec`; always rendered as `AxisScale.Category` — scale field is ignored), `cellGapPx`, `legend` (`LegendSpec`; disabled by default), `selectionStyle`, `contentPadding`, `valueFormatter: (HeatmapCell) -> String`, `accessibility: ChartAccessibilitySpec`.
+- `HeatmapCell` — `col` (X), `row` (Y; row 0 at the bottom), `value`; out-of-range indices are silently skipped.
+- `HeatmapColorScale` — `minValue`, `maxValue`, `minColor`, `maxColor` (linear interpolation; clamps outside the range). `HeatmapColorScale.auto(cells, minColor, maxColor)` derives the value range from the data.
+
+Core planning:
+- `ChartPlanner.planHeatmapChart(input, spec, selection, tickValuePass)` → `HeatmapChartPlan` (`layout: ChartLayoutPlan`, `selection`, `heatmapCells: List<PlannedHeatmapCell>`); `cellsForHitTest()` returns topmost-first order.
+- `HeatmapHitResolver` resolves a tap to the covering cell.
+- `defaultViewport(HeatmapChartSpec)` spans the column / row counts as category indices.
+
+Compose: `HeatmapChart` wires two-pass measured planning, canvas render (`HeatmapChartRenderer`), tap selection, marker (`buildHeatmapMarkerData`), a11y (`heatmapChartAccessibility`; Image role, optional `accessibilityCustomActions`), and no-data handling. Pan/zoom reuse `ChartViewportState`; there is no keyboard selection-roam for heatmaps.
+
+### Gauge chart
+Main types:
+- `GaugeChartSpec` — `progress` (0.0..1.0), `id`, `trackColor`, `progressColor`, `strokeWidthPx`, `roundedCaps`, `startAngleDegrees`, `sweepDegrees` (`360` = full ring; `<360` = arc gauge), `accessibility: ChartAccessibilitySpec`, `contentPadding`.
+
+Radial progress ring: track + progress arc with optional rounded caps and an optional **`centerContent`** composable slot. **Non-interactive** — no viewport/selection/gesture state. Compose entry: `GaugeChart(spec, modifier, centerContent)`.
+
+### Sparkline
+`Sparkline` is a thin convenience wrapper over `LineChart` with **axes, grid, and legend off**, zero padding, and **non-interactive** defaults, plus optional area fill (`LineStyle.areaFill`). It reuses `LineChartSpec` / `LineSeries`; there is no separate spec type. Intended for compact inline trend rendering.
 
 ## Layout input and font scale
 `chart-core` plans charts from `ChartLayoutInput` (`canvasSize`, `viewport`, optional `ChartTextMeasurementInput`, **`labelLayoutScale`** defaulting to `1.0`). Tick label **boxes** come from measured text (Compose two-pass `TextMeasurer`); **`labelLayoutScale`** scales the planner’s fixed gaps and padding (horizontal/vertical tick label spacing, axis offsets, legend spacing) so accessibility font scaling does not squeeze chrome. The bundled chart composables set `labelLayoutScale` from `LocalDensity.current.fontScale`. The planner also hides tick labels whose boxes would extend past the canvas and reserves bottom axis space using measured descender depth when it exceeds a nominal margin. Optional **`AxisSpec.xTickLabelOverlapStrategy.StaggerAdjacent`** alternates a second row of X labels; **`LegendStyle.labelMaxChars`** ellipsizes legend text; optional **`minVisibleXTickLabels` / `minVisibleYTickLabels`** and **`raiseTickDensityCapFromMeasuredLabelWidth`** tune label visibility and tick-density caps (see **`AxisSpec`** KDoc). A full baseline policy for all label paths and tighter iOS/Android measurement parity under stress remain open; see **`docs/production-readiness-next-steps.md`** (layout / text measurement).
@@ -246,7 +324,7 @@ Current draw command types:
 - `Rect`
 - `Circle`
 - `Text` — planner may set **`firstBaselineFromTop`** (from `TextLayoutMetrics`) so `ComposeCanvasAdapter` aligns the rendered baseline to the measurement pass; legend uses the same baseline rule from `LegendEntryPlan.labelMetrics`
-- `Path`, `ClipRect`, `Group`, `RoundRect`, `Arc` (see **`production-readiness-next-steps.md`** → Draw commands)
+- `Path` (stroke or fill; **1.1.0** adds `PathDrawStyle.VerticalGradientFill` for line area / threshold-band gradient fill), `ClipRect`, `Group`, `RoundRect`, `Arc` (see **`production-readiness-next-steps.md`** → Draw commands)
 
 **Chrome:** `ChartChromeTheme.layerCompositingForTranslucentGroups` opts into save-layer rendering for translucent `Group` (see **`style-and-theme.md`**).
 
@@ -283,11 +361,11 @@ Responsible for drawing the current scatter-chart plan and its legend (same `Cha
 Responsible for drawing the current bar-chart plan and its legend.
 
 ## Accessibility
-`ChartAccessibilitySpec` on the spec supplies `contentDescription`, `exposeSelectionState`, **`requestFocusForAccessibility`**, **`keyboardViewportNudgeEnabled`**, **`keyboardSelectionRoamEnabled`**, **`requestFocusOnMarker`**, and **`selectionLiveRegionMode`** (`Off` / `Polite` / `Assertive` in `chart-core`, mapped to Compose live regions in `chart-compose`). **Cartesian** charts (**line**, **bar**, **scatter**, **combined**) and **pie** apply **Image** role semantics, optional **`stateDescription`** when a value is selected, optional **`accessibilityCustomActions`**, and **`focusable`** when focus is requested, **`requestFocusOnMarker`** is on, keyboard viewport shortcuts are enabled, or **`keyboardSelectionRoamEnabled`** is on. Descendants are **merged** by default; when **`requestFocusOnMarker`** is true (and `marker` is non-null), the chart node stops merging so the **marker** can be a separate accessibility/focus target; selection changes **request focus** on the marker container (`accessibilitySummary`-style description). The marker container itself uses **unmerged** semantics so **focusable controls inside** custom `marker` content (buttons, fields) participate in Tab and TalkBack traversal. When **`keyboardViewportNudgeEnabled`** is true and transform gestures are on, a focused chart accepts **unmodified arrow-key** pan (10% of visible span per press), **+ / −** zoom at the window center, and **Escape** clears tap selection if tap selection is enabled. When **`keyboardSelectionRoamEnabled`** is true and tap selection is enabled, **Shift+Left/Right** moves the selection along domain-ordered points (line/scatter), along bars in increasing **X** (bar), along a flat **layer order** walk (combined), or among pie slices (**Shift+Left/Right**); **Shift+Up/Down** switches series on **line** and **scatter** multi-series charts. Unmodified arrows still pan when viewport nudge is on. Default content descriptions append keyboard, selection-roam, and optional marker-focus hints when those flags are on. See **`docs/accessibility-custom-actions.md`** for composing **`chartViewportAccessibilityActions`** with app actions.
+`ChartAccessibilitySpec` on the spec supplies `contentDescription`, `exposeSelectionState`, **`requestFocusForAccessibility`**, **`keyboardViewportNudgeEnabled`**, **`keyboardSelectionRoamEnabled`**, **`requestFocusOnMarker`**, and **`selectionLiveRegionMode`** (`Off` / `Polite` / `Assertive` in `chart-core`, mapped to Compose live regions in `chart-compose`). **Cartesian** charts (**line**, **bar**, **scatter**, **combined**, **candlestick**), **pie**, **radar**, **sankey**, and **heatmap** apply **Image** role semantics, optional **`stateDescription`** when a value is selected, optional **`accessibilityCustomActions`**, and **`focusable`** when focus is requested, **`requestFocusOnMarker`** is on, keyboard viewport shortcuts are enabled, or **`keyboardSelectionRoamEnabled`** is on. Descendants are **merged** by default; when **`requestFocusOnMarker`** is true (and `marker` is non-null), the chart node stops merging so the **marker** can be a separate accessibility/focus target; selection changes **request focus** on the marker container (`accessibilitySummary`-style description). The marker container itself uses **unmerged** semantics so **focusable controls inside** custom `marker` content (buttons, fields) participate in Tab and TalkBack traversal. When **`keyboardViewportNudgeEnabled`** is true and transform gestures are on, a focused chart accepts **unmodified arrow-key** pan (10% of visible span per press), **+ / −** zoom at the window center, and **Escape** clears tap selection if tap selection is enabled. When **`keyboardSelectionRoamEnabled`** is true and tap selection is enabled, **Shift+Left/Right** moves the selection along domain-ordered points (line/scatter), along bars in increasing **X** (bar), along a flat **layer order** walk (combined), between candles within a series in domain (x/time) order (**candlestick**, via `KeyboardSelectionRoam.candlestickChartRoam`), or among pie slices; **Shift+Up/Down** switches series on **line**, **scatter**, and **candlestick** multi-series charts. Unmodified arrows still pan when viewport nudge is on. (Heatmaps expose Image-role semantics but no keyboard selection-roam.) Default content descriptions append keyboard, selection-roam, and optional marker-focus hints when those flags are on. See **`docs/accessibility-custom-actions.md`** for composing **`chartViewportAccessibilityActions`** with app actions.
 
 Reduced motion: **`ChartAnimationPolicy.respectSystemReducedMotion`** (default true) combines with platform settings to disable programmatic viewport easing, gesture chase, line data morph, and **marker highlight** transitions (fade-in and fade-out), and to force transition durations to zero when the user prefers reduced animation.
 
-**Gesture vs programmatic:** pinch/drag pan/zoom updates the viewport **target** each frame. By default the **rendered** viewport snaps to that target. **Programmatic** `ChartViewportState` changes can ease when `viewportChangesEnabled` is true. When **`gestureViewportEasingEnabled`** is true, the rendered viewport **chases** the gesture target each frame instead of snapping (see **`rememberAnimatedChartViewport`**).
+**Gesture vs programmatic:** pinch/drag pan/zoom updates the viewport **target** each frame. By default the **rendered** viewport snaps to that target. **Programmatic** `ChartViewportState` changes can ease when `viewportChangesEnabled` is true. When **`gestureViewportEasingEnabled`** is true, the rendered viewport **chases** the gesture target each frame instead of snapping (via the internal `rememberAnimatedChartViewport`).
 
 Parent layouts can add screen-level semantics (e.g. `ShowcaseApp` and per-chart showcase screens).
 

@@ -180,6 +180,23 @@ public final class com/mena97villalobos/composeplotlib/core/layout/BarChartPlan 
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Ljava/util/List;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun candlesForHitTest ()Ljava/util/List;
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Ljava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCandles ()Ljava/util/List;
+	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun getSelection ()Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput {
 	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/geometry/SizeD;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/layout/ChartTextMeasurementInput;D)V
 	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/geometry/SizeD;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/layout/ChartTextMeasurementInput;DILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -229,8 +246,11 @@ public final class com/mena97villalobos/composeplotlib/core/layout/ChartPlanner 
 	public final fun computeCartesianTickValuePass (Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;
 	public final fun planBarChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/BarChartPlan;
 	public static synthetic fun planBarChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/BarChartPlan;
+	public final fun planCandlestickChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;
+	public static synthetic fun planCandlestickChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;
 	public final fun planCombinedCartesianChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;ZLcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/CombinedCartesianChartPlan;
 	public static synthetic fun planCombinedCartesianChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;ZLcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/CombinedCartesianChartPlan;
+	public final fun planGaugeChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/GaugeChartPlan;
 	public final fun planHeatmapChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/HeatmapChartPlan;
 	public static synthetic fun planHeatmapChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/HeatmapChartPlan;
 	public final fun planLineChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/LineChartPlan;
@@ -538,6 +558,17 @@ public final class com/mena97villalobos/composeplotlib/core/layout/DrawCommandVi
 	public static final fun visitDepthFirst (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)V
 }
 
+public final class com/mena97villalobos/composeplotlib/core/layout/GaugeChartPlan {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;)Lcom/mena97villalobos/composeplotlib/core/layout/GaugeChartPlan;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/GaugeChartPlan;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/GaugeChartPlan;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/layout/HeatmapChartPlan {
 	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Ljava/util/List;)V
 	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -675,6 +706,41 @@ public final class com/mena97villalobos/composeplotlib/core/layout/PlannedBarSeg
 }
 
 public final class com/mena97villalobos/composeplotlib/core/layout/PlannedBarSegmentKt {
+	public static final fun forHitTestFromDrawOrder (Ljava/util/List;)Ljava/util/List;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/PlannedCandle {
+	public fun <init> (Ljava/lang/String;ILcom/mena97villalobos/composeplotlib/core/model/OHLCPoint;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;ZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;D)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component11 ()D
+	public final fun component2 ()I
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/OHLCPoint;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
+	public final fun component5 ()Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
+	public final fun component6 ()Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;
+	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;
+	public final fun component8 ()Z
+	public final fun component9 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun copy (Ljava/lang/String;ILcom/mena97villalobos/composeplotlib/core/model/OHLCPoint;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;ZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;D)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedCandle;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/PlannedCandle;Ljava/lang/String;ILcom/mena97villalobos/composeplotlib/core/model/OHLCPoint;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;ZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedCandle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBodyBounds ()Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
+	public final fun getBodyColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getHitBounds ()Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
+	public final fun getIndex ()I
+	public final fun getPoint ()Lcom/mena97villalobos/composeplotlib/core/model/OHLCPoint;
+	public final fun getSeriesId ()Ljava/lang/String;
+	public final fun getWickBottom ()Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;
+	public final fun getWickColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getWickTop ()Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;
+	public final fun getWickWidth ()D
+	public fun hashCode ()I
+	public final fun isBull ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/PlannedCandleKt {
 	public static final fun forHitTestFromDrawOrder (Ljava/util/List;)Ljava/util/List;
 }
 
@@ -850,6 +916,26 @@ public final class com/mena97villalobos/composeplotlib/core/layout/draw/PathDraw
 	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getStrokeStyle ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/StrokeStyle;
 	public final fun getStrokeWidth ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$VerticalGradientFill : com/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component3 ()D
+	public final fun component4 ()D
+	public final fun component5 ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;)Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$VerticalGradientFill;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$VerticalGradientFill;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$VerticalGradientFill;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBottomColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getBottomY ()D
+	public final fun getFillRule ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
+	public final fun getTopColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getTopY ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -1068,6 +1154,24 @@ public final class com/mena97villalobos/composeplotlib/core/model/BarSeriesKt {
 	public static final fun toXyPoints (Lcom/mena97villalobos/composeplotlib/core/model/BarGroup;)Ljava/util/List;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/model/CandlestickSeries {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;)Lcom/mena97villalobos/composeplotlib/core/model/CandlestickSeries;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/model/CandlestickSeries;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/model/CandlestickSeries;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getPoints ()Ljava/util/List;
+	public final fun getStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/model/ChartColor {
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/model/ChartColor$Companion;
 	public fun <init> (J)V
@@ -1091,12 +1195,19 @@ public final class com/mena97villalobos/composeplotlib/core/model/ChartColor$Com
 }
 
 public final class com/mena97villalobos/composeplotlib/core/model/ChartPoint {
-	public fun <init> (DD)V
+	public fun <init> (DDLcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/lang/Double;)V
+	public synthetic fun <init> (DDLcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/lang/Double;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()D
 	public final fun component2 ()D
-	public final fun copy (DD)Lcom/mena97villalobos/composeplotlib/core/model/ChartPoint;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/model/ChartPoint;DDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/model/ChartPoint;
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component5 ()Ljava/lang/Double;
+	public final fun copy (DDLcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/lang/Double;)Lcom/mena97villalobos/composeplotlib/core/model/ChartPoint;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/model/ChartPoint;DDLcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/lang/Double;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/model/ChartPoint;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMarkerColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getMarkerRadius ()Ljava/lang/Double;
+	public final fun getMarkerShape ()Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
 	public final fun getX ()D
 	public final fun getY ()D
 	public fun hashCode ()I
@@ -1140,6 +1251,29 @@ public final class com/mena97villalobos/composeplotlib/core/model/LineSeries {
 	public final fun toXyPoints ()Ljava/util/List;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/model/OHLCPoint {
+	public fun <init> (DDDDD)V
+	public final fun component1 ()D
+	public final fun component2 ()D
+	public final fun component3 ()D
+	public final fun component4 ()D
+	public final fun component5 ()D
+	public final fun copy (DDDDD)Lcom/mena97villalobos/composeplotlib/core/model/OHLCPoint;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/model/OHLCPoint;DDDDDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/model/OHLCPoint;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClose ()D
+	public final fun getHigh ()D
+	public final fun getLow ()D
+	public final fun getOpen ()D
+	public final fun getX ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/model/OHLCPointKt {
+	public static final fun toCloseXyPoints (Ljava/util/List;)Ljava/util/List;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/model/PieChartSlice {
 	public fun <init> (DLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)V
 	public final fun component1 ()D
@@ -1171,7 +1305,10 @@ public final class com/mena97villalobos/composeplotlib/core/model/ScatterSeries 
 	public final fun getPointStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/PointStyle;
 	public final fun getPoints ()Ljava/util/List;
 	public fun hashCode ()I
+	public final fun resolvedColorAt (I)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun resolvedPointColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun resolvedRadiusAt (I)D
+	public final fun resolvedShapeAt (I)Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
 	public fun toString ()Ljava/lang/String;
 	public final fun toXyPoints ()Ljava/util/List;
 }
@@ -1233,6 +1370,11 @@ public final class com/mena97villalobos/composeplotlib/core/selection/BarHitTarg
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/selection/CandlestickHitResolver {
+	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/selection/CandlestickHitResolver;
+	public final fun resolvePlanned (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/selection/ChartSelection {
 	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/selection/HighlightTarget;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;)V
 	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/selection/HighlightTarget;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -1284,6 +1426,7 @@ public final class com/mena97villalobos/composeplotlib/core/selection/HighlightT
 public final class com/mena97villalobos/composeplotlib/core/selection/KeyboardSelectionRoam {
 	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/selection/KeyboardSelectionRoam;
 	public final fun barChartRoam (Lcom/mena97villalobos/composeplotlib/core/layout/BarChartPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;I)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
+	public final fun candlestickChartRoam (Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;II)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 	public final fun combinedCartesianRoam (Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/CombinedCartesianChartPlan;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;I)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 	public final fun lineChartRoam (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;II)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 	public final fun pieChartRoam (Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;I)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
@@ -1314,6 +1457,38 @@ public final class com/mena97villalobos/composeplotlib/core/selection/SankeyHitR
 	public static final field LayerLink Ljava/lang/String;
 	public static final field LayerNode Ljava/lang/String;
 	public final fun resolve (Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/SankeyChartPlan;)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
+}
+
+public abstract interface class com/mena97villalobos/composeplotlib/core/spec/AreaFillMode {
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/AreaFillMode$BelowThreshold : com/mena97villalobos/composeplotlib/core/spec/AreaFillMode {
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode$BelowThreshold;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode$BelowThreshold;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode$BelowThreshold;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/AreaFillMode$ToBaseline : com/mena97villalobos/composeplotlib/core/spec/AreaFillMode {
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode$ToBaseline;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode$ToBaseline;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode$ToBaseline;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/AreaFillMode$ToPlotBottom : com/mena97villalobos/composeplotlib/core/spec/AreaFillMode {
+	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode$ToPlotBottom;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/AxisLabelFormatterKt {
@@ -1467,12 +1642,13 @@ public final class com/mena97villalobos/composeplotlib/core/spec/BarChartOrienta
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/BarChartSpec {
-	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;DLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
-	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;DLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;DLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;DLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
 	public final fun component11 ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
-	public final fun component12 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component12 ()Ljava/util/List;
+	public final fun component13 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
 	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;
 	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;
 	public final fun component4 ()D
@@ -1481,8 +1657,8 @@ public final class com/mena97villalobos/composeplotlib/core/spec/BarChartSpec {
 	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
 	public final fun component8 ()Lkotlin/jvm/functions/Function1;
 	public final fun component9 ()Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;
-	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;DLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;DLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;
+	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;DLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;DLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
 	public final fun getBarLayout ()Lcom/mena97villalobos/composeplotlib/core/spec/BarLayoutMode;
@@ -1492,6 +1668,7 @@ public final class com/mena97villalobos/composeplotlib/core/spec/BarChartSpec {
 	public final fun getGroups ()Ljava/util/List;
 	public final fun getLegend ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
 	public final fun getOrientation ()Lcom/mena97villalobos/composeplotlib/core/spec/BarChartOrientation;
+	public final fun getReferenceLines ()Ljava/util/List;
 	public final fun getSelectionStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
 	public final fun getValueFormatter ()Lkotlin/jvm/functions/Function1;
 	public final fun getXAxis ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
@@ -1521,6 +1698,74 @@ public final class com/mena97villalobos/composeplotlib/core/spec/BarStyle {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBarWidth ()D
 	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec {
+	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
+	public final fun component5 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
+	public final fun component6 ()Lkotlin/jvm/functions/Function1;
+	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;
+	public final fun component8 ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
+	public final fun component9 ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
+	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun getCandleRender ()Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;
+	public final fun getContentPadding ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun getGrid ()Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;
+	public final fun getLegend ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
+	public final fun getSelectionStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
+	public final fun getSeries ()Ljava/util/List;
+	public final fun getValueFormatter ()Lkotlin/jvm/functions/Function1;
+	public final fun getXAxis ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
+	public final fun getYAxis ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec {
+	public fun <init> ()V
+	public fun <init> (II)V
+	public synthetic fun <init> (IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun copy (II)Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;IIILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickRenderSpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMaxCandles ()I
+	public final fun getViewportContinuityPadding ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/CandlestickStyle {
+	public fun <init> ()V
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component3 ()D
+	public final fun component4 ()D
+	public final fun component5 ()Z
+	public final fun component6 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBearColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getBodyWidth ()D
+	public final fun getBullColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getWickColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getWickColorFollowsBody ()Z
+	public final fun getWickWidth ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -1560,13 +1805,14 @@ public final class com/mena97villalobos/composeplotlib/core/spec/ChartLiveRegion
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec {
-	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
-	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;
 	public final fun component11 ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
 	public final fun component12 ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
-	public final fun component13 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component13 ()Ljava/util/List;
+	public final fun component14 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
 	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
 	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
 	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
@@ -1575,8 +1821,8 @@ public final class com/mena97villalobos/composeplotlib/core/spec/CombinedCartesi
 	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;
 	public final fun component8 ()Lkotlin/jvm/functions/Function1;
 	public final fun component9 ()Lkotlin/jvm/functions/Function1;
-	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;
+	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
 	public final fun getBarValueFormatter ()Lkotlin/jvm/functions/Function1;
@@ -1585,6 +1831,7 @@ public final class com/mena97villalobos/composeplotlib/core/spec/CombinedCartesi
 	public final fun getLayers ()Ljava/util/List;
 	public final fun getLegend ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
 	public final fun getLineRender ()Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;
+	public final fun getReferenceLines ()Ljava/util/List;
 	public final fun getScatterRender ()Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;
 	public final fun getSelectionStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
 	public final fun getValueFormatter ()Lkotlin/jvm/functions/Function1;
@@ -1724,6 +1971,41 @@ public final class com/mena97villalobos/composeplotlib/core/spec/EpochMillisTick
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec {
+	public fun <init> (DLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DZDDLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (DLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DZDDLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()D
+	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component5 ()D
+	public final fun component6 ()Z
+	public final fun component7 ()D
+	public final fun component8 ()D
+	public final fun component9 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun copy (DLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DZDDLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;DLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DZDDLcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun getContentPadding ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getProgress ()D
+	public final fun getProgressColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getRoundedCaps ()Z
+	public final fun getStartAngleDegrees ()D
+	public final fun getStrokeWidthPx ()D
+	public final fun getSweepDegrees ()D
+	public final fun getTrackColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/GaugeChartSpecKt {
+	public static final fun clampedProgress (Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;)D
+	public static final fun hasDrawableSweep (Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;)Z
+}
+
 public final class com/mena97villalobos/composeplotlib/core/spec/GridLineStyle {
 	public fun <init> ()V
 	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/layout/draw/StrokeStyle;)V
@@ -1858,10 +2140,11 @@ public final class com/mena97villalobos/composeplotlib/core/spec/LineChartDataTr
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/LineChartSpec {
-	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
-	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/List;
-	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component10 ()Ljava/util/List;
+	public final fun component11 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
 	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
 	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
 	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
@@ -1870,14 +2153,15 @@ public final class com/mena97villalobos/composeplotlib/core/spec/LineChartSpec {
 	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
 	public final fun component8 ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
 	public final fun component9 ()Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;
-	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;
+	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
 	public final fun getContentPadding ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
 	public final fun getGrid ()Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;
 	public final fun getLegend ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
 	public final fun getLineRender ()Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec;
+	public final fun getReferenceLines ()Ljava/util/List;
 	public final fun getSelectionStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
 	public final fun getSeries ()Ljava/util/List;
 	public final fun getValueFormatter ()Lkotlin/jvm/functions/Function1;
@@ -1925,17 +2209,33 @@ public final class com/mena97villalobos/composeplotlib/core/spec/LineRenderSpec$
 
 public final class com/mena97villalobos/composeplotlib/core/spec/LineStyle {
 	public fun <init> ()V
-	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;D)V
-	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun component2 ()D
-	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;D)Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component5 ()Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;)Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAreaFill ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getAreaFillEnd ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getAreaFillMode ()Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;
 	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getStrokeWidth ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/MarkerShape : java/lang/Enum {
+	public static final field Circle Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
+	public static final field Diamond Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
+	public static final field Square Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
+	public static final field Triangle Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/PieChartSpec {
@@ -2023,16 +2323,18 @@ public final class com/mena97villalobos/composeplotlib/core/spec/PieSliceLabelsS
 
 public final class com/mena97villalobos/composeplotlib/core/spec/PointStyle {
 	public fun <init> ()V
-	public fun <init> (ZDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)V
-	public synthetic fun <init> (ZDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;)V
+	public synthetic fun <init> (ZDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Z
 	public final fun component2 ()D
 	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
-	public final fun copy (ZDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Lcom/mena97villalobos/composeplotlib/core/spec/PointStyle;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/PointStyle;ZDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/PointStyle;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
+	public final fun copy (ZDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;)Lcom/mena97villalobos/composeplotlib/core/spec/PointStyle;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/PointStyle;ZDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/PointStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getRadius ()D
+	public final fun getShape ()Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
 	public final fun getVisible ()Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -2118,6 +2420,36 @@ public final class com/mena97villalobos/composeplotlib/core/spec/RadarSeries {
 	public final fun getValues ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/ReferenceLine {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLjava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLjava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;
+	public final fun component2 ()D
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component4 ()D
+	public final fun component5 ()Ljava/util/List;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLjava/util/List;Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceLine;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceLine;Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLjava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceLine;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getDashIntervals ()Ljava/util/List;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getOrientation ()Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;
+	public final fun getStrokeWidth ()D
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation : java/lang/Enum {
+	public static final field Horizontal Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;
+	public static final field Vertical Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/ReferenceOrientation;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/SankeyChartSpec {
@@ -2316,10 +2648,11 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec {
-	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
-	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/List;
-	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component10 ()Ljava/util/List;
+	public final fun component11 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
 	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;
 	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
 	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
@@ -2328,13 +2661,14 @@ public final class com/mena97villalobos/composeplotlib/core/spec/ScatterChartSpe
 	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;
 	public final fun component8 ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
 	public final fun component9 ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
-	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;
+	public final fun copy (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
 	public final fun getContentPadding ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
 	public final fun getGrid ()Lcom/mena97villalobos/composeplotlib/core/spec/GridSpec;
 	public final fun getLegend ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
+	public final fun getReferenceLines ()Ljava/util/List;
 	public final fun getScatterRender ()Lcom/mena97villalobos/composeplotlib/core/spec/ScatterRenderSpec;
 	public final fun getSelectionStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/SelectionStyle;
 	public final fun getSeries ()Ljava/util/List;
@@ -2427,6 +2761,7 @@ public final class com/mena97villalobos/composeplotlib/core/spec/UtcEpochAxisFor
 
 public final class com/mena97villalobos/composeplotlib/core/spec/ValueFormatterKt {
 	public static final fun getDefaultBarValueFormatter ()Lkotlin/jvm/functions/Function1;
+	public static final fun getDefaultCandlestickValueFormatter ()Lkotlin/jvm/functions/Function1;
 	public static final fun getDefaultLineValueFormatter ()Lkotlin/jvm/functions/Function1;
 }
 

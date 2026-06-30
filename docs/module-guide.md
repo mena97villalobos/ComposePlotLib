@@ -26,9 +26,9 @@ Path: `chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core
 - app navigation
 
 ### Files worth knowing
-- `layout/ChartPlanner.kt` (line, bar, scatter — `planScatterChart`, shared cartesian frame; **pie** — `planPieChart`)
-- `layout/ChartLayoutPlan.kt`, `layout/LineChartPlan.kt`, `layout/BarChartPlan.kt`, `layout/ScatterChartPlan.kt`, `layout/PieChartPlan.kt`, `layout/PieChartLayoutMath.kt`
-- `spec/LineChartSpec.kt`, `spec/BarChartSpec.kt`, `spec/ScatterChartSpec.kt`, `spec/PieChartSpec.kt`
+- `layout/ChartPlanner.kt` (line, bar, scatter — `planScatterChart`, shared cartesian frame; **pie** — `planPieChart`; **heatmap** — `planHeatmapChart`; **candlestick** — `planCandlestickChart`; **gauge** — `planGaugeChart`)
+- `layout/ChartLayoutPlan.kt`, `layout/LineChartPlan.kt`, `layout/BarChartPlan.kt`, `layout/ScatterChartPlan.kt`, `layout/PieChartPlan.kt`, `layout/PieChartLayoutMath.kt`, `layout/HeatmapChartPlan.kt`, `layout/CandlestickChartPlan.kt`, `layout/GaugeChartPlan.kt`
+- `spec/LineChartSpec.kt`, `spec/BarChartSpec.kt`, `spec/ScatterChartSpec.kt`, `spec/PieChartSpec.kt`, `spec/HeatmapChartSpec.kt`, `spec/CandlestickChartSpec.kt`, `spec/GaugeChartSpec.kt`
 - `model/ScatterSeries.kt`, `model/PieChartSlice.kt`
 - `selection/PieHitResolver.kt`
 - `visible/ScatterPlotPoints.kt` (scatter hit-test candidate points)
@@ -57,7 +57,7 @@ Path: `chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/c
 - internal renderer orchestration
 
 ### Public API files (non-exhaustive)
-- `LineChart.kt`, `BarChart.kt`, `ScatterChart.kt`, `PieChart.kt`, `CombinedCartesianChart.kt`
+- `LineChart.kt`, `BarChart.kt`, `ScatterChart.kt`, `PieChart.kt`, `RadarChart.kt`, `CombinedCartesianChart.kt`, `SankeyChart.kt`, `HeatmapChart.kt`, `CandlestickChart.kt`, `GaugeChart.kt`, `Sparkline.kt`
 - `theme/ChartChromeTheme.kt` (`chartChromeTheme()`, `ChartChromeTheme.Default`); `theme/MaterialChartPalette.kt` (`materialChartPalette()`, `Color.toChartColor()`); `theme/MaterialChartSpecTheme.kt` (`seriesAccentColors`, `withMaterialSeriesColors`, …)
 - `ChartGestureConfig.kt`, `ChartMarker.kt`, `ChartNoData.kt`, `ChartAnimationPolicy.kt`, `ChartCustomAccessibilityAction.kt`
 - `ChartViewports.kt` (e.g. `defaultViewport`)
@@ -71,7 +71,7 @@ Path: `chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/c
 - `internal/canvas/ComposeCanvasAdapter.kt`
 - `internal/gesture/ChartGestureHandler.kt`, `ChartFlingRuntime.kt`, related gesture wiring
 - `internal/accessibility/ChartSemantics.kt` and platform motion preference
-- `internal/render/LineChartRenderer.kt`, `internal/render/ScatterChartRenderer.kt`, `internal/render/BarChartRenderer.kt`, `internal/render/PieChartRenderer.kt`
+- `internal/render/LineChartRenderer.kt`, `internal/render/ScatterChartRenderer.kt`, `internal/render/BarChartRenderer.kt`, `internal/render/PieChartRenderer.kt`, `internal/render/HeatmapChartRenderer.kt`, `internal/render/CandlestickChartRenderer.kt`, `internal/render/GaugeChartRenderer.kt`
 
 ### When to edit `chart-compose`
 Edit `chart-compose` when a change affects:
@@ -85,7 +85,7 @@ Edit `chart-compose` when a change affects:
 Path: `composeApp`
 
 ### Purpose
-A thin host app for the current milestone. It should not become the main showcase or a place for library internals. It hosts **`ComposePlotApp()`**, which must include a preview for **each shipped chart family** (line, bar, scatter, pie, combined, domain axes — see **`AGENTS.md` → Obligations**).
+A thin host app for the current milestone. It should not become the main showcase or a place for library internals. It hosts **`ComposePlotApp()`**, which must include a preview for **each shipped chart family** (line, bar, stacked bar, horizontal bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, sparkline, domain axes — see **`AGENTS.md` → Obligations**).
 
 ### Good uses
 - quickly preview the current chart milestone on Android and iOS (shared `ComposePlotApp` UI)
@@ -105,7 +105,7 @@ The main demonstration app and manual verification surface for the library.
 ### Owns
 - curated sample data
 - chart-specific showcase screens
-- demo navigation (`ShowcaseApp`: line, bar, scatter, pie, combined, domain axes)
+- demo navigation (`ShowcaseApp`: line, bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, domain axes — no dedicated Sparkline screen)
 - realistic examples for documentation
 
 ### File areas

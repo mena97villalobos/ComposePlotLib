@@ -6,8 +6,11 @@ import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.PolylineRectClip
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner.computeCartesianTickValuePass
+import com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
 import com.mena97villalobos.composeplotlib.core.layout.draw.ShapeDrawStyle
+import com.mena97villalobos.composeplotlib.core.layout.draw.StrokeCap
+import com.mena97villalobos.composeplotlib.core.layout.draw.StrokeStyle
 import com.mena97villalobos.composeplotlib.core.layout.planning.CartesianLayoutPlanner
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickDensityReducer
 import com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePass
@@ -20,24 +23,33 @@ import com.mena97villalobos.composeplotlib.core.math.FpMath
 import com.mena97villalobos.composeplotlib.core.model.BarGroup
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.LineSeries
+import com.mena97villalobos.composeplotlib.core.model.OHLCPoint
 import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
+import com.mena97villalobos.composeplotlib.core.model.toCloseXyPoints
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
+import com.mena97villalobos.composeplotlib.core.spec.AreaFillMode
 import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
+import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
+import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineRenderSpec
+import com.mena97villalobos.composeplotlib.core.spec.LineStyle
+import com.mena97villalobos.composeplotlib.core.spec.MarkerShape
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ReferenceLine
+import com.mena97villalobos.composeplotlib.core.spec.ReferenceOrientation
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyColumnVerticalAlignment
 import com.mena97villalobos.composeplotlib.core.spec.SankeyLinkOrder
@@ -46,7 +58,9 @@ import com.mena97villalobos.composeplotlib.core.spec.SankeyNodeOrder
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
+import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
 import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
+import com.mena97villalobos.composeplotlib.core.spec.hasDrawableSweep
 import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import com.mena97villalobos.composeplotlib.core.visible.LineRenderPipeline
@@ -54,6 +68,7 @@ import com.mena97villalobos.composeplotlib.core.visible.ScatterRenderPipeline
 import com.mena97villalobos.composeplotlib.core.visible.VisibleRangeCalculator
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.round
 
 private fun Double.normalizedLabelLayoutScale(): Double = coerceIn(0.5, 4.0)
 
@@ -72,6 +87,9 @@ private fun Double.normalizedLabelLayoutScale(): Double = coerceIn(0.5, 4.0)
  * Per-chart orchestration: `planLineChart` / `planScatterChart` / `planBarChart` / `planCombinedCartesianChart` share cartesian layout + grid + series commands + axis overlay; `planPieChart` uses legend reservation + radial layout only.
  */
 object ChartPlanner {
+    /** Minimum half-width (px) of a candle's tappable column so thin / doji candles stay selectable. */
+    private const val CANDLE_MIN_TAP_HALF_WIDTH: Double = 8.0
+
     /**
      * Last emitted grid-line draw list when plot bounds, tick geometry, and style match the previous cartesian plan.
      * Thread-unsafe; intended for single-threaded UI planning. If tick positions change, commands are rebuilt.
@@ -199,6 +217,8 @@ object ChartPlanner {
                 buildLineSeriesCommands(it, frame.viewport, frame.transform, frame.plotBounds, spec.lineRender)
             }
 
+        plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
+
         if (selection != null) {
             plotCommands += buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
         }
@@ -271,6 +291,8 @@ object ChartPlanner {
                     spec.scatterRender,
                 )
             }
+
+        plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
 
         if (selection != null) {
             plotCommands += buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
@@ -471,6 +493,76 @@ object ChartPlanner {
                     overlayDrawCommands = emptyList(),
                 ),
             selection = selection,
+        )
+    }
+
+    /**
+     * Gauge / progress-ring chart: a background track arc plus a foreground progress arc (both stroked, no fill),
+     * centered in the (square-ish) plot. No ticks, legend, or selection. [GaugeChartSpec.progress] is clamped to
+     * `0.0..1.0`; the ring radius is inset by half the stroke so the stroke stays inside the plot.
+     */
+    fun planGaugeChart(
+        input: ChartLayoutInput,
+        spec: GaugeChartSpec,
+    ): GaugeChartPlan {
+        val labelScale = input.labelLayoutScale.normalizedLabelLayoutScale()
+        val bounds = input.toPlanningBounds()
+        val reservedRegions =
+            buildReservedRegions(
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                xTickLabels = emptyList(),
+                yTickLabels = emptyList(),
+                legendEntries = emptyList(),
+                textMeasurements = input.textMeasurements,
+                xAxisEnabled = false,
+                yAxisEnabled = false,
+                labelLayoutScale = labelScale,
+            )
+        val plotBounds = bounds.canvasBounds.inset(reservedRegions.contentInsets)
+        val radial = PieChartLayoutMath.layout(plotBounds, holeRadiusRatio = null)
+        val ringRadius = (radial.outerRadius - spec.strokeWidthPx / 2.0).coerceAtLeast(0.0)
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (ringRadius > 0.0 && spec.hasDrawableSweep()) {
+            plotCommands +=
+                DrawCommand.Arc(
+                    center = radial.center,
+                    radius = ringRadius,
+                    startAngleDegrees = spec.startAngleDegrees,
+                    sweepAngleDegrees = spec.sweepDegrees,
+                    useCenter = false,
+                    style = ShapeDrawStyle.Stroke(spec.trackColor, spec.strokeWidthPx),
+                    innerRadius = null,
+                )
+            val progressSweep = spec.sweepDegrees * spec.clampedProgress()
+            if (progressSweep != 0.0) {
+                val cap = if (spec.roundedCaps) StrokeStyle(cap = StrokeCap.Round) else null
+                plotCommands +=
+                    DrawCommand.Arc(
+                        center = radial.center,
+                        radius = ringRadius,
+                        startAngleDegrees = spec.startAngleDegrees,
+                        sweepAngleDegrees = progressSweep,
+                        useCenter = false,
+                        style = ShapeDrawStyle.Stroke(spec.progressColor, spec.strokeWidthPx, cap),
+                        innerRadius = null,
+                    )
+            }
+        }
+
+        return GaugeChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = reservedRegions,
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = emptyList(),
+                ),
         )
     }
 
@@ -1369,6 +1461,7 @@ object ChartPlanner {
                 selection = selection,
                 selectionStyle = spec.selectionStyle,
             )
+        plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
 
         val overlayCommands =
             buildAxisAndTickLabelsOverlay(
@@ -1397,6 +1490,225 @@ object ChartPlanner {
         )
     }
 
+    /**
+     * Candlestick / OHLC chart: emits a high-low wick [DrawCommand.Line] beneath an open-close body
+     * [DrawCommand.Rect] per visible candle, colored bull/bear by `close >= open`. Selection appends a stroked
+     * [DrawCommand.RoundRect] accent around the selected body.
+     *
+     * @param selection optional candle highlight: matches when `selection.target.seriesId` equals the series id
+     * and `selection.target.pointIndex` is the **global** candle index.
+     * @param tickValuePass optional precomputed pass-2 tick values for [spec]'s primary axes (default: compute)
+     */
+    fun planCandlestickChart(
+        input: ChartLayoutInput,
+        spec: CandlestickChartSpec,
+        selection: ChartSelection? = null,
+        tickValuePass: TickValuePass? = null,
+    ): CandlestickChartPlan {
+        val frame =
+            layoutCartesianFrame(
+                input = input,
+                xAxis = spec.xAxis,
+                yAxis = spec.yAxis,
+                legend = spec.legend,
+                contentPadding = spec.contentPadding,
+                legendLabelColors = spec.series.map { it.label to it.style.bullColor },
+                tickValuePass = tickValuePass,
+            )
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (spec.xAxis.showGridLines || spec.yAxis.showGridLines) {
+            plotCommands +=
+                buildGridLines(
+                    plotBounds = frame.plotBounds,
+                    xTicks = if (spec.xAxis.showGridLines) frame.xTicks else emptyList(),
+                    yTicks = if (spec.yAxis.showGridLines) frame.yTicks else emptyList(),
+                    lineStyle = spec.grid.lineStyle,
+                )
+        }
+        val candles =
+            computePlannedCandles(
+                spec = spec,
+                viewport = frame.viewport,
+                transform = frame.transform,
+                plotBounds = frame.plotBounds,
+            )
+        plotCommands +=
+            buildCandleDrawCommands(
+                candles = candles,
+                selection = selection,
+                selectionStyle = spec.selectionStyle,
+            )
+
+        val overlayCommands =
+            buildAxisAndTickLabelsOverlay(
+                frame.plotBounds,
+                spec.xAxis,
+                spec.yAxis,
+                frame.xTicks,
+                frame.yTicks,
+            )
+
+        return CandlestickChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = frame.canvasBounds,
+                    plotBounds = frame.plotBounds,
+                    reservedRegions = frame.reservedRegions,
+                    xTicks = frame.xTicks,
+                    yTicks = frame.yTicks,
+                    legendEntries = frame.legendEntries,
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
+                ),
+            selection = selection,
+            candles = candles,
+        )
+    }
+
+    private fun computePlannedCandles(
+        spec: CandlestickChartSpec,
+        viewport: ChartViewport,
+        transform: ChartTransform,
+        plotBounds: RectD,
+    ): List<PlannedCandle> {
+        if (spec.series.isEmpty()) return emptyList()
+        val cap = spec.candleRender.maxCandles
+        val padding = spec.candleRender.viewportContinuityPadding.coerceAtLeast(0)
+        val out = mutableListOf<PlannedCandle>()
+        for (series in spec.series) {
+            if (series.points.isEmpty()) continue
+            val indexed = visibleCandlesIndexed(series.points, viewport, padding, cap)
+            if (indexed.isEmpty()) continue
+            val style = series.style
+            val half = style.bodyWidth / 2.0
+            val hitHalf = max(half, CANDLE_MIN_TAP_HALF_WIDTH)
+            for ((globalIndex, p) in indexed) {
+                val centerXPx = transform.toPixel(XyPoint(p.x, viewport.yRange.start)).x
+                if (!VisibleRangeCalculator.barColumnIntersectsPlotHorizontally(centerXPx, style.bodyWidth, plotBounds)) {
+                    continue
+                }
+                val openY = transform.toPixel(XyPoint(p.x, p.open)).y
+                val closeY = transform.toPixel(XyPoint(p.x, p.close)).y
+                val highY = transform.toPixel(XyPoint(p.x, p.high)).y
+                val lowY = transform.toPixel(XyPoint(p.x, p.low)).y
+                val isBull = p.close >= p.open
+                val bodyColor = if (isBull) style.bullColor else style.bearColor
+                val wickColor = style.wickColor ?: bodyColor
+                val bodyTop = min(openY, closeY)
+                var bodyBottom = max(openY, closeY)
+                if (bodyBottom - bodyTop < 1.0) bodyBottom = bodyTop + 1.0
+                out +=
+                    PlannedCandle(
+                        seriesId = series.id,
+                        index = globalIndex,
+                        point = p,
+                        bodyBounds = RectD(centerXPx - half, bodyTop, centerXPx + half, bodyBottom),
+                        hitBounds = RectD(centerXPx - hitHalf, min(highY, lowY), centerXPx + hitHalf, max(highY, lowY)),
+                        wickTop = OffsetD(centerXPx, highY),
+                        wickBottom = OffsetD(centerXPx, lowY),
+                        isBull = isBull,
+                        bodyColor = bodyColor,
+                        wickColor = wickColor,
+                        wickWidth = style.wickWidth,
+                    )
+            }
+        }
+        return out
+    }
+
+    /**
+     * Visible candle window (with continuity padding) as `(globalIndex, point)` pairs; uniformly subsampled
+     * to [maxCandles] when capped. The **global** index is preserved so selection/markers stay correct.
+     */
+    private fun visibleCandlesIndexed(
+        points: List<OHLCPoint>,
+        viewport: ChartViewport,
+        paddingEachSide: Int,
+        maxCandles: Int,
+    ): List<Pair<Int, OHLCPoint>> {
+        val range =
+            VisibleRangeCalculator.visiblePointRangeWithContinuity(
+                points = points.toCloseXyPoints(),
+                viewport = viewport,
+                paddingEachSide = paddingEachSide,
+            ) ?: return emptyList()
+        val windowLen = range.endInclusive - range.start + 1
+        if (maxCandles > 0 && windowLen > maxCandles) {
+            return uniformSampleCandles(points, range.start, range.endInclusive, maxCandles)
+        }
+        val out = ArrayList<Pair<Int, OHLCPoint>>(windowLen)
+        var i = range.start
+        while (i <= range.endInclusive) {
+            out.add(i to points[i])
+            i++
+        }
+        return out
+    }
+
+    private fun uniformSampleCandles(
+        points: List<OHLCPoint>,
+        start: Int,
+        endInclusive: Int,
+        maxPoints: Int,
+    ): List<Pair<Int, OHLCPoint>> {
+        val n = endInclusive - start + 1
+        if (maxPoints < 2 || n <= maxPoints) {
+            val all = ArrayList<Pair<Int, OHLCPoint>>(n)
+            var i = start
+            while (i <= endInclusive) {
+                all.add(i to points[i])
+                i++
+            }
+            return all
+        }
+        val seen = HashSet<Int>(maxPoints * 4 / 3 + 1)
+        val out = ArrayList<Pair<Int, OHLCPoint>>(maxPoints)
+        for (k in 0 until maxPoints) {
+            val offset = round(k * (n - 1).toDouble() / (maxPoints - 1)).toInt().coerceIn(0, n - 1)
+            val i = start + offset
+            if (seen.add(i)) out.add(i to points[i])
+        }
+        return out
+    }
+
+    private fun buildCandleDrawCommands(
+        candles: List<PlannedCandle>,
+        selection: ChartSelection?,
+        selectionStyle: SelectionStyle,
+    ): List<DrawCommand> =
+        candles.flatMap { candle ->
+            // Wick first so the body paints over it where they overlap (z-order is bottom -> top).
+            val wick =
+                DrawCommand.Line(
+                    start = candle.wickTop,
+                    end = candle.wickBottom,
+                    color = candle.wickColor,
+                    strokeWidth = candle.wickWidth,
+                )
+            val body = DrawCommand.Rect(bounds = candle.bodyBounds, color = candle.bodyColor)
+            if (selection != null && selectionMatchesCandle(selection, candle)) {
+                val accent =
+                    DrawCommand.RoundRect(
+                        bounds = candle.bodyBounds,
+                        cornerRadius = 0.0,
+                        style =
+                            ShapeDrawStyle.Stroke(
+                                color = selectionStyle.lineColor,
+                                strokeWidth = selectionStyle.lineStrokeWidth * 2.0,
+                            ),
+                    )
+                listOf(wick, body, accent)
+            } else {
+                listOf(wick, body)
+            }
+        }
+
+    private fun selectionMatchesCandle(
+        selection: ChartSelection,
+        candle: PlannedCandle,
+    ): Boolean = selection.target.seriesId == candle.seriesId && selection.target.pointIndex == candle.index
+
     private fun buildLineSeriesCommands(
         series: LineSeries,
         viewport: ChartViewport,
@@ -1413,6 +1725,9 @@ object ChartPlanner {
         }
         val lineFragments = PolylineRectClip.clipPolylineToRect(pixelPoints, plotBounds)
         val commands = mutableListOf<DrawCommand>()
+        // Area fill (if configured) renders beneath the line, built from the full unclipped pixel points;
+        // the plot-bounds clip applied by the renderer trims any overflow.
+        buildAreaFillCommand(pixelPoints, plotBounds, transform, series.lineStyle)?.let { commands += it }
         for (fragment in lineFragments) {
             commands +=
                 DrawCommand.Polyline(
@@ -1440,6 +1755,109 @@ object ChartPlanner {
         return commands
     }
 
+    /**
+     * Builds the optional area-fill command beneath a line series, or `null` when [LineStyle.areaFill] is unset.
+     * The polygon spans the (unclipped) line pixel points down to a baseline determined by [LineStyle.areaFillMode];
+     * [AreaFillMode.BelowThreshold] wraps the fill in a [DrawCommand.ClipRect] so only the sub-threshold band shows.
+     */
+    private fun buildAreaFillCommand(
+        pixelPoints: List<OffsetD>,
+        plotBounds: RectD,
+        transform: ChartTransform,
+        style: LineStyle,
+    ): DrawCommand? {
+        val fill = style.areaFill ?: return null
+        if (pixelPoints.size < 2) return null
+        val baselineY =
+            when (val mode = style.areaFillMode) {
+                AreaFillMode.ToPlotBottom -> plotBounds.bottom
+                is AreaFillMode.ToBaseline ->
+                    transform.toPixel(XyPoint(0.0, mode.value)).y.coerceIn(plotBounds.top, plotBounds.bottom)
+                is AreaFillMode.BelowThreshold ->
+                    transform.toPixel(XyPoint(0.0, mode.value)).y.coerceIn(plotBounds.top, plotBounds.bottom)
+            }
+        val segments = ArrayList<PathSegment>(pixelPoints.size + 3)
+        segments += PathSegment.MoveTo(OffsetD(pixelPoints.first().x, baselineY))
+        for (p in pixelPoints) segments += PathSegment.LineTo(p)
+        segments += PathSegment.LineTo(OffsetD(pixelPoints.last().x, baselineY))
+        segments += PathSegment.Close
+
+        val pathStyle =
+            if (style.areaFillEnd != null) {
+                var topY = baselineY
+                var bottomY = baselineY
+                for (p in pixelPoints) {
+                    if (p.y < topY) topY = p.y
+                    if (p.y > bottomY) bottomY = p.y
+                }
+                PathDrawStyle.VerticalGradientFill(
+                    topColor = fill,
+                    bottomColor = style.areaFillEnd,
+                    topY = topY,
+                    bottomY = bottomY,
+                )
+            } else {
+                PathDrawStyle.Fill(color = fill)
+            }
+        val path = DrawCommand.Path(segments = segments, style = pathStyle)
+        return if (style.areaFillMode is AreaFillMode.BelowThreshold) {
+            DrawCommand.ClipRect(
+                bounds = RectD(left = plotBounds.left, top = baselineY, right = plotBounds.right, bottom = plotBounds.bottom),
+                children = listOf(path),
+            )
+        } else {
+            path
+        }
+    }
+
+    /**
+     * Builds dashed/solid [DrawCommand.Line]s (+ optional label) for [referenceLines], mapped through [transform]
+     * and spanning [plotBounds]. Returned commands are appended above the series and clipped to the plot, so a
+     * line whose value is off-screen is naturally hidden.
+     */
+    private fun buildReferenceLineCommands(
+        referenceLines: List<ReferenceLine>,
+        transform: ChartTransform,
+        plotBounds: RectD,
+    ): List<DrawCommand> {
+        if (referenceLines.isEmpty()) return emptyList()
+        val commands = ArrayList<DrawCommand>(referenceLines.size)
+        for (ref in referenceLines) {
+            val stroke = ref.dashIntervals?.takeIf { it.isNotEmpty() }?.let { StrokeStyle(dashIntervals = it) }
+            when (ref.orientation) {
+                ReferenceOrientation.Horizontal -> {
+                    val y = transform.toPixel(XyPoint(0.0, ref.value)).y
+                    commands +=
+                        DrawCommand.Line(
+                            start = OffsetD(plotBounds.left, y),
+                            end = OffsetD(plotBounds.right, y),
+                            color = ref.color,
+                            strokeWidth = ref.strokeWidth,
+                            strokeStyle = stroke,
+                        )
+                    ref.label?.let { label ->
+                        commands += DrawCommand.Text(text = label, position = OffsetD(plotBounds.left + 4.0, y + 2.0), color = ref.color)
+                    }
+                }
+                ReferenceOrientation.Vertical -> {
+                    val x = transform.toPixel(XyPoint(ref.value, 0.0)).x
+                    commands +=
+                        DrawCommand.Line(
+                            start = OffsetD(x, plotBounds.top),
+                            end = OffsetD(x, plotBounds.bottom),
+                            color = ref.color,
+                            strokeWidth = ref.strokeWidth,
+                            strokeStyle = stroke,
+                        )
+                    ref.label?.let { label ->
+                        commands += DrawCommand.Text(text = label, position = OffsetD(x + 4.0, plotBounds.top + 4.0), color = ref.color)
+                    }
+                }
+            }
+        }
+        return commands
+    }
+
     private fun buildScatterSeriesCommands(
         series: ScatterSeries,
         viewport: ChartViewport,
@@ -1448,8 +1866,6 @@ object ChartPlanner {
         scatterRender: ScatterRenderSpec,
     ): List<DrawCommand> {
         if (!series.pointStyle.visible) return emptyList()
-        val fillColor = series.resolvedPointColor()
-        val r = series.pointStyle.radius.coerceAtLeast(0.0)
         val noDecimationCap = scatterRender.maxPointsPerSeries <= 0
         val prepared: List<Pair<Int, XyPoint>> =
             if (noDecimationCap) {
@@ -1459,18 +1875,53 @@ object ChartPlanner {
             }
         if (prepared.isEmpty()) return emptyList()
         val commands = ArrayList<DrawCommand>(min(prepared.size, 4096))
-        for ((_, xy) in prepared) {
+        for ((idx, xy) in prepared) {
             val pixel = transform.toPixel(xy)
-            if (!plotBounds.intersectsDisc(pixel, r)) continue
-            commands +=
-                DrawCommand.Circle(
-                    center = pixel,
-                    radius = r,
-                    color = fillColor,
-                )
+            val pr = series.resolvedRadiusAt(idx)
+            if (!plotBounds.intersectsDisc(pixel, pr)) continue
+            commands += markerCommand(pixel, pr, series.resolvedColorAt(idx), series.resolvedShapeAt(idx))
         }
         return commands
     }
+
+    /** Builds the [DrawCommand] for one scatter marker glyph of radius [r] centered at [center]. */
+    private fun markerCommand(
+        center: OffsetD,
+        r: Double,
+        color: ChartColor,
+        shape: MarkerShape,
+    ): DrawCommand =
+        when (shape) {
+            MarkerShape.Circle -> DrawCommand.Circle(center = center, radius = r, color = color)
+            MarkerShape.Square ->
+                DrawCommand.Rect(
+                    bounds = RectD(center.x - r, center.y - r, center.x + r, center.y + r),
+                    color = color,
+                )
+            MarkerShape.Triangle ->
+                DrawCommand.Path(
+                    segments =
+                        listOf(
+                            PathSegment.MoveTo(OffsetD(center.x, center.y - r)),
+                            PathSegment.LineTo(OffsetD(center.x - r, center.y + r)),
+                            PathSegment.LineTo(OffsetD(center.x + r, center.y + r)),
+                            PathSegment.Close,
+                        ),
+                    style = PathDrawStyle.Fill(color = color),
+                )
+            MarkerShape.Diamond ->
+                DrawCommand.Path(
+                    segments =
+                        listOf(
+                            PathSegment.MoveTo(OffsetD(center.x, center.y - r)),
+                            PathSegment.LineTo(OffsetD(center.x + r, center.y)),
+                            PathSegment.LineTo(OffsetD(center.x, center.y + r)),
+                            PathSegment.LineTo(OffsetD(center.x - r, center.y)),
+                            PathSegment.Close,
+                        ),
+                    style = PathDrawStyle.Fill(color = color),
+                )
+        }
 
     private fun computePlannedBarSegments(
         groups: List<BarGroup>,
@@ -2407,6 +2858,8 @@ object ChartPlanner {
                 }
             }
         }
+
+        plotCommands += buildReferenceLineCommands(spec.referenceLines, transformPrimary, frame.plotBounds)
 
         plotCommands +=
             appendCombinedSelectionNonBar(

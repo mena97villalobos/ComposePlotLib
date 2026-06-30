@@ -29,9 +29,9 @@ It is implementation-focused so maintainers and AI agents can resume work quickl
 ## Current state summary (milestone snapshot)
 **In place today**
 - **chart-core**: geometry, viewport math (`ViewportState`, `ViewportConstraints`, `ViewportAxisPolicy`), transforms, selection models, `ChartPlanner` (line + bar + **scatter** + **pie/donut planning**), `DrawCommand` plans, unit tests (viewport, planner, selection).
-- **chart-compose**: `LineChart` / `BarChart` / **`ScatterChart`** / **`PieChart`** / **`CombinedCartesianChart`**, `ChartViewportState` / `ChartSelectionState`, `ChartGestureConfig` (tap/transform/double-tap zoom in|out|reset/fling), marker slot, **no-data** (`noData` / `noDataUi` / `ChartNoDataDefaults`), **animation** (`ChartAnimationPolicy`: opt-in programmatic viewport easing; optional **gesture viewport chase**; marker fade-in **and fade-out on selection clear** when duration > 0; optional **`LineChart`** same-topology **data** coordinate morph; reduced-motion respected), **accessibility** (Image role, focus opt-in, optional **marker focus handoff** via `ChartAccessibilitySpec.requestFocusOnMarker`, custom actions + `chartViewportAccessibilityActions`, optional keyboard pan/zoom/clear on cartesian charts, `ChartLiveRegionMode`, spec-driven descriptions).
-- **Showcase**: line + bar + **scatter** + **pie/donut** + **domain axes** screens, sample specs, **Roborazzi** goldens (`verifyRoborazziDebug` / `recordRoborazziDebug`).
-- **iOS**: CLI compile gates; `ComposePlotApp` host (line → bar → scatter → pie → combined → domain axes); manual runbook + integration notes in **`docs/ios-library-usage.md`**.
+- **chart-compose**: `LineChart` / `BarChart` / **`StackedBarChart`** / **`ScatterChart`** / **`PieChart`** / **`RadarChart`** / **`CombinedCartesianChart`** / **`SankeyChart`** / **`HeatmapChart`** / **`CandlestickChart`** / **`GaugeChart`** / **`Sparkline`** (gauge / candlestick / sparkline new in 1.1.0), `ChartViewportState` / `ChartSelectionState`, `ChartGestureConfig` (tap/transform/double-tap zoom in|out|reset/fling), marker slot, **no-data** (`noData` / `noDataUi` / `ChartNoDataDefaults`), **animation** (`ChartAnimationPolicy`: opt-in programmatic viewport easing; optional **gesture viewport chase**; marker fade-in **and fade-out on selection clear** when duration > 0; optional **`LineChart`** same-topology **data** coordinate morph; reduced-motion respected), **accessibility** (Image role, focus opt-in, optional **marker focus handoff** via `ChartAccessibilitySpec.requestFocusOnMarker`, custom actions + `chartViewportAccessibilityActions`, optional keyboard pan/zoom/clear on cartesian charts, `ChartLiveRegionMode`, spec-driven descriptions).
+- **Showcase**: line + bar + **scatter** + **pie/donut** + **radar** + **combined** + **sankey** + **heatmap** + **gauge** + **candlestick** + **domain axes** screens, sample specs, **Roborazzi** goldens (`verifyRoborazziDebug` / `recordRoborazziDebug`).
+- **iOS**: CLI compile gates; `ComposePlotApp` host (line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes); manual runbook + integration notes in **`docs/ios-library-usage.md`**.
 - **Docs**: API, architecture, viewport guide, axis cookbook, marker placement, style/theme guide, chart-family overview, iOS runbook + library usage, production readiness (this file).
 
 **Not production-ready yet (typical blockers)**
@@ -168,7 +168,7 @@ Benefits:
 **Shipped** `DrawCommand` set (`chart-core`) with `ComposeCanvasAdapter` coverage (`chart-compose`):
 - `Line` — optional `StrokeStyle` dashes, cap, join (grid lines honor `GridLineStyle.strokeWidth` / `GridLineStyle.strokeStyle`)
 - `Polyline`, `Rect`, `Circle`, `Text` — **[M7]** optional `firstBaselineFromTop` on `Text` (from `TextLayoutMetrics`) so the adapter re-aligns the first line baseline after `TextMeasurer`; axis, pie callout, and legend labels use planner baselines
-- `Path` — stroke or fill (non-zero / even-odd)
+- `Path` — stroke or fill (non-zero / even-odd); **[1.1.0]** optional `PathDrawStyle.VerticalGradientFill` for line **area / threshold-band** gradient fill (`LineStyle.areaFill` / `areaFillEnd` / `areaFillMode`)
 - `ClipRect` — nested clip scopes
 - `RoundRect`, `Arc` (pie/donut annulus when `innerRadius` set)
 - `Group` — default: multiply alpha on leaf colors; **[M7]** optional `ChartChromeTheme.layerCompositingForTranslucentGroups` uses a canvas save-layer for fractional group alpha (correct blending when overlapping translucent children)
@@ -202,7 +202,7 @@ Status:
 
 **Shipped (M11):** **`ChartAccessibilitySpec.requestFocusOnMarker`** — when true and a `marker` slot is provided, chart semantics use **unmerged** descendants for the marker subtree, the marker container is **focusable** with a summary `contentDescription`, and focus is **requested** on the marker when the selection changes (TalkBack / keyboard). Line showcase sample opts in.
 
-**Shipped (M11):** **`ChartAccessibilitySpec.keyboardSelectionRoamEnabled`** — **Shift+arrow** keyboard selection roam (line/scatter point + series, bar along X, combined flat layer order, pie slices); unmodified arrows still pan when `keyboardViewportNudgeEnabled` is on; **`KeyboardSelectionRoam`** in `chart-core`; **`chartAccessibilityActionsMergeViewport`** helper + [accessibility-custom-actions.md](accessibility-custom-actions.md).
+**Shipped (M11):** **`ChartAccessibilitySpec.keyboardSelectionRoamEnabled`** — **Shift+arrow** keyboard selection roam (line/scatter point + series, bar along X, combined flat layer order, pie slices, **candlestick** candles within a series + series via `KeyboardSelectionRoam.candlestickChartRoam`); unmodified arrows still pan when `keyboardViewportNudgeEnabled` is on; **`KeyboardSelectionRoam`** in `chart-core`; **`chartAccessibilityActionsMergeViewport`** helper + [accessibility-custom-actions.md](accessibility-custom-actions.md).
 
 Still needed (optional product polish):
 - richer **pre-built** custom action presets beyond merge helper if apps want standardized multi-step flows
@@ -242,6 +242,8 @@ Status update:
 ## New Chart Families
 Do not add further cartesian or radial families until line, bar, and scatter are **maintainable**: planner tests, showcase coverage, gesture/selection edge cases, and docs for viewport and accessibility stay in good shape.
 
+**Shipped in 1.1.0:** the **gauge** (progress-ring) and **candlestick** (OHLC) families, a thin **sparkline** wrapper over `LineChart`, and additive options on existing charts — **area / threshold-band fill** (`LineStyle.areaFill` / `areaFillEnd` / `areaFillMode`, **line-only**), **reference lines** (`ReferenceLine` via `referenceLines` on line/bar/scatter/combined), and **marker shapes + per-point styling** (`MarkerShape`, `PointStyle.shape` on line/scatter vertices; `ChartPoint.markerShape` / `markerColor` / `markerRadius` are **scatter-only**, where a per-point radius unlocks **bubble** scatter). Candlestick is fully shipped here — previewed in `ComposePlotApp`, screenshot-tested in the Android showcase, with chart-level accessibility, `accessibilityCustomActions`, and Shift+arrow keyboard roam; only **downstream app adoption (B15)** stays gated on a live OHLC data feed.
+
 **Recommended order (strict):**
 
 | Phase | Family | Rationale |
@@ -250,6 +252,8 @@ Do not add further cartesian or radial families until line, bar, and scatter are
 | 1 | **Scatter** (**shipped**) | Same cartesian axes, viewport, and transform stack as line charts; `ScatterChartSpec`, `planScatterChart`, `ScatterChart`; shared cartesian frame planning with line/bar; circles only (no segments); nearest-point tap among in-plot points. See **`api-and-state.md`**. |
 | 2 | **Pie / donut** | **Shipped:** core planning + `PieHitResolver`, **`PieChart`** composable, `ComposePlotApp` + showcase + Roborazzi, tap slice selection, optional **`startAngleDegrees`** / **`sliceGapDegrees`**, optional `PieSliceLabelsSpec` canvas callouts (`Polyline` leaders + `Text`), and richer default a11y summary when labels are enabled. |
 | 3 | **Combined** | **Shipped:** `CombinedCartesianChartSpec`, `planCombinedCartesianChart`, `CombinedCartesianChart`, `CombinedCartesianHitResolver`; shared *X* + primary *Y* from `ChartViewportState`, optional secondary *Y* (**data-derived** in planner; see **§3.1** in [`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)). Dense multi-layer **legend** stress: combined showcase **Dense legend demo** toggle. |
+| 4 | **Gauge / progress-ring** (1.1.0) | **Shipped:** `GaugeChartSpec`, `planGaugeChart`, `GaugeChart`; radial track + progress arc, optional rounded caps, configurable `startAngleDegrees` / `sweepDegrees`, optional `centerContent` slot; **non-interactive** (no viewport/selection/gesture). |
+| 5 | **Candlestick / OHLC** (1.1.0) | **Shipped (library):** `CandlestickChartSpec` (+ `OHLCPoint`, `CandlestickSeries`, `CandlestickStyle`, `CandlestickRenderSpec`, `CandlestickValueFormatter`), `planCandlestickChart`, `CandlestickChart`; bodies + wicks, bull/bear coloring, decimation, pan/zoom, tap-to-OHLC marker. App adoption (B15) gated on an OHLC feed. |
 
 **Out of scope for early combined work:** pie + cartesian in one surface until both families are stable alone.
 
@@ -286,7 +290,7 @@ Current Android support is the most mature path because the showcase app is Andr
 ### iOS
 Status:
 - **CLI compile gate**: `./gradlew :composeApp:compileKotlinIosSimulatorArm64` and `:composeApp:compileKotlinIosArm64` succeed (`chart-core` + `chart-compose` + `composeApp`).
-- **Parity with Android host:** the same **`ComposePlotApp()`** preview cycle (**line → bar → scatter → pie → combined → domain axes**) ships on both **`composeApp`** (Android) and **`iosApp`** (Xcode); it is not a reduced subset on iOS. **Android-only:** `samples/android-showcase` + Roborazzi.
+- **Parity with Android host:** the same **`ComposePlotApp()`** preview cycle (**line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes**) ships on both **`composeApp`** (Android) and **`iosApp`** (Xcode); it is not a reduced subset on iOS. **Android-only:** `samples/android-showcase` + Roborazzi.
 - **Host app**: `iosApp` embeds the `ComposeApp` framework via `embedAndSignAppleFrameworkForXcode`; UI entry is `ComposePlotApp()`. See **`AGENTS.md` → Obligations** when adding families.
 - **Runbook**: `docs/ios-host-runbook.md` (Xcode open path, signing, manual checklist, troubleshooting).
 
