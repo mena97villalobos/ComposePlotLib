@@ -11,7 +11,10 @@ internal class TransformPanVelocityEstimator(
     private val maxSamples: Int = 8,
     private val zoomPanSlop: Float = 0.012f,
 ) {
-    private data class Sample(val pan: Offset, val mark: ComparableTimeMark)
+    private data class Sample(
+        val pan: Offset,
+        val mark: ComparableTimeMark,
+    )
 
     private val samples = ArrayDeque<Sample>()
     private var hadZoom: Boolean = false

@@ -61,7 +61,10 @@ internal fun measuredLayoutInput(
                 maxLines = 1,
                 constraints = Constraints(maxWidth = Int.MAX_VALUE),
             )
-        val height = result.size.height.toDouble().coerceAtLeast(0.0)
+        val height =
+            result.size.height
+                .toDouble()
+                .coerceAtLeast(0.0)
         val firstBase =
             if (result.lineCount > 0) {
                 result.getLineBaseline(0).toDouble().coerceIn(0.0, height)
@@ -75,7 +78,10 @@ internal fun measuredLayoutInput(
                 firstBase
             }
         return TextLayoutMetrics(
-            width = result.size.width.toDouble().coerceAtLeast(0.0),
+            width =
+                result.size.width
+                    .toDouble()
+                    .coerceAtLeast(0.0),
             height = height,
             firstBaselineFromTop = firstBase,
             lastBaselineFromTop = lastBase,
@@ -111,7 +117,11 @@ internal fun measuredLayoutInput(
     val pieSpec = pieChartSpec
     if (pieSpec != null && pieSpec.sliceLabels.enabled && pieSpec.hasDrawableSlices()) {
         val labelsSpec = pieSpec.sliceLabels
-        val total = pieSpec.slices.asSequence().filter { it.value > 0.0 }.sumOf { it.value }
+        val total =
+            pieSpec.slices
+                .asSequence()
+                .filter { it.value > 0.0 }
+                .sumOf { it.value }
         val labelStyle = labelStyles.pieSliceLabel
         pieSpec.slices.forEachIndexed { index, slice ->
             if (slice.value <= 0.0) return@forEachIndexed

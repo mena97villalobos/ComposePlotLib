@@ -62,7 +62,10 @@ class ChartPlannerOutputInvariantTest {
             )
         val plan = ChartPlanner.planBarChart(cartesianInput, spec, selection = null)
         assertEquals(2, plan.layout.legendEntries.size)
-        val labels = plan.layout.legendEntries.map { it.label }.toSet()
+        val labels =
+            plan.layout.legendEntries
+                .map { it.label }
+                .toSet()
         assertEquals(setOf("Alpha row", "Beta row"), labels)
         val gridLines = plan.layout.plotDrawCommands.filterIsInstance<DrawCommand.Line>()
         assertTrue(gridLines.isNotEmpty(), "expected horizontal/vertical grid lines")
@@ -116,10 +119,22 @@ class ChartPlannerOutputInvariantTest {
             )
         val without = ChartPlanner.planScatterChart(cartesianInput, spec, selection = null)
         val withSel = ChartPlanner.planScatterChart(cartesianInput, spec, selection = selection)
-        val linesNo = without.layout.plotDrawCommands.filterIsInstance<DrawCommand.Line>().size
-        val linesSel = withSel.layout.plotDrawCommands.filterIsInstance<DrawCommand.Line>().size
-        val circlesNo = without.layout.plotDrawCommands.filterIsInstance<DrawCommand.Circle>().size
-        val circlesSel = withSel.layout.plotDrawCommands.filterIsInstance<DrawCommand.Circle>().size
+        val linesNo =
+            without.layout.plotDrawCommands
+                .filterIsInstance<DrawCommand.Line>()
+                .size
+        val linesSel =
+            withSel.layout.plotDrawCommands
+                .filterIsInstance<DrawCommand.Line>()
+                .size
+        val circlesNo =
+            without.layout.plotDrawCommands
+                .filterIsInstance<DrawCommand.Circle>()
+                .size
+        val circlesSel =
+            withSel.layout.plotDrawCommands
+                .filterIsInstance<DrawCommand.Circle>()
+                .size
         assertTrue(linesSel >= linesNo + 1, "selection overlay adds vertical crosshair line")
         assertTrue(circlesSel >= circlesNo + 1, "selection overlay adds highlight point circle")
     }

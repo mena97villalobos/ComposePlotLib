@@ -23,6 +23,10 @@ data class StackedBarChartSpec(
     val selectionStyle: SelectionStyle = SelectionStyle(),
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 48.0, right = 24.0, bottom = 40.0),
 ) {
+    init {
+        requireUniqueIds(groups.map { it.id }, "StackedBarChartSpec.groups ids")
+    }
+
     fun resolvedBarLayout(): BarLayoutMode = toBarChartSpec().resolvedBarLayout()
 
     fun toBarChartSpec(): BarChartSpec =

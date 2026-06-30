@@ -244,8 +244,18 @@ class ViewportStateTest {
                 pivotY = 50.0,
                 domain = domainSquare,
             )
-        assertTrue(z.viewport.xRange.start.isFinite() && z.viewport.xRange.endInclusive.isFinite())
-        assertTrue(z.viewport.yRange.start.isFinite() && z.viewport.yRange.endInclusive.isFinite())
+        assertTrue(
+            z.viewport.xRange.start
+                .isFinite() &&
+                z.viewport.xRange.endInclusive
+                    .isFinite(),
+        )
+        assertTrue(
+            z.viewport.yRange.start
+                .isFinite() &&
+                z.viewport.yRange.endInclusive
+                    .isFinite(),
+        )
         assertTrue(z.viewport.xRange.start <= z.viewport.xRange.endInclusive)
         assertTrue(z.viewport.yRange.start <= z.viewport.yRange.endInclusive)
     }

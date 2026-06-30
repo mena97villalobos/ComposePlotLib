@@ -14,6 +14,14 @@ plugins {
     alias(libs.plugins.jmh) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.dokka)
+    alias(libs.plugins.binaryCompatibilityValidator)
+}
+
+// Track the published binary API (JVM/Android ABI) so `copy()`/constructor/signature changes on the
+// public spec, model, and composable surface are a reviewed `.api` diff (run `apiDump` to refresh).
+// Only the published library modules are validated; apps, the showcase, and benchmarks are excluded.
+apiValidation {
+    ignoredProjects.addAll(listOf("composeApp", "android-showcase", "chart-core-benchmarks"))
 }
 
 val composeplotlibVersion: String =

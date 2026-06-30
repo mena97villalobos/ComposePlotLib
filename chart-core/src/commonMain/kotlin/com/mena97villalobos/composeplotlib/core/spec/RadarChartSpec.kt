@@ -33,7 +33,11 @@ data class RadarChartSpec(
     val contentPadding: InsetsD = InsetsD(left = 24.0, top = 48.0, right = 24.0, bottom = 24.0),
     /** Marker / a11y text for a selected axis value. */
     val axisValueFormatter: (axisLabel: String, value: Double) -> String = DefaultRadarAxisValueFormatter,
-)
+) {
+    init {
+        requireUniqueIds(series.map { it.id }, "RadarChartSpec.series ids")
+    }
+}
 
 data class RadarSeries(
     /** Stable identifier used by selection ([com.mena97villalobos.composeplotlib.core.selection.HighlightTarget.seriesId]). */

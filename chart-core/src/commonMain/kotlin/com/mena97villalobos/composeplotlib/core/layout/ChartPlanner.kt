@@ -606,7 +606,9 @@ object ChartPlanner {
                     plotCommands +=
                         DrawCommand.Path(
                             segments = segments,
-                            style = com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle.Fill(s.fillColor),
+                            style =
+                                com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle
+                                    .Fill(s.fillColor),
                         )
                 }
                 plotCommands +=
@@ -1169,16 +1171,22 @@ object ChartPlanner {
                 )
             val segments =
                 listOf(
-                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.MoveTo(sxTop),
-                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.CubicTo(cTop1, cTop2, txTop),
-                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.LineTo(txBottom),
-                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.CubicTo(cBot1, cBot2, sxBottom),
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
+                        .MoveTo(sxTop),
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
+                        .CubicTo(cTop1, cTop2, txTop),
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
+                        .LineTo(txBottom),
+                    com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
+                        .CubicTo(cBot1, cBot2, sxBottom),
                     com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.Close,
                 )
             linkCommands +=
                 DrawCommand.Path(
                     segments = segments,
-                    style = com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle.Fill(l.color),
+                    style =
+                        com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle
+                            .Fill(l.color),
                 )
             val bb = boundsOf(listOf(sxTop, cTop1, cTop2, txTop, txBottom, cBot1, cBot2, sxBottom))
             val anchor = OffsetD((sxTop.x + txTop.x) / 2.0, (sxTop.y + sxBottom.y + txTop.y + txBottom.y) / 4.0)
@@ -1272,8 +1280,10 @@ object ChartPlanner {
                             DrawCommand.Path(
                                 segments =
                                     listOf(
-                                        com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.MoveTo(OffsetD(sx.x, anchorY)),
-                                        com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment.LineTo(OffsetD(ex.x, anchorY)),
+                                        com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
+                                            .MoveTo(OffsetD(sx.x, anchorY)),
+                                        com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
+                                            .LineTo(OffsetD(ex.x, anchorY)),
                                     ),
                                 style =
                                     com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle.Stroke(
@@ -1833,8 +1843,8 @@ object ChartPlanner {
         viewport: ChartViewport,
         transform: ChartTransform,
         plotBounds: RectD,
-    ): RectD {
-        return barRectWithPixelCenter(
+    ): RectD =
+        barRectWithPixelCenter(
             group = group,
             xDomain = xDomain,
             yTopDomain = yTopDomain,
@@ -1843,7 +1853,6 @@ object ChartPlanner {
             plotBounds = plotBounds,
             centerXPx = transform.toPixel(XyPoint(xDomain, viewport.yRange.start)).x,
         )
-    }
 
     private fun barRectWithPixelCenter(
         group: BarGroup,
@@ -1878,8 +1887,8 @@ object ChartPlanner {
         transform: ChartTransform,
         plotBounds: RectD,
         centerYPx: Double,
-    ): RectD {
-        return barRectWithPixelCenterHorizontal(
+    ): RectD =
+        barRectWithPixelCenterHorizontal(
             group = group,
             categoryDomain = categoryDomain,
             valueDomain = valueDomain,
@@ -1888,7 +1897,6 @@ object ChartPlanner {
             plotBounds = plotBounds,
             centerYPx = centerYPx,
         )
-    }
 
     private fun barRectWithPixelCenterHorizontal(
         group: BarGroup,
@@ -1917,8 +1925,8 @@ object ChartPlanner {
         segments: List<PlannedBarSegment>,
         selection: ChartSelection?,
         selectionStyle: SelectionStyle,
-    ): List<DrawCommand> {
-        return segments.flatMap { seg ->
+    ): List<DrawCommand> =
+        segments.flatMap { seg ->
             val rect = DrawCommand.Rect(bounds = seg.bounds, color = seg.fillColor)
             if (selection != null && selectionMatchesSegment(selection, seg)) {
                 val accent =
@@ -1946,7 +1954,6 @@ object ChartPlanner {
                 listOf(rect)
             }
         }
-    }
 
     private fun selectionMatchesSegment(
         selection: ChartSelection,
@@ -1979,8 +1986,10 @@ object ChartPlanner {
         if (cachedCmds != null &&
             gridLinesCachePlotBounds == plotBounds &&
             gridLinesCacheStyle == lineStyle &&
-            cachedXs != null && cachedXs.size == nx &&
-            cachedYs != null && cachedYs.size == ny
+            cachedXs != null &&
+            cachedXs.size == nx &&
+            cachedYs != null &&
+            cachedYs.size == ny
         ) {
             var match = true
             var i = 0
@@ -2367,7 +2376,10 @@ object ChartPlanner {
                             if (layer.groups.isEmpty()) {
                                 BarLayoutMode.Independent
                             } else {
-                                val n = layer.groups.first().entries.size
+                                val n =
+                                    layer.groups
+                                        .first()
+                                        .entries.size
                                 if (layer.groups.all { it.entries.size == n }) layer.barLayout else BarLayoutMode.Independent
                             }
                         } else {
@@ -2456,8 +2468,8 @@ object ChartPlanner {
         plotBounds: RectD,
         selection: ChartSelection,
         selectionStyle: SelectionStyle,
-    ): List<DrawCommand> {
-        return listOf(
+    ): List<DrawCommand> =
+        listOf(
             DrawCommand.Line(
                 start = OffsetD(selection.pixelOffset.x, plotBounds.top),
                 end = OffsetD(selection.pixelOffset.x, plotBounds.bottom),
@@ -2470,7 +2482,6 @@ object ChartPlanner {
                 color = selectionStyle.pointColor,
             ),
         )
-    }
 
     private fun combinedLegendLabels(spec: CombinedCartesianChartSpec): List<Pair<String, ChartColor>> {
         val out = ArrayList<Pair<String, ChartColor>>()

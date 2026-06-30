@@ -26,14 +26,14 @@ object NearestPointResolver {
         if (!touchPoint.x.isFinite() || !touchPoint.y.isFinite()) return null
         if (!maxDistancePx.isFinite() || maxDistancePx < 0.0) return null
         val nearest =
-            indexedPoints.asSequence()
+            indexedPoints
+                .asSequence()
                 .mapNotNull { (globalIndex, point) ->
                     if (!point.x.isFinite() || !point.y.isFinite()) return@mapNotNull null
                     val pixelPoint = transform.toPixel(point)
                     val dist = pixelDistanceOrInfinite(pixelPoint, touchPoint)
                     IndexedDistance(globalIndex, point, pixelPoint, dist)
-                }
-                .minWithOrNull(
+                }.minWithOrNull(
                     compareBy<IndexedDistance> { it.distance }.thenBy { it.index },
                 ) ?: return null
         if (!nearest.distance.isFinite() || nearest.distance > maxDistancePx) return null

@@ -147,7 +147,10 @@ internal fun buildCombinedMarkerData(
                     if (layer.groups.isEmpty()) {
                         BarLayoutMode.Independent
                     } else {
-                        val n = layer.groups.first().entries.size
+                        val n =
+                            layer.groups
+                                .first()
+                                .entries.size
                         if (layer.groups.all { it.entries.size == n }) layer.barLayout else BarLayoutMode.Independent
                     }
                 } else {

@@ -134,11 +134,9 @@ fun RadarChart(
                     selectionState,
                     emptyStateDescription,
                     accessibilityCustomActions,
-                )
-                .onSizeChanged { size ->
+                ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
-                }
-                .chartGestures(
+                }.chartGestures(
                     onTap =
                         if (gestureConfig.tap.selectionEnabled) {
                             { offset ->

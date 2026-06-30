@@ -33,10 +33,13 @@ internal fun Modifier.chartCartesianKeyboardViewport(
         if (event.type != KeyEventType.KeyDown) {
             return@onKeyEvent false
         }
-        if (reserveShiftDirectionKeysForSelectionRoam && event.isShiftPressed &&
+        if (reserveShiftDirectionKeysForSelectionRoam &&
+            event.isShiftPressed &&
             (
-                event.key == Key.DirectionLeft || event.key == Key.DirectionRight ||
-                    event.key == Key.DirectionUp || event.key == Key.DirectionDown
+                event.key == Key.DirectionLeft ||
+                    event.key == Key.DirectionRight ||
+                    event.key == Key.DirectionUp ||
+                    event.key == Key.DirectionDown
             )
         ) {
             return@onKeyEvent false

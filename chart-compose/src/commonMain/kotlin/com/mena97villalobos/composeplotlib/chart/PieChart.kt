@@ -152,18 +152,15 @@ fun PieChart(
                     selectionState,
                     emptyStateDescription,
                     accessibilityCustomActions,
-                )
-                .chartPieKeyboardSelectionRoam(
+                ).chartPieKeyboardSelectionRoam(
                     enabled = spec.accessibility.keyboardSelectionRoamEnabled,
                     spec = spec,
                     selectionState = selectionState,
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     layoutPlan = { latestPlan.value?.layout },
-                )
-                .onSizeChanged { size ->
+                ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
-                }
-                .chartGestures(
+                }.chartGestures(
                     onTap =
                         if (gestureConfig.tap.selectionEnabled) {
                             { offset ->

@@ -21,7 +21,22 @@ data class SankeyChartSpec(
     val legend: LegendSpec = LegendSpec(),
     val selectionStyle: SelectionStyle = SelectionStyle(),
     val accessibility: ChartAccessibilitySpec = ChartAccessibilitySpec(),
-)
+) {
+    init {
+        requireUniqueIds(nodes.map { it.id }, "SankeyChartSpec.node ids")
+        if (links.isNotEmpty()) {
+            val nodeIds = nodes.mapTo(HashSet(nodes.size)) { it.id }
+            links.forEach { link ->
+                require(link.sourceNodeId in nodeIds) {
+                    "SankeyLink.sourceNodeId '${link.sourceNodeId}' references no SankeyNode in this spec."
+                }
+                require(link.targetNodeId in nodeIds) {
+                    "SankeyLink.targetNodeId '${link.targetNodeId}' references no SankeyNode in this spec."
+                }
+            }
+        }
+    }
+}
 
 data class SankeyNode(
     val id: String,

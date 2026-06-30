@@ -115,8 +115,10 @@ object VisibleRangeCalculator {
     ): Boolean {
         val xr = viewport.xRange
         val yr = viewport.yRange
-        return x >= xr.start - FpMath.EPS && x <= xr.endInclusive + FpMath.EPS &&
-            y >= yr.start - FpMath.EPS && y <= yr.endInclusive + FpMath.EPS
+        return x >= xr.start - FpMath.EPS &&
+            x <= xr.endInclusive + FpMath.EPS &&
+            y >= yr.start - FpMath.EPS &&
+            y <= yr.endInclusive + FpMath.EPS
     }
 
     private fun segmentIntersectsViewportDomain(

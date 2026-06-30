@@ -129,11 +129,9 @@ fun SankeyChart(
                     spec = spec,
                     selectionState = selectionState,
                     customAccessibilityActions = accessibilityCustomActions,
-                )
-                .onSizeChanged { size ->
+                ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
-                }
-                .chartGestures(
+                }.chartGestures(
                     onTap =
                         if (gestureConfig.tap.selectionEnabled) {
                             { offset ->
@@ -232,6 +230,10 @@ fun SankeyChart(
 
 private fun defaultViewport(): ChartViewport =
     ChartViewport(
-        xRange = com.mena97villalobos.composeplotlib.core.range.ClosedRangeD(0.0, 1.0),
-        yRange = com.mena97villalobos.composeplotlib.core.range.ClosedRangeD(0.0, 1.0),
+        xRange =
+            com.mena97villalobos.composeplotlib.core.range
+                .ClosedRangeD(0.0, 1.0),
+        yRange =
+            com.mena97villalobos.composeplotlib.core.range
+                .ClosedRangeD(0.0, 1.0),
     )

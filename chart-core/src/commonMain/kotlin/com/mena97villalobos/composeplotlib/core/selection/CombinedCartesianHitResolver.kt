@@ -118,20 +118,21 @@ object CombinedCartesianHitResolver {
                                     )
                                 }
                             if (indexed.isEmpty()) return@mapNotNull null
-                            NearestPointResolver.resolveIndexed(
-                                seriesId = series.id,
-                                indexedPoints = indexed,
-                                touchPoint = touchPx,
-                                transform = t,
-                                maxDistancePx = lineMaxDistancePx,
-                            )?.let { sel ->
-                                ChartSelection(
-                                    target = sel.target.copy(layerId = layer.id),
-                                    pixelOffset = sel.pixelOffset,
-                                    markerAnchor = sel.markerAnchor,
-                                    hitBounds = sel.hitBounds,
-                                )
-                            }
+                            NearestPointResolver
+                                .resolveIndexed(
+                                    seriesId = series.id,
+                                    indexedPoints = indexed,
+                                    touchPoint = touchPx,
+                                    transform = t,
+                                    maxDistancePx = lineMaxDistancePx,
+                                )?.let { sel ->
+                                    ChartSelection(
+                                        target = sel.target.copy(layerId = layer.id),
+                                        pixelOffset = sel.pixelOffset,
+                                        markerAnchor = sel.markerAnchor,
+                                        hitBounds = sel.hitBounds,
+                                    )
+                                }
                         }
                     val best = candidates.minByOrNull { selectionDistance(it.pixelOffset, touchPx) }
                     if (best != null) return best
