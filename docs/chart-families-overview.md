@@ -32,11 +32,23 @@ Radial multi-series polygon chart: **`RadarChartSpec`** defines ordered axes (sp
 
 Explicit-column Sankey diagram: **`SankeyChartSpec`** provides nodes with a `column` index and weighted links between node ids. Layout is planned in normalized domain space (commonly `x=0..1`, `y=0..1`) so pan/zoom reuses **`ChartViewportState`**; hit-testing supports node and link selection. **`SankeyLayoutSpec`** adds SankeyMATIC-like controls for node ordering, per-column vertical alignment, deterministic link stacking via outgoing/incoming link ordering, and optional node/link labels.
 
+## Candlestick (OHLC)
+
+Cartesian OHLC chart: **`CandlestickChartSpec`** holds **`CandlestickSeries`** of **`OHLCPoint`** (`x`, `open`, `high`, `low`, `close`) with per-series **`CandlestickStyle`** (bull/bear colors, body/wick widths, wick coloring). Shares the line/bar/scatter axis + viewport stack: bodies + wicks, bull/bear coloring, **`CandlestickRenderSpec`** decimation for long series, pan/zoom, and a **tap-to-OHLC** marker. *(Library shipped in 1.1.0; app adoption is gated on an OHLC data feed.)*
+
+## Gauge / progress-ring
+
+Radial progress ring: **`GaugeChartSpec`** (`progress` 0..1, `trackColor`, `progressColor`, `strokeWidthPx`, `roundedCaps`, `startAngleDegrees`, `sweepDegrees`) draws a track + progress arc with an optional **`centerContent`** composable slot. **Non-interactive** — no pan/zoom/selection. *(Shipped in 1.1.0.)*
+
+## Sparkline
+
+A thin convenience wrapper over **`LineChart`** with axes, grid, and legend off, zero padding, and non-interactive defaults; optional area fill. Reuses `LineChartSpec` / `LineSeries` (no separate spec type). *(Shipped in 1.1.0.)*
+
 ## Domain axes (not a separate chart type)
 
 **`AxisScale.Category`** and **`AxisScale.TimeEpochMillis`** work on line (and other cartesian) specs. See **`axis-category-time-cookbook.md`** and the **Domain axes** tab in **`ComposePlotApp`**.
 
 ## Samples
 
-- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → domain axes.
+- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → candlestick → gauge → sparkline → domain axes.
 - **`samples/android-showcase`** — richer demos and Roborazzi baselines (Android).

@@ -32,10 +32,12 @@ import com.mena97villalobos.composeplotlib.chart.ChartMarkerPlacement
 import com.mena97villalobos.composeplotlib.chart.ChartNoDataDefaults
 import com.mena97villalobos.composeplotlib.chart.DefaultChartMarker
 import com.mena97villalobos.composeplotlib.chart.LineChart
+import com.mena97villalobos.composeplotlib.chart.Sparkline
 import com.mena97villalobos.composeplotlib.chart.chartAccessibilityActionsMergeViewport
 import com.mena97villalobos.composeplotlib.chart.defaultViewport
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
+import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.largeDenseLineChartInitialViewport
@@ -189,6 +191,33 @@ fun LineChartShowcaseScreen() {
                     "Selected $seriesLabel: ${spec.valueFormatter(point)}"
                 } ?: "Tap a point to inspect selection.",
             style = MaterialTheme.typography.bodyMedium,
+        )
+
+        Text(
+            text =
+                "Sparkline: an axis-less, non-interactive mini line with an optional area fill, for inline trends " +
+                    "(KPI cards, table cells, list rows).",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Sparkline(
+            points =
+                listOf(
+                    ChartPoint(0.0, 4.0),
+                    ChartPoint(1.0, 6.0),
+                    ChartPoint(2.0, 5.0),
+                    ChartPoint(3.0, 8.0),
+                    ChartPoint(4.0, 7.0),
+                    ChartPoint(5.0, 11.0),
+                    ChartPoint(6.0, 9.0),
+                    ChartPoint(7.0, 13.0),
+                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
+            color = ChartColor.Blue,
+            areaFill = ChartColor(0x551565C0L),
+            areaFillEnd = ChartColor(0x111565C0L),
         )
 
         if (variant == LineShowcaseVariant.Styled) {

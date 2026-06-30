@@ -127,7 +127,12 @@ code.
 ### Shipped Chart Families
 
 `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`,
-`RadarChart`, `SankeyChart`
+`RadarChart`, `SankeyChart`, `HeatmapChart`, `GaugeChart`, `CandlestickChart`, plus the axis-less
+`Sparkline` wrapper.
+
+Line/scatter charts also support area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`),
+reference lines (`ReferenceLine`), marker shapes with per-point styling (`MarkerShape`, `ChartPoint`
+marker overrides), and bubble point sizing.
 
 ## Adding a New Chart Family
 

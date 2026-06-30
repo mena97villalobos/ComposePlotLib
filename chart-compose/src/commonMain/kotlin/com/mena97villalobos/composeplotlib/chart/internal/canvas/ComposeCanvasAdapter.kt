@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
@@ -317,6 +318,27 @@ private fun DrawScope.drawDrawCommands(
                         drawPath(
                             path = path,
                             color = style.color.multiplyAlpha(cf).toComposeColor(),
+                            style = Fill,
+                        )
+                    }
+                    is PathDrawStyle.VerticalGradientFill -> {
+                        path.fillType =
+                            when (style.fillRule) {
+                                FillRule.NonZero -> PathFillType.NonZero
+                                FillRule.EvenOdd -> PathFillType.EvenOdd
+                            }
+                        drawPath(
+                            path = path,
+                            brush =
+                                Brush.verticalGradient(
+                                    colors =
+                                        listOf(
+                                            style.topColor.multiplyAlpha(cf).toComposeColor(),
+                                            style.bottomColor.multiplyAlpha(cf).toComposeColor(),
+                                        ),
+                                    startY = style.topY.toFloat(),
+                                    endY = style.bottomY.toFloat(),
+                                ),
                             style = Fill,
                         )
                     }

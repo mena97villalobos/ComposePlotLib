@@ -30,10 +30,12 @@ import com.mena97villalobos.composeplotlib.chart.theme.withMaterialSeriesColors
 import com.mena97villalobos.composeplotlib.core.geometry.InsetsD
 import com.mena97villalobos.composeplotlib.core.model.BarEntry
 import com.mena97villalobos.composeplotlib.core.model.BarGroup
+import com.mena97villalobos.composeplotlib.core.model.CandlestickSeries
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
 import com.mena97villalobos.composeplotlib.core.model.HeatmapCell
 import com.mena97villalobos.composeplotlib.core.model.LineSeries
+import com.mena97villalobos.composeplotlib.core.model.OHLCPoint
 import com.mena97villalobos.composeplotlib.core.model.PieChartSlice
 import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
@@ -43,11 +45,13 @@ import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.BarStyle
+import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
 import com.mena97villalobos.composeplotlib.core.spec.EpochMillisTickPolicy
+import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
 import com.mena97villalobos.composeplotlib.core.spec.GridSpec
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
@@ -55,13 +59,17 @@ import com.mena97villalobos.composeplotlib.core.spec.HeatmapColorScale
 import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineStyle
+import com.mena97villalobos.composeplotlib.core.spec.MarkerShape
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieSliceLabelsSpec
 import com.mena97villalobos.composeplotlib.core.spec.PointStyle
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarSeries
+import com.mena97villalobos.composeplotlib.core.spec.ReferenceLine
+import com.mena97villalobos.composeplotlib.core.spec.ReferenceOrientation
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.StackedBarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
 
 /**
  * Minimal multiplatform preview host: cycles [LineChart], [BarChart], [StackedBarChart], horizontal [BarChart],
@@ -89,6 +97,9 @@ fun ComposePlotApp() {
         val radarSpec = remember { previewRadarChartSpec() }
         val combinedSpec = remember { previewCombinedCartesianSpec() }
         val heatmapSpec = remember { previewHeatmapChartSpec() }
+        val gaugeSpec = remember { previewGaugeSpec() }
+        val candlestickSpec = remember { previewCandlestickSpec() }
+        val sparklinePoints = remember { previewSparklinePoints() }
         val lineViewport = rememberChartViewportState(initialViewport = defaultViewport(lineSpecVariantA))
         val barViewport = rememberChartViewportState(initialViewport = defaultViewport(barSpec))
         val stackedBarViewport =
@@ -99,6 +110,7 @@ fun ComposePlotApp() {
         val radarViewport = rememberChartViewportState(initialViewport = defaultViewport(radarSpec))
         val combinedViewport = rememberChartViewportState(initialViewport = defaultViewport(combinedSpec))
         val heatmapViewport = rememberChartViewportState(initialViewport = defaultViewport(heatmapSpec))
+        val candlestickViewport = rememberChartViewportState(initialViewport = defaultViewport(candlestickSpec))
         val domainCategorySpec = remember { previewCategoryAxisLineSpec() }
         val domainLongCategorySpec = remember { previewLongCategoryAxisLineSpec() }
         val domainTimeSpec = remember { previewEpochMillisLineSpec() }
@@ -119,6 +131,7 @@ fun ComposePlotApp() {
         val radarSelection = rememberChartSelectionState()
         val combinedSelection = rememberChartSelectionState()
         val heatmapSelection = rememberChartSelectionState()
+        val candlestickSelection = rememberChartSelectionState()
         val domainCategorySelection = rememberChartSelectionState()
         val domainLongCategorySelection = rememberChartSelectionState()
         val domainTimeSelection = rememberChartSelectionState()
@@ -138,8 +151,9 @@ fun ComposePlotApp() {
             )
             Text(
                 text =
-                    "Shared host: line, bar, stacked bar, horizontal bar, scatter (cartesian), pie/donut (radial), " +
-                        "radar/spider (radial), combined (bar + dual-axis line), sankey (flow), and domain axes (category + time). Android showcase adds richer demos.",
+                    "Shared host: line (area fill + reference line), bar, stacked bar, horizontal bar, scatter (mixed marker shapes + bubbles), " +
+                        "pie/donut (radial), radar/spider (radial), combined (bar + dual-axis line), sankey (flow), heatmap, gauge (radial progress), " +
+                        "candlestick (OHLC), sparkline (axis-less mini line), and domain axes (category + time). Android showcase adds richer demos.",
                 style = MaterialTheme.typography.bodyLarge,
             )
             OutlinedButton(
@@ -155,7 +169,10 @@ fun ComposePlotApp() {
                             PreviewScreen.Radar -> PreviewScreen.Combined
                             PreviewScreen.Combined -> PreviewScreen.Sankey
                             PreviewScreen.Sankey -> PreviewScreen.Heatmap
-                            PreviewScreen.Heatmap -> PreviewScreen.DomainAxes
+                            PreviewScreen.Heatmap -> PreviewScreen.Gauge
+                            PreviewScreen.Gauge -> PreviewScreen.Candlestick
+                            PreviewScreen.Candlestick -> PreviewScreen.Sparkline
+                            PreviewScreen.Sparkline -> PreviewScreen.DomainAxes
                             PreviewScreen.DomainAxes -> PreviewScreen.Line
                         }
                 },
@@ -172,7 +189,10 @@ fun ComposePlotApp() {
                         PreviewScreen.Radar -> "Switch to Combined Preview"
                         PreviewScreen.Combined -> "Switch to Sankey Preview"
                         PreviewScreen.Sankey -> "Switch to Heatmap Preview"
-                        PreviewScreen.Heatmap -> "Switch to Domain Axes Preview"
+                        PreviewScreen.Heatmap -> "Switch to Gauge Preview"
+                        PreviewScreen.Gauge -> "Switch to Candlestick Preview"
+                        PreviewScreen.Candlestick -> "Switch to Sparkline Preview"
+                        PreviewScreen.Sparkline -> "Switch to Domain Axes Preview"
                         PreviewScreen.DomainAxes -> "Switch to Line Preview"
                     },
                 )
@@ -477,6 +497,71 @@ fun ComposePlotApp() {
                     )
                 }
 
+                PreviewScreen.Gauge -> {
+                    GaugeChart(
+                        spec = gaugeSpec,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(320.dp)
+                                .padding(top = 8.dp),
+                        centerContent = {
+                            val percent = kotlin.math.round(gaugeSpec.clampedProgress() * 100).toInt()
+                            Text(
+                                text = "$percent%",
+                                style = MaterialTheme.typography.headlineSmall,
+                                textAlign = TextAlign.Center,
+                            )
+                        },
+                    )
+                    Text(
+                        text = "Read-only radial progress ring (270° sweep). centerContent shows the percentage.",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+
+                PreviewScreen.Candlestick -> {
+                    CandlestickChart(
+                        spec = candlestickSpec,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(320.dp)
+                                .padding(top = 8.dp),
+                        viewportState = candlestickViewport,
+                        selectionState = candlestickSelection,
+                        gestureConfig = ChartGestureConfig.cartesianInteractive(),
+                        marker = { markerData -> DefaultChartMarker(markerData) },
+                    )
+                    Text(
+                        text =
+                            candlestickSelection.selection?.let { sel ->
+                                val series = candlestickSpec.series.firstOrNull { it.id == sel.target.seriesId }
+                                val candle = series?.points?.getOrNull(sel.target.pointIndex)
+                                candle?.let { candlestickSpec.valueFormatter(it) }
+                                    ?: "Selected candle ${sel.target.pointIndex + 1}"
+                            } ?: "Tap a candle for its OHLC values. Pan/zoom with two fingers.",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+
+                PreviewScreen.Sparkline -> {
+                    Text(
+                        text = "Axis-less mini line for inline trends (KPI cards, table cells), with an optional area fill.",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Sparkline(
+                        points = sparklinePoints,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .padding(top = 8.dp),
+                        color = ChartColor.Blue,
+                        areaFill = ChartColor(0x331565C0L),
+                    )
+                }
+
                 PreviewScreen.Pie -> {
                     PieChart(
                         spec = pieSpec,
@@ -645,7 +730,13 @@ private fun previewLineChartSpec(): LineChartSpec =
                 LineSeries(
                     id = "revenue",
                     label = "Revenue",
-                    lineStyle = LineStyle(color = ChartColor.Blue),
+                    lineStyle =
+                        LineStyle(
+                            color = ChartColor.Blue,
+                            // Translucent gradient area fill under the line (ToPlotBottom by default).
+                            areaFill = ChartColor(0x551565C0L),
+                            areaFillEnd = ChartColor(0x111565C0L),
+                        ),
                     points =
                         listOf(
                             ChartPoint(0.0, 12.0),
@@ -655,6 +746,18 @@ private fun previewLineChartSpec(): LineChartSpec =
                             ChartPoint(4.0, 25.0),
                             ChartPoint(5.0, 22.0),
                         ),
+                ),
+            ),
+        // Horizontal reference line marking a target threshold (visible within the fit-to-data viewport).
+        referenceLines =
+            listOf(
+                ReferenceLine(
+                    orientation = ReferenceOrientation.Horizontal,
+                    value = 20.0,
+                    color = ChartColor.Red,
+                    strokeWidth = 1.5,
+                    dashIntervals = listOf(8.0, 6.0),
+                    label = "Target",
                 ),
             ),
         accessibility =
@@ -703,11 +806,14 @@ private fun previewScatterChartSpec(): ScatterChartSpec =
                     points =
                         listOf(
                             ChartPoint(0.5, 8.0),
-                            ChartPoint(1.5, 14.0),
+                            // Per-point marker override: a larger diamond bubble.
+                            ChartPoint(1.5, 14.0, markerShape = MarkerShape.Diamond, markerRadius = 10.0),
                             ChartPoint(2.5, 11.0),
-                            ChartPoint(3.5, 18.0),
+                            // Bubble sized by markerRadius with its own color.
+                            ChartPoint(3.5, 18.0, markerRadius = 13.0, markerColor = ChartColor.Red),
                         ),
-                    pointStyle = PointStyle(visible = true, radius = 5.0, color = ChartColor.Blue),
+                    // Series default glyph is a square; individual points override it above.
+                    pointStyle = PointStyle(visible = true, radius = 5.0, color = ChartColor.Blue, shape = MarkerShape.Square),
                 ),
                 ScatterSeries(
                     id = "beta",
@@ -715,11 +821,12 @@ private fun previewScatterChartSpec(): ScatterChartSpec =
                     points =
                         listOf(
                             ChartPoint(1.0, 12.0),
-                            ChartPoint(2.0, 16.0),
+                            ChartPoint(2.0, 16.0, markerRadius = 11.0),
                             ChartPoint(3.0, 9.0),
                             ChartPoint(4.0, 20.0),
                         ),
-                    pointStyle = PointStyle(visible = true, radius = 4.0, color = ChartColor.Green),
+                    // Series default glyph is a triangle.
+                    pointStyle = PointStyle(visible = true, radius = 4.0, color = ChartColor.Green, shape = MarkerShape.Triangle),
                 ),
             ),
     )
@@ -1016,6 +1123,51 @@ private fun previewHeatmapChartSpec(): HeatmapChartSpec =
         colorScale = HeatmapColorScale(0.0, 100.0, ChartColor.LightGray, ChartColor.Blue),
     )
 
+private fun previewGaugeSpec(): GaugeChartSpec =
+    GaugeChartSpec(
+        progress = 0.68,
+        id = "demo_gauge",
+        trackColor = ChartColor.LightGray,
+        progressColor = ChartColor.Blue,
+        strokeWidthPx = 28.0,
+        roundedCaps = true,
+        sweepDegrees = 270.0,
+    )
+
+private fun previewCandlestickSpec(): CandlestickChartSpec =
+    CandlestickChartSpec(
+        series =
+            listOf(
+                CandlestickSeries(
+                    id = "acme",
+                    label = "ACME",
+                    points =
+                        listOf(
+                            OHLCPoint(x = 0.0, open = 20.0, high = 24.0, low = 19.0, close = 23.0),
+                            OHLCPoint(x = 1.0, open = 23.0, high = 25.0, low = 21.5, close = 22.0),
+                            OHLCPoint(x = 2.0, open = 22.0, high = 22.5, low = 18.0, close = 19.0),
+                            OHLCPoint(x = 3.0, open = 19.0, high = 23.0, low = 18.5, close = 22.5),
+                            OHLCPoint(x = 4.0, open = 22.5, high = 27.0, low = 22.0, close = 26.5),
+                            OHLCPoint(x = 5.0, open = 26.5, high = 28.0, low = 25.0, close = 25.5),
+                            OHLCPoint(x = 6.0, open = 25.5, high = 26.0, low = 22.0, close = 23.0),
+                            OHLCPoint(x = 7.0, open = 23.0, high = 25.5, low = 22.5, close = 25.0),
+                        ),
+                ),
+            ),
+    )
+
+private fun previewSparklinePoints(): List<ChartPoint> =
+    listOf(
+        ChartPoint(0.0, 4.0),
+        ChartPoint(1.0, 6.0),
+        ChartPoint(2.0, 5.0),
+        ChartPoint(3.0, 8.0),
+        ChartPoint(4.0, 7.0),
+        ChartPoint(5.0, 11.0),
+        ChartPoint(6.0, 9.0),
+        ChartPoint(7.0, 13.0),
+    )
+
 private enum class PreviewScreen {
     Line,
     Bar,
@@ -1027,5 +1179,8 @@ private enum class PreviewScreen {
     Combined,
     Sankey,
     Heatmap,
+    Gauge,
+    Candlestick,
+    Sparkline,
     DomainAxes,
 }

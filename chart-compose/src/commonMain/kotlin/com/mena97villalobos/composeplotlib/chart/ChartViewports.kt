@@ -5,9 +5,11 @@ import com.mena97villalobos.composeplotlib.core.math.FpMath
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
+import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
@@ -79,6 +81,16 @@ fun defaultViewport(spec: PieChartSpec): ChartViewport =
  * Present so [com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput] and measurement passes stay aligned with other families.
  */
 fun defaultViewport(spec: RadarChartSpec): ChartViewport =
+    ChartViewport(
+        xRange = ClosedRangeD(0.0, 1.0),
+        yRange = ClosedRangeD(0.0, 1.0),
+    )
+
+/**
+ * Dummy [ChartViewport] for gauge / progress-ring charts (radial; non-interactive).
+ * Present so [com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput] and measurement passes stay aligned with other families.
+ */
+fun defaultViewport(spec: GaugeChartSpec): ChartViewport =
     ChartViewport(
         xRange = ClosedRangeD(0.0, 1.0),
         yRange = ClosedRangeD(0.0, 1.0),
@@ -199,6 +211,32 @@ fun defaultViewport(spec: BarChartSpec): ChartViewport {
             )
         }
     }
+}
+
+/**
+ * [ChartViewport] that fits all candles: X from the candle positions, Y from the lowest low to the highest
+ * high across every series. Unlike bars, the price (Y) axis does **not** force-include zero. Uses a small
+ * default range when there is no (finite) data.
+ */
+fun defaultViewport(spec: CandlestickChartSpec): ChartViewport {
+    val points = spec.series.flatMap { it.points }
+    val xs = points.map { it.x }.filter { it.isFinite() }
+    val lows = points.map { it.low }.filter { it.isFinite() }
+    val highs = points.map { it.high }.filter { it.isFinite() }
+    if (xs.isEmpty() || lows.isEmpty() || highs.isEmpty()) {
+        return ChartViewport(
+            xRange = ClosedRangeD(0.0, 1.0),
+            yRange = ClosedRangeD(0.0, 1.0),
+        )
+    }
+    val minX = xs.min()
+    val maxX = xs.max().ensureSpan(minX)
+    val minY = lows.min()
+    val maxY = highs.max().ensureSpan(minY)
+    return ChartViewport(
+        xRange = ClosedRangeD(minX, maxX),
+        yRange = ClosedRangeD(minY, maxY),
+    )
 }
 
 /**

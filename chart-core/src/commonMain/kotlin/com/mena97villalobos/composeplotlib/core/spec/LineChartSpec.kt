@@ -23,6 +23,7 @@ data class LineChartSpec(
     val legend: LegendSpec = LegendSpec(),
     val selectionStyle: SelectionStyle = SelectionStyle(),
     val lineRender: LineRenderSpec = LineRenderSpec(),
+    val referenceLines: List<ReferenceLine> = emptyList(),
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 48.0, right = 24.0, bottom = 40.0),
 ) {
     init {

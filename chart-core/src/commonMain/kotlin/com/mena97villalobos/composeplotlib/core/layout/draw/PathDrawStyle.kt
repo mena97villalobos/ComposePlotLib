@@ -14,4 +14,16 @@ sealed interface PathDrawStyle {
         val color: ChartColor,
         val fillRule: FillRule = FillRule.NonZero,
     ) : PathDrawStyle
+
+    /**
+     * Vertical linear-gradient fill: [topColor] at [topY] fading to [bottomColor] at [bottomY] (pixel space).
+     * Used for area fills with an alpha-fade look; renderers build the platform gradient brush.
+     */
+    data class VerticalGradientFill(
+        val topColor: ChartColor,
+        val bottomColor: ChartColor,
+        val topY: Double,
+        val bottomY: Double,
+        val fillRule: FillRule = FillRule.NonZero,
+    ) : PathDrawStyle
 }

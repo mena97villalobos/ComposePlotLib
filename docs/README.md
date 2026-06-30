@@ -16,7 +16,7 @@ Implementation-oriented documentation for the library. Start with **`production-
 11. **[`showcase-guide.md`](showcase-guide.md)** — Android showcase layout, Roborazzi, extending demos  
 12. **[`api-checklist.md`](api-checklist.md)** — Public API audit / release gate (`chart-core` vs `chart-compose`, leakage checks)
 
-**Chart families today:** **[`chart-families-overview.md`](chart-families-overview.md)** and **`api-and-state.md`** (line, bar, scatter, combined, pie/donut; polish in `production-readiness-next-steps.md` → New Chart Families). Combined semantics: **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)**.
+**Chart families today:** **[`chart-families-overview.md`](chart-families-overview.md)** and **`api-and-state.md`** (line, bar, scatter, combined, pie/donut, radar, sankey, heatmap, gauge, candlestick, plus a sparkline wrapper; polish in `production-readiness-next-steps.md` → New Chart Families). Combined semantics: **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)**.
 
 ## Reference and long-range scope
 | File | Purpose |

@@ -25,8 +25,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.GaugeChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.HeatmapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
@@ -70,7 +72,8 @@ fun ShowcaseApp() {
                                 .fillMaxSize()
                                 .semantics {
                                     contentDescription =
-                                        "ComposePlotLib showcase home. Open line, bar, scatter, pie, radar, combined, sankey, heatmap, or domain-axis demos."
+                                        "ComposePlotLib showcase home. Open line, bar, scatter, pie, radar, combined, sankey, heatmap, " +
+                                        "gauge, candlestick, or domain-axis demos."
                                 },
                         onOpenDestination = { destination = it },
                     )
@@ -105,6 +108,14 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Heatmap ->
                     Column(detailModifier) {
                         HeatmapChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Gauge ->
+                    Column(detailModifier) {
+                        GaugeChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Candlestick ->
+                    Column(detailModifier) {
+                        CandlestickChartShowcaseScreen()
                     }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
@@ -181,6 +192,18 @@ private fun ShowcaseHomeScreen(
             Text("Heatmap chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Gauge) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Gauge chart")
+        }
+        OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Candlestick) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Candlestick chart")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -201,5 +224,7 @@ private enum class ShowcaseDestination(
     Combined("Combined chart"),
     Sankey("Sankey chart"),
     Heatmap("Heatmap chart"),
+    Gauge("Gauge chart"),
+    Candlestick("Candlestick chart"),
     DomainAxes("Domain axes"),
 }

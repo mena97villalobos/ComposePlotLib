@@ -12,7 +12,7 @@ Use this before tagging a release or publishing artifacts. Canonical API narrati
 
 Treat these as the **supported** app-facing API (names may grow; update this list when you add types):
 
-- **Charts:** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `PieChart`, `CombinedCartesianChart`, `ComposePlotApp`
+- **Charts:** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `PieChart`, `CombinedCartesianChart`, `CandlestickChart`, `GaugeChart`, `Sparkline`, `ComposePlotApp`
 - **State:** `ChartViewportState`, `ChartSelectionState`, `rememberChartViewportState`, `rememberChartSelectionState`, `ViewportChangeOrigin`
 - **Viewport helpers:** `defaultViewport(...)` overloads (`chart/ChartViewports.kt`)
 - **Gestures:** `ChartGestureConfig`, presets on its companion (`cartesianInteractive`, `cartesianInteractiveFullExploration`, …)
@@ -30,6 +30,7 @@ Summarize against **[`module-guide.md`](module-guide.md)** and **`api-and-state.
 
 - [ ] Spec types (`*ChartSpec`, axes, styles, accessibility spec) remain **immutable** data.
 - [ ] No new public types drag in UI frameworks.
+- [ ] **New in 1.1.0:** `GaugeChartSpec`; `CandlestickChartSpec` (+ `OHLCPoint`, `CandlestickSeries`, `CandlestickStyle`, `CandlestickRenderSpec`, `CandlestickValueFormatter`); `ReferenceLine` / `ReferenceOrientation`; `MarkerShape`; `AreaFillMode`; and the new `LineStyle` (`areaFill` / `areaFillEnd` / `areaFillMode`), `PointStyle` (`shape`), and `ChartPoint` (`markerShape` / `markerColor` / `markerRadius`) fields all stay immutable `chart-core` data.
 
 ## Naming and defaults
 
@@ -43,7 +44,7 @@ Summarize against **[`module-guide.md`](module-guide.md)** and **`api-and-state.
 
 ## Cross-platform
 
-- [ ] **`ComposePlotApp()`** cycle on **`composeApp`** and **`iosApp`** matches docs: **line → bar → stacked bar → horizontal bar → scatter → pie → combined → domain axes** (**`AGENTS.md`** obligations).
+- [ ] **`ComposePlotApp()`** cycle on **`composeApp`** and **`iosApp`** matches docs: **line → bar → stacked bar → horizontal bar → scatter → pie → combined → candlestick → gauge → sparkline → domain axes** (**`AGENTS.md`** obligations).
 - [ ] **Android showcase** + **Roborazzi** are **Android-only**; iOS validation stays manual (**[`ios-host-runbook.md`](ios-host-runbook.md)**).
 
 ## Documentation when the API changes

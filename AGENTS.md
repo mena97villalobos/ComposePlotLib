@@ -20,12 +20,14 @@ Current priorities:
   Owns non-UI math, geometry, ranges, domains, viewport state, transforms, visible-range logic, selection models, immutable chart specs, and layout planning.
 - `chart-compose`
   Owns public Compose APIs (`LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
-  `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`, `HeatmapChart`),
+  `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`, `HeatmapChart`,
+  `CandlestickChart`, `GaugeChart`, `Sparkline`),
   Compose-managed interaction state, gesture adapters, and Compose canvas rendering.
 - `composeApp`
   Thin shared host for previewing the current milestone; entry **`ComposePlotApp()`** must include *
   *every** shipped chart family (line, bar, stacked bar, horizontal bar, scatter, pie/donut, *
-  *radar/spider**, **combined cartesian**, **sankey**, **heatmap**) plus the small **domain axes**
+  *radar/spider**, **combined cartesian**, **sankey**, **heatmap**, **candlestick**, **gauge**,
+  **sparkline**) plus the small **domain axes**
   demo tab (category, long-label truncation, epoch time, UTC weekday tick policy); extend the cycle
   when new chart families ship.
 - `samples/android-showcase`
@@ -116,6 +118,22 @@ Prefer this order (see `docs/production-readiness-next-steps.md` → **New Chart
    `planHeatmapChart`, `HeatmapChart`); 2-D grid of colored cells; color encodes value via linear
    channel lerp; `AxisScale.Category` forced on both axes; tap-only gesture config; selection
    highlights selected cell with a stroke border.
+5. **Gauge / progress-ring** — **shipped (1.1.0)** (`GaugeChartSpec`, `planGaugeChart`, `GaugeChart`);
+   radial progress ring with track + progress arc, optional rounded caps, configurable
+   `startAngleDegrees` / `sweepDegrees`, and an optional `centerContent` slot; **non-interactive**
+   (no pan/zoom/selection).
+6. **Candlestick / OHLC** — **shipped (1.1.0, library-only)** (`CandlestickChartSpec`, `OHLCPoint`,
+   `CandlestickSeries`, `CandlestickStyle`, `CandlestickRenderSpec`, `planCandlestickChart`,
+   `CandlestickChart`); cartesian body + wick rendering, bull/bear coloring, decimation, pan/zoom,
+   tap-to-OHLC marker. App-side adoption (B15) stays gated on an OHLC data feed.
+7. **Sparkline** — **shipped (1.1.0)** (`Sparkline`); a thin axis-less / grid-less / non-interactive
+   wrapper over `LineChart` with optional area fill.
+
+Additive (no new family) in **1.1.0**: **area / threshold-band fill** (`LineStyle.areaFill` /
+`areaFillEnd` / `areaFillMode`), **reference lines** (`ReferenceLine` via `referenceLines` on line /
+bar / scatter / combined specs), **marker shapes + per-point styling** (`MarkerShape`,
+`PointStyle.shape`, `ChartPoint.markerShape` / `markerColor` / `markerRadius`), and **bubble** sizing
+on `ScatterChart` (per-point `markerRadius`).
 
 ## Planner structure (`chart-core`)
 Cartesian planning is split for clarity: tick/chrome (`ChartChromeLayout.kt`), final frame (`CartesianLayoutPlanner.kt`, `CartesianFrame`), orchestration + draw commands (`ChartPlanner.kt`). See **`docs/architecture.md`** → *Planner passes*.

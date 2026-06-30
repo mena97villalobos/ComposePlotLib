@@ -7,6 +7,7 @@ import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
+import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
@@ -240,6 +241,23 @@ internal fun buildBarMarkerData(
         yLabel = yLab,
         valueLabel = spec.valueFormatter(entry),
         accessibilitySummary = accessibilitySummary,
+    )
+}
+
+/** Builds [ChartMarkerData] for the selected candle using spec formatters; OHLC summary lands in `valueLabel`. */
+internal fun buildCandlestickMarkerData(
+    spec: CandlestickChartSpec,
+    selection: ChartSelection,
+): ChartMarkerData? {
+    val series = spec.series.firstOrNull { it.id == selection.target.seriesId } ?: return null
+    val point = series.points.getOrNull(selection.target.pointIndex) ?: return null
+    return ChartMarkerData(
+        selection = selection,
+        seriesId = series.id,
+        seriesLabel = series.label,
+        xLabel = spec.xAxis.labelFormatter(point.x),
+        yLabel = spec.yAxis.labelFormatter(point.close),
+        valueLabel = spec.valueFormatter(point),
     )
 }
 

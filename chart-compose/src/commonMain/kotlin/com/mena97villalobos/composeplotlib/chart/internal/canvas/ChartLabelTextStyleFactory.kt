@@ -7,7 +7,9 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.TextStyle
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendStyle
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
@@ -33,7 +35,32 @@ internal fun chartLabelTextStyles(spec: LineChartSpec): ChartLabelTextStyles {
 
 @Composable
 @ReadOnlyComposable
+internal fun chartLabelTextStyles(
+    @Suppress("UNUSED_PARAMETER") spec: GaugeChartSpec,
+): ChartLabelTextStyles {
+    // A gauge draws no text, so any valid style set works; use the default typography slot.
+    val y = MaterialTheme.typography.labelSmall
+    return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
 internal fun chartLabelTextStyles(spec: BarChartSpec): ChartLabelTextStyles {
+    val typo = MaterialTheme.typography
+    val legend = legendStyleFrom(typo, spec.legend.style)
+    val y = tickStyleFrom(typo, spec.yAxis.labelStyle)
+    return ChartLabelTextStyles(
+        xAxis = tickStyleFrom(typo, spec.xAxis.labelStyle),
+        yAxis = y,
+        legend = legend,
+        pieSliceLabel = legend,
+        yAxisSecondaryTick = y,
+    )
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: CandlestickChartSpec): ChartLabelTextStyles {
     val typo = MaterialTheme.typography
     val legend = legendStyleFrom(typo, spec.legend.style)
     val y = tickStyleFrom(typo, spec.yAxis.labelStyle)

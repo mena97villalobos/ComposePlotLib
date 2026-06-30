@@ -8,7 +8,7 @@ Path:
 
 ## Current Structure
 - `ShowcaseApp.kt`
-  The root screen that switches between available chart demos (line, bar, scatter, pie, combined, domain axes)
+  The root screen that switches between available chart demos (line, bar, scatter, pie, combined, candlestick, gauge, domain axes)
 - `data/SampleLineChartData.kt`
   Curated sample data for the line chart
 - `data/SampleBarChartData.kt`

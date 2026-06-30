@@ -15,9 +15,11 @@ This document lists the major capability areas from MPAndroidChart that should b
 
 ### Secondary chart families
 - Horizontal bar chart
-- Bubble chart
+- Bubble chart *(shipped 1.1.0 — per-point `markerRadius` on `ScatterChart`)*
 - Radar chart
-- Candlestick chart
+- Candlestick chart *(shipped 1.1.0 — library; app adoption gated on an OHLC data feed)*
+- Gauge / progress-ring chart *(shipped 1.1.0 — `GaugeChart`)*
+- Sparkline *(shipped 1.1.0 — axis-less `LineChart` wrapper)*
 - Combined cartesian chart *(shipped — planner/rendering polish in production-readiness backlog)*
 
 ## Shared Data Model
@@ -43,7 +45,7 @@ Implement reusable component systems for:
 - Grid lines
 - Axis lines
 - Tick labels
-- Limit or reference lines
+- Limit or reference lines *(shipped 1.1.0 — `ReferenceLine` via `referenceLines` on line/bar/scatter/combined specs)*
 - Legend
 - Description or subtitle text
 - Empty state
@@ -84,7 +86,7 @@ Implement customization surfaces for:
 - Value label formatting
 - Tooltip content formatting
 - Series colors
-- Line stroke, point markers, and fills
+- Line stroke, point markers, and fills *(1.1.0: `LineStyle` area / threshold-band fill + gradient; `MarkerShape` + per-point `ChartPoint` overrides)*
 - Bar fills and stack colors
 - Pie slice colors and label style
 - Grid and axis style
@@ -107,7 +109,7 @@ The library should ship with:
 
 - A separate Android showcase app *(shipped: `samples:android-showcase`)*
 - Curated demo datasets
-- Reference screens for each chart family *(line, bar, scatter, and pie shipped in showcase; combined still future)*
+- Reference screens for each chart family *(line, bar, scatter, pie, and combined shipped in showcase; candlestick, gauge, and sparkline added in 1.1.0)*
 - Performance demo screens
 - Docs linked to showcase examples
 - Generated screenshots for the docs
@@ -123,9 +125,11 @@ The library should ship with:
 - Android and iOS Compose Multiplatform support
 
 ## Recommended Post-v1 Scope
-- Bubble chart
+- Bubble chart *(shipped 1.1.0)*
 - Radar chart
-- Candlestick chart
+- Candlestick chart *(shipped 1.1.0 — library; app adoption gated on OHLC data)*
+- Gauge / progress-ring chart *(shipped 1.1.0)*
+- Sparkline *(shipped 1.1.0)*
 - Full combined chart support
 - Advanced radial gestures
 - Export APIs
