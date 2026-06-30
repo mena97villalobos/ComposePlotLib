@@ -12,8 +12,12 @@ sealed interface AxisTickDensity {
     data object Auto : AxisTickDensity
 
     /** Hard cap on the number of tick values (after niceness / category expansion). */
-    data class MaxTicks(val max: Int) : AxisTickDensity
+    data class MaxTicks(
+        val max: Int,
+    ) : AxisTickDensity
 
     /** Target tick count from plot span and a minimum pixel spacing between consecutive tick positions. */
-    data class MinSpacingPx(val spacingPx: Double) : AxisTickDensity
+    data class MinSpacingPx(
+        val spacingPx: Double,
+    ) : AxisTickDensity
 }

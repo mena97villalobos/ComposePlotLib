@@ -1,5 +1,6 @@
 package com.mena97villalobos.composeplotlib.chart.state
 
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +10,7 @@ import com.mena97villalobos.composeplotlib.core.viewport.ViewportAxisPolicy
 import com.mena97villalobos.composeplotlib.core.viewport.ViewportConstraints
 import com.mena97villalobos.composeplotlib.core.viewport.ViewportState
 import com.mena97villalobos.composeplotlib.core.viewport.withAxisPolicy
+import kotlin.math.abs
 
 /**
  * Compose-friendly holder for [ViewportState] with a fixed [domain] used for clamping pan/zoom.
@@ -19,6 +21,7 @@ import com.mena97villalobos.composeplotlib.core.viewport.withAxisPolicy
  * Obtain via [rememberChartViewportState]. You may pass a wider [domain] than `initialViewport` to allow
  * zooming out to a known data extent while starting zoomed in.
  */
+@Stable
 class ChartViewportState(
     initialViewportState: ViewportState,
     val domain: ChartViewport,
@@ -91,8 +94,8 @@ class ChartViewportState(
         lastViewportChangeOrigin = ViewportChangeOrigin.Programmatic
         val nextViewport =
             ChartViewport(
-                xRange = viewport.xRange.centeredOn(centerX),
-                yRange = viewport.yRange.centeredOn(centerY),
+                xRange = viewport.xRange.centeredOn(sanitizeCenter(centerX, viewport.xRange.midpoint)),
+                yRange = viewport.yRange.centeredOn(sanitizeCenter(centerY, viewport.yRange.midpoint)),
             )
         viewportState = viewportState.withViewport(nextViewport, domain).finish(domain, axisPolicy)
     }
@@ -105,7 +108,12 @@ class ChartViewportState(
         panTo(centerX = x, centerY = y)
     }
 
-    /** Sets exact axis spans centered on `(centerX, centerY)`, clamped within [domain]. */
+    /**
+     * Sets exact axis spans centered on `(centerX, centerY)`, clamped within [domain].
+     *
+     * Non-finite or non-positive spans fall back to the current span, and non-finite centers fall back to the
+     * current midpoint, so bad inputs (e.g. a `NaN` from `dataMax - dataMin` on empty data) cannot crash.
+     */
     fun zoomTo(
         xSpan: Double,
         ySpan: Double,
@@ -113,10 +121,14 @@ class ChartViewportState(
         centerY: Double,
     ) {
         lastViewportChangeOrigin = ViewportChangeOrigin.Programmatic
+        val safeXSpan = sanitizeSpan(xSpan, viewport.xRange.span)
+        val safeYSpan = sanitizeSpan(ySpan, viewport.yRange.span)
+        val safeCenterX = sanitizeCenter(centerX, viewport.xRange.midpoint)
+        val safeCenterY = sanitizeCenter(centerY, viewport.yRange.midpoint)
         val nextViewport =
             ChartViewport(
-                xRange = ClosedRangeD(centerX - (xSpan / 2.0), centerX + (xSpan / 2.0)),
-                yRange = ClosedRangeD(centerY - (ySpan / 2.0), centerY + (ySpan / 2.0)),
+                xRange = ClosedRangeD(safeCenterX - (safeXSpan / 2.0), safeCenterX + (safeXSpan / 2.0)),
+                yRange = ClosedRangeD(safeCenterY - (safeYSpan / 2.0), safeCenterY + (safeYSpan / 2.0)),
             )
         viewportState = viewportState.withViewport(nextViewport, domain).finish(domain, axisPolicy)
     }
@@ -133,3 +145,18 @@ private fun ViewportState.finish(
 ): ViewportState = withViewport(viewport.withAxisPolicy(domain, policy), domain)
 
 private fun ClosedRangeD.centeredOn(center: Double): ClosedRangeD = ClosedRangeD(center - (span / 2.0), center + (span / 2.0))
+
+/** Returns the magnitude of [span] when finite and positive, otherwise [fallback] (the current span). */
+private fun sanitizeSpan(
+    span: Double,
+    fallback: Double,
+): Double {
+    val magnitude = abs(span)
+    return if (magnitude.isFinite() && magnitude > 0.0) magnitude else fallback
+}
+
+/** Returns [center] when finite, otherwise [fallback] (the current midpoint). */
+private fun sanitizeCenter(
+    center: Double,
+    fallback: Double,
+): Double = if (center.isFinite()) center else fallback

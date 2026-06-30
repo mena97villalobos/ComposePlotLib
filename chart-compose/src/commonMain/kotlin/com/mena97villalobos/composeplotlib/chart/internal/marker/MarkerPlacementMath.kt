@@ -23,9 +23,12 @@ internal fun computeContainedMarkerTopLeft(
         x: Double,
         y: Double,
     ): Boolean =
-        w > 0.0 && h > 0.0 &&
-            x >= bounds.left && y >= bounds.top &&
-            x + w <= bounds.right && y + h <= bounds.bottom
+        w > 0.0 &&
+            h > 0.0 &&
+            x >= bounds.left &&
+            y >= bounds.top &&
+            x + w <= bounds.right &&
+            y + h <= bounds.bottom
 
     val aboveX = anchorX - w / 2.0
     val aboveY = anchorY - g - h

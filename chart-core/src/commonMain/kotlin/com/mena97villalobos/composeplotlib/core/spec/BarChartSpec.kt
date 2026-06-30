@@ -27,6 +27,10 @@ data class BarChartSpec(
     val selectionStyle: SelectionStyle = SelectionStyle(),
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 48.0, right = 24.0, bottom = 40.0),
 ) {
+    init {
+        requireUniqueIds(groups.map { it.id }, "BarChartSpec.groups ids")
+    }
+
     /**
      * Layout mode actually used by [com.mena97villalobos.composeplotlib.core.layout.ChartPlanner]:
      * [BarLayoutMode.Clustered] / [BarLayoutMode.Stacked] fall back to [BarLayoutMode.Independent]

@@ -218,16 +218,14 @@ fun LineChart(
                     selectionState,
                     emptyStateDescription,
                     accessibilityCustomActions,
-                )
-                .chartLineKeyboardSelectionRoam(
+                ).chartLineKeyboardSelectionRoam(
                     enabled = spec.accessibility.keyboardSelectionRoamEnabled,
                     spec = effectiveSpec,
                     renderViewport = renderViewport,
                     selectionState = selectionState,
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     layoutPlan = { latestPlan.value?.layout },
-                )
-                .chartCartesianKeyboardViewport(
+                ).chartCartesianKeyboardViewport(
                     enabled = spec.accessibility.keyboardViewportNudgeEnabled,
                     transformEnabled = gestureConfig.transform.enabled,
                     flags = transformFlags,
@@ -235,11 +233,9 @@ fun LineChart(
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     onClearSelection = { selectionState.clear() },
                     reserveShiftDirectionKeysForSelectionRoam = spec.accessibility.keyboardSelectionRoamEnabled,
-                )
-                .onSizeChanged { size ->
+                ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
-                }
-                .chartGestures(
+                }.chartGestures(
                     onTap =
                         if (gestureConfig.tap.selectionEnabled) {
                             { offset ->
@@ -260,22 +256,23 @@ fun LineChart(
                                         currentPlan.layout.plotBounds.width,
                                     )
                                 val selection =
-                                    specForHit.series.mapNotNull { series ->
-                                        val indexed =
-                                            LineRenderPipeline.prepareIndexed(
-                                                series.toXyPoints(),
-                                                renderViewport,
-                                                specForHit.lineRender,
+                                    specForHit.series
+                                        .mapNotNull { series ->
+                                            val indexed =
+                                                LineRenderPipeline.prepareIndexed(
+                                                    series.toXyPoints(),
+                                                    renderViewport,
+                                                    specForHit.lineRender,
+                                                )
+                                            if (indexed.isEmpty()) return@mapNotNull null
+                                            NearestPointResolver.resolveIndexed(
+                                                seriesId = series.id,
+                                                indexedPoints = indexed,
+                                                touchPoint = touch,
+                                                transform = transform,
+                                                maxDistancePx = 28.0,
                                             )
-                                        if (indexed.isEmpty()) return@mapNotNull null
-                                        NearestPointResolver.resolveIndexed(
-                                            seriesId = series.id,
-                                            indexedPoints = indexed,
-                                            touchPoint = touch,
-                                            transform = transform,
-                                            maxDistancePx = 28.0,
-                                        )
-                                    }.minByOrNull { selectionDistance(it.pixelOffset, offset) }
+                                        }.minByOrNull { selectionDistance(it.pixelOffset, offset) }
                                 selectionState.select(selection)
                             }
                         } else {

@@ -82,8 +82,12 @@ object BarHitResolver {
 
 /** True when [RectD] edges are finite and axis-aligned with `left` ≤ `right`, `top` ≤ `bottom`. */
 private fun RectD.isValidForAxisAlignedHit(): Boolean =
-    left.isFinite() && top.isFinite() && right.isFinite() && bottom.isFinite() &&
-        left <= right && top <= bottom
+    left.isFinite() &&
+        top.isFinite() &&
+        right.isFinite() &&
+        bottom.isFinite() &&
+        left <= right &&
+        top <= bottom
 
 /** Precomputed bar geometry and domain values for hit-testing. */
 data class BarHitTarget(

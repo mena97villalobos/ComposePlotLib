@@ -16,9 +16,13 @@ import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.math.abs
 
-/** [ChartViewport] that fits all line points; uses a small default range when there is no data. */
+/** [ChartViewport] that fits all line points; uses a small default range when there is no (finite) data. */
 fun defaultViewport(spec: LineChartSpec): ChartViewport {
-    val points = spec.series.flatMap { it.points }.map { XyPoint(it.x, it.y) }
+    val points =
+        spec.series
+            .flatMap { it.points }
+            .map { XyPoint(it.x, it.y) }
+            .filter { it.x.isFinite() && it.y.isFinite() }
     if (points.isEmpty()) {
         return ChartViewport(
             xRange = ClosedRangeD(0.0, 1.0),
@@ -36,9 +40,13 @@ fun defaultViewport(spec: LineChartSpec): ChartViewport {
     )
 }
 
-/** [ChartViewport] that fits all scatter points; uses a small default range when there is no data. */
+/** [ChartViewport] that fits all scatter points; uses a small default range when there is no (finite) data. */
 fun defaultViewport(spec: ScatterChartSpec): ChartViewport {
-    val points = spec.series.flatMap { it.points }.map { XyPoint(it.x, it.y) }
+    val points =
+        spec.series
+            .flatMap { it.points }
+            .map { XyPoint(it.x, it.y) }
+            .filter { it.x.isFinite() && it.y.isFinite() }
     if (points.isEmpty()) {
         return ChartViewport(
             xRange = ClosedRangeD(0.0, 1.0),
@@ -60,23 +68,21 @@ fun defaultViewport(spec: ScatterChartSpec): ChartViewport {
  * Dummy [ChartViewport] for pie/donut charts (radial; pan/zoom are normally disabled via [ChartGestureConfig]).
  * Present so [com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput] and measurement passes stay aligned with other families.
  */
-fun defaultViewport(spec: PieChartSpec): ChartViewport {
-    return ChartViewport(
+fun defaultViewport(spec: PieChartSpec): ChartViewport =
+    ChartViewport(
         xRange = ClosedRangeD(0.0, 1.0),
         yRange = ClosedRangeD(0.0, 1.0),
     )
-}
 
 /**
  * Dummy [ChartViewport] for radar/spider charts (radial; pan/zoom are normally disabled via [ChartGestureConfig]).
  * Present so [com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput] and measurement passes stay aligned with other families.
  */
-fun defaultViewport(spec: RadarChartSpec): ChartViewport {
-    return ChartViewport(
+fun defaultViewport(spec: RadarChartSpec): ChartViewport =
+    ChartViewport(
         xRange = ClosedRangeD(0.0, 1.0),
         yRange = ClosedRangeD(0.0, 1.0),
     )
-}
 
 /**
  * [ChartViewport] for the **primary** Y scale: spans X from all layers and Y from layers bound to [CombinedCartesianYAxisBinding.SharedY].
@@ -85,38 +91,38 @@ fun defaultViewport(spec: RadarChartSpec): ChartViewport {
 fun defaultViewport(spec: CombinedCartesianChartSpec): ChartViewport {
     val xs = ArrayList<Double>()
     val ysPrimary = ArrayList<Double>()
+
+    // Skip non-finite (NaN/Infinity) samples so a single bad coordinate cannot make the
+    // derived ClosedRangeD non-finite (which would now throw) or silently collapse the chart.
+    fun addXy(
+        x: Double,
+        y: Double,
+    ) {
+        if (x.isFinite() && y.isFinite()) {
+            xs += x
+            ysPrimary += y
+        }
+    }
     for (layer in spec.layers) {
         if (layer.yAxisBinding != CombinedCartesianYAxisBinding.SharedY) continue
         when (layer) {
             is CombinedCartesianLayer.Line ->
                 layer.series.forEach { s ->
-                    s.points.forEach {
-                        xs += it.x
-                        ysPrimary += it.y
-                    }
+                    s.points.forEach { addXy(it.x, it.y) }
                 }
             is CombinedCartesianLayer.Bar ->
                 if (layer.orientation == BarChartOrientation.Horizontal) {
                     layer.groups.forEach { g ->
-                        g.entries.forEach {
-                            xs += it.y
-                            ysPrimary += it.x
-                        }
+                        g.entries.forEach { addXy(it.y, it.x) }
                     }
                 } else {
                     layer.groups.forEach { g ->
-                        g.entries.forEach {
-                            xs += it.x
-                            ysPrimary += it.y
-                        }
+                        g.entries.forEach { addXy(it.x, it.y) }
                     }
                 }
             is CombinedCartesianLayer.Scatter ->
                 layer.series.forEach { s ->
-                    s.points.forEach {
-                        xs += it.x
-                        ysPrimary += it.y
-                    }
+                    s.points.forEach { addXy(it.x, it.y) }
                 }
         }
     }
@@ -164,7 +170,7 @@ fun defaultViewport(spec: CombinedCartesianChartSpec): ChartViewport {
 
 /** [ChartViewport] that fits all bar entries (value axis includes zero when data is above the baseline); uses a small default range when empty. */
 fun defaultViewport(spec: BarChartSpec): ChartViewport {
-    val entries = spec.groups.flatMap { it.entries }
+    val entries = spec.groups.flatMap { it.entries }.filter { it.x.isFinite() && it.y.isFinite() }
     if (entries.isEmpty()) {
         return ChartViewport(
             xRange = ClosedRangeD(0.0, 1.0),

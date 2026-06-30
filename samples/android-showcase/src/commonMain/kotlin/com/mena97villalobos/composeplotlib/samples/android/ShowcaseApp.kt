@@ -189,7 +189,9 @@ private fun ShowcaseHomeScreen(
     }
 }
 
-private enum class ShowcaseDestination(val title: String) {
+private enum class ShowcaseDestination(
+    val title: String,
+) {
     Home(""),
     Line("Line chart"),
     Bar("Bar chart"),

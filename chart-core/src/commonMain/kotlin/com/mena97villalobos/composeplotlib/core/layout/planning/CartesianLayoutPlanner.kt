@@ -259,12 +259,11 @@ private fun resolveXTickLabelOverlap(
     minGap: Double,
     strategy: XTickLabelOverlapStrategy,
     labelLayoutScale: Double,
-): List<AxisTick> {
-    return when (strategy) {
+): List<AxisTick> =
+    when (strategy) {
         XTickLabelOverlapStrategy.HideOverlapping -> suppressOverlappingXTickLabels(ticks, minGap)
         XTickLabelOverlapStrategy.StaggerAdjacent -> staggerOverlappingXTickLabels(ticks, minGap, labelLayoutScale)
     }
-}
 
 private fun staggerOverlappingXTickLabels(
     ticks: List<AxisTick>,
@@ -458,9 +457,11 @@ private fun spreadTickIndicesForMinimum(
     if (tickCount <= 0 || minVisible <= 0) return emptyList()
     val m = minVisible.coerceAtMost(tickCount)
     if (m == 1) return listOf(tickCount / 2)
-    return (0 until m).map { k ->
-        (k * (tickCount - 1).toDouble() / (m - 1)).roundToInt().coerceIn(0, tickCount - 1)
-    }.distinct().sorted()
+    return (0 until m)
+        .map { k ->
+            (k * (tickCount - 1).toDouble() / (m - 1)).roundToInt().coerceIn(0, tickCount - 1)
+        }.distinct()
+        .sorted()
 }
 
 private fun canShowXTickWithoutOverlap(

@@ -19,13 +19,17 @@ sealed interface EpochMillisTickPolicy {
      * Like [WeekdaysUtc] but weekends are computed in a **fixed** offset from UTC (shifted civil day index).
      * Does **not** model DST; for real zones like `America/New_York`, pre-shift data or use [All] + app logic.
      */
-    data class WeekdaysFixedOffset(val offsetMillisFromUtc: Long) : EpochMillisTickPolicy
+    data class WeekdaysFixedOffset(
+        val offsetMillisFromUtc: Long,
+    ) : EpochMillisTickPolicy
 
     /**
      * Drops ticks whose **UTC** calendar day index `floor(epochMillis / 86_400_000)` is in the set.
      * Apps can pass holidays or other excluded UTC days without embedding exchange calendars in the library.
      */
-    data class ExcludeUtcDays(val excludedUtcDayIndices: Set<Long>) : EpochMillisTickPolicy
+    data class ExcludeUtcDays(
+        val excludedUtcDayIndices: Set<Long>,
+    ) : EpochMillisTickPolicy
 
     /**
      * Keeps ticks whose **UTC** time-of-day falls in [[startMinuteOfDay], [endMinuteOfDay]] inclusive
@@ -48,7 +52,9 @@ sealed interface EpochMillisTickPolicy {
     /**
      * Chains multiple policies (e.g. [WeekdaysUtc] then [ExcludeUtcDays] for weekday + holiday exclusions).
      */
-    data class Combined(val policies: List<EpochMillisTickPolicy>) : EpochMillisTickPolicy {
+    data class Combined(
+        val policies: List<EpochMillisTickPolicy>,
+    ) : EpochMillisTickPolicy {
         init {
             require(policies.isNotEmpty()) { "Combined.policies must not be empty" }
         }

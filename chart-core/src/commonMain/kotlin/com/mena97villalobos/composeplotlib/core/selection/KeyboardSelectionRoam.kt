@@ -142,7 +142,8 @@ object KeyboardSelectionRoam {
     ): ChartSelection? {
         if (delta == 0) return current
         val ordered =
-            plan.barSegmentsForHitTest()
+            plan
+                .barSegmentsForHitTest()
                 .sortedBy { seg ->
                     when (plan.orientation) {
                         BarChartOrientation.Vertical -> (seg.bounds.left + seg.bounds.right) * 0.5
@@ -286,7 +287,8 @@ object KeyboardSelectionRoam {
                 is CombinedCartesianLayer.Bar -> {
                     val payload = hitById[layer.id] as? CombinedHitTestLayer.Bars ?: continue
                     val ordered =
-                        payload.segmentsDrawOrder.forHitTestFromDrawOrder()
+                        payload.segmentsDrawOrder
+                            .forHitTestFromDrawOrder()
                             .sortedBy { seg ->
                                 when (layer.orientation) {
                                     BarChartOrientation.Vertical -> (seg.bounds.left + seg.bounds.right) * 0.5

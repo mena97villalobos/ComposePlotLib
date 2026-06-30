@@ -3,7 +3,9 @@ package com.mena97villalobos.composeplotlib.core.model
 /**
  * ARGB color as `0xAARRGGBB`. The Compose layer maps this to platform colors when drawing.
  */
-data class ChartColor(val argb: Long) {
+data class ChartColor(
+    val argb: Long,
+) {
     companion object {
         val Black = ChartColor(0xFF000000)
         val White = ChartColor(0xFFFFFFFF)

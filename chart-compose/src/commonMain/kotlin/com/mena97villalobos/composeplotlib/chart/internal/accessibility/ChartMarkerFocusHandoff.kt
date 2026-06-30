@@ -38,7 +38,8 @@ internal fun Modifier.chartMarkerFocusContainer(
     if (!enabled) {
         this
     } else {
-        this.focusRequester(focusRequester)
+        this
+            .focusRequester(focusRequester)
             .focusable()
             .semantics(mergeDescendants = false) {
                 this.contentDescription = contentDescription

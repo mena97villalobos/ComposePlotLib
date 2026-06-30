@@ -167,14 +167,12 @@ fun BarChart(
                     selectionState,
                     emptyStateDescription,
                     accessibilityCustomActions,
-                )
-                .chartBarKeyboardSelectionRoam(
+                ).chartBarKeyboardSelectionRoam(
                     enabled = spec.accessibility.keyboardSelectionRoamEnabled,
                     selectionState = selectionState,
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     barPlan = { latestPlan.value },
-                )
-                .chartCartesianKeyboardViewport(
+                ).chartCartesianKeyboardViewport(
                     enabled = spec.accessibility.keyboardViewportNudgeEnabled,
                     transformEnabled = gestureConfig.transform.enabled,
                     flags = transformFlags,
@@ -182,11 +180,9 @@ fun BarChart(
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     onClearSelection = { selectionState.clear() },
                     reserveShiftDirectionKeysForSelectionRoam = spec.accessibility.keyboardSelectionRoamEnabled,
-                )
-                .onSizeChanged { size ->
+                ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
-                }
-                .chartGestures(
+                }.chartGestures(
                     onTap =
                         if (gestureConfig.tap.selectionEnabled) {
                             { offset ->

@@ -12,7 +12,9 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.coroutineContext
 import kotlin.math.hypot
 
-internal class ChartFlingRuntime(private val scope: CoroutineScope) {
+internal class ChartFlingRuntime(
+    private val scope: CoroutineScope,
+) {
     private var job: Job? = null
 
     fun cancel() {

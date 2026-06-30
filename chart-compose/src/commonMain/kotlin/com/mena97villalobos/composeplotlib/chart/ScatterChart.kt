@@ -166,16 +166,14 @@ fun ScatterChart(
                     selectionState,
                     emptyStateDescription,
                     accessibilityCustomActions,
-                )
-                .chartScatterKeyboardSelectionRoam(
+                ).chartScatterKeyboardSelectionRoam(
                     enabled = spec.accessibility.keyboardSelectionRoamEnabled,
                     spec = spec,
                     renderViewport = renderViewport,
                     selectionState = selectionState,
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     layoutPlan = { latestPlan.value?.layout },
-                )
-                .chartCartesianKeyboardViewport(
+                ).chartCartesianKeyboardViewport(
                     enabled = spec.accessibility.keyboardViewportNudgeEnabled,
                     transformEnabled = gestureConfig.transform.enabled,
                     flags = transformFlags,
@@ -183,11 +181,9 @@ fun ScatterChart(
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     onClearSelection = { selectionState.clear() },
                     reserveShiftDirectionKeysForSelectionRoam = spec.accessibility.keyboardSelectionRoamEnabled,
-                )
-                .onSizeChanged { size ->
+                ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
-                }
-                .chartGestures(
+                }.chartGestures(
                     onTap =
                         if (gestureConfig.tap.selectionEnabled) {
                             { offset ->
@@ -208,39 +204,40 @@ fun ScatterChart(
                                         plotWidthPx = currentPlan.layout.plotBounds.width,
                                     )
                                 val selection =
-                                    specForHit.series.mapNotNull { series ->
-                                        val rPx = series.pointStyle.radius.coerceAtLeast(0.0)
-                                        val indexed =
-                                            if (specForHit.scatterRender.maxPointsPerSeries <= 0) {
-                                                ScatterPlotPoints.indexedInPlotBounds(
-                                                    series.points,
-                                                    transform,
-                                                    currentPlan.layout.plotBounds,
-                                                    radiusPx = rPx,
-                                                )
-                                            } else {
-                                                val prepared =
-                                                    ScatterRenderPipeline.prepareIndexed(
-                                                        series.toXyPoints(),
-                                                        renderViewport,
-                                                        specForHit.scatterRender,
+                                    specForHit.series
+                                        .mapNotNull { series ->
+                                            val rPx = series.pointStyle.radius.coerceAtLeast(0.0)
+                                            val indexed =
+                                                if (specForHit.scatterRender.maxPointsPerSeries <= 0) {
+                                                    ScatterPlotPoints.indexedInPlotBounds(
+                                                        series.points,
+                                                        transform,
+                                                        currentPlan.layout.plotBounds,
+                                                        radiusPx = rPx,
                                                     )
-                                                ScatterPlotPoints.filterPreparedToPlotDisc(
-                                                    prepared,
-                                                    transform,
-                                                    currentPlan.layout.plotBounds,
-                                                    radiusPx = rPx,
-                                                )
-                                            }
-                                        if (indexed.isEmpty()) return@mapNotNull null
-                                        NearestPointResolver.resolveIndexed(
-                                            seriesId = series.id,
-                                            indexedPoints = indexed,
-                                            touchPoint = touch,
-                                            transform = transform,
-                                            maxDistancePx = 28.0,
-                                        )
-                                    }.minByOrNull { selectionDistance(it.pixelOffset, offset) }
+                                                } else {
+                                                    val prepared =
+                                                        ScatterRenderPipeline.prepareIndexed(
+                                                            series.toXyPoints(),
+                                                            renderViewport,
+                                                            specForHit.scatterRender,
+                                                        )
+                                                    ScatterPlotPoints.filterPreparedToPlotDisc(
+                                                        prepared,
+                                                        transform,
+                                                        currentPlan.layout.plotBounds,
+                                                        radiusPx = rPx,
+                                                    )
+                                                }
+                                            if (indexed.isEmpty()) return@mapNotNull null
+                                            NearestPointResolver.resolveIndexed(
+                                                seriesId = series.id,
+                                                indexedPoints = indexed,
+                                                touchPoint = touch,
+                                                transform = transform,
+                                                maxDistancePx = 28.0,
+                                            )
+                                        }.minByOrNull { selectionDistance(it.pixelOffset, offset) }
                                 selectionState.select(selection)
                             }
                         } else {

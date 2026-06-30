@@ -31,9 +31,7 @@ data class RectD(
     val center: OffsetD get() = OffsetD(left + width / 2.0, top + height / 2.0)
 
     /** True when [offset] lies inside this rectangle (inclusive edges). */
-    fun contains(offset: OffsetD): Boolean {
-        return offset.x in left..right && offset.y in top..bottom
-    }
+    fun contains(offset: OffsetD): Boolean = offset.x in left..right && offset.y in top..bottom
 
     /**
      * True if the closed disc centered at [center] with radius [radius] intersects this rectangle
@@ -52,8 +50,10 @@ data class RectD(
         val y0 = min(top, bottom)
         val y1 = max(top, bottom)
         if (r <= FpMath.EPS) {
-            return center.x >= x0 - FpMath.EPS && center.x <= x1 + FpMath.EPS &&
-                center.y >= y0 - FpMath.EPS && center.y <= y1 + FpMath.EPS
+            return center.x >= x0 - FpMath.EPS &&
+                center.x <= x1 + FpMath.EPS &&
+                center.y >= y0 - FpMath.EPS &&
+                center.y <= y1 + FpMath.EPS
         }
         val closestX = center.x.coerceIn(x0, x1)
         val closestY = center.y.coerceIn(y0, y1)

@@ -20,6 +20,14 @@ dokka {
     }
 }
 
+// chart-core spec/model/value types are KMP-pure (no Compose annotations allowed), but are immutable.
+// Tell the Compose compiler to treat them as stable so charts can skip on structurally-equal specs.
+composeCompiler {
+    stabilityConfigurationFiles.add(
+        rootProject.layout.projectDirectory.file("compose-stability.conf"),
+    )
+}
+
 // Kotlin/Native iOS targets require Xcode; Linux CI only builds Android. iOS klibs are not produced on Linux.
 // Set COMPOSEPLOTLIB_FORCE_IOS_TARGETS=false on a Mac to match Linux CI (no Apple targets).
 val isMacOsHost: Boolean =

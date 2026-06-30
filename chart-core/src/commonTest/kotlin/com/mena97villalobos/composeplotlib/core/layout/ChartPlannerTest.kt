@@ -98,8 +98,16 @@ class ChartPlannerTest {
 
         assertTrue(plan.layout.xTicks.size >= 2)
         assertTrue(plan.layout.yTicks.size >= 2)
-        assertTrue(plan.layout.xTicks.first().value <= 0.0)
-        assertTrue(plan.layout.xTicks.last().value >= 9.0)
+        assertTrue(
+            plan.layout.xTicks
+                .first()
+                .value <= 0.0,
+        )
+        assertTrue(
+            plan.layout.xTicks
+                .last()
+                .value >= 9.0,
+        )
     }
 
     @Test
@@ -298,7 +306,11 @@ class ChartPlannerTest {
             )
 
         assertTrue(measured.layout.plotBounds.left > baseline.layout.plotBounds.left)
-        assertTrue(measured.layout.xTicks.first().position.y > measured.layout.plotBounds.bottom)
+        assertTrue(
+            measured.layout.xTicks
+                .first()
+                .position.y > measured.layout.plotBounds.bottom,
+        )
     }
 
     @Test
@@ -340,8 +352,18 @@ class ChartPlannerTest {
             )
 
         assertEquals(3, plan.layout.legendEntries.size)
-        assertTrue(plan.layout.legendEntries.map { it.labelPosition.y }.distinct().size > 1)
-        assertTrue((plan.layout.reservedRegions.legendBounds?.height ?: 0.0) > 14.0)
+        assertTrue(
+            plan.layout.legendEntries
+                .map { it.labelPosition.y }
+                .distinct()
+                .size > 1,
+        )
+        assertTrue(
+            (
+                plan.layout.reservedRegions.legendBounds
+                    ?.height ?: 0.0
+            ) > 14.0,
+        )
     }
 
     @Test
@@ -471,7 +493,10 @@ class ChartPlannerTest {
                     ),
                 selection = null,
             )
-        assertTrue(plan.layout.plotBounds.left.isFinite())
+        assertTrue(
+            plan.layout.plotBounds.left
+                .isFinite(),
+        )
         assertTrue(plan.layout.xTicks.isNotEmpty())
         assertTrue(plan.layout.yTicks.isNotEmpty())
     }
@@ -513,7 +538,10 @@ class ChartPlannerTest {
                 spec = spec,
                 selection = null,
             )
-        val poly = plan.layout.plotDrawCommands.filterIsInstance<DrawCommand.Polyline>().singleOrNull()
+        val poly =
+            plan.layout.plotDrawCommands
+                .filterIsInstance<DrawCommand.Polyline>()
+                .singleOrNull()
         kotlin.test.assertNotNull(poly)
         assertTrue(poly.points.size <= 48)
     }
@@ -1349,8 +1377,12 @@ class ChartPlannerTest {
                 firstBaselineFromTop = 14.0,
                 lastBaselineFromTop = 14.0,
             )
-        val shallowBottom = planWithMetrics(shallowDescender).layout.reservedRegions.contentInsets.bottom
-        val deepBottom = planWithMetrics(deepDescender).layout.reservedRegions.contentInsets.bottom
+        val shallowBottom =
+            planWithMetrics(shallowDescender)
+                .layout.reservedRegions.contentInsets.bottom
+        val deepBottom =
+            planWithMetrics(deepDescender)
+                .layout.reservedRegions.contentInsets.bottom
         assertTrue(deepBottom > shallowBottom)
     }
 
@@ -1390,7 +1422,10 @@ class ChartPlannerTest {
                 selection = null,
             )
 
-        val polyline = plan.layout.plotDrawCommands.filterIsInstance<DrawCommand.Polyline>().single()
+        val polyline =
+            plan.layout.plotDrawCommands
+                .filterIsInstance<DrawCommand.Polyline>()
+                .single()
         val circles = plan.layout.plotDrawCommands.filterIsInstance<DrawCommand.Circle>()
 
         assertEquals(ChartColor.Green, polyline.color)

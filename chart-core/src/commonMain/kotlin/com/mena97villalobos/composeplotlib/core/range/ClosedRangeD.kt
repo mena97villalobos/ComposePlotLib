@@ -12,7 +12,13 @@ data class ClosedRangeD(
     val endInclusive: Double,
 ) {
     init {
-        require(start <= endInclusive) { "Range start must be <= endInclusive." }
+        // NOTE: non-finite bounds (±Infinity) are intentionally permitted here. ViewportState builds
+        // ranges from possibly-corrupted input and repairs them to a canonical domain downstream, so this
+        // value type must stay permissive. Non-finite *data* coordinates are filtered upstream in
+        // `defaultViewport(...)` (chart-compose) instead of being rejected here.
+        require(start <= endInclusive) {
+            "ClosedRangeD start must be <= endInclusive; got [start=$start, endInclusive=$endInclusive]."
+        }
     }
 
     val span: Double get() = endInclusive - start
@@ -20,9 +26,7 @@ data class ClosedRangeD(
 
     fun clamp(value: Double): Double = value.coerceIn(start, endInclusive)
 
-    fun intersects(other: ClosedRangeD): Boolean {
-        return start <= other.endInclusive && other.start <= endInclusive
-    }
+    fun intersects(other: ClosedRangeD): Boolean = start <= other.endInclusive && other.start <= endInclusive
 
     /** Inclusive intersection, or `null` if ranges do not overlap. */
     fun intersection(other: ClosedRangeD): ClosedRangeD? {

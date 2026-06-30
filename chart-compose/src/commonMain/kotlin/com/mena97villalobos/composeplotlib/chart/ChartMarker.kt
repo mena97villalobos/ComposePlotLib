@@ -56,12 +56,10 @@ fun DefaultChartMarker(
                     } else {
                         Modifier
                     },
-                )
-                .background(
+                ).background(
                     color = Color(0xCC1C1C1C),
                     shape = shape,
-                )
-                .padding(horizontal = 10.dp, vertical = 8.dp),
+                ).padding(horizontal = 10.dp, vertical = 8.dp),
     ) {
         if (showSeriesLabel) {
             Text(

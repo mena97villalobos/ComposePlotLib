@@ -237,8 +237,10 @@ fun ComposePlotApp() {
                         text =
                             lineSelection.selection?.let { sel ->
                                 val pt =
-                                    lineSpecForPreview.series.firstOrNull { it.id == sel.target.seriesId }
-                                        ?.points?.getOrNull(sel.target.pointIndex)
+                                    lineSpecForPreview.series
+                                        .firstOrNull { it.id == sel.target.seriesId }
+                                        ?.points
+                                        ?.getOrNull(sel.target.pointIndex)
                                         ?: ChartPoint(sel.target.point.x, sel.target.point.y)
                                 val label =
                                     lineSpecForPreview.series.firstOrNull { it.id == sel.target.seriesId }?.label
@@ -379,23 +381,37 @@ fun ComposePlotApp() {
                             id = "sankey",
                             nodes =
                                 listOf(
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Applications", column = 0, label = "Applications (total)"),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Rejected", column = 1, label = "Rejected (screening)"),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Interviews", column = 1, label = "Interviews"),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("NoAnswer", column = 1, label = "No answer / ghosted"),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Offers", column = 2, label = "Offers extended"),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Accepted", column = 3, label = "Accepted offer"),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyNode("Declined", column = 3, label = "Declined offer"),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyNode("Applications", column = 0, label = "Applications (total)"),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyNode("Rejected", column = 1, label = "Rejected (screening)"),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyNode("Interviews", column = 1, label = "Interviews"),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyNode("NoAnswer", column = 1, label = "No answer / ghosted"),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyNode("Offers", column = 2, label = "Offers extended"),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyNode("Accepted", column = 3, label = "Accepted offer"),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyNode("Declined", column = 3, label = "Declined offer"),
                                 ),
                             links =
                                 listOf(
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Applications", "Rejected", 9.0),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Applications", "Interviews", 4.0),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Applications", "NoAnswer", 4.0),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Interviews", "Offers", 2.0),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Interviews", "Rejected", 2.0),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Offers", "Accepted", 1.0),
-                                    com.mena97villalobos.composeplotlib.core.spec.SankeyLink("Offers", "Declined", 1.0),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyLink("Applications", "Rejected", 9.0),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyLink("Applications", "Interviews", 4.0),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyLink("Applications", "NoAnswer", 4.0),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyLink("Interviews", "Offers", 2.0),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyLink("Interviews", "Rejected", 2.0),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyLink("Offers", "Accepted", 1.0),
+                                    com.mena97villalobos.composeplotlib.core.spec
+                                        .SankeyLink("Offers", "Declined", 1.0),
                                 ),
                             layout =
                                 com.mena97villalobos.composeplotlib.core.spec.SankeyLayoutSpec(
@@ -408,8 +424,10 @@ fun ComposePlotApp() {
                         rememberChartViewportState(
                             initialViewport =
                                 com.mena97villalobos.composeplotlib.core.viewport.ChartViewport(
-                                    com.mena97villalobos.composeplotlib.core.range.ClosedRangeD(0.0, 1.0),
-                                    com.mena97villalobos.composeplotlib.core.range.ClosedRangeD(0.0, 1.0),
+                                    com.mena97villalobos.composeplotlib.core.range
+                                        .ClosedRangeD(0.0, 1.0),
+                                    com.mena97villalobos.composeplotlib.core.range
+                                        .ClosedRangeD(0.0, 1.0),
                                 ),
                         )
                     val sankeySelection = rememberChartSelectionState()
@@ -966,17 +984,33 @@ private fun previewHeatmapChartSpec(): HeatmapChartSpec =
         rowLabels = listOf("Week 1", "Week 2", "Week 3", "Week 4"),
         cells =
             listOf(
-                HeatmapCell(0, 0, 20.0), HeatmapCell(1, 0, 45.0), HeatmapCell(2, 0, 80.0),
-                HeatmapCell(3, 0, 55.0), HeatmapCell(4, 0, 70.0), HeatmapCell(5, 0, 10.0),
+                HeatmapCell(0, 0, 20.0),
+                HeatmapCell(1, 0, 45.0),
+                HeatmapCell(2, 0, 80.0),
+                HeatmapCell(3, 0, 55.0),
+                HeatmapCell(4, 0, 70.0),
+                HeatmapCell(5, 0, 10.0),
                 HeatmapCell(6, 0, 5.0),
-                HeatmapCell(0, 1, 60.0), HeatmapCell(1, 1, 75.0), HeatmapCell(2, 1, 90.0),
-                HeatmapCell(3, 1, 85.0), HeatmapCell(4, 1, 50.0), HeatmapCell(5, 1, 30.0),
+                HeatmapCell(0, 1, 60.0),
+                HeatmapCell(1, 1, 75.0),
+                HeatmapCell(2, 1, 90.0),
+                HeatmapCell(3, 1, 85.0),
+                HeatmapCell(4, 1, 50.0),
+                HeatmapCell(5, 1, 30.0),
                 HeatmapCell(6, 1, 15.0),
-                HeatmapCell(0, 2, 40.0), HeatmapCell(1, 2, 65.0), HeatmapCell(2, 2, 100.0),
-                HeatmapCell(3, 2, 95.0), HeatmapCell(4, 2, 80.0), HeatmapCell(5, 2, 25.0),
+                HeatmapCell(0, 2, 40.0),
+                HeatmapCell(1, 2, 65.0),
+                HeatmapCell(2, 2, 100.0),
+                HeatmapCell(3, 2, 95.0),
+                HeatmapCell(4, 2, 80.0),
+                HeatmapCell(5, 2, 25.0),
                 HeatmapCell(6, 2, 20.0),
-                HeatmapCell(0, 3, 35.0), HeatmapCell(1, 3, 55.0), HeatmapCell(2, 3, 70.0),
-                HeatmapCell(3, 3, 60.0), HeatmapCell(4, 3, 45.0), HeatmapCell(5, 3, 40.0),
+                HeatmapCell(0, 3, 35.0),
+                HeatmapCell(1, 3, 55.0),
+                HeatmapCell(2, 3, 70.0),
+                HeatmapCell(3, 3, 60.0),
+                HeatmapCell(4, 3, 45.0),
+                HeatmapCell(5, 3, 40.0),
                 HeatmapCell(6, 3, 30.0),
             ),
         colorScale = HeatmapColorScale(0.0, 100.0, ChartColor.LightGray, ChartColor.Blue),

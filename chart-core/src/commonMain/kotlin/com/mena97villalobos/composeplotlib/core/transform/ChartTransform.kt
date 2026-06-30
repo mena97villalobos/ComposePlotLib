@@ -31,8 +31,8 @@ data class ChartTransform(
         fun forPlotBounds(
             viewport: ChartViewport,
             plotBounds: RectD,
-        ): ChartTransform {
-            return ChartTransform(
+        ): ChartTransform =
+            ChartTransform(
                 xTransform =
                     LinearTransform1D(
                         domain = viewport.xRange,
@@ -46,6 +46,5 @@ data class ChartTransform(
                         pixelEnd = plotBounds.top,
                     ),
             )
-        }
     }
 }

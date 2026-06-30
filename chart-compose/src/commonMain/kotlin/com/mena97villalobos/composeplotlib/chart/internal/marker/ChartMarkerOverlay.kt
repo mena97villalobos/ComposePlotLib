@@ -132,8 +132,7 @@ internal fun BoxScope.ChartMarkerOverlay(
                     .graphicsLayer { alpha = contentAlpha }
                     .offset {
                         IntOffset(offsetPixels.first, offsetPixels.second)
-                    }
-                    .onSizeChanged { markerSize = it }
+                    }.onSizeChanged { markerSize = it }
                     .then(markerContainerModifier),
         ) {
             marker()
@@ -170,8 +169,7 @@ internal fun BoxScope.ChartMarkerOverlay(
                     Modifier
                         .offset {
                             IntOffset(offsetPixels.first, offsetPixels.second)
-                        }
-                        .onSizeChanged { markerSize = it }
+                        }.onSizeChanged { markerSize = it }
                         .then(markerContainerModifier),
             ) {
                 marker()

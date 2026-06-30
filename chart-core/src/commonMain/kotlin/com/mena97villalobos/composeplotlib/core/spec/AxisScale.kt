@@ -11,7 +11,9 @@ sealed interface AxisScale {
     data object Linear : AxisScale
 
     /** One tick per category at index `0 .. categories.lastIndex`. */
-    data class Category(val categories: List<String>) : AxisScale
+    data class Category(
+        val categories: List<String>,
+    ) : AxisScale
 
     /** Nice tick steps in milliseconds; domain values are `Double` epoch milliseconds. */
     data object TimeEpochMillis : AxisScale
