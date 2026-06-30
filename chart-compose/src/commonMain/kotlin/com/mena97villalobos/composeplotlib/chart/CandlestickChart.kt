@@ -27,6 +27,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyl
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.chartLabelTextStyles
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.ChartFlingRuntime
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.cartesianDoubleTapViewportEnabled
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartCandlestickKeyboardSelectionRoam
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartCartesianKeyboardViewport
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartGestures
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.effectiveTransformFlags
@@ -166,6 +167,11 @@ fun CandlestickChart(
                     selectionState,
                     emptyStateDescription,
                     accessibilityCustomActions,
+                ).chartCandlestickKeyboardSelectionRoam(
+                    enabled = spec.accessibility.keyboardSelectionRoamEnabled,
+                    selectionState = selectionState,
+                    tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
+                    candlestickPlan = { latestPlan.value },
                 ).chartCartesianKeyboardViewport(
                     enabled = spec.accessibility.keyboardViewportNudgeEnabled,
                     transformEnabled = gestureConfig.transform.enabled,
@@ -173,7 +179,7 @@ fun CandlestickChart(
                     viewportState = viewportState,
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     onClearSelection = { selectionState.clear() },
-                    reserveShiftDirectionKeysForSelectionRoam = false,
+                    reserveShiftDirectionKeysForSelectionRoam = spec.accessibility.keyboardSelectionRoamEnabled,
                 ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
                 }.chartGestures(

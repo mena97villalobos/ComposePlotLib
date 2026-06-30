@@ -4,9 +4,11 @@ import com.mena97villalobos.composeplotlib.core.domain.XyPoint
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.BarChartPlan
+import com.mena97villalobos.composeplotlib.core.layout.CandlestickChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedCartesianChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedHitTestLayer
 import com.mena97villalobos.composeplotlib.core.layout.PlannedBarSegment
+import com.mena97villalobos.composeplotlib.core.layout.PlannedCandle
 import com.mena97villalobos.composeplotlib.core.layout.forHitTestFromDrawOrder
 import com.mena97villalobos.composeplotlib.core.model.toXyPoints
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
@@ -22,9 +24,9 @@ import com.mena97villalobos.composeplotlib.core.viewport.normalizedNonDegenerate
 import kotlin.math.max
 
 /**
- * Pure selection-step helpers for **keyboard roam** (Shift+arrows on the chart surface). Uses full
- * series point lists in domain index order (not decimated render indices) so each key moves to an adjacent
- * data point.
+ * Pure selection-step helpers for **keyboard roam** (Shift+arrows on the chart surface). Line and scatter roam
+ * over full series point lists in domain index order; bar and candlestick roam over the **planned** (possibly
+ * decimated) geometry, relocating the current selection by its stable global point index.
  */
 object KeyboardSelectionRoam {
     fun lineChartRoam(
@@ -166,6 +168,77 @@ object KeyboardSelectionRoam {
                 else -> (currentIdx + delta).coerceIn(0, ordered.lastIndex)
             }
         return chartSelectionForBarSegment(ordered[nextIdx])
+    }
+
+    /**
+     * Keyboard selection-roam over **planned** candles: Shift+Left/Right step [deltaPoint] within a series
+     * along the x (time) axis; Shift+Up/Down switch series via [deltaSeries]. Both axes **clamp** (no wrap).
+     * Builds a [ChartSelection] identical to [CandlestickHitResolver.resolvePlanned] so roam and tap selections
+     * are interchangeable. Steps over `plan.candles` (possibly decimated), like [barChartRoam] over bar segments.
+     */
+    fun candlestickChartRoam(
+        plan: CandlestickChartPlan,
+        current: ChartSelection?,
+        deltaPoint: Int,
+        deltaSeries: Int,
+    ): ChartSelection? = candlestickChartRoam(plan.candles, current, deltaPoint, deltaSeries)
+
+    internal fun candlestickChartRoam(
+        candles: List<PlannedCandle>,
+        current: ChartSelection?,
+        deltaPoint: Int,
+        deltaSeries: Int,
+    ): ChartSelection? {
+        if (deltaPoint == 0 && deltaSeries == 0) return current
+        if (candles.isEmpty()) return null
+
+        // Series order = first-seen order in the draw-order candle list (mirrors spec.series order).
+        val seriesIds = candles.map { it.seriesId }.distinct()
+
+        var sIdx = seriesIds.indexOfFirst { it == current?.target?.seriesId }
+        if (sIdx < 0) sIdx = 0
+        if (deltaSeries != 0) {
+            sIdx = (sIdx + deltaSeries).coerceIn(0, seriesIds.lastIndex)
+        }
+        val seriesId = seriesIds[sIdx]
+
+        // Walk along the x (time) axis within the resolved series.
+        val ordered = candles.filter { it.seriesId == seriesId }.sortedBy { it.point.x }
+        if (ordered.isEmpty()) return null
+
+        // PlannedCandle.index is the GLOBAL point index (decimation-stable) — relocate by it, not positionally.
+        var pIdx =
+            if (current != null && current.target.seriesId == seriesId) {
+                ordered.indexOfFirst { it.index == current.target.pointIndex }
+            } else {
+                -1
+            }
+        if (deltaPoint != 0) {
+            pIdx =
+                if (pIdx < 0) {
+                    if (deltaPoint > 0) 0 else ordered.lastIndex
+                } else {
+                    (pIdx + deltaPoint).coerceIn(0, ordered.lastIndex)
+                }
+        } else if (pIdx < 0) {
+            pIdx = 0
+        }
+        return chartSelectionForCandle(ordered[pIdx])
+    }
+
+    private fun chartSelectionForCandle(hit: PlannedCandle): ChartSelection {
+        val topCenter = OffsetD((hit.bodyBounds.left + hit.bodyBounds.right) / 2.0, hit.bodyBounds.top)
+        return ChartSelection(
+            target =
+                HighlightTarget(
+                    seriesId = hit.seriesId,
+                    pointIndex = hit.index,
+                    point = XyPoint(hit.point.x, hit.point.close),
+                ),
+            pixelOffset = topCenter,
+            markerAnchor = hit.bodyBounds.center,
+            hitBounds = hit.hitBounds,
+        )
     }
 
     fun pieChartRoam(

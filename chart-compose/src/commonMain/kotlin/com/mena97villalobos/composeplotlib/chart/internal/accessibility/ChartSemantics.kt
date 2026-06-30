@@ -443,10 +443,10 @@ internal fun Modifier.candlestickChartAccessibility(
     emptyStateDescription: String? = null,
     customAccessibilityActions: List<ChartCustomAccessibilityAction> = emptyList(),
 ): Modifier {
-    // No keyboardSelectionRoamEnabled: candlestick wires viewport-nudge keys but no selection-roam handler.
     val wantsFocus =
         spec.accessibility.requestFocusForAccessibility ||
             spec.accessibility.keyboardViewportNudgeEnabled ||
+            spec.accessibility.keyboardSelectionRoamEnabled ||
             spec.accessibility.requestFocusOnMarker
     val mergeDescendants = !spec.accessibility.requestFocusOnMarker
     val semanticsModifier =
@@ -598,9 +598,7 @@ private fun defaultCandlestickChartSemanticSummary(spec: CandlestickChartSpec): 
         spec.series.isEmpty() -> "Candlestick chart with no series."
         else -> {
             val names = spec.series.joinToString { it.label }
-            // Candlestick wires the viewport-nudge keyboard handler but no selection-roam, so suppress the
-            // roam hint (which keyboardHint would otherwise advertise when keyboardSelectionRoamEnabled is set).
-            val keys = keyboardHint(spec.accessibility.copy(keyboardSelectionRoamEnabled = false))
+            val keys = keyboardHint(spec.accessibility)
             val mf = markerFocusHint(spec.accessibility.requestFocusOnMarker)
             "Candlestick chart. Series: $names. Use pinch to zoom and drag to pan. Tap a candle to select.$keys$mf"
         }
@@ -676,7 +674,7 @@ private fun keyboardHint(accessibility: ChartAccessibilitySpec): String {
 private fun selectionRoamHint(accessibility: ChartAccessibilitySpec): String =
     if (accessibility.keyboardSelectionRoamEnabled) {
         if (accessibility.keyboardViewportNudgeEnabled) {
-            " Shift+arrow keys move selection (Shift+Up/Down switch series on line or scatter); unmodified arrows pan."
+            " Shift+arrow keys move selection (Shift+Up/Down switch series in multi-series charts); unmodified arrows pan."
         } else {
             " Shift+arrow keys move selection when focused."
         }

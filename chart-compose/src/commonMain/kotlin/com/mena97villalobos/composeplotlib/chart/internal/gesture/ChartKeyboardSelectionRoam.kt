@@ -9,6 +9,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.core.layout.BarChartPlan
+import com.mena97villalobos.composeplotlib.core.layout.CandlestickChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedCartesianChartPlan
 import com.mena97villalobos.composeplotlib.core.selection.KeyboardSelectionRoam
@@ -106,6 +107,30 @@ internal fun Modifier.chartBarKeyboardSelectionRoam(
                 plan = plan,
                 current = selectionState.selection,
                 delta = delta,
+            ) ?: return@onKeyEvent false
+        selectionState.select(next)
+        true
+    }
+}
+
+internal fun Modifier.chartCandlestickKeyboardSelectionRoam(
+    enabled: Boolean,
+    selectionState: ChartSelectionState,
+    tapSelectionEnabled: Boolean,
+    candlestickPlan: () -> CandlestickChartPlan?,
+): Modifier {
+    if (!enabled || !tapSelectionEnabled) return this
+    return onKeyEvent { event ->
+        if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
+        if (!event.isShiftPressed) return@onKeyEvent false
+        val plan = candlestickPlan() ?: return@onKeyEvent false
+        val (deltaPoint, deltaSeries) = shiftArrowDeltas(event.key) ?: return@onKeyEvent false
+        val next =
+            KeyboardSelectionRoam.candlestickChartRoam(
+                plan = plan,
+                current = selectionState.selection,
+                deltaPoint = deltaPoint,
+                deltaSeries = deltaSeries,
             ) ?: return@onKeyEvent false
         selectionState.select(next)
         true
