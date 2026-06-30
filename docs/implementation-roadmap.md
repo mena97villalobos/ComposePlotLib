@@ -227,11 +227,13 @@ Recommended order (aligned with **`production-readiness-next-steps.md` → New C
 2. Bar chart *(shipped)*
 3. Scatter chart *(shipped)*
 4. Pie or donut chart *(shipped — radial planner + `PieChart`)*
-5. Combined cartesian chart *(gated — multi-layer planner)*
-6. Bubble chart
-7. Radar chart
-8. Candlestick chart
-9. Horizontal bar chart if it is not already covered by bar infrastructure
+5. Combined cartesian chart *(shipped — multi-layer planner + `CombinedCartesianChart`)*
+6. Bubble chart *(shipped 1.1.0 — per-point `ChartPoint.markerRadius` on `ScatterChart`)*
+7. Radar chart *(shipped — `RadarChart`)*
+8. Candlestick chart *(shipped 1.1.0 — `CandlestickChart`)*
+9. Horizontal bar chart *(shipped — `BarChartOrientation.Horizontal`)*
+
+(Also shipped beyond this original list: **Sankey**, **Heatmap**, **Gauge** families and the **Sparkline** wrapper.)
 
 For each chart family:
 

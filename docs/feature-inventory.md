@@ -3,7 +3,7 @@
 ## Purpose
 This document lists the major capability areas from MPAndroidChart that should be considered for `ComposePlotLib`. It is intended to guide scoping, not to force one-to-one API parity.
 
-**Implementation order in this repo:** **scatter** and **pie/donut** *(implemented)* → **combined** (multi-layer planner). See **`production-readiness-next-steps.md` → New Chart Families**.
+**Implementation order in this repo:** **scatter**, **pie/donut**, **radar**, **combined** (multi-layer), **sankey**, and **heatmap** are shipped; **1.1.0** added **gauge**, **candlestick**, and the **sparkline** wrapper. See **`production-readiness-next-steps.md` → New Chart Families**.
 
 ## Chart Families
 
@@ -14,10 +14,12 @@ This document lists the major capability areas from MPAndroidChart that should b
 - Pie or donut chart *(radial; shipped — polish in production-readiness backlog)*
 
 ### Secondary chart families
-- Horizontal bar chart
+- Horizontal bar chart *(shipped — `BarChartOrientation.Horizontal`)*
 - Bubble chart *(shipped 1.1.0 — per-point `markerRadius` on `ScatterChart`)*
-- Radar chart
-- Candlestick chart *(shipped 1.1.0 — library; app adoption gated on an OHLC data feed)*
+- Radar chart *(shipped — `RadarChart`)*
+- Sankey / flow chart *(shipped — `SankeyChart`)*
+- Heatmap chart *(shipped — `HeatmapChart` color grid)*
+- Candlestick chart *(shipped 1.1.0 — `CandlestickChart`, fully previewed and screenshot-tested here; only downstream app adoption is gated on a live OHLC feed)*
 - Gauge / progress-ring chart *(shipped 1.1.0 — `GaugeChart`)*
 - Sparkline *(shipped 1.1.0 — axis-less `LineChart` wrapper)*
 - Combined cartesian chart *(shipped — planner/rendering polish in production-readiness backlog)*
@@ -109,7 +111,7 @@ The library should ship with:
 
 - A separate Android showcase app *(shipped: `samples:android-showcase`)*
 - Curated demo datasets
-- Reference screens for each chart family *(line, bar, scatter, pie, and combined shipped in showcase; candlestick, gauge, and sparkline added in 1.1.0)*
+- Reference screens for each chart family *(line, bar, scatter, pie, radar, combined, sankey, heatmap, gauge, and candlestick have showcase screens; Sparkline is previewed in `ComposePlotApp` rather than a dedicated showcase screen)*
 - Performance demo screens
 - Docs linked to showcase examples
 - Generated screenshots for the docs
@@ -126,8 +128,10 @@ The library should ship with:
 
 ## Recommended Post-v1 Scope
 - Bubble chart *(shipped 1.1.0)*
-- Radar chart
-- Candlestick chart *(shipped 1.1.0 — library; app adoption gated on OHLC data)*
+- Radar chart *(shipped)*
+- Sankey / flow chart *(shipped)*
+- Heatmap chart *(shipped)*
+- Candlestick chart *(shipped 1.1.0; downstream app adoption gated on a live OHLC feed)*
 - Gauge / progress-ring chart *(shipped 1.1.0)*
 - Sparkline *(shipped 1.1.0)*
 - Full combined chart support

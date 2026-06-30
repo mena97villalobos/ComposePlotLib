@@ -172,19 +172,23 @@ data class PointStyle(
 
 ### A4 — Gauge / progress-ring chart  ·  **MED**  ·  M–L (new type)
 Replaces the goal `drawArc`; reusable for budget rings and the home/Wear "Budget Ring" widget.
+Shipped signature (see §8 and [`api-and-state.md`](api-and-state.md) → Gauge chart for the authoritative form):
 ```kotlin
 data class GaugeChartSpec(
-    val progress: Double,                 // 0.0..1.0
-    val trackColor: ChartColor,
-    val progressColor: ChartColor,
-    val strokeWidth: Double = 13.0,
+    val progress: Double,                              // 0.0..1.0 (clamped when planned)
+    val id: String = "gauge",
+    val trackColor: ChartColor = ChartColor.LightGray,
+    val progressColor: ChartColor = ChartColor.Blue,
+    val strokeWidthPx: Double = 24.0,                  // ring thickness in pixels
     val roundedCaps: Boolean = true,
-    val startAngleDegrees: Double = -90.0,
-    val sweepDegrees: Double = 360.0,     // full ring; <360 = arc gauge
-    // center content via composable slot (mirrors PieChart.centerContent)
+    val startAngleDegrees: Double = -90.0,             // PieChartLayoutMath.START_ANGLE_DEGREES (12 o'clock)
+    val sweepDegrees: Double = 360.0,                  // full ring; <360 = arc gauge
+    val accessibility: ChartAccessibilitySpec = ChartAccessibilitySpec(),
+    val contentPadding: InsetsD = InsetsD(/* 24 on each edge */),
 )
 @Composable fun GaugeChart(spec: GaugeChartSpec, modifier: Modifier = Modifier,
-                           centerContent: (@Composable BoxScope.() -> Unit)? = null)
+                           centerContent: (@Composable BoxScope.() -> Unit)? = null,
+                           chromeTheme: ChartChromeTheme? = null)
 ```
 **Files:** `chart-core` — `spec/GaugeChartSpec.kt`, `layout/GaugeChartPlan.kt`, `ChartPlanner.planGaugeChart`; `chart-compose` — `GaugeChart.kt`, `internal/render/GaugeChartRenderer.kt`.
 **Done when:** track + rounded-cap progress arc + center slot render; matches the current goal ring visually on both platforms.
@@ -194,15 +198,21 @@ Reuses the per-point override added in A3 (just the `radius` field). Renderer ho
 
 ### A6 — Candlestick / OHLC  ·  **HIGH value, DATA-GATED**  ·  L (new type)
 Blocked on data: client has only `.close` (no O/H/L). Build the library piece in parallel; app B-side cannot land until an OHLC feed exists (see §6).
+Shipped signature (see §8 and [`api-and-state.md`](api-and-state.md) → Candlestick chart for the authoritative form). `CandlestickStyle` lives on each `CandlestickSeries` (per-series), not on the chart spec:
 ```kotlin
 data class OHLCPoint(val x: Double, val open: Double, val high: Double, val low: Double, val close: Double)
-data class CandlestickSeries(val id: String, val label: String, val points: List<OHLCPoint>)
-data class CandlestickStyle(val bullishColor: ChartColor = ChartColor.Green,
-                            val bearishColor: ChartColor = ChartColor.Red,
-                            val bodyWidth: Double = 6.0, val wickWidth: Double = 1.0)
+data class CandlestickStyle(val bullColor: ChartColor = ChartColor.Green,
+                            val bearColor: ChartColor = ChartColor.Red,
+                            val bodyWidth: Double = 8.0, val wickWidth: Double = 1.5,
+                            val wickColorFollowsBody: Boolean = true, val wickColor: ChartColor? = null)
+data class CandlestickSeries(val id: String, val label: String, val points: List<OHLCPoint>,
+                             val style: CandlestickStyle = CandlestickStyle())
 data class CandlestickChartSpec(val series: List<CandlestickSeries>,
-    val xAxis: AxisSpec = AxisSpec(), val yAxis: AxisSpec = AxisSpec(),
-    val style: CandlestickStyle = CandlestickStyle() /* + shared a11y/grid/legend/selection */)
+    val candleRender: CandlestickRenderSpec = CandlestickRenderSpec(),
+    val xAxis: AxisSpec = AxisSpec(), val yAxis: AxisSpec = AxisSpec()
+    /* + valueFormatter, grid, legend, selectionStyle, accessibility, contentPadding */)
+// CandlestickChart(...) also exposes a chart-level accessibilityCustomActions parameter
+// and Shift+arrow keyboard selection-roam (KeyboardSelectionRoam.candlestickChartRoam).
 ```
 **Files:** full new-type set (`chart-core`: spec, style, model, plan, planner fn, hit resolver; `chart-compose`: composable, renderer, marker builder, viewport default).
 **Done when:** bodies+wicks, bull/bear coloring, decimation for long series, tap-to-OHLC marker; builds on all 3 targets.
@@ -327,7 +337,7 @@ Value order: **A1+A2 → B8/B10** (kill two custom charts) · **Wave 1 B1–B4**
 - **A3** — `MarkerShape` (`Circle` / `Square` / `Triangle` / `Diamond`) + `PointStyle.shape`; per-point overrides `ChartPoint.markerShape` / `markerColor` / `markerRadius`.
 - **A4** — new **gauge / progress-ring** family: `GaugeChartSpec` (`progress`, `id`, `trackColor`, `progressColor`, `strokeWidthPx`, `roundedCaps`, `startAngleDegrees`, `sweepDegrees`, `accessibility`, `contentPadding`), `planGaugeChart`, `GaugeChart` with optional `centerContent` slot; non-interactive.
 - **A5** — **bubble** sizing on `ScatterChart` via the per-point `ChartPoint.markerRadius` override (reuses A3).
-- **A6** — new **candlestick / OHLC** family (**library only**): `CandlestickChartSpec` (+ `OHLCPoint`, `CandlestickSeries`, `CandlestickStyle`, `CandlestickRenderSpec`, `CandlestickValueFormatter`), `planCandlestickChart`, `CandlestickChart`; bodies + wicks, bull/bear coloring, decimation, pan/zoom, tap-to-OHLC marker. App-side **B15** remains gated on an OHLC data feed.
+- **A6** — new **candlestick / OHLC** family (**library only**): `CandlestickChartSpec` (+ `OHLCPoint`, `CandlestickSeries`, `CandlestickStyle` with `bullColor`/`bearColor`/`wickColorFollowsBody`/`wickColor`, `CandlestickRenderSpec`, `CandlestickValueFormatter`), `planCandlestickChart`, `CandlestickChart`; bodies + wicks, bull/bear coloring, decimation, pan/zoom, tap-to-OHLC marker. Chart-level **Image-role accessibility**, an **`accessibilityCustomActions`** parameter (parity with the other cartesian charts), and **Shift+arrow keyboard selection-roam** (Shift+Left/Right steps candles within a series, Shift+Up/Down switches series, plain arrows pan) backed by the public **`KeyboardSelectionRoam.candlestickChartRoam(plan, current, deltaPoint, deltaSeries)`**. App-side **B15** remains gated on an OHLC data feed.
 - **A7** — `Sparkline` wrapper over `LineChart` (axes/grid/legend off, zero padding, non-interactive, optional area fill).
 - Added `ComposePlotApp` previews, `samples/android-showcase` screens, `chart-core` / Roborazzi tests, and refreshed BCV (`chart-*/api/*.api`) baselines for all of the above. Publish (**A8**) happens on a `v1.1.0` git tag.
 

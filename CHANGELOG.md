@@ -27,7 +27,11 @@ Additive, backward-compatible release. Existing specs keep their prior behavior 
 - **Candlestick chart (new family)** — `CandlestickChart` / `CandlestickChartSpec` with `OHLCPoint`,
   `CandlestickSeries`, `CandlestickStyle`, `CandlestickRenderSpec`, and `CandlestickValueFormatter`;
   cartesian bodies + wicks, bull/bear coloring, pan/zoom, decimation, and a tap-to-OHLC marker.
-  (Library shipped; app adoption is gated on an OHLC data feed.)
+  Chart-level **accessibility** (Image role + selection state) with an **`accessibilityCustomActions`**
+  parameter, and **keyboard selection-roam** (Shift+Left/Right step candles within a series,
+  Shift+Up/Down switch series, plain arrows pan) via the public
+  `KeyboardSelectionRoam.candlestickChartRoam`. (Library shipped; downstream app adoption is gated on
+  a live OHLC data feed.)
 - **Sparkline** — a thin, axis-less / grid-less / non-interactive wrapper over `LineChart` with an
   optional area fill.
 

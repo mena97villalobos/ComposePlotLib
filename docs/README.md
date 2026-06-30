@@ -16,7 +16,7 @@ Implementation-oriented documentation for the library. Start with **`production-
 11. **[`showcase-guide.md`](showcase-guide.md)** — Android showcase layout, Roborazzi, extending demos  
 12. **[`api-checklist.md`](api-checklist.md)** — Public API audit / release gate (`chart-core` vs `chart-compose`, leakage checks)
 
-**Chart families today:** **[`chart-families-overview.md`](chart-families-overview.md)** and **`api-and-state.md`** (line, bar, scatter, combined, pie/donut, radar, sankey, heatmap, gauge, candlestick, plus a sparkline wrapper; polish in `production-readiness-next-steps.md` → New Chart Families). Combined semantics: **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)**.
+**Chart families today:** **[`chart-families-overview.md`](chart-families-overview.md)** and **`api-and-state.md`** (line, bar, stacked bar, scatter, combined, pie/donut, radar, sankey, heatmap, gauge, candlestick, plus a sparkline wrapper; polish in `production-readiness-next-steps.md` → New Chart Families). Combined semantics: **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)**.
 
 ## Reference and long-range scope
 | File | Purpose |
@@ -24,7 +24,7 @@ Implementation-oriented documentation for the library. Start with **`production-
 | [`performance-benchmarks.md`](performance-benchmarks.md) | JMH module (`chart-core-benchmarks`), local run instructions, variance / CI expectations |
 | [`implementation-roadmap.md`](implementation-roadmap.md) | Phased plan; MPAndroidChart-derived scope; chart rollout order |
 | [`feature-inventory.md`](feature-inventory.md) | Capability areas to consider vs classic chart libs |
-| [`android-showcase-plan.md`](android-showcase-plan.md) | Target showcase IA; module exists with **line / bar / scatter / pie / combined / domain axes** root demos + Roborazzi (full sectioned nav still future work) |
+| [`android-showcase-plan.md`](android-showcase-plan.md) | Target showcase IA; module exists with **line / bar / scatter / pie / radar / combined / sankey / heatmap / gauge / candlestick / domain axes** root demos + Roborazzi (full sectioned nav still future work) |
 | [`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md) | Combined cartesian design reference (shared vs dual *Y*, z-order, hit testing, `ChartLayoutPlan` composition); update when combined semantics change |
 | [`api-checklist.md`](api-checklist.md) | Release public-API audit checklist (**M16**) |
 | [`accessibility-custom-actions.md`](accessibility-custom-actions.md) | Merging viewport TalkBack actions with app custom actions |

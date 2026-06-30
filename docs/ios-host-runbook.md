@@ -1,6 +1,6 @@
 # iOS host runbook (ComposePlotLib)
 
-This runbook validates the shared milestone UI (`ComposePlotApp` in `chart-compose` via `composeApp`) on an iOS simulator or device. **`ComposePlotApp` cycles line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → candlestick → gauge → sparkline → domain axes** (button). Shared KMP code paths are covered by the iOS compile tasks below. **`samples/android-showcase`** adds richer demos and Roborazzi (still Android-focused).
+This runbook validates the shared milestone UI (`ComposePlotApp` in `chart-compose` via `composeApp`) on an iOS simulator or device. **`ComposePlotApp` cycles line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes** (button). Shared KMP code paths are covered by the iOS compile tasks below. **`samples/android-showcase`** adds richer demos and Roborazzi (still Android-focused).
 
 **Integrating charts in your own KMP+iOS app** (framework wiring, `ComposeUIViewController`, SwiftUI bridge): **[`ios-library-usage.md`](ios-library-usage.md)**.
 

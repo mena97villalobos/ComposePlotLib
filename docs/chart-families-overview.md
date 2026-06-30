@@ -32,9 +32,13 @@ Radial multi-series polygon chart: **`RadarChartSpec`** defines ordered axes (sp
 
 Explicit-column Sankey diagram: **`SankeyChartSpec`** provides nodes with a `column` index and weighted links between node ids. Layout is planned in normalized domain space (commonly `x=0..1`, `y=0..1`) so pan/zoom reuses **`ChartViewportState`**; hit-testing supports node and link selection. **`SankeyLayoutSpec`** adds SankeyMATIC-like controls for node ordering, per-column vertical alignment, deterministic link stacking via outgoing/incoming link ordering, and optional node/link labels.
 
+## Heatmap
+
+2-D grid of colored cells: **`HeatmapChartSpec`** holds **`HeatmapCell`** values (`col`, `row`, `value`) with `columnLabels` (X) / `rowLabels` (Y, row 0 at the bottom) and a **`HeatmapColorScale`** (`minValue`/`maxValue` → `minColor`/`maxColor`, or **`HeatmapColorScale.auto(...)`** from the data). Both axes render as categories. Tap selects a cell via **`HeatmapHitResolver`**; pan/zoom reuse **`ChartViewportState`**. Image-role accessibility with optional **`accessibilityCustomActions`** (no keyboard selection-roam). *(Shipped in 1.1.0.)*
+
 ## Candlestick (OHLC)
 
-Cartesian OHLC chart: **`CandlestickChartSpec`** holds **`CandlestickSeries`** of **`OHLCPoint`** (`x`, `open`, `high`, `low`, `close`) with per-series **`CandlestickStyle`** (bull/bear colors, body/wick widths, wick coloring). Shares the line/bar/scatter axis + viewport stack: bodies + wicks, bull/bear coloring, **`CandlestickRenderSpec`** decimation for long series, pan/zoom, and a **tap-to-OHLC** marker. *(Library shipped in 1.1.0; app adoption is gated on an OHLC data feed.)*
+Cartesian OHLC chart: **`CandlestickChartSpec`** holds **`CandlestickSeries`** of **`OHLCPoint`** (`x`, `open`, `high`, `low`, `close`) with per-series **`CandlestickStyle`** (bull/bear colors, body/wick widths, wick coloring). Shares the line/bar/scatter axis + viewport stack: bodies + wicks, bull/bear coloring, **`CandlestickRenderSpec`** decimation for long series, pan/zoom, and a **tap-to-OHLC** marker. Chart-level Image-role accessibility with optional **`accessibilityCustomActions`** and **keyboard selection-roam** (Shift+Left/Right steps candles within a series, Shift+Up/Down switches series, plain arrows pan), backed by **`KeyboardSelectionRoam.candlestickChartRoam`**. *(Shipped in 1.1.0; previewed in `ComposePlotApp` and screenshot-tested in the Android showcase.)*
 
 ## Gauge / progress-ring
 
@@ -50,5 +54,5 @@ A thin convenience wrapper over **`LineChart`** with axes, grid, and legend off,
 
 ## Samples
 
-- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → candlestick → gauge → sparkline → domain axes.
+- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes.
 - **`samples/android-showcase`** — richer demos and Roborazzi baselines (Android).

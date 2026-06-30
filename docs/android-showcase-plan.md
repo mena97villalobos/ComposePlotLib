@@ -1,6 +1,6 @@
 # Android Showcase App Plan
 
-**Status:** The **`samples:android-showcase`** module exists with **line, bar, scatter, and pie/donut** showcase screens, sample data, **Roborazzi** goldens (including `pieChartShowcaseScreen` and cartesian screens), and manual QA workflows. Root **`ShowcaseApp`** opens a **home** screen with buttons that navigate to each demo (line, bar, scatter, pie, domain axes), with a top **Back** control on detail screens; use this document as a **target information architecture** when expanding toward the fuller sectioned structure below.
+**Status:** The **`samples:android-showcase`** module exists with **line, bar, scatter, pie/donut, radar, combined, sankey, heatmap, gauge, candlestick, and domain-axes** showcase screens, sample data, **Roborazzi** goldens (including `pieChartShowcaseScreen` and cartesian screens), and manual QA workflows. Root **`ShowcaseApp`** opens a **home** screen with buttons that navigate to each demo (line, bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, domain axes), with a top **Back** control on detail screens; use this document as a **target information architecture** when expanding toward the fuller sectioned structure below.
 
 ## Goal
 Create a separate Android application for `ComposePlotLib` that demonstrates the library with polished examples, reproducible datasets, and documentation-friendly screens.
