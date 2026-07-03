@@ -83,8 +83,8 @@ The highest-leverage gaps versus nearly every competitor, each a strong architec
    (formatter, placement, greedy overlap avoidance). *(M, strong)*
 4. ~~**Interactive legend**~~ — ✅ **shipped:** `hiddenSeriesIds` on line/scatter/bar specs (hidden series dropped +
    dimmed legend row) + `onLegendItemClick` tap-to-toggle on the composables. *(M, strong)*
-5. **Annotations layer** — generalize `ReferenceLine` into `markPoint` / `markLine` / `markArea` (text,
-   arrow, box/region, callout) anchored to data or pixels. *(L, strong)*
+5. ~~**Annotations layer**~~ — ✅ **shipped:** `ChartAnnotation` (Point / Text / Box-region / Segment) anchored in
+   data space, on line/scatter/bar specs (`annotations`). *(L, strong)*
 6. **`ChartColor` ergonomics** — `rgb()` / hex / `withAlpha()` factory helpers on the value class; a frequent
    papercut, trivial and KMP-safe. *(S, strong)*
 7. **Crosshair / axis-pointer** — a tracking rule + axis value labels following the pointer/selection,
@@ -139,7 +139,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Annotations layer (text / arrow / box / region / callout) | P0 | L | strong | Generalizes `ReferenceLine` into mark* primitives. |
+| ~~Annotations layer (point / text / box-region / segment)~~ ✅ | ~~P0~~ | L | strong | **Shipped:** `ChartAnnotation` on line/scatter/bar (`annotations`). |
 | ~~Data labels (per-point/bar value labels + collision avoidance)~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `DataLabelsSpec` on line/scatter/bar. |
 | Trendline / regression overlays (linear, moving-average) + confidence bands | P1 | M | strong | Ideal `chart-core` math → ordinary series/band. Differentiator vs Vico/Koala. |
 | Line interpolation: stepped and spline/monotone-cubic | P2 | M | strong | Curve fitting → path segments the DrawCommand model already supports. |

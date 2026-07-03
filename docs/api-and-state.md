@@ -90,6 +90,8 @@ Main types:
 
 **Interactive legend / series visibility** (`hiddenSeriesIds: Set<String>` on `LineChartSpec` / `ScatterChartSpec` / `BarChartSpec`): ids listed here are excluded from drawing but still occupy a **dimmed** legend row. `LineChart` / `ScatterChart` / `BarChart` take an optional `onLegendItemClick: (seriesId) -> Unit`; the composable hit-tests taps on legend rows and invokes it, so an app hoisting a `Set<String>` state gets tap-to-toggle series visibility (immutable-spec friendly — rebuild the spec with the updated set).
 
+**Annotations layer** (`annotations: List<ChartAnnotation>` on `LineChartSpec` / `ScatterChartSpec` / `BarChartSpec`): freeform marks anchored in **domain space**, drawn over the series (and above reference lines), clipped to the plot. Variants: `ChartAnnotation.Point(x, y, label?…)` (marker + label), `ChartAnnotation.Text(x, y, text…)`, `ChartAnnotation.Box(xRange?, yRange?, fillColor?, borderColor?, label?)` (a shaded region — a `null` range spans the full plot on that axis, so a `yRange`-only box is a horizontal band), and `ChartAnnotation.Segment(x1, y1, x2, y2…)` (arbitrary line). `ReferenceLine` remains the dedicated helper for full-width/height threshold lines.
+
 ### Area fill, reference lines, and marker shapes
 These additive options (1.1.0) extend existing cartesian charts; defaults preserve prior stroke/point behavior.
 

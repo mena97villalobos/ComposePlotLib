@@ -40,6 +40,7 @@ import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionSta
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
+import com.mena97villalobos.composeplotlib.samples.android.data.annotatedLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.gappedLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.largeDenseLineChartInitialViewport
@@ -64,6 +65,7 @@ fun LineChartShowcaseScreen() {
             LineShowcaseVariant.LayoutStress -> layoutStressSpec
             LineShowcaseVariant.Gaps -> gappedLineChartSpec(connectAcrossGaps = connectGaps)
             LineShowcaseVariant.LogY -> logScaleLineChartSpec()
+            LineShowcaseVariant.Annotated -> annotatedLineChartSpec()
         }
     val dataExtent =
         when (variant) {
@@ -137,6 +139,9 @@ fun LineChartShowcaseScreen() {
             }
             Button(onClick = { variant = LineShowcaseVariant.LogY }) {
                 Text("Log Y")
+            }
+            Button(onClick = { variant = LineShowcaseVariant.Annotated }) {
+                Text("Annotated")
             }
         }
         Row(
@@ -320,4 +325,7 @@ private enum class LineShowcaseVariant {
 
     /** Logarithmic Y axis (AxisScale.Log): exponential data reads as a straight line, decades evenly spaced. */
     LogY,
+
+    /** Annotations layer: a target band, a labeled peak marker, a dashed trend segment, and a free text note. */
+    Annotated,
 }

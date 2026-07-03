@@ -246,6 +246,10 @@ object ChartPlanner {
         }
 
         plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
+        if (spec.annotations.isNotEmpty()) {
+            val (annCharW, annLineH) = estimateLabelCharBox(input)
+            plotCommands += buildAnnotationCommands(spec.annotations, frame.transform, frame.plotBounds, annCharW, annLineH)
+        }
 
         if (selection != null) {
             plotCommands += buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
@@ -339,6 +343,10 @@ object ChartPlanner {
         }
 
         plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
+        if (spec.annotations.isNotEmpty()) {
+            val (annCharW, annLineH) = estimateLabelCharBox(input)
+            plotCommands += buildAnnotationCommands(spec.annotations, frame.transform, frame.plotBounds, annCharW, annLineH)
+        }
 
         if (selection != null) {
             plotCommands += buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
@@ -1697,6 +1705,10 @@ object ChartPlanner {
             plotCommands += buildDataLabelCommands(anchors, spec.dataLabels, frame.plotBounds, charW, lineH)
         }
         plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
+        if (spec.annotations.isNotEmpty()) {
+            val (annCharW, annLineH) = estimateLabelCharBox(input)
+            plotCommands += buildAnnotationCommands(spec.annotations, frame.transform, frame.plotBounds, annCharW, annLineH)
+        }
 
         val overlayCommands =
             buildAxisAndTickLabelsOverlay(

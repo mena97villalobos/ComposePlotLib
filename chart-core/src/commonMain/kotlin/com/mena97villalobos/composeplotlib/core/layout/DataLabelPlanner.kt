@@ -51,7 +51,8 @@ internal fun buildDataLabelCommands(
     return out
 }
 
-private fun labelBox(
+/** Top-left-anchored box of size `w`×`h` placed relative to [mark] per [placement], offset by [gap] pixels. */
+internal fun labelBox(
     mark: OffsetD,
     placement: DataLabelPlacement,
     gap: Double,

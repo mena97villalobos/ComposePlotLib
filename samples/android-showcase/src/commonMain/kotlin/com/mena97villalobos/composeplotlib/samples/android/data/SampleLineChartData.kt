@@ -10,6 +10,7 @@ import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.AxisTickDensity
 import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
+import com.mena97villalobos.composeplotlib.core.spec.ChartAnnotation
 import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
 import com.mena97villalobos.composeplotlib.core.spec.GridSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
@@ -153,6 +154,64 @@ fun gappedLineChartSpec(connectAcrossGaps: Boolean = false): LineChartSpec =
         accessibility =
             ChartAccessibilitySpec(
                 contentDescription = "Showcase line chart with missing-data gaps.",
+            ),
+    )
+
+/**
+ * A line with a freeform **annotations** layer: a shaded target band ([ChartAnnotation.Box]), a labeled peak marker
+ * ([ChartAnnotation.Point]), a dashed trend guide ([ChartAnnotation.Segment]), and a free [ChartAnnotation.Text] note.
+ */
+fun annotatedLineChartSpec(): LineChartSpec =
+    LineChartSpec(
+        series =
+            listOf(
+                LineSeries(
+                    id = "signal",
+                    label = "Signal",
+                    lineStyle = LineStyle(color = ChartColor.Blue),
+                    pointStyle = PointStyle(visible = true, radius = 4.0),
+                    points =
+                        listOf(
+                            ChartPoint(0.0, 4.0),
+                            ChartPoint(1.0, 7.0),
+                            ChartPoint(2.0, 5.0),
+                            ChartPoint(3.0, 12.0),
+                            ChartPoint(4.0, 9.0),
+                            ChartPoint(5.0, 15.0),
+                        ),
+                ),
+            ),
+        grid = GridSpec(lineStyle = GridLineStyle(color = ChartColor.LightGray)),
+        legend = LegendSpec(),
+        annotations =
+            listOf(
+                ChartAnnotation.Box(
+                    yRange = ClosedRangeD(10.0, 13.0),
+                    fillColor = ChartColor(0x332E7D32L),
+                    label = "Target band",
+                    labelColor = ChartColor.Black,
+                ),
+                ChartAnnotation.Segment(
+                    x1 = 0.0,
+                    y1 = 4.0,
+                    x2 = 5.0,
+                    y2 = 15.0,
+                    color = ChartColor.Gray,
+                    strokeWidth = 1.5,
+                    dashIntervals = listOf(8.0, 6.0),
+                ),
+                ChartAnnotation.Point(
+                    x = 5.0,
+                    y = 15.0,
+                    color = ChartColor.Red,
+                    radius = 6.0,
+                    label = "Peak",
+                ),
+                ChartAnnotation.Text(x = 2.0, y = 5.0, text = "dip"),
+            ),
+        accessibility =
+            ChartAccessibilitySpec(
+                contentDescription = "Showcase line chart with an annotations layer.",
             ),
     )
 

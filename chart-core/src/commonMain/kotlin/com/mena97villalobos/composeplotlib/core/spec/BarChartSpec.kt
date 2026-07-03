@@ -22,6 +22,8 @@ import com.mena97villalobos.composeplotlib.core.model.BarGroup
  * @property dataLabels Optional per-bar value labels; disabled by default. See [DataLabelsSpec].
  * @property hiddenSeriesIds Ids of [BarGroup]s to hide (drawn dimmed in the legend); enables interactive/tap-to-toggle
  * legends. Hidden groups are excluded from drawing but still occupy a legend row. Empty by default.
+ * @property annotations Freeform data-anchored marks (points, text, boxes, segments) drawn over the plot; empty by
+ * default. See [ChartAnnotation].
  */
 data class BarChartSpec(
     val groups: List<BarGroup>,
@@ -42,6 +44,7 @@ data class BarChartSpec(
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 48.0, right = 24.0, bottom = 40.0),
     val dataLabels: DataLabelsSpec = DataLabelsSpec(),
     val hiddenSeriesIds: Set<String> = emptySet(),
+    val annotations: List<ChartAnnotation> = emptyList(),
 ) {
     init {
         requireUniqueIds(groups.map { it.id }, "BarChartSpec.groups ids")
