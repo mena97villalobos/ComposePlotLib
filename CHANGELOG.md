@@ -89,6 +89,13 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Heatmap keyboard selection-roam** — `HeatmapChart` now supports Shift+arrow grid navigation
   (`KeyboardSelectionRoam.heatmapRoam`) when `ChartAccessibilitySpec.keyboardSelectionRoamEnabled` is on,
   clamping at edges and skipping gaps in sparse grids.
+- **Line interpolation** — `LineStyle.interpolation` (`LineInterpolation`): stepped
+  (`StepBefore` / `StepAfter` / `StepMiddle`) and shape-preserving `MonotoneCubic` (Fritsch–Carlson) curves.
+  Both the stroke and the area fill follow the interpolation; applies to line charts, `Sparkline`, and
+  combined-chart line layers. Default `Linear` (unchanged).
+- **Reversed axis direction** — `AxisSpec.inverted` reverses an axis (X right→left, Y top→bottom) via the plot
+  transform, so data, grid, ticks, markers, and selection all follow on every cartesian family. Pan/zoom
+  direction is additionally reversed on `LineChart` / `ScatterChart` / `BarChart`.
 
 ### Changed
 

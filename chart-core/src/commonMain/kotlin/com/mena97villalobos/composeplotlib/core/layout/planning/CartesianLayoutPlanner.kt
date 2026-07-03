@@ -90,7 +90,14 @@ internal object CartesianLayoutPlanner {
             )
         val plotBounds = bounds.canvasBounds.inset(reservedRegions.contentInsets)
         val transform =
-            ChartTransform.forPlotBounds(bounds.viewport, plotBounds, xScale = xAxis.scale, yScale = yAxis.scale)
+            ChartTransform.forPlotBounds(
+                bounds.viewport,
+                plotBounds,
+                xScale = xAxis.scale,
+                yScale = yAxis.scale,
+                invertX = xAxis.inverted,
+                invertY = yAxis.inverted,
+            )
         val xGap = (xAxis.minHorizontalTickLabelGapPx ?: X_TICK_LABEL_MIN_HORIZONTAL_GAP) * labelScale
         val yGap = (yAxis.minVerticalTickLabelGapPx ?: Y_TICK_LABEL_MIN_VERTICAL_GAP) * labelScale
         val xMinDensityCap =

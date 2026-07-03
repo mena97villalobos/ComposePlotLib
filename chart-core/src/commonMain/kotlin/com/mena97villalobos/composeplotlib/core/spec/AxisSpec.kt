@@ -61,4 +61,12 @@ data class AxisSpec(
     val minVerticalTickLabelGapPx: Double? = null,
     val labelStyle: AxisLabelStyle = AxisLabelStyle(),
     val lineStyle: AxisLineStyle = AxisLineStyle(),
+    /**
+     * When true, this axis is drawn **reversed** — larger domain values map toward the opposite edge (X:
+     * right→left; Y: the usual bottom→top becomes top→bottom). Affects the plot transform, so data, grid, ticks,
+     * markers, and selection all follow, on every cartesian family. Pan/zoom direction is additionally reversed for
+     * `LineChart`, `ScatterChart`, and `BarChart`; other cartesian families render reversed but keep the standard
+     * pan direction.
+     */
+    val inverted: Boolean = false,
 )

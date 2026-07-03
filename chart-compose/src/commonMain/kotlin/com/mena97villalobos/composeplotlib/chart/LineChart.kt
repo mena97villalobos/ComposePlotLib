@@ -263,6 +263,8 @@ fun LineChart(
                                         plotBounds = currentPlan.layout.plotBounds,
                                         xScale = effectiveSpec.xAxis.scale,
                                         yScale = effectiveSpec.yAxis.scale,
+                                        invertX = effectiveSpec.xAxis.inverted,
+                                        invertY = effectiveSpec.yAxis.inverted,
                                     )
                                 val touch = OffsetD(offset.x.toDouble(), offset.y.toDouble())
                                 val specForHit =
@@ -322,19 +324,23 @@ fun LineChart(
                                         plotBounds = currentPlan.layout.plotBounds,
                                         xScale = effectiveSpec.xAxis.scale,
                                         yScale = effectiveSpec.yAxis.scale,
+                                        invertX = effectiveSpec.xAxis.inverted,
+                                        invertY = effectiveSpec.yAxis.inverted,
                                     )
                                 val pivot = transform.toDomain(OffsetD(centroid.x.toDouble(), centroid.y.toDouble()))
                                 val plotWidth = max(currentPlan.layout.plotBounds.width, 1.0)
                                 val plotHeight = max(currentPlan.layout.plotBounds.height, 1.0)
+                                val xPanSign = if (effectiveSpec.xAxis.inverted) 1.0 else -1.0
+                                val yPanSign = if (effectiveSpec.yAxis.inverted) -1.0 else 1.0
                                 val deltaX =
                                     if (transformFlags.panX) {
-                                        -(pan.x.toDouble() / plotWidth) * renderViewport.xRange.span
+                                        xPanSign * (pan.x.toDouble() / plotWidth) * renderViewport.xRange.span
                                     } else {
                                         0.0
                                     }
                                 val deltaY =
                                     if (transformFlags.panY) {
-                                        (pan.y.toDouble() / plotHeight) * renderViewport.yRange.span
+                                        yPanSign * (pan.y.toDouble() / plotHeight) * renderViewport.yRange.span
                                     } else {
                                         0.0
                                     }

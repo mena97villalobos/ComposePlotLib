@@ -222,6 +222,8 @@ fun ScatterChart(
                                         plotBounds = currentPlan.layout.plotBounds,
                                         xScale = spec.xAxis.scale,
                                         yScale = spec.yAxis.scale,
+                                        invertX = spec.xAxis.inverted,
+                                        invertY = spec.yAxis.inverted,
                                     )
                                 val touch = OffsetD(offset.x.toDouble(), offset.y.toDouble())
                                 val specForHit =
@@ -298,19 +300,23 @@ fun ScatterChart(
                                         plotBounds = currentPlan.layout.plotBounds,
                                         xScale = spec.xAxis.scale,
                                         yScale = spec.yAxis.scale,
+                                        invertX = spec.xAxis.inverted,
+                                        invertY = spec.yAxis.inverted,
                                     )
                                 val pivot = transform.toDomain(OffsetD(centroid.x.toDouble(), centroid.y.toDouble()))
                                 val plotWidth = max(currentPlan.layout.plotBounds.width, 1.0)
                                 val plotHeight = max(currentPlan.layout.plotBounds.height, 1.0)
+                                val xPanSign = if (spec.xAxis.inverted) 1.0 else -1.0
+                                val yPanSign = if (spec.yAxis.inverted) -1.0 else 1.0
                                 val deltaX =
                                     if (transformFlags.panX) {
-                                        -(pan.x.toDouble() / plotWidth) * renderViewport.xRange.span
+                                        xPanSign * (pan.x.toDouble() / plotWidth) * renderViewport.xRange.span
                                     } else {
                                         0.0
                                     }
                                 val deltaY =
                                     if (transformFlags.panY) {
-                                        (pan.y.toDouble() / plotHeight) * renderViewport.yRange.span
+                                        yPanSign * (pan.y.toDouble() / plotHeight) * renderViewport.yRange.span
                                     } else {
                                         0.0
                                     }

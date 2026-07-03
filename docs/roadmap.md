@@ -30,7 +30,7 @@ bars, dual (secondary, data-derived) Y on combined charts, error bars (`ErrorBar
 bars), and fitted trendline overlays (`TrendlineSpec`: linear + moving-average, optional confidence band).
 
 **Axes & scales:** `Linear`, `Category`, `TimeEpochMillis` (UTC / fixed-offset tick policies), `Log` / `SymLog`,
-tick-density and X-label overlap strategies. **No inverted axis, UTC-only time.**
+reversed axis direction (`AxisSpec.inverted`), tick-density and X-label overlap strategies. **UTC-only time.**
 
 **Interaction:** tap-select (per-family hit resolvers), pan, per-axis pinch zoom, double-tap (in / out /
 reset), fling, keyboard viewport nudge and selection roam, programmatic `ChartViewportState`, custom marker
@@ -106,7 +106,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | ~~Logarithmic + symlog scale~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `AxisScale.Log` / `AxisScale.SymLog` + scale-aware `ChartTransform`. |
-| Inverted / reversed axis direction | P2 | S | strong | A sign flip in the axis transform. |
+| ~~Inverted / reversed axis direction~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `AxisSpec.inverted` — reverses the axis transform (rendering on all cartesian families; pan/zoom on line/scatter/bar). |
 | Normalization / percent (100%) stacking for bars **and** areas | P2 | S | strong | Offset mode on the existing stack planner. |
 | More than two Y axes / N stacked axes with per-axis layer binding | P3 | M | moderate | Generalizes the combined secondary-Y seam. |
 | Independent secondary-Y pan/zoom channel | P3 | M | moderate | Needs an extra viewport channel + gesture routing. |
@@ -146,7 +146,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Annotations layer (point / text / box-region / segment)~~ ✅ | ~~P0~~ | L | strong | **Shipped:** `ChartAnnotation` on line/scatter/bar (`annotations`). |
 | ~~Data labels (per-point/bar value labels + collision avoidance)~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `DataLabelsSpec` on line/scatter/bar. |
 | ~~Trendline / regression overlays (linear, moving-average) + confidence bands~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `TrendlineSpec` (`TrendlineType.Linear` / `MovingAverage`) + confidence bands on line/scatter; public `LinearRegression` in `chart-core`. |
-| Line interpolation: stepped and spline/monotone-cubic | P2 | M | strong | Curve fitting → path segments the DrawCommand model already supports. |
+| ~~Line interpolation: stepped and spline/monotone-cubic~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `LineStyle.interpolation` (`LineInterpolation.StepBefore` / `StepAfter` / `StepMiddle` / `MonotoneCubic`) on line, sparkline, and combined line layers; stroke + area fill follow the curve. |
 
 ### 4.5 Interaction & exploration
 

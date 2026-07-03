@@ -55,21 +55,29 @@ data class ChartTransform(
             plotBounds: RectD,
             xScale: AxisScale = AxisScale.Linear,
             yScale: AxisScale = AxisScale.Linear,
+            invertX: Boolean = false,
+            invertY: Boolean = false,
         ): ChartTransform {
             val xv = AxisValueTransform.forScale(xScale)
             val yv = AxisValueTransform.forScale(yScale)
+            // Non-inverted X runs left→right; non-inverted Y runs bottom→top (larger values up). Inverting an axis
+            // swaps its pixel endpoints so larger domain values map to the opposite edge.
+            val xStart = if (invertX) plotBounds.right else plotBounds.left
+            val xEnd = if (invertX) plotBounds.left else plotBounds.right
+            val yStart = if (invertY) plotBounds.top else plotBounds.bottom
+            val yEnd = if (invertY) plotBounds.bottom else plotBounds.top
             return ChartTransform(
                 xTransform =
                     LinearTransform1D(
                         domain = scaledDomain(viewport.xRange, xv),
-                        pixelStart = plotBounds.left,
-                        pixelEnd = plotBounds.right,
+                        pixelStart = xStart,
+                        pixelEnd = xEnd,
                     ),
                 yTransform =
                     LinearTransform1D(
                         domain = scaledDomain(viewport.yRange, yv),
-                        pixelStart = plotBounds.bottom,
-                        pixelEnd = plotBounds.top,
+                        pixelStart = yStart,
+                        pixelEnd = yEnd,
                     ),
                 xScale = xv,
                 yScale = yv,

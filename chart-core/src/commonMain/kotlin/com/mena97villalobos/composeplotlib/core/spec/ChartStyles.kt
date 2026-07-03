@@ -18,6 +18,8 @@ data class LineStyle(
     val areaFill: ChartColor? = null,
     val areaFillEnd: ChartColor? = null,
     val areaFillMode: AreaFillMode = AreaFillMode.ToPlotBottom,
+    /** How vertices are connected (linear, stepped, or a monotone-cubic spline); see [LineInterpolation]. */
+    val interpolation: LineInterpolation = LineInterpolation.Linear,
 )
 
 /** Anchor for a [LineStyle.areaFill] region. */

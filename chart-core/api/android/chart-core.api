@@ -1859,8 +1859,8 @@ public final class com/mena97villalobos/composeplotlib/core/spec/AxisScale$TimeE
 
 public final class com/mena97villalobos/composeplotlib/core/spec/AxisSpec {
 	public fun <init> ()V
-	public fun <init> (ZILcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisTickDensity;DLjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;Ljava/lang/Integer;Ljava/lang/Integer;ZZLkotlin/jvm/functions/Function1;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;)V
-	public synthetic fun <init> (ZILcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisTickDensity;DLjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;Ljava/lang/Integer;Ljava/lang/Integer;ZZLkotlin/jvm/functions/Function1;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZILcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisTickDensity;DLjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;Ljava/lang/Integer;Ljava/lang/Integer;ZZLkotlin/jvm/functions/Function1;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;Z)V
+	public synthetic fun <init> (ZILcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisTickDensity;DLjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;Ljava/lang/Integer;Ljava/lang/Integer;ZZLkotlin/jvm/functions/Function1;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Z
 	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;
 	public final fun component11 ()Ljava/lang/Integer;
@@ -1873,6 +1873,7 @@ public final class com/mena97villalobos/composeplotlib/core/spec/AxisSpec {
 	public final fun component18 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;
 	public final fun component19 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;
 	public final fun component2 ()I
+	public final fun component20 ()Z
 	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;
 	public final fun component4 ()Ljava/lang/Double;
 	public final fun component5 ()Ljava/lang/Double;
@@ -1880,13 +1881,14 @@ public final class com/mena97villalobos/composeplotlib/core/spec/AxisSpec {
 	public final fun component7 ()D
 	public final fun component8 ()Ljava/lang/Integer;
 	public final fun component9 ()Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;
-	public final fun copy (ZILcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisTickDensity;DLjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;Ljava/lang/Integer;Ljava/lang/Integer;ZZLkotlin/jvm/functions/Function1;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;)Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;ZILcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisTickDensity;DLjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;Ljava/lang/Integer;Ljava/lang/Integer;ZZLkotlin/jvm/functions/Function1;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
+	public final fun copy (ZILcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisTickDensity;DLjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;Ljava/lang/Integer;Ljava/lang/Integer;ZZLkotlin/jvm/functions/Function1;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;Z)Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;ZILcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisTickDensity;DLjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;Ljava/lang/Integer;Ljava/lang/Integer;ZZLkotlin/jvm/functions/Function1;Ljava/lang/Double;Ljava/lang/Double;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;ZILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/AxisSpec;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCategoryLabelMaxChars ()Ljava/lang/Integer;
 	public final fun getDefaultDensitySpacingPx ()D
 	public final fun getEnabled ()Z
 	public final fun getEpochMillisTickPolicy ()Lcom/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy;
+	public final fun getInverted ()Z
 	public final fun getLabelFormatter ()Lkotlin/jvm/functions/Function1;
 	public final fun getLabelStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisLabelStyle;
 	public final fun getLineStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/AxisLineStyle;
@@ -2766,6 +2768,17 @@ public final class com/mena97villalobos/composeplotlib/core/spec/LineDecimationS
 	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/LineDecimationStrategy;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/spec/LineInterpolation : java/lang/Enum {
+	public static final field Linear Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
+	public static final field MonotoneCubic Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
+	public static final field StepAfter Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
+	public static final field StepBefore Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
+	public static final field StepMiddle Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/spec/LineRenderSpec {
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/spec/LineRenderSpec$Companion;
 	public static final field DEFAULT_PLOT_WIDTH_OVERSAMPLE D
@@ -2798,20 +2811,22 @@ public final class com/mena97villalobos/composeplotlib/core/spec/LineRenderSpec$
 
 public final class com/mena97villalobos/composeplotlib/core/spec/LineStyle {
 	public fun <init> ()V
-	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;)V
-	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun component2 ()D
 	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun component5 ()Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;
-	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;)Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
+	public final fun component6 ()Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;)Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAreaFill ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getAreaFillEnd ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getAreaFillMode ()Lcom/mena97villalobos/composeplotlib/core/spec/AreaFillMode;
 	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getInterpolation ()Lcom/mena97villalobos/composeplotlib/core/spec/LineInterpolation;
 	public final fun getStrokeWidth ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -3647,8 +3662,8 @@ public final class com/mena97villalobos/composeplotlib/core/transform/ChartTrans
 }
 
 public final class com/mena97villalobos/composeplotlib/core/transform/ChartTransform$Companion {
-	public final fun forPlotBounds (Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
-	public static synthetic fun forPlotBounds$default (Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform$Companion;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
+	public final fun forPlotBounds (Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;ZZ)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
+	public static synthetic fun forPlotBounds$default (Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform$Companion;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;ZZILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/transform/LinearTransform1D {

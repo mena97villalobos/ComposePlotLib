@@ -46,6 +46,7 @@ import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.LineInterpolation
 import com.mena97villalobos.composeplotlib.core.spec.LineRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineStyle
 import com.mena97villalobos.composeplotlib.core.spec.MarkerShape
@@ -2403,16 +2404,39 @@ object ChartPlanner {
             for ((_, p) in indexed) {
                 pixelPoints.add(transform.toPixel(p))
             }
-            // Area fill (if configured) renders beneath the line, built from the full unclipped pixel points;
-            // the plot-bounds clip applied by the renderer trims any overflow.
-            buildAreaFillCommand(pixelPoints, plotBounds, transform, series.lineStyle)?.let { commands += it }
-            for (fragment in PolylineRectClip.clipPolylineToRect(pixelPoints, plotBounds)) {
-                commands +=
-                    DrawCommand.Polyline(
-                        points = fragment,
-                        color = series.lineStyle.color,
-                        strokeWidth = series.lineStyle.strokeWidth,
-                    )
+            // Area fill (if configured) renders beneath the line, built from the display pixel points; the
+            // plot-bounds clip applied by the renderer trims any overflow.
+            if (series.lineStyle.interpolation == LineInterpolation.MonotoneCubic) {
+                val topEdge = monotoneCubicSegments(pixelPoints)
+                buildAreaFillCommand(pixelPoints, plotBounds, transform, series.lineStyle, curvedTopEdge = topEdge)
+                    ?.let { commands += it }
+                if (pixelPoints.size >= 2) {
+                    commands +=
+                        DrawCommand.Path(
+                            segments = topEdge,
+                            style =
+                                PathDrawStyle.Stroke(
+                                    color = series.lineStyle.color,
+                                    strokeWidth = series.lineStyle.strokeWidth,
+                                ),
+                        )
+                }
+            } else {
+                val displayPoints =
+                    if (series.lineStyle.interpolation == LineInterpolation.Linear) {
+                        pixelPoints
+                    } else {
+                        steppedLinePoints(pixelPoints, series.lineStyle.interpolation)
+                    }
+                buildAreaFillCommand(displayPoints, plotBounds, transform, series.lineStyle)?.let { commands += it }
+                for (fragment in PolylineRectClip.clipPolylineToRect(displayPoints, plotBounds)) {
+                    commands +=
+                        DrawCommand.Polyline(
+                            points = fragment,
+                            color = series.lineStyle.color,
+                            strokeWidth = series.lineStyle.strokeWidth,
+                        )
+                }
             }
             if (series.pointStyle.visible) {
                 for (pixel in pixelPoints) {
@@ -2467,6 +2491,7 @@ object ChartPlanner {
         plotBounds: RectD,
         transform: ChartTransform,
         style: LineStyle,
+        curvedTopEdge: List<PathSegment>? = null,
     ): DrawCommand? {
         val fill = style.areaFill ?: return null
         if (pixelPoints.size < 2) return null
@@ -2478,11 +2503,17 @@ object ChartPlanner {
                 is AreaFillMode.BelowThreshold ->
                     transform.toPixel(XyPoint(0.0, mode.value)).y.coerceIn(plotBounds.top, plotBounds.bottom)
             }
-        val segments = ArrayList<PathSegment>(pixelPoints.size + 3)
-        segments += PathSegment.MoveTo(OffsetD(pixelPoints.first().x, baselineY))
-        for (p in pixelPoints) segments += PathSegment.LineTo(p)
-        segments += PathSegment.LineTo(OffsetD(pixelPoints.last().x, baselineY))
-        segments += PathSegment.Close
+        val segments =
+            if (curvedTopEdge != null) {
+                monotoneCubicAreaSegments(pixelPoints, curvedTopEdge, baselineY) ?: return null
+            } else {
+                val straight = ArrayList<PathSegment>(pixelPoints.size + 3)
+                straight += PathSegment.MoveTo(OffsetD(pixelPoints.first().x, baselineY))
+                for (p in pixelPoints) straight += PathSegment.LineTo(p)
+                straight += PathSegment.LineTo(OffsetD(pixelPoints.last().x, baselineY))
+                straight += PathSegment.Close
+                straight
+            }
 
         val pathStyle =
             if (style.areaFillEnd != null) {
