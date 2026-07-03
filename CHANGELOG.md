@@ -118,6 +118,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   (`ChartSyncAxis.X` / `Y` / `Both`) — the `syncId` / "connect" pattern for aligned dashboards. Each follower
   clamps to its own domain and feedback loops are avoided. Link selection/tooltips by sharing one
   `ChartSelectionState`.
+- **Raster (PNG) export** — `rememberChartCaptureController()` + `Modifier.chartCaptureTarget(controller)`
+  record a chart into a `GraphicsLayer`; `controller.capturePng()` / `captureImageBitmap()` snapshot exactly
+  what was drawn (markers and overlays included). Encoding is `expect`/`actual`
+  `ImageBitmap.encodeToChartPng()` — Android `Bitmap.compress`, iOS Skia `Image.encodeToData`.
 
 ### Changed
 

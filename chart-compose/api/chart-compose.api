@@ -388,6 +388,21 @@ public final class com/mena97villalobos/composeplotlib/chart/WaterfallChartKt {
 	public static final fun WaterfallChart (Lcom/mena97villalobos/composeplotlib/core/spec/WaterfallChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;III)V
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/export/ChartCaptureController {
+	public static final field $stable I
+	public final fun captureImageBitmap (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun capturePng (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/export/ChartImageExportKt {
+	public static final fun chartCaptureTarget (Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/export/ChartCaptureController;)Landroidx/compose/ui/Modifier;
+	public static final fun rememberChartCaptureController (Landroidx/compose/runtime/Composer;I)Lcom/mena97villalobos/composeplotlib/chart/export/ChartCaptureController;
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/export/ChartImageExport_androidKt {
+	public static final fun encodeToChartPng (Landroidx/compose/ui/graphics/ImageBitmap;)[B
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/internal/accessibility/ChartReducedMotionPreference_androidKt {
 	public static final fun chartReducedMotionPreferred (Landroidx/compose/runtime/Composer;I)Z
 }

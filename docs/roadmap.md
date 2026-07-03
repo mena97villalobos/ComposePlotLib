@@ -194,7 +194,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Raster (PNG/bitmap) snapshot/export | P2 | M | moderate | Belongs in `chart-compose` (render-to-picture); needs `expect`/`actual` capture. |
+| ~~Raster (PNG/bitmap) snapshot/export~~ ✅ | ~~P2~~ | M | moderate | **Shipped:** `rememberChartCaptureController()` + `Modifier.chartCaptureTarget(...)` record the chart into a `GraphicsLayer`; `capturePng()` / `captureImageBitmap()` snapshot it, with an `expect`/`actual` `ImageBitmap.encodeToChartPng()` (Android `Bitmap.compress` / iOS Skia). |
 | Underlying-data export (CSV / JSON) | P3 | S | strong | Pure serialization over immutable specs. |
 | `DrawCommand` → SVG / vector export | P3 | M | moderate | Uniquely feasible: the planner already emits a command list — serialize to SVG with no DOM. A differentiator. |
 | PDF export / direct print | P3 | L | weak | Platform document/print stacks; low ROI vs PNG/SVG. |
