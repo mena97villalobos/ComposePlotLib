@@ -63,6 +63,23 @@ public final class com/mena97villalobos/composeplotlib/core/domain/XyPoint {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/export/ChartDataExportKt {
+	public static final fun toCsv (Lcom/mena97villalobos/composeplotlib/core/table/ChartDataTable;CLjava/lang/String;)Ljava/lang/String;
+	public static synthetic fun toCsv$default (Lcom/mena97villalobos/composeplotlib/core/table/ChartDataTable;CLjava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun toJson (Lcom/mena97villalobos/composeplotlib/core/table/ChartDataTable;)Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/export/ChartSvgExportKt {
+	public static final fun chartLayoutPlanToSvg (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Ljava/lang/String;
+	public static synthetic fun chartLayoutPlanToSvg$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/export/LineChartSvgExportKt {
+	public static final fun lineChartDataViewport (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun lineChartToSvg (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;DDLcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Ljava/lang/String;
+	public static synthetic fun lineChartToSvg$default (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;DDLcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILjava/lang/Object;)Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/geometry/InsetsD {
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD$Companion;
 	public fun <init> (DDDD)V

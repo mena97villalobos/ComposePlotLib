@@ -196,8 +196,8 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | ~~Raster (PNG/bitmap) snapshot/export~~ ✅ | ~~P2~~ | M | moderate | **Shipped:** `rememberChartCaptureController()` + `Modifier.chartCaptureTarget(...)` record the chart into a `GraphicsLayer`; `capturePng()` / `captureImageBitmap()` snapshot it, with an `expect`/`actual` `ImageBitmap.encodeToChartPng()` (Android `Bitmap.compress` / iOS Skia). |
-| Underlying-data export (CSV / JSON) | P3 | S | strong | Pure serialization over immutable specs. |
-| `DrawCommand` → SVG / vector export | P3 | M | moderate | Uniquely feasible: the planner already emits a command list — serialize to SVG with no DOM. A differentiator. |
+| ~~Underlying-data export (CSV / JSON)~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `ChartDataTable.toCsv()` / `.toJson()` over the `lineChartDataTable` / `scatterChartDataTable` / `barChartDataTable` builders (RFC 4180 CSV, self-describing JSON). |
+| ~~`DrawCommand` → SVG / vector export~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `chartLayoutPlanToSvg(plan)` serializes any planned `ChartLayoutPlan` (shapes, paths, gradients, arcs, clips) to a standalone SVG — no DOM; `lineChartToSvg(spec, w, h)` is a one-call convenience. |
 | PDF export / direct print | P3 | L | weak | Platform document/print stacks; low ROI vs PNG/SVG. |
 
 ### 4.10 Non-cartesian coordinate systems

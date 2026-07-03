@@ -23,11 +23,14 @@ import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.chart.LineChart
 import com.mena97villalobos.composeplotlib.chart.export.chartCaptureTarget
 import com.mena97villalobos.composeplotlib.chart.export.rememberChartCaptureController
+import com.mena97villalobos.composeplotlib.core.export.lineChartToSvg
+import com.mena97villalobos.composeplotlib.core.export.toCsv
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
 import com.mena97villalobos.composeplotlib.core.model.LineSeries
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineStyle
+import com.mena97villalobos.composeplotlib.core.table.lineChartDataTable
 import kotlinx.coroutines.launch
 
 @Composable
@@ -46,7 +49,7 @@ fun ImageExportShowcaseScreen() {
         )
     val capture = rememberChartCaptureController()
     val scope = rememberCoroutineScope()
-    var exportedBytes by remember { mutableStateOf<Int?>(null) }
+    var status by remember { mutableStateOf("Export the chart above as a PNG image, an SVG vector, or CSV data.") }
 
     Column(
         modifier =
@@ -54,18 +57,19 @@ fun ImageExportShowcaseScreen() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .semantics {
-                    contentDescription = "Image export showcase. Render a chart and snapshot it to a PNG byte array."
+                    contentDescription = "Export showcase. Render a chart and export it as PNG, SVG, or CSV."
                 },
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
-            text = "Raster Export (PNG)",
+            text = "Export (PNG · SVG · CSV)",
             style = MaterialTheme.typography.headlineMedium,
         )
         Text(
             text =
-                "Attach Modifier.chartCaptureTarget(controller) to any chart, then call controller.capturePng() " +
-                    "to snapshot exactly what was drawn — markers and overlays included — as PNG bytes to save or share.",
+                "Snapshot a chart three ways: Modifier.chartCaptureTarget + capturePng() for a raster PNG, " +
+                    "lineChartToSvg(spec, …) for a resolution-independent SVG vector, and lineChartDataTable(spec).toCsv() " +
+                    "for the underlying data.",
             style = MaterialTheme.typography.bodyLarge,
         )
         LineChart(
@@ -74,15 +78,28 @@ fun ImageExportShowcaseScreen() {
         )
         Button(
             onClick = {
-                scope.launch { exportedBytes = capture.capturePng().size }
+                scope.launch { status = "PNG: ${capture.capturePng().size} bytes" }
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Export to PNG")
         }
-        Text(
-            text = exportedBytes?.let { "Exported $it bytes" } ?: "Tap to export the chart above as a PNG.",
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        Button(
+            onClick = {
+                status = "SVG: ${lineChartToSvg(spec, widthPx = 600.0, heightPx = 360.0).length} chars"
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Export to SVG")
+        }
+        Button(
+            onClick = {
+                status = "CSV: ${lineChartDataTable(spec).toCsv().length} chars"
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Export to CSV")
+        }
+        Text(text = status, style = MaterialTheme.typography.bodyMedium)
     }
 }

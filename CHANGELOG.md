@@ -131,6 +131,13 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   overview over the whole pan/zoom domain with a draggable window bound to the shared `ChartViewportState`: drag
   the window to pan, its edges to zoom, or outside it to jump. Place it beneath a chart sharing the same
   viewport to get a brush navigator that stays in lock-step.
+- **Underlying-data export (CSV / JSON)** — `ChartDataTable.toCsv(delimiter, lineSeparator)` (RFC 4180) and
+  `ChartDataTable.toJson()` (self-describing) serialize the tables produced by `lineChartDataTable` /
+  `scatterChartDataTable` / `barChartDataTable`, so a chart's underlying data can be exported.
+- **SVG / vector export** — `chartLayoutPlanToSvg(plan, background)` serializes any planned `ChartLayoutPlan`
+  (lines, polylines, rects, circles, text, paths, gradients, arcs/donut sectors, clips, groups) to a standalone,
+  resolution-independent SVG document with no DOM or rasterization; `lineChartToSvg(spec, widthPx, heightPx)`
+  plans a line chart headlessly and returns the SVG in one call.
 
 ### Changed
 
