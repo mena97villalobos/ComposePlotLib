@@ -34,6 +34,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.gesture.cartesianDoubl
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartCartesianKeyboardViewport
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartGestures
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartLineKeyboardSelectionRoam
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartRangeBrushGesture
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.effectiveTransformFlags
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.handleCartesianChartDoubleTapViewport
 import com.mena97villalobos.composeplotlib.chart.internal.layout.chartLayoutBaseInput
@@ -48,6 +49,7 @@ import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportStat
 import com.mena97villalobos.composeplotlib.chart.theme.ChartChromeTheme
 import com.mena97villalobos.composeplotlib.chart.theme.chartChromeTheme
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
+import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.geometry.SizeD
 import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner
 import com.mena97villalobos.composeplotlib.core.selection.NearestPointResolver
@@ -75,6 +77,7 @@ import kotlin.math.max
  * @param accessibilityCustomActions optional TalkBack / VoiceOver actions (e.g. reset viewport)
  * @param animation optional programmatic viewport easing and marker fade-in; [ChartAnimationPolicy.respectSystemReducedMotion] is applied first
  * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
+ * @param rangeBrush optional drag-rectangle **range brush / box selection**; when non-null it replaces pan/zoom/tap with a brush that reports the selected domain region (see [ChartRangeBrush])
  */
 @Composable
 fun LineChart(
@@ -91,6 +94,7 @@ fun LineChart(
     animation: ChartAnimationPolicy = ChartAnimationPolicy.Default,
     chromeTheme: ChartChromeTheme? = null,
     onLegendItemClick: ((seriesId: String) -> Unit)? = null,
+    rangeBrush: ChartRangeBrush? = null,
 ) {
     val resolvedAnimation = resolveChartAnimationPolicy(animation)
     val morphProgress = remember { Animatable(1f) }
@@ -204,6 +208,21 @@ fun LineChart(
         }
 
     val latestPlan = rememberUpdatedState(plan)
+
+    val brushing = rangeBrush != null
+    var brushStart by remember { mutableStateOf<Offset?>(null) }
+    var brushCurrent by remember { mutableStateOf<Offset?>(null) }
+
+    fun brushTransform(plotBounds: RectD): ChartTransform =
+        ChartTransform.forPlotBounds(
+            viewport = renderViewport,
+            plotBounds = plotBounds,
+            xScale = effectiveSpec.xAxis.scale,
+            yScale = effectiveSpec.yAxis.scale,
+            invertX = effectiveSpec.xAxis.inverted,
+            invertY = effectiveSpec.yAxis.inverted,
+        )
+
     val markerFocusRequester = rememberChartMarkerFocusRequester()
     RequestFocusWhenChartMarkerShown(
         enabled = spec.accessibility.requestFocusOnMarker && marker != null,
@@ -236,9 +255,39 @@ fun LineChart(
                     reserveShiftDirectionKeysForSelectionRoam = spec.accessibility.keyboardSelectionRoamEnabled,
                 ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
-                }.chartGestures(
+                }.chartRangeBrushGesture(
+                    enabled = brushing,
+                    onStart = { position ->
+                        brushStart = position
+                        brushCurrent = position
+                    },
+                    onUpdate = { position -> brushCurrent = position },
+                    onFinish = { start, end ->
+                        val currentPlan = plan
+                        val selection =
+                            if (currentPlan == null || rangeBrush == null) {
+                                null
+                            } else {
+                                resolveChartRangeBrush(
+                                    startPx = start,
+                                    endPx = end,
+                                    plotBounds = currentPlan.layout.plotBounds,
+                                    transform = brushTransform(currentPlan.layout.plotBounds),
+                                    viewport = renderViewport,
+                                    brush = rangeBrush,
+                                )
+                            }
+                        rangeBrush?.onBrush?.invoke(selection)
+                        brushStart = null
+                        brushCurrent = null
+                    },
+                    onCancel = {
+                        brushStart = null
+                        brushCurrent = null
+                    },
+                ).chartGestures(
                     onTap =
-                        if (gestureConfig.tap.selectionEnabled || onLegendItemClick != null) {
+                        if ((gestureConfig.tap.selectionEnabled || onLegendItemClick != null) && !brushing) {
                             { offset ->
                                 val currentPlan = plan ?: return@chartGestures
                                 val onLegend = onLegendItemClick
@@ -296,7 +345,7 @@ fun LineChart(
                             null
                         },
                     onDoubleTap =
-                        if (cartesianDoubleTapViewportEnabled(gestureConfig)) {
+                        if (cartesianDoubleTapViewportEnabled(gestureConfig) && !brushing) {
                             { offset ->
                                 handleCartesianChartDoubleTapViewport(
                                     offset = offset,
@@ -311,7 +360,7 @@ fun LineChart(
                             null
                         },
                     onTransform =
-                        if (gestureConfig.transform.enabled) {
+                        if (gestureConfig.transform.enabled && !brushing) {
                             { centroid, pan, zoom ->
                                 val currentPlan = plan ?: return@chartGestures
                                 if (!currentPlan.layout.plotBounds.contains(OffsetD(centroid.x.toDouble(), centroid.y.toDouble()))) {
@@ -360,13 +409,13 @@ fun LineChart(
                         },
                     flingPolicy = gestureConfig.fling,
                     flingRuntime =
-                        if (gestureConfig.transform.enabled && gestureConfig.fling.panFlingEnabled) {
+                        if (gestureConfig.transform.enabled && gestureConfig.fling.panFlingEnabled && !brushing) {
                             flingRuntime
                         } else {
                             null
                         },
                     onFlingVelocity =
-                        if (gestureConfig.transform.enabled && gestureConfig.fling.panFlingEnabled) {
+                        if (gestureConfig.transform.enabled && gestureConfig.fling.panFlingEnabled && !brushing) {
                             { velocity ->
                                 val p = latestPlan.value
                                 if (p != null) {
@@ -389,6 +438,17 @@ fun LineChart(
             if (effectiveSpec.series.all { it.points.isEmpty() }) return@Canvas
             with(LineChartRenderer) {
                 render(currentPlan, textMeasurer, renderStyles)
+            }
+        }
+
+        if (rangeBrush != null) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val currentPlan = plan ?: return@Canvas
+                val start = brushStart
+                val current = brushCurrent
+                if (start != null && current != null) {
+                    drawChartRangeBrush(chartLiveBrushRect(start, current, currentPlan.layout.plotBounds), rangeBrush)
+                }
             }
         }
 

@@ -6,7 +6,7 @@ See also **[`README.md`](README.md)** (documentation index) and **[`roadmap.md`]
 The current public surface is intentionally small.
 
 ### Charts
-- `LineChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)`
+- `LineChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme, onLegendItemClick, rangeBrush)` — `rangeBrush` (`ChartRangeBrush`) is an opt-in drag-rectangle **range brush / box selection**: it reports the dragged domain region as a `ChartRangeSelection` (`ChartBrushAxis.Horizontal` / `Vertical` / `Both`) via `onBrush`, suspending pan/zoom/tap while attached (pair with `viewportState.zoomTo(...)` for zoom-to-selection).
 - `BarChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)`
 - `StackedBarChart(spec, …)` — same parameters as `BarChart`; `spec` is `StackedBarChartSpec` (always stacked when group entry counts match; see `StackedBarChartSpec.toBarChartSpec()`).
 - `ScatterChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — point-only cartesian chart; same gesture/marker/no-data/a11y shape as line/bar (`spec` is `ScatterChartSpec`).

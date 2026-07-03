@@ -122,6 +122,11 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   record a chart into a `GraphicsLayer`; `controller.capturePng()` / `captureImageBitmap()` snapshot exactly
   what was drawn (markers and overlays included). Encoding is `expect`/`actual`
   `ImageBitmap.encodeToChartPng()` — Android `Bitmap.compress`, iOS Skia `Image.encodeToData`.
+- **Range brush / box selection** — `LineChart(rangeBrush = ChartRangeBrush(...))` adds a drag-rectangle brush
+  that reports the covered domain region as a normalized `ChartRangeSelection` (new `chart-core` type) via
+  `onBrush`, with `ChartBrushAxis.Horizontal` / `Vertical` / `Both`. While a brush is attached it takes over the
+  drag channel (pan/zoom/tap suspended). Pairs with `ChartViewportState.zoomTo(...)` for zoom-to-selection or
+  drives linked filtering.
 
 ### Changed
 

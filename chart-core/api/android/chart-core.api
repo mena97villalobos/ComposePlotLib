@@ -1733,6 +1733,32 @@ public final class com/mena97villalobos/composeplotlib/core/selection/Candlestic
 	public final fun resolvePlanned (Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/selection/ChartBrushAxis : java/lang/Enum {
+	public static final field Both Lcom/mena97villalobos/composeplotlib/core/selection/ChartBrushAxis;
+	public static final field Horizontal Lcom/mena97villalobos/composeplotlib/core/selection/ChartBrushAxis;
+	public static final field Vertical Lcom/mena97villalobos/composeplotlib/core/selection/ChartBrushAxis;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/selection/ChartBrushAxis;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/selection/ChartBrushAxis;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/selection/ChartRangeSelection {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;
+	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;)Lcom/mena97villalobos/composeplotlib/core/selection/ChartRangeSelection;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/selection/ChartRangeSelection;Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/selection/ChartRangeSelection;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getXRange ()Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;
+	public final fun getYRange ()Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/selection/ChartRangeSelectionKt {
+	public static final fun chartRangeSelectionFromDomainCorners (DDDDLcom/mena97villalobos/composeplotlib/core/selection/ChartBrushAxis;Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;)Lcom/mena97villalobos/composeplotlib/core/selection/ChartRangeSelection;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/selection/ChartSelection {
 	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/selection/HighlightTarget;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;)V
 	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/selection/HighlightTarget;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
