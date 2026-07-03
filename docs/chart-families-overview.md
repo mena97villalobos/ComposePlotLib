@@ -64,6 +64,10 @@ Cartesian composition chart: **`StackedAreaChartSpec`** holds shared **`xValues`
 
 Non-cartesian stage chart: **`FunnelChartSpec`** holds ordered **`FunnelStage`**s (`label`, `value`, optional `color`), drawn as stacked, centered trapezoids tapering from each stage's width (∝ value, widest = full plot) to the next — the classic conversion funnel. Palette-colored with optional centered labels. **Read-only** (no axes/selection/pan-zoom, like Gauge/Bullet). Compose entry: `FunnelChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
+## Radial bar / circular progress
+
+Read-only concentric progress rings: **`RadialBarChartSpec`** holds an ordered list of **`RadialBarTrack`** (`label`, `value`, `color`), drawn outermost-first as a background track plus a foreground value arc spanning `sweepDegrees * value / maxValue` (auto-scaled to the largest track when `maxValue` is null). Shares the Gauge/Pie arc geometry; an optional legend labels the rings. **Non-interactive** (no axes/selection/pan-zoom). Compose entry: `RadialBarChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Gauge / progress-ring
 
 Radial progress ring: **`GaugeChartSpec`** (`progress` 0..1, `trackColor`, `progressColor`, `strokeWidthPx`, `roundedCaps`, `startAngleDegrees`, `sweepDegrees`) draws a track + progress arc with an optional **`centerContent`** composable slot. **Non-interactive** — no pan/zoom/selection. *(Shipped in 1.1.0.)*

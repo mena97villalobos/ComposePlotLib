@@ -321,6 +321,7 @@ public final class com/mena97villalobos/composeplotlib/core/layout/ChartPlanner 
 	public static synthetic fun planLineChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/LineChartPlan;
 	public final fun planPieChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;)Lcom/mena97villalobos/composeplotlib/core/layout/PieChartPlan;
 	public final fun planRadarChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/RadarChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;)Lcom/mena97villalobos/composeplotlib/core/layout/RadarChartPlan;
+	public final fun planRadialBarChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/RadialBarChartPlan;
 	public final fun planSankeyChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;)Lcom/mena97villalobos/composeplotlib/core/layout/SankeyChartPlan;
 	public final fun planScatterChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/ScatterChartPlan;
 	public static synthetic fun planScatterChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/ScatterChartPlan;
@@ -965,6 +966,17 @@ public final class com/mena97villalobos/composeplotlib/core/layout/RadarChartPla
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
 	public final fun getSelection ()Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/RadialBarChartPlan {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;)Lcom/mena97villalobos/composeplotlib/core/layout/RadialBarChartPlan;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/RadialBarChartPlan;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/RadialBarChartPlan;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -3325,6 +3337,60 @@ public final class com/mena97villalobos/composeplotlib/core/spec/RadarSeries {
 	public final fun getLineStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/LineStyle;
 	public final fun getPointStyle ()Lcom/mena97villalobos/composeplotlib/core/spec/PointStyle;
 	public final fun getValues ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec {
+	public fun <init> (Ljava/util/List;Ljava/lang/Double;Ljava/lang/String;DDDDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZLcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/lang/Double;Ljava/lang/String;DDDDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZLcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
+	public final fun component11 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun component12 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component2 ()Ljava/lang/Double;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()D
+	public final fun component5 ()D
+	public final fun component6 ()D
+	public final fun component7 ()D
+	public final fun component8 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component9 ()Z
+	public final fun copy (Ljava/util/List;Ljava/lang/Double;Ljava/lang/String;DDDDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZLcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;Ljava/util/List;Ljava/lang/Double;Ljava/lang/String;DDDDLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZLcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun getBackgroundTrackColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getContentPadding ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLegend ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
+	public final fun getMaxValue ()Ljava/lang/Double;
+	public final fun getRoundedCaps ()Z
+	public final fun getStartAngleDegrees ()D
+	public final fun getSweepDegrees ()D
+	public final fun getTrackGapPx ()D
+	public final fun getTrackThicknessPx ()D
+	public final fun getTracks ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpecKt {
+	public static final fun hasDrawableSweep (Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;)Z
+	public static final fun resolvedMaxValue (Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;)D
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/RadialBarTrack {
+	public fun <init> (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()D
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun copy (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarTrack;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarTrack;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarTrack;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getValue ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

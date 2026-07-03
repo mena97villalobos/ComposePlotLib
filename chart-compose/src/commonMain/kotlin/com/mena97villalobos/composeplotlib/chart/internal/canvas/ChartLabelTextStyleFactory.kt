@@ -18,6 +18,7 @@ import com.mena97villalobos.composeplotlib.core.spec.LegendStyle
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
@@ -96,6 +97,16 @@ internal fun chartLabelTextStyles(
     // Funnel draws stage labels via the x-axis text slot.
     val y = MaterialTheme.typography.labelMedium
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: RadialBarChartSpec): ChartLabelTextStyles {
+    // Radial bar draws only its ring legend.
+    val typo = MaterialTheme.typography
+    val legend = legendStyleFrom(typo, spec.legend.style)
+    val y = typo.labelSmall
+    return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = legend, pieSliceLabel = legend, yAxisSecondaryTick = y)
 }
 
 @Composable

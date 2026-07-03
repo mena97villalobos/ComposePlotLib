@@ -39,6 +39,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShow
 import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.RadialBarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RangeBrushShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RangeSelectorShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
@@ -146,6 +147,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Funnel ->
                     Column(detailModifier) {
                         FunnelChartShowcaseScreen()
+                    }
+                ShowcaseDestination.RadialBar ->
+                    Column(detailModifier) {
+                        RadialBarChartShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -284,6 +289,12 @@ private fun ShowcaseHomeScreen(
             Text("Funnel chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.RadialBar) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Radial bar chart")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -341,6 +352,7 @@ private enum class ShowcaseDestination(
     Bubble("Bubble chart"),
     Bullet("Bullet graph"),
     Funnel("Funnel chart"),
+    RadialBar("Radial bar chart"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

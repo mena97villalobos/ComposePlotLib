@@ -138,6 +138,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   (lines, polylines, rects, circles, text, paths, gradients, arcs/donut sectors, clips, groups) to a standalone,
   resolution-independent SVG document with no DOM or rasterization; `lineChartToSvg(spec, widthPx, heightPx)`
   plans a line chart headlessly and returns the SVG in one call.
+- **Radial bar chart family** — `RadialBarChart` composable + `RadialBarChartSpec` / `RadialBarTrack`: concentric
+  progress rings (outermost first), each a background track plus a foreground value arc spanning
+  `sweepDegrees * value / maxValue` (auto-scaled to the largest track when `maxValue` is null). Read-only
+  (gauge-style) with an optional legend.
 
 ### Changed
 

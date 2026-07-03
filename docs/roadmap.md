@@ -18,11 +18,11 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ## 1. Current state (as of 2026-07, `1.2.0` unreleased)
 
-**Chart families (18):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+**Chart families (19):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
 `RadarChart`, `SankeyChart` (orientation, Tableau-10 palette, gradient ribbons — reworked for 1.2.0),
 `HeatmapChart`, `GaugeChart`, `CandlestickChart`, `BoxPlotChart` (Tukey five-number summaries), `WaterfallChart`
-(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), plus the axis-less
+(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), plus the axis-less
 `Sparkline` wrapper.
 
 **Cartesian depth:** area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`), reference/threshold
@@ -134,7 +134,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Bullet graph (KPI target/threshold bands)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `BulletChart` / `BulletChartSpec` / `BulletBand` — qualitative bands + measure bar + target marker (read-only, gauge-style). |
 | ~~First-class stacked area (+ percent / streamgraph offsets)~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `StackedAreaChart` / `StackedAreaChartSpec` / `StackedAreaSeries` with `AreaStackOffset.Zero` / `Expand` / `Silhouette` (streamgraph). |
 | ~~Funnel family~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `FunnelChart` / `FunnelChartSpec` / `FunnelStage` — stacked centered trapezoids (read-only, gauge-style). |
-| Radial bar / circular progress-bar | P3 | S | strong | Shares Gauge/Pie arc geometry. |
+| ~~Radial bar / circular progress-bar~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `RadialBarChart` / `RadialBarChartSpec` / `RadialBarTrack` — concentric progress rings (track + value arc per ring), read-only with a legend. |
 | Treemap | P3 | L | moderate | Squarified layout + hierarchical model + label fitting. |
 | Sunburst / hierarchical radial | P3 | L | moderate | Multi-ring arcs + tree model + drilldown. |
 | Circle-packing / bubble-pack | P3 | L | moderate | Enclosure layout over hierarchical data. |

@@ -57,6 +57,7 @@ import com.mena97villalobos.composeplotlib.core.spec.LineStyle
 import com.mena97villalobos.composeplotlib.core.spec.MarkerShape
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ReferenceLine
 import com.mena97villalobos.composeplotlib.core.spec.ReferenceOrientation
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
@@ -77,6 +78,7 @@ import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
 import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
 import com.mena97villalobos.composeplotlib.core.spec.hasDrawableSweep
 import com.mena97villalobos.composeplotlib.core.spec.resolvedColumnAlignment
+import com.mena97villalobos.composeplotlib.core.spec.resolvedMaxValue
 import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import com.mena97villalobos.composeplotlib.core.visible.LineRenderPipeline
@@ -704,6 +706,92 @@ object ChartPlanner {
                     xTicks = emptyList(),
                     yTicks = emptyList(),
                     legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = emptyList(),
+                ),
+        )
+    }
+
+    /**
+     * Radial bar (circular progress-bar): one concentric ring per [RadialBarChartSpec.tracks] entry, outermost
+     * first. Each ring draws a background track arc plus a foreground value arc from
+     * [RadialBarChartSpec.startAngleDegrees] spanning `sweepDegrees * value / maxValue`. Read-only; optional legend.
+     */
+    fun planRadialBarChart(
+        input: ChartLayoutInput,
+        spec: RadialBarChartSpec,
+    ): RadialBarChartPlan {
+        val labelScale = input.labelLayoutScale.normalizedLabelLayoutScale()
+        val bounds = input.toPlanningBounds()
+        val legendEntries =
+            buildLegendEntries(
+                labels = spec.tracks.map { it.label to it.color },
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                textMeasurements = input.textMeasurements,
+                legendSpec = spec.legend,
+                labelLayoutScale = labelScale,
+            )
+        val reservedRegions =
+            buildReservedRegions(
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                xTickLabels = emptyList(),
+                yTickLabels = emptyList(),
+                legendEntries = legendEntries,
+                textMeasurements = input.textMeasurements,
+                xAxisEnabled = false,
+                yAxisEnabled = false,
+                labelLayoutScale = labelScale,
+            )
+        val plotBounds = bounds.canvasBounds.inset(reservedRegions.contentInsets)
+        val radial = PieChartLayoutMath.layout(plotBounds, holeRadiusRatio = null)
+        val outerRadius = radial.outerRadius
+        val maxValue = spec.resolvedMaxValue()
+        val ringStep = spec.trackThicknessPx + spec.trackGapPx
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (outerRadius > 0.0 && spec.hasDrawableSweep()) {
+            spec.tracks.forEachIndexed { index, track ->
+                val ringRadius = outerRadius - (spec.trackThicknessPx / 2.0) - index * ringStep
+                if (ringRadius <= 0.0) return@forEachIndexed
+                plotCommands +=
+                    DrawCommand.Arc(
+                        center = radial.center,
+                        radius = ringRadius,
+                        startAngleDegrees = spec.startAngleDegrees,
+                        sweepAngleDegrees = spec.sweepDegrees,
+                        useCenter = false,
+                        style = ShapeDrawStyle.Stroke(spec.backgroundTrackColor, spec.trackThicknessPx),
+                        innerRadius = null,
+                    )
+                val fraction = (track.value / maxValue).coerceIn(0.0, 1.0)
+                val valueSweep = spec.sweepDegrees * fraction
+                if (valueSweep != 0.0) {
+                    val cap = if (spec.roundedCaps) StrokeStyle(cap = StrokeCap.Round) else null
+                    plotCommands +=
+                        DrawCommand.Arc(
+                            center = radial.center,
+                            radius = ringRadius,
+                            startAngleDegrees = spec.startAngleDegrees,
+                            sweepAngleDegrees = valueSweep,
+                            useCenter = false,
+                            style = ShapeDrawStyle.Stroke(track.color, spec.trackThicknessPx, cap),
+                            innerRadius = null,
+                        )
+                }
+            }
+        }
+
+        return RadialBarChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = reservedRegions,
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = legendEntries,
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = emptyList(),
                 ),
