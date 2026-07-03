@@ -10,6 +10,8 @@ package com.mena97villalobos.composeplotlib.core.spec
  *
  * @param maxPointsPerSeries Max markers per series after domain filtering. `0` or negative means no cap unless
  * [usePlotWidthPixelBudget] is applied in Compose (see [LineRenderSpec.autoMaxPointsForPlotWidthPx]).
+ * @param decimation Strategy used to pick the retained markers once [maxPointsPerSeries] caps the visible subset;
+ * see [LineDecimationStrategy]. Defaults to [LineDecimationStrategy.Uniform].
  * @param usePlotWidthPixelBudget When `true` and `maxPointsPerSeries <= 0`, the Compose layer may supply a cap
  * from laid-out plot width (same policy as line charts).
  */

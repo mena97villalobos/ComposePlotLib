@@ -8,6 +8,8 @@ import com.mena97villalobos.composeplotlib.core.spec.MarkerShape
  * The `marker*` fields are **scatter-only** per-point overrides (line charts ignore them). Each falls back to the
  * series [com.mena97villalobos.composeplotlib.core.spec.PointStyle] when null. [markerRadius] also drives bubble sizing.
  *
+ * @property x Position along the X axis, in domain space.
+ * @property y Position along the Y axis, in domain space.
  * @property markerShape Per-point glyph override, or null to use the series shape.
  * @property markerColor Per-point color override, or null to use the series color.
  * @property markerRadius Per-point radius override (bubble size), or null to use the series radius.

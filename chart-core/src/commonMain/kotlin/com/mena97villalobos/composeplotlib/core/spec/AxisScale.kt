@@ -8,9 +8,14 @@ package com.mena97villalobos.composeplotlib.core.spec
  * [AxisLabelFormatter] for human-readable labels. Optional [AxisSpec.epochMillisTickPolicy] can drop UTC weekend ticks.
  */
 sealed interface AxisScale {
+    /** "Nice" numeric steps chosen directly over the raw domain values (the default scale). */
     data object Linear : AxisScale
 
-    /** One tick per category at index `0 .. categories.lastIndex`. */
+    /**
+     * One tick per category at index `0 .. categories.lastIndex`.
+     *
+     * @property categories Ordered category labels; tick values are the integer indices into this list.
+     */
     data class Category(
         val categories: List<String>,
     ) : AxisScale

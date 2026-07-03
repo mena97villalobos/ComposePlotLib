@@ -49,6 +49,19 @@ import com.mena97villalobos.composeplotlib.core.spec.hasDrawableSeries
  * Pan/zoom are **off** by default ([ChartGestureConfig.transform] disabled) because this family does not use the
  * cartesian viewport. You can still enable transforms for future extensions; they only affect the dummy
  * [ChartViewportState] passed into layout measurement.
+ *
+ * @param spec axes, series polygons, and styling; see [RadarChartSpec]
+ * @param modifier layout modifier for the outer [Box]
+ * @param viewportState viewport state passed into layout measurement; not used for panning since this family is radial
+ * @param selectionState tap selection over series vertices
+ * @param gestureConfig tap (selection) and fling policies; defaults to [ChartGestureConfig.PieDefault] (pan/zoom off)
+ * @param marker optional composable overlay at the selected vertex; receives [ChartMarkerData]
+ * @param markerPlacement flip/slide tooltip placement; see [ChartMarkerPlacement]
+ * @param noData custom empty state when the spec has no drawable series; if non-null, takes precedence over [noDataUi]
+ * @param noDataUi structured empty copy when [noData] is null; otherwise a plain [DefaultNoDataOverlay]
+ * @param accessibilityCustomActions optional TalkBack / VoiceOver actions
+ * @param animation optional programmatic viewport easing and marker fade-in; [ChartAnimationPolicy.respectSystemReducedMotion] is applied first
+ * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
  */
 @Composable
 fun RadarChart(

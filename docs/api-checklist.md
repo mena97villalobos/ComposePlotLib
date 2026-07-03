@@ -51,4 +51,4 @@ Summarize against **[`module-guide.md`](module-guide.md)** and **`api-and-state.
 
 ## Documentation when the API changes
 
-Update at least **`api-and-state.md`**, **`architecture.md`** if the pipeline moves, **`AGENTS.md`** if obligations shift, **`docs/README.md`** index if you add a new guide, and **`production-readiness-next-steps.md`** if backlog claims become false.
+Update at least **`api-and-state.md`**, **`architecture.md`** if the pipeline moves, **`AGENTS.md`** if obligations shift, **`docs/README.md`** index if you add a new guide, and **[`roadmap.md`](roadmap.md)** if backlog claims become false.

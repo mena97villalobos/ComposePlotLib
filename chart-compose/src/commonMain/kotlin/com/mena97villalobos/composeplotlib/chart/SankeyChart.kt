@@ -60,6 +60,7 @@ import kotlin.math.max
  * normalized `0..1 × 0..1` domain the sankey planner lays out in; pan/zoom explores within it.
  *
  * @param spec nodes, links, and [com.mena97villalobos.composeplotlib.core.spec.SankeyLayoutSpec]
+ * @param modifier layout modifier for the outer [Box]
  * @param viewportState pan/zoom state over the normalized `0..1` sankey domain
  * @param selectionState tap selection (nodes and ribbons); cleared when the selected element leaves the viewport
  * @param gestureConfig tap (selection), transform (pan/zoom/double-tap zoom), and optional fling policies

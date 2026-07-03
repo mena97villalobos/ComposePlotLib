@@ -12,19 +12,19 @@ import com.mena97villalobos.composeplotlib.core.model.HeatmapCell
  * styling (label color, grid lines, line visibility) but their [AxisSpec.scale] is ignored by the
  * planner, which always uses category indices derived from [columnLabels] and [rowLabels].
  *
- * @param cells Data points; out-of-range indices are silently skipped.
- * @param columnLabels Labels for each column, length determines the column count.
- * @param rowLabels Labels for each row, length determines the row count.
- * @param id Chart identity string used for [com.mena97villalobos.composeplotlib.core.selection.ChartSelection] matching.
- * @param colorScale Value-to-color mapping.
- * @param xAxis Styling for the X (column) axis. Scale is overridden to [AxisScale.Category].
- * @param yAxis Styling for the Y (row) axis. Scale is overridden to [AxisScale.Category].
- * @param cellGapPx Visual gap in pixels between adjacent cells (split equally on each edge).
- * @param legend Legend configuration (disabled by default — heatmaps carry semantics via color scale, not series labels).
- * @param selectionStyle Highlight style for the selected cell border.
- * @param contentPadding Space reserved around the plot area for axis labels.
- * @param valueFormatter Formats a cell value for the selection marker / tooltip.
- * @param accessibility Accessibility configuration.
+ * @property cells Data points; out-of-range indices are silently skipped.
+ * @property columnLabels Labels for each column, length determines the column count.
+ * @property rowLabels Labels for each row, length determines the row count.
+ * @property id Chart identity string used for [com.mena97villalobos.composeplotlib.core.selection.ChartSelection] matching; defaults to `"heatmap"`.
+ * @property colorScale Value-to-color mapping; see [HeatmapColorScale].
+ * @property xAxis Styling for the X (column) axis. Scale is overridden to [AxisScale.Category].
+ * @property yAxis Styling for the Y (row) axis. Scale is overridden to [AxisScale.Category].
+ * @property cellGapPx Visual gap in pixels between adjacent cells (split equally on each edge); defaults to `2.0`.
+ * @property legend Legend configuration (disabled by default — heatmaps carry semantics via color scale, not series labels).
+ * @property selectionStyle Highlight style for the selected cell border; see [SelectionStyle].
+ * @property contentPadding Space reserved around the plot area for axis labels, in **pixels**.
+ * @property valueFormatter Formats a cell value for the selection marker / tooltip; default renders one decimal place.
+ * @property accessibility Host-agnostic accessibility strings; see [ChartAccessibilitySpec].
  */
 data class HeatmapChartSpec(
     val cells: List<HeatmapCell>,

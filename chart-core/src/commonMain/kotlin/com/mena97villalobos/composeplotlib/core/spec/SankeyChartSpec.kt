@@ -111,7 +111,7 @@ enum class SankeyLinkOrder {
     SourceBottomToTop,
 }
 
-/** Rotation of node label text for [SankeyNodeLabelPlacement.Inside]; [Adjacent] labels are always horizontal. */
+/** Rotation of node label text for [SankeyNodeLabelPlacement.Inside]; [SankeyNodeLabelPlacement.Adjacent] labels are always horizontal. */
 enum class SankeyNodeLabelOrientation {
     Horizontal,
     Vertical,
@@ -229,7 +229,7 @@ data class SankeyLayoutSpec(
     val nodeOrder: SankeyNodeOrder = SankeyNodeOrder.Input,
     /**
      * Legacy cross-axis alignment (naming assumes [SankeyOrientation.Horizontal]); used only when
-     * [columnAlignment] is `null`. Prefer [columnAlignment].
+     * [SankeyLayoutSpec.columnAlignment] is `null`. Prefer [SankeyLayoutSpec.columnAlignment].
      */
     val columnVerticalAlignment: SankeyColumnVerticalAlignment = SankeyColumnVerticalAlignment.Top,
     /** Link curvature factor in 0..1, controlling Bézier control point placement. */
@@ -284,7 +284,7 @@ data class SankeyLayoutSpec(
     }
 }
 
-/** [columnAlignment] when set, otherwise the legacy [SankeyColumnVerticalAlignment] mapped to cross-axis terms. */
+/** [SankeyLayoutSpec.columnAlignment] when set, otherwise the legacy [SankeyColumnVerticalAlignment] mapped to cross-axis terms. */
 internal fun SankeyLayoutSpec.resolvedColumnAlignment(): SankeyColumnAlignment =
     columnAlignment ?: when (columnVerticalAlignment) {
         SankeyColumnVerticalAlignment.Top -> SankeyColumnAlignment.Start

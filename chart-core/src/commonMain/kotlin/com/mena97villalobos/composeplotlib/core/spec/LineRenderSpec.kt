@@ -14,6 +14,10 @@ data class LineRenderSpec(
      * which derives a cap from plot width via [autoMaxPointsForPlotWidthPx].
      */
     val maxPointsPerSeries: Int = 0,
+    /**
+     * Strategy used to pick the retained subset once [maxPointsPerSeries] (or an auto cap) is exceeded; see
+     * [LineDecimationStrategy]. Defaults to [LineDecimationStrategy.Uniform].
+     */
     val decimation: LineDecimationStrategy = LineDecimationStrategy.Uniform,
     /**
      * Extra points to keep on each side of the x-visible index span (for polyline continuity at pan edges).
@@ -29,12 +33,20 @@ data class LineRenderSpec(
     companion object {
         /** Default vertices-per-plot-pixel budget for [autoMaxPointsForPlotWidthPx] (tuned M8: slightly below 2.5 for large-series cost). */
         const val DEFAULT_PLOT_WIDTH_OVERSAMPLE = 2.25
+
+        /** Lower clamp (256) for the cap returned by [autoMaxPointsForPlotWidthPx]. */
         const val MIN_AUTO_MAX_POINTS = 256
+
+        /** Upper clamp (16384) for the cap returned by [autoMaxPointsForPlotWidthPx]. */
         const val MAX_AUTO_MAX_POINTS = 16_384
 
         /**
          * Targets ~ [oversample] polyline vertices per horizontal pixel of plot width (clamped to
          * [MIN_AUTO_MAX_POINTS]..[MAX_AUTO_MAX_POINTS]). Intended for [usePlotWidthPixelBudget] call sites.
+         *
+         * @param plotWidthPx Laid-out plot width in pixels.
+         * @param oversample Target vertices per horizontal pixel; defaults to [DEFAULT_PLOT_WIDTH_OVERSAMPLE].
+         * @return The clamped per-series vertex cap, or `4096` when either argument is non-finite or non-positive.
          */
         fun autoMaxPointsForPlotWidthPx(
             plotWidthPx: Double,

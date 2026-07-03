@@ -20,6 +20,8 @@ enum class ReferenceOrientation {
  *
  * @property orientation [ReferenceOrientation.Horizontal] reads [value] as a Y coordinate; [ReferenceOrientation.Vertical] reads it as X.
  * @property value Domain coordinate of the line (Y for horizontal, X for vertical).
+ * @property color Stroke color for the line (and for [label] text, when present).
+ * @property strokeWidth Line thickness in pixels; defaults to `1.0`.
  * @property dashIntervals Alternating on/off lengths in **pixels** for a dashed line; `null` = solid.
  * @property label Optional short text drawn next to the line in [color].
  */

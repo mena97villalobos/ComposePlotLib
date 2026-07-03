@@ -3,7 +3,11 @@ package com.mena97villalobos.composeplotlib.core.spec
 /**
  * Axis appearance and tick behavior shared by line and bar charts.
  *
+ * @property enabled When false, this axis is dropped from layout (no ticks, grid lines, or labels). Defaults to true.
  * @property tickCount Target number of tick **values** for linear / time scales (capped by [tickDensity] after layout).
+ * @property scale How tick **values** are chosen along the domain; defaults to [AxisScale.Linear]. See [AxisScale].
+ * @property tickDensity Post-layout thinning strategy for tick values once the plot span is known; defaults to
+ *   [AxisTickDensity.Auto].
  * @property tickMin When non-null, the minimum domain value used when searching for ticks (intersected with the viewport).
  * @property tickMax When non-null, the maximum domain value used when searching for ticks (intersected with the viewport).
  * @property showGridLines When true, grid lines follow tick positions on that axis (subject to [GridSpec]).
@@ -15,6 +19,9 @@ package com.mena97villalobos.composeplotlib.core.spec
  * @property minVisibleXTickLabels Soft minimum number of visible X tick **labels** after overlap resolution (see KDoc).
  * @property minVisibleYTickLabels Soft minimum number of visible Y tick **labels** after overlap resolution (see KDoc).
  * @property raiseTickDensityCapFromMeasuredLabelWidth When true, raises the tick-density cap using plot span and average measured label width (see KDoc).
+ * @property labelFormatter Maps each tick **value** to its label text; defaults to [DefaultAxisLabelFormatter].
+ * @property labelStyle Text appearance for tick labels; see [AxisLabelStyle].
+ * @property lineStyle Axis line and tick-mark stroke appearance; see [AxisLineStyle].
  */
 data class AxisSpec(
     val enabled: Boolean = true,

@@ -7,6 +7,9 @@ import com.mena97villalobos.composeplotlib.chart.state.ViewportChangeOrigin
 /**
  * Optional TalkBack / VoiceOver **custom action** on the chart container (e.g. “Reset viewport”).
  * Wired through Compose [androidx.compose.ui.semantics.CustomAccessibilityAction].
+ *
+ * @property label Human-readable action name announced by the screen reader.
+ * @property onClick Invoked when the assistive-technology user triggers the action.
  */
 data class ChartCustomAccessibilityAction(
     val label: String,
@@ -16,6 +19,14 @@ data class ChartCustomAccessibilityAction(
 /**
  * Suggested custom actions when [ChartGestureConfig.transform] pan/zoom is enabled: reset viewport and optional
  * zoom in / out at the current window center (respects axis locks via [ChartViewportState.axisPolicy]).
+ *
+ * Returns an empty list when transform gestures are disabled. When present, "Reset chart viewport" is always
+ * first; "Zoom in" / "Zoom out" (each scaling by a factor of 1.2 on the enabled axes) follow only when the
+ * effective flags allow zooming. Zoom is applied programmatically via [ChartViewportState.zoom].
+ *
+ * @param viewportState Viewport whose [ChartViewportState.reset] / [ChartViewportState.zoom] the actions drive.
+ * @param gestureConfig Gesture configuration; [ChartGestureConfig.transform] gates whether any actions are produced.
+ * @return Ordered actions to expose as custom accessibility actions, or an empty list when transform is disabled.
  */
 fun chartViewportAccessibilityActions(
     viewportState: ChartViewportState,
@@ -67,6 +78,11 @@ fun chartViewportAccessibilityActions(
 /**
  * Appends [appActions] after [chartViewportAccessibilityActions] so TalkBack / VoiceOver lists **viewport**
  * shortcuts first, then product-specific steps (export, drill-down, etc.).
+ *
+ * @param viewportState Viewport passed through to [chartViewportAccessibilityActions].
+ * @param gestureConfig Gesture configuration passed through to [chartViewportAccessibilityActions].
+ * @param appActions Product-specific actions appended after the viewport actions.
+ * @return Viewport actions followed by [appActions] (viewport list is empty when transform is disabled).
  */
 fun chartAccessibilityActionsMergeViewport(
     viewportState: ChartViewportState,

@@ -7,10 +7,18 @@ import com.mena97villalobos.composeplotlib.core.model.LineSeries
  * Immutable configuration for a line chart: one or more [LineSeries], axes, grid, legend, and formatting.
  *
  * Prefer creating new instances when configuration changes; the Compose layer replans when `spec` changes.
+ * Series [ids][com.mena97villalobos.composeplotlib.core.model.LineSeries.id] must be unique (checked in `init`).
  *
  * @property series Data sets to plot; empty lists are allowed and typically show a no-data UI in `chart-compose`.
- * @property accessibility Host-agnostic strings for accessibility (mapped to semantics in Compose).
+ * @property accessibility Host-agnostic strings for accessibility (mapped to semantics in Compose); see [ChartAccessibilitySpec].
+ * @property xAxis X (horizontal) axis appearance and tick behavior; see [AxisSpec].
+ * @property yAxis Y (vertical) axis appearance and tick behavior; see [AxisSpec].
  * @property valueFormatter Formats the selected point for markers and similar UI.
+ * @property grid Background grid line configuration; see [GridSpec].
+ * @property legend Legend visibility and styling; see [LegendSpec].
+ * @property selectionStyle Crosshair / highlight styling for the current selection; see [SelectionStyle].
+ * @property lineRender Viewport windowing and optional decimation for dense series; see [LineRenderSpec].
+ * @property referenceLines Static threshold guide lines drawn over the plot; empty by default. See [ReferenceLine].
  * @property contentPadding Minimum padding around chart content in **pixels** (layout reserves space for axes/legend).
  */
 data class LineChartSpec(

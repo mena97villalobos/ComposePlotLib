@@ -9,6 +9,19 @@ import com.mena97villalobos.composeplotlib.core.model.BarGroup
  * see [resolvedBarLayout] / [BarChartSpec.resolvedBarLayout]).
  *
  * Use [toBarChartSpec] with the `BarChart` composable (in `chart-compose`) or the `StackedBarChart` composable.
+ *
+ * @property groups Logical series stacked at matching category indices (first group at the base); may be empty.
+ *   Group [ids][BarGroup.id] must be unique (checked in `init`).
+ * @property orientation Whether bars stack as vertical columns or horizontal rows; see [BarChartOrientation].
+ * @property clusterBarGapPx Pixel gap carried through to the equivalent [BarChartSpec]; unused while stacked.
+ * @property accessibility Host-agnostic accessibility strings; see [ChartAccessibilitySpec].
+ * @property xAxis X (horizontal) axis appearance and tick behavior; see [AxisSpec].
+ * @property yAxis Y (vertical) axis appearance and tick behavior; see [AxisSpec].
+ * @property valueFormatter Formats the selected [com.mena97villalobos.composeplotlib.core.model.BarEntry] for markers.
+ * @property grid Background grid line configuration; see [GridSpec].
+ * @property legend Legend visibility and styling; see [LegendSpec].
+ * @property selectionStyle Crosshair / highlight styling for the current selection; see [SelectionStyle].
+ * @property contentPadding Minimum padding around chart content in **pixels** (layout reserves space for axes/legend).
  */
 data class StackedBarChartSpec(
     val groups: List<BarGroup>,
@@ -27,8 +40,13 @@ data class StackedBarChartSpec(
         requireUniqueIds(groups.map { it.id }, "StackedBarChartSpec.groups ids")
     }
 
+    /**
+     * Layout actually used by the planner: [BarLayoutMode.Stacked] unless group entry counts differ, in which
+     * case it falls back to [BarLayoutMode.Independent] (delegates to [BarChartSpec.resolvedBarLayout]).
+     */
     fun resolvedBarLayout(): BarLayoutMode = toBarChartSpec().resolvedBarLayout()
 
+    /** Converts this spec to an equivalent [BarChartSpec] with [BarLayoutMode.Stacked], preserving all styling. */
     fun toBarChartSpec(): BarChartSpec =
         BarChartSpec(
             groups = groups,

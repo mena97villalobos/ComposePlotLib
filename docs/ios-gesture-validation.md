@@ -2,7 +2,7 @@
 
 Run these checks on **physical** iPhone/iPad hosts (simulator is useful but not sufficient for touch timing and multi-touch routing).
 
-Library-wide iOS status and blocking issues: **`production-readiness-next-steps.md`** (Cross-Platform → iOS). Consuming the library on iOS: **`ios-library-usage.md`**.
+Library-wide iOS status and blocking issues: **`roadmap.md`**. Consuming the library on iOS: **`ios-library-usage.md`**.
 
 ## Recommended configs (copy-paste)
 

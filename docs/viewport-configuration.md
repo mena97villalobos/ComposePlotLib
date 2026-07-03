@@ -2,7 +2,7 @@
 
 This guide covers zoom span limits (**constraints**), **axis lock** (horizontal/vertical exploration), and how those interact with **gestures** in `chart-compose`.
 
-Related backlog notes: **`production-readiness-next-steps.md`** (Viewport model, Gesture system).
+Related backlog notes: [`roadmap.md`](roadmap.md) (Viewport model, Gesture system).
 
 ## Types (chart-core)
 
@@ -27,7 +27,7 @@ Related backlog notes: **`production-readiness-next-steps.md`** (Viewport model,
 
 ## Gestures vs axis lock
 
-[ChartGestureConfig](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/ChartGestureConfig.kt) controls whether pan/zoom are enabled per axis. Use **`ChartGestureConfig.CartesianDefault`**, **`cartesianInteractive()`**, **`cartesianInteractiveFullExploration()`**, **`exploreOnly()`**, **`readOnly()`**, or **`PieDefault`** when you want documented bundles instead of spelling every nested policy (see **`docs/ios-gesture-validation.md`**). [effectiveTransformFlags](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/internal/gesture/EffectiveGestureFlags.kt) combines gesture config with `ViewportAxisPolicy`:
+[ChartGestureConfig](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/ChartGestureConfig.kt) controls whether pan/zoom are enabled per axis. Use **`ChartGestureConfig.CartesianDefault`**, **`cartesianInteractive()`**, **`cartesianInteractiveFullExploration()`**, **`exploreOnly()`**, **`readOnly()`**, or **`PieDefault`** when you want documented bundles instead of spelling every nested policy (see **`docs/ios-gesture-validation.md`**). [effectiveTransformFlags](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/internal/gesture/EffectiveTransformFlags.kt) combines gesture config with `ViewportAxisPolicy`:
 
 - If **`lockXToDomain`** is true, **pan and zoom on X are ignored** (X is fixed to the domain after each update).
 - If **`lockYToDomain`** is true, **pan and zoom on Y are ignored**.
@@ -50,7 +50,7 @@ LineChart(
 )
 ```
 
-The same `rememberChartViewportState` + `defaultViewport(spec)` pattern applies to **`BarChart`** and **`ScatterChart`**; only the spec type and composable change.
+The same `rememberChartViewportState` + `defaultViewport(spec)` pattern applies to every cartesian chart (**`BarChart`**, **`ScatterChart`**, **`CandlestickChart`**, **`CombinedCartesianChart`**); only the spec type and composable change. `defaultViewport(spec)` is also defined for the remaining spec types (`PieChartSpec`, `RadarChartSpec`, `GaugeChartSpec`, `HeatmapChartSpec`).
 
 Adjust `constraints` or `axisPolicy` when the spec or data bounds change via `updateConstraints` / `updateAxisPolicy` on the same `ChartViewportState` instance.
 

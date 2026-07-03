@@ -13,6 +13,11 @@ private const val SEP_EPS = 1e-6
  * If [moving] does not intersect [obstacle] inflated by [gap] on all sides, returns [moving] unchanged.
  * Otherwise returns a copy of [moving] shifted by the smallest translation among moving it to the
  * right, left, above, or below the padded obstacle (whichever first clears intersection).
+ *
+ * @param moving The box to reposition; returned unchanged if it already clears [obstacle] (or has non-positive size).
+ * @param obstacle The fixed box to avoid overlapping.
+ * @param gap Minimum clearance around [obstacle], in the same units as the rects; negative values are clamped to `0`.
+ * @return A repositioned copy of [moving] that clears the padded [obstacle], or the original when no shift is needed.
  */
 fun nudgeAxisAlignedRectToAvoidOverlap(
     moving: RectD,
@@ -57,6 +62,12 @@ fun nudgeAxisAlignedRectToAvoidOverlap(
 /**
  * Places a second axis-aligned box of size [width] x [height] directly under [upper], separated by [gap],
  * centered horizontally on [upper]'s center.
+ *
+ * @param upper The reference box the result is stacked beneath.
+ * @param width Width of the returned box; negative values are clamped to `0`.
+ * @param height Height of the returned box; negative values are clamped to `0`.
+ * @param gap Vertical clearance between [upper]'s bottom edge and the returned box; negative values are clamped to `0`.
+ * @return The new box positioned below [upper] and horizontally centered on it.
  */
 fun stackAxisAlignedRectBelow(
     upper: RectD,

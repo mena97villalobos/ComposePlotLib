@@ -9,6 +9,9 @@ import com.mena97villalobos.composeplotlib.core.spec.PointStyle
  * One logical series inside a [com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec].
  *
  * @property id Stable identifier used by selection ([com.mena97villalobos.composeplotlib.core.selection.HighlightTarget.seriesId]).
+ * @property label Human-readable name shown in the legend for this series.
+ * @property points Sample points in domain space; per-point marker overrides drive glyph, color and bubble size (see [ChartPoint]).
+ * @property pointStyle Default marker appearance used when a point supplies no override; defaults to [PointStyle].
  */
 data class ScatterSeries(
     val id: String,
@@ -16,8 +19,10 @@ data class ScatterSeries(
     val points: List<ChartPoint>,
     val pointStyle: PointStyle = PointStyle(),
 ) {
+    /** Projects [points] to bare [XyPoint]s for shared geometry helpers (marker fields are dropped). */
     fun toXyPoints(): List<XyPoint> = points.map { XyPoint(it.x, it.y) }
 
+    /** Computes the axis-aligned data bounds of this series via [DataDomain.fromPoints]. */
     fun domain(): DataDomain = DataDomain.fromPoints(toXyPoints())
 
     /** Color for legend swatches when [PointStyle.color] is null. */

@@ -6,13 +6,24 @@ import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 /**
  * Pure viewport transform state: pan, zoom, and clamping against a **domain** [ChartViewport].
  *
- * The UI layer typically mirrors this model with a fixed domain captured at construction.
+ * The UI layer typically mirrors this model with a fixed domain captured at construction. Every transform takes the
+ * `domain` explicitly rather than storing it, so callers stay the single source of truth for the data extent.
+ *
+ * @property viewport The current visible window in domain coordinates.
+ * @property constraints Per-axis span limits applied on every transform; defaults to an unconstrained
+ * [ViewportConstraints].
  */
 data class ViewportState(
     val viewport: ChartViewport,
     val constraints: ViewportConstraints = ViewportConstraints(),
 ) {
-    /** Clamps [nextViewport] into `domain` and applies [constraints]. */
+    /**
+     * Clamps [nextViewport] into [domain] and applies [constraints].
+     *
+     * @param nextViewport Requested visible window; sanitized, span-limited, and confined to [domain].
+     * @param domain Full data extent that bounds the result.
+     * @return A copy with [viewport] set to the clamped window.
+     */
     fun withViewport(
         nextViewport: ChartViewport,
         domain: ChartViewport,
@@ -22,7 +33,14 @@ data class ViewportState(
         return copy(viewport = next)
     }
 
-    /** Pans in domain units, then clamps to `domain`. */
+    /**
+     * Pans in domain units, then clamps to [domain].
+     *
+     * @param deltaX Horizontal shift in domain units; non-finite values are treated as `0`.
+     * @param deltaY Vertical shift in domain units; non-finite values are treated as `0`.
+     * @param domain Full data extent that bounds the result.
+     * @return A copy with [viewport] translated and clamped.
+     */
     fun pan(
         deltaX: Double,
         deltaY: Double,
@@ -43,7 +61,14 @@ data class ViewportState(
 
     /**
      * Zooms each axis around a domain-space pivot. [scaleX]/[scaleY] greater than `1` zoom **in**
-     * (smaller visible span). Results are span-clamped and fit inside `domain`.
+     * (smaller visible span). Results are span-clamped and fit inside [domain].
+     *
+     * @param scaleX X-axis zoom factor; > `1` zooms in, < `1` zooms out. Sanitized against non-finite/zero values.
+     * @param scaleY Y-axis zoom factor; > `1` zooms in, < `1` zooms out. Sanitized against non-finite/zero values.
+     * @param pivotX Domain-space x the zoom is anchored on; non-finite falls back to the current x midpoint.
+     * @param pivotY Domain-space y the zoom is anchored on; non-finite falls back to the current y midpoint.
+     * @param domain Full data extent that bounds the result.
+     * @return A copy with [viewport] scaled around the pivot, span-clamped, and clamped to [domain].
      */
     fun zoom(
         scaleX: Double,

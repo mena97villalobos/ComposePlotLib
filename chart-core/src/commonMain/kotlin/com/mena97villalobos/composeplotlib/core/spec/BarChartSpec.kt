@@ -7,8 +7,18 @@ import com.mena97villalobos.composeplotlib.core.model.BarGroup
  * Immutable configuration for a grouped bar chart: [BarGroup] list, axes, grid, legend, and formatting.
  *
  * @property groups Logical series (each with [BarGroup.entries]); may be empty for no-data handling upstream.
+ *   Group [ids][BarGroup.id] must be unique (checked in `init`).
  * @property orientation Whether bars are drawn as vertical columns or horizontal rows (see [BarChartOrientation]).
+ * @property barLayout Requested category-sharing layout; may fall back to [BarLayoutMode.Independent] — see [resolvedBarLayout].
+ * @property accessibility Host-agnostic accessibility strings; see [ChartAccessibilitySpec].
+ * @property xAxis X (horizontal) axis appearance and tick behavior; see [AxisSpec].
+ * @property yAxis Y (vertical) axis appearance and tick behavior; see [AxisSpec].
  * @property valueFormatter Formats the selected [com.mena97villalobos.composeplotlib.core.model.BarEntry] for markers.
+ * @property grid Background grid line configuration; see [GridSpec].
+ * @property legend Legend visibility and styling; see [LegendSpec].
+ * @property selectionStyle Crosshair / highlight styling for the current selection; see [SelectionStyle].
+ * @property referenceLines Static threshold guide lines drawn over the plot; empty by default. See [ReferenceLine].
+ * @property contentPadding Minimum padding around chart content in **pixels** (layout reserves space for axes/legend).
  */
 data class BarChartSpec(
     val groups: List<BarGroup>,

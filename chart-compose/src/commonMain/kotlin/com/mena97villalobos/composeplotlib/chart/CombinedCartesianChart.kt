@@ -58,6 +58,20 @@ import kotlin.math.max
  * Multi-layer cartesian chart (line, bar, scatter overlays) planned by [ChartPlanner.planCombinedCartesianChart].
  *
  * Primary [ChartViewportState] drives the shared X window and primary Y; secondary Y (when present) is data-derived in `chart-core`.
+ * The chart shows its empty state only when every layer has no data.
+ *
+ * @param spec immutable description of overlay layers, axes, grid, and legend
+ * @param modifier layout modifier for the outer [Box]
+ * @param viewportState pan/zoom state for the shared X window and primary Y; default uses [defaultViewport] of [spec]
+ * @param selectionState tap selection; cleared when the selected point leaves the viewport (checked against its layer's Y axis binding)
+ * @param gestureConfig tap (selection), transform (pan/zoom/double-tap zoom), and optional fling policies
+ * @param marker optional composable overlay at the selected point; receives [ChartMarkerData]
+ * @param markerPlacement flip/slide tooltip placement; see [ChartMarkerPlacement]
+ * @param noData custom empty state when every layer has no data; if non-null, takes precedence over [noDataUi]
+ * @param noDataUi structured empty copy when [noData] is null; otherwise a plain [DefaultNoDataOverlay]
+ * @param accessibilityCustomActions optional TalkBack / VoiceOver actions (e.g. reset viewport)
+ * @param animation optional programmatic viewport easing and marker fade-in; [ChartAnimationPolicy.respectSystemReducedMotion] is applied first
+ * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
  */
 @Composable
 fun CombinedCartesianChart(

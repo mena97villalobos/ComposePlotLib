@@ -9,6 +9,9 @@ import com.mena97villalobos.composeplotlib.core.spec.CandlestickStyle
  * [BarGroup]-style families.
  *
  * @property id Used for selection ([com.mena97villalobos.composeplotlib.core.selection.HighlightTarget.seriesId]).
+ * @property label Human-readable name shown in the legend for this series.
+ * @property points Ordered OHLC samples in domain space; see [OHLCPoint].
+ * @property style Candle body/wick appearance; defaults to [CandlestickStyle].
  */
 data class CandlestickSeries(
     val id: String,

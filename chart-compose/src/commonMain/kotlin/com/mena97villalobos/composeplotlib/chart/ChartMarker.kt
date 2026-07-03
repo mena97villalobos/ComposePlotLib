@@ -16,7 +16,16 @@ import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 /**
  * Payload for a custom marker composable: core [selection], series metadata, and preformatted labels.
  *
- * @param accessibilitySummary Optional TalkBack-friendly sentence; defaults in [accessibilitySummaryText].
+ * All label strings are already formatted for display; the marker composable renders them verbatim.
+ *
+ * @property selection The resolved [ChartSelection] (logical target plus pixel geometry) the marker describes.
+ * @property seriesId Stable identifier of the selected series.
+ * @property seriesLabel Human-readable series name shown in the marker.
+ * @property xLabel Preformatted x-coordinate label of the selected point.
+ * @property yLabel Preformatted y-coordinate label of the selected point.
+ * @property valueLabel Preformatted primary value label emphasized in the marker.
+ * @property accessibilitySummary Optional TalkBack / VoiceOver sentence; when `null` (default) a summary is
+ * derived by [accessibilitySummaryText].
  */
 data class ChartMarkerData(
     val selection: ChartSelection,
@@ -34,9 +43,13 @@ internal fun ChartMarkerData.accessibilitySummaryText(): String = accessibilityS
 /**
  * Material-styled tooltip marker used by the Android showcase samples.
  *
- * @param showSeriesLabel When false, hides the first (series name) line.
- * @param showCoordinateLine When false, hides the compact `x=, y=` detail row.
- * @param showOutline Optional one-dp outline for contrast on busy backgrounds.
+ * Renders [ChartMarkerData.seriesLabel], [ChartMarkerData.valueLabel] and a coordinate row on a dark rounded card.
+ *
+ * @param data Marker payload with the selection metadata and preformatted labels.
+ * @param modifier [Modifier] applied to the marker card; defaults to [Modifier].
+ * @param showSeriesLabel When false, hides the first (series name) line; defaults to `true`.
+ * @param showCoordinateLine When false, hides the compact `x=, y=` detail row; defaults to `true`.
+ * @param showOutline When true, draws a one-dp translucent outline for contrast on busy backgrounds; defaults to `false`.
  */
 @Composable
 fun DefaultChartMarker(

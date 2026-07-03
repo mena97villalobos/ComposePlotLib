@@ -4,17 +4,18 @@
 `ComposePlotLib` is a multiplatform charting library built around a separation between:
 - platform-agnostic chart semantics and math
 - Compose-facing public APIs and rendering
-- host/demo applications
+- a single Android showcase sample (the library itself targets Android and iOS; iOS is library-only)
 
 The current implementation is intentionally small, but the architecture is already shaped for extension.
 
-**Production and next milestones:** [`production-readiness-next-steps.md`](production-readiness-next-steps.md).
+**Roadmap and next steps:** [`roadmap.md`](roadmap.md).
 
 ## Module Graph
 Current modules:
 - `:chart-core`
 - `:chart-compose`
 - `:samples:android-showcase`
+- `:chart-core-benchmarks` (optional JMH tooling module; not shipped)
 
 Dependency direction:
 
@@ -22,6 +23,7 @@ Dependency direction:
 flowchart TD
     chartCore[chart-core] --> chartCompose[chart-compose]
     chartCompose --> androidShowcase[android-showcase]
+    chartCore --> chartCoreBenchmarks[chart-core-benchmarks]
 ```
 
 ## Core Design Principle
@@ -128,14 +130,14 @@ The planner matches a **multi-pass** shape (measurement is host-driven; core rea
 | Final cartesian layout | Plot `RectD`, `ChartTransform`, resolved `AxisTick` lists | `CartesianLayoutPlanner` → `CartesianFrame` |
 | Draw plan | `DrawCommand` lists (grid, series, axes, selection) | `ChartPlanner.planLineChart` / `planBarChart` / `planScatterChart` / `planCombinedCartesianChart` / `planSankeyChart` / `planHeatmapChart` / `planCandlestickChart` / `planGaugeChart` |
 
-`planPieChart` uses chrome helpers + radial layout only (empty axis ticks). See **`docs/production-readiness-next-steps.md`** → **Planner evolution** for the roadmap diagram.
+`planPieChart` uses chrome helpers + radial layout only (empty axis ticks). See **[`roadmap.md`](roadmap.md)** for planner-evolution direction.
 
 ## Important Current Constraints
 - Text placement still uses some fixed offsets and heuristic optical alignment
 - Legend and axis ticks use measurement-assisted layout, but long labels, extreme font scale, and iOS parity remain stress cases
 - Draw commands stay a small sealed set (`Line` through `Arc`, plus `Path`, `ClipRect`, `Group`); new paint features should extend this set before ad-hoc canvas code. **1.1.0** added exactly one new draw primitive — **`PathDrawStyle.VerticalGradientFill`** for line area / threshold-band gradient fill; the pipeline is otherwise unchanged.
 - The selection model is point-based and sufficient for line/scatter/bar first slices, but not yet generalized
-- **Chart families (product order):** scatter, **pie/donut**, and **combined** cartesian (multi-layer) are **shipped**; **1.1.0** adds **heatmap** (color grid), **gauge** (radial progress ring), and **candlestick** (OHLC) families plus a thin **sparkline** wrapper over `LineChart`; see **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)** and [`production-readiness-next-steps.md`](production-readiness-next-steps.md) (**New Chart Families**).
+- **Chart families (product order):** scatter, **pie/donut**, and **combined** cartesian (multi-layer) are **shipped**; **1.1.0** adds **heatmap** (color grid), **gauge** (radial progress ring), and **candlestick** (OHLC) families plus a thin **sparkline** wrapper over `LineChart`; see **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)** and [`roadmap.md`](roadmap.md).
 
 ## Combined cartesian layers (shipped)
 **Combined** charts overlay line, bar, and/or scatter layers with shared *X* and one or two *Y* scales. Planning entry point: **`ChartPlanner.planCombinedCartesianChart`** → **`CombinedCartesianChartPlan`** (wraps a single **`ChartLayoutPlan`** for the adapter; secondary *Y* ticks live on the plan wrapper). Compose: **`CombinedCartesianChart`**. Semantics and extension options: **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)**.

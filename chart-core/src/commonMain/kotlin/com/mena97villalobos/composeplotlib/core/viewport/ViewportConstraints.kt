@@ -16,8 +16,12 @@ package com.mena97villalobos.composeplotlib.core.viewport
  * the effective minimum span is at most the domain span, and the effective maximum span is at most the
  * domain span (so zoom-out cannot target a window wider than the data extent).
  *
- * @param minXSpan Lower cap on x span (must be positive; very small values are raised to a safe epsilon).
- * @param maxXSpan Upper cap; use [Double.POSITIVE_INFINITY] for no upper limit.
+ * @property minXSpan Lower cap on the visible x span; must be positive, very small values are raised to a safe
+ * epsilon. Defaults to `1e-6`.
+ * @property maxXSpan Upper cap on the visible x span; use [Double.POSITIVE_INFINITY] (the default) for no upper limit.
+ * @property minYSpan Lower cap on the visible y span; must be positive, very small values are raised to a safe
+ * epsilon. Defaults to `1e-6`.
+ * @property maxYSpan Upper cap on the visible y span; use [Double.POSITIVE_INFINITY] (the default) for no upper limit.
  */
 data class ViewportConstraints(
     val minXSpan: Double = 1e-6,

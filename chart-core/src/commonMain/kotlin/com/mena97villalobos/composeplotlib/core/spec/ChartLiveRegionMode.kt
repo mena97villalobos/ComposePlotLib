@@ -7,6 +7,10 @@ package com.mena97villalobos.composeplotlib.core.spec
 enum class ChartLiveRegionMode {
     /** No live-region semantics for selection. */
     Off,
+
+    /** Selection changes are announced after the current speech finishes, without interrupting it. */
     Polite,
+
+    /** Selection changes interrupt current speech to announce the new state immediately. */
     Assertive,
 }

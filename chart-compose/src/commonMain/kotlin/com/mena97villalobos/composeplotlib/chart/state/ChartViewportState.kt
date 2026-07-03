@@ -20,6 +20,10 @@ import kotlin.math.abs
  *
  * Obtain via [rememberChartViewportState]. You may pass a wider [domain] than `initialViewport` to allow
  * zooming out to a known data extent while starting zoomed in.
+ *
+ * @param initialViewportState starting [ViewportState] (visible window plus zoom [constraints]).
+ * @property domain full pan/zoom extent every mutation is clamped to; never mutated after construction.
+ * @param initialAxisPolicy initial [axisPolicy]; defaults to an unlocked [ViewportAxisPolicy].
  */
 @Stable
 class ChartViewportState(
@@ -27,9 +31,11 @@ class ChartViewportState(
     val domain: ChartViewport,
     initialAxisPolicy: ViewportAxisPolicy = ViewportAxisPolicy(),
 ) {
+    /** Current viewport plus its zoom [constraints]; updated by every pan/zoom/reset call. */
     var viewportState by mutableStateOf(initialViewportState)
         private set
 
+    /** Active per-axis lock re-applied after each gesture; change via [updateAxisPolicy]. */
     var axisPolicy by mutableStateOf(initialAxisPolicy)
         private set
 
@@ -40,23 +46,34 @@ class ChartViewportState(
     var lastViewportChangeOrigin by mutableStateOf(ViewportChangeOrigin.Programmatic)
         private set
 
+    /** Current visible window in domain units, derived from [viewportState]. */
     val viewport: ChartViewport get() = viewportState.viewport
 
+    /** Active min/max axis-span limits for zoom, derived from [viewportState]. */
     val constraints: ViewportConstraints get() = viewportState.constraints
 
-    /** Re-clamps after changing zoom span limits. */
+    /**
+     * Replaces the zoom span limits and re-clamps the current viewport within [domain].
+     *
+     * @param constraints new min/max axis spans applied to subsequent pan/zoom.
+     */
     fun updateConstraints(constraints: ViewportConstraints) {
         lastViewportChangeOrigin = ViewportChangeOrigin.Programmatic
         viewportState = viewportState.copy(constraints = constraints).finish(domain, axisPolicy)
     }
 
-    /** Changes axis locking and re-clamps. */
+    /**
+     * Changes axis locking and re-clamps.
+     *
+     * @param policy new [ViewportAxisPolicy] stored in [axisPolicy] and re-applied to the viewport.
+     */
     fun updateAxisPolicy(policy: ViewportAxisPolicy) {
         lastViewportChangeOrigin = ViewportChangeOrigin.Programmatic
         axisPolicy = policy
         viewportState = viewportState.finish(domain, axisPolicy)
     }
 
+    /** Snaps the visible window back to the full [domain] (preserving [constraints]); same as [fitToData]. */
     fun reset() {
         lastViewportChangeOrigin = ViewportChangeOrigin.Programmatic
         viewportState =
@@ -64,7 +81,13 @@ class ChartViewportState(
                 .finish(domain, axisPolicy)
     }
 
-    /** Pans in domain units (x right positive, y up positive per core viewport conventions). */
+    /**
+     * Pans in domain units (x right positive, y up positive per core viewport conventions).
+     *
+     * @param deltaX horizontal shift in domain units.
+     * @param deltaY vertical shift in domain units.
+     * @param origin what to record in [lastViewportChangeOrigin]; defaults to [ViewportChangeOrigin.Gesture].
+     */
     fun pan(
         deltaX: Double,
         deltaY: Double,
@@ -74,7 +97,15 @@ class ChartViewportState(
         viewportState = viewportState.pan(deltaX, deltaY, domain).finish(domain, axisPolicy)
     }
 
-    /** Zooms around domain pivot `(pivotX, pivotY)`; scale factors greater than `1` zoom in (smaller visible span). */
+    /**
+     * Zooms around domain pivot `(pivotX, pivotY)`; scale factors greater than `1` zoom in (smaller visible span).
+     *
+     * @param scaleX horizontal zoom factor (`>1` zooms in, `<1` zooms out).
+     * @param scaleY vertical zoom factor (`>1` zooms in, `<1` zooms out).
+     * @param pivotX domain x held fixed under the gesture.
+     * @param pivotY domain y held fixed under the gesture.
+     * @param origin what to record in [lastViewportChangeOrigin]; defaults to [ViewportChangeOrigin.Gesture].
+     */
     fun zoom(
         scaleX: Double,
         scaleY: Double,
@@ -86,7 +117,13 @@ class ChartViewportState(
         viewportState = viewportState.zoom(scaleX, scaleY, pivotX, pivotY, domain).finish(domain, axisPolicy)
     }
 
-    /** Recenters the current x/y spans on `(centerX, centerY)` without changing span. */
+    /**
+     * Recenters the current x/y spans on `(centerX, centerY)` without changing span, clamped within [domain].
+     * Non-finite centers fall back to the current midpoint.
+     *
+     * @param centerX new domain x center.
+     * @param centerY new domain y center.
+     */
     fun panTo(
         centerX: Double,
         centerY: Double,
@@ -100,7 +137,12 @@ class ChartViewportState(
         viewportState = viewportState.withViewport(nextViewport, domain).finish(domain, axisPolicy)
     }
 
-    /** Alias for [panTo]. */
+    /**
+     * Alias for [panTo].
+     *
+     * @param x new domain x center.
+     * @param y new domain y center.
+     */
     fun centerOn(
         x: Double,
         y: Double,
@@ -113,6 +155,11 @@ class ChartViewportState(
      *
      * Non-finite or non-positive spans fall back to the current span, and non-finite centers fall back to the
      * current midpoint, so bad inputs (e.g. a `NaN` from `dataMax - dataMin` on empty data) cannot crash.
+     *
+     * @param xSpan target visible width in domain units.
+     * @param ySpan target visible height in domain units.
+     * @param centerX domain x the new span is centered on.
+     * @param centerY domain y the new span is centered on.
      */
     fun zoomTo(
         xSpan: Double,

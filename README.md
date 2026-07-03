@@ -5,7 +5,7 @@
 The library ships cartesian **line**, **bar**, **stacked bar**, **scatter**, **candlestick**, and **combined** charts, radial **pie / donut**, **radar**, and **gauge** (progress-ring), plus a **sankey** flow diagram, **heatmap** grids, a thin axis-less **sparkline** wrapper, and **domain-axis** line demos (category + epoch-ms time). **Line** charts add **area / threshold-band fill** (`LineStyle.areaFill`); **reference lines** apply to line, bar, scatter, and combined charts; **marker shapes** (`PointStyle.shape`) style line and scatter vertices; and **scatter** charts additionally support **per-point styling** and **bubble** point sizing (`ChartPoint.markerShape` / `markerColor` / `markerRadius`). All of this uses immutable specs, a shared `chart-core` planner, `chart-compose` rendering, and the Android **showcase** sample app + **Roborazzi**. iOS is supported as a **library** target (`chart-core` / `chart-compose` compile for iOS). Documentation targets humans and AI agents.
 
 ## Start here
-1. **[`docs/production-readiness-next-steps.md`](./docs/production-readiness-next-steps.md)** — what “production ready” still needs; concrete next tasks  
+1. **[`docs/roadmap.md`](./docs/roadmap.md)** — what “production ready” still needs; concrete next tasks  
 2. [`AGENTS.md`](./AGENTS.md) — contributor rules, **showcase** + docs obligations for new charts, `gradlew` commands, module boundaries  
 3. [`docs/README.md`](./docs/README.md) — index of all documentation  
 4. [`docs/architecture.md`](./docs/architecture.md) and [`docs/api-and-state.md`](./docs/api-and-state.md) — design and public API  
@@ -17,9 +17,8 @@ The library ships cartesian **line**, **bar**, **stacked bar**, **scatter**, **c
 | Module ownership | [`docs/module-guide.md`](./docs/module-guide.md) |
 | Android showcase & Roborazzi | [`docs/showcase-guide.md`](./docs/showcase-guide.md) |
 | iOS library usage | [`docs/ios-library-usage.md`](./docs/ios-library-usage.md) |
-| Long-range scope | [`docs/implementation-roadmap.md`](./docs/implementation-roadmap.md), [`docs/feature-inventory.md`](./docs/feature-inventory.md) |
+| Long-range scope & showcase roadmap | [`docs/roadmap.md`](./docs/roadmap.md) |
 | Public API release gate | [`docs/api-checklist.md`](./docs/api-checklist.md) |
-| Showcase IA (target) | [`docs/android-showcase-plan.md`](./docs/android-showcase-plan.md) |
 
 ## Module structure
 Current modules:
@@ -99,7 +98,7 @@ See the Dokka **Quick start** page for a copy-pasteable sample.
 - [`samples/android-showcase`](./samples/android-showcase/src) contains the curated Android showcase screens.
 
 ## Next implementation steps
-See **[`docs/production-readiness-next-steps.md`](./docs/production-readiness-next-steps.md)** for the full backlog. In short: harden **layout/text** and **performance**, richer **axes** and **marker** UX, ship **animation** when ready, then **pie/donut** → **combined** (planner-gated). **Scatter** is already shipped (`ScatterChart`, `ScatterChartSpec`, Android showcase screen).
+See **[`docs/roadmap.md`](./docs/roadmap.md)** for the full backlog. In short, the near-term priorities are a **logarithmic axis scale**, **null / missing-data gap handling**, **per-point data labels**, an **interactive legend**, and an **annotations layer** — alongside ongoing **layout/text** and **iOS parity** hardening. All 12 chart families (line, bar, stacked bar, scatter, combined, pie/donut, radar, sankey, heatmap, gauge, candlestick, sparkline) are already shipped.
 
 ## Build and Run Android
 

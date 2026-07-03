@@ -5,7 +5,7 @@ alwaysApply: true
 
 # ComposePlotLib Guidance
 
-- **AI agents and contributors:** When adding a **new chart family**, wire a preview into **`ComposePlotApp`** and update **`AGENTS.md`** + relevant **`docs/*.md`** so documentation matches the code (`AGENTS.md` → Obligations).
+- **AI agents and contributors:** When adding a **new chart family**, add a showcase screen in **`samples/android-showcase`** (wired into `ShowcaseApp`) and update **`AGENTS.md`** + relevant **`docs/*.md`** so documentation matches the code (`AGENTS.md` → Obligations).
 - `chart-core` owns platform-agnostic math and planning only. Do not introduce Compose UI types such as `Modifier`, `Color`, `Dp`, `Offset`, `Rect`, `Path`, `Canvas`, or `TextStyle` into `chart-core`.
 - Keep public APIs in `chart-compose` declarative and immutable-first. Prefer new spec/model types over mutable setters.
 - Keep interaction state explicit. Pan/zoom/selection should live in `ChartViewportState` and `ChartSelectionState`, not be hidden inside composables.
@@ -18,10 +18,10 @@ alwaysApply: true
   Owns non-UI math, geometry, ranges, domains, viewport state, transforms, visible-range logic, selection models, immutable chart specs, and layout planning.
 - `chart-compose`
   Owns public Compose APIs, Compose-managed interaction state, gesture adapters, and Compose canvas rendering.
-- `composeApp`
-  Thin shared host for previewing the current milestone (`ComposePlotApp` cycles **line, bar, stacked bar, horizontal bar, scatter, pie, combined**, and the **domain axes** demo; extend when new chart families ship).
+- `chart-core-benchmarks`
+  Optional JMH microbenchmarks for the `chart-core` engine.
 - `samples/android-showcase`
-  Primary showcase app for feature demos and manual verification (line, bar, scatter, pie, combined, domain axes screens; Roborazzi).
+  The only sample app; used for feature demos and manual verification (Roborazzi screenshot tests). Add a screen and wire it into `ShowcaseApp` when a new chart family ships. iOS is a library-only target — there is no iOS demo app.
 
 ## Expected Data Flow
 
@@ -37,20 +37,20 @@ Fit new features into this flow instead of bypassing it.
 
 - For new shared behavior, start in `chart-core`.
 - For public API changes, update `chart-compose` public files first, then internal adapters.
-- For a **new chart family** composable, update **`ComposePlotApp`**, `samples/android-showcase` / `ShowcaseApp` as needed, and **`AGENTS.md` + docs** (see Obligations above).
+- For a **new chart family** composable, add a screen in `samples/android-showcase` and wire it into `ShowcaseApp`, and update **`AGENTS.md` + docs** (see Obligations above).
 - For a new showcase-only feature, add sample data, then a dedicated screen in `samples/android-showcase`, then wire it into `ShowcaseApp`.
 
 ## Testing
 
 - Add or update `chart-core` tests for math, transform, tick-generation, or selection logic.
 - Build at least:
-  `./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :composeApp:assembleDebug`
-- On macOS, when touching shared model or Compose paths used on iOS, also run `:composeApp:compileKotlinIosSimulatorArm64`.
-- Use the showcase app as a manual verification surface for rendering changes; see `docs/ios-host-runbook.md` for the iOS host.
+  `./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug`
+- On macOS, when touching shared model or Compose paths used on iOS, also run `:chart-compose:compileKotlinIosSimulatorArm64`.
+- Use the showcase app as a manual verification surface for rendering changes; see `docs/ios-library-usage.md` for consuming the library on iOS.
 
 ## Read First
 
-- `docs/production-readiness-next-steps.md` (primary production backlog)
+- `docs/roadmap.md` (roadmap and primary production backlog)
 - `AGENTS.md`
 - `docs/README.md`
 - `docs/architecture.md`
@@ -67,8 +67,7 @@ Fit new features into this flow instead of bypassing it.
 - `chart-compose/src/commonMain/kotlin/.../chart/internal/canvas/ComposeCanvasAdapter.kt`
 - `chart-compose/src/commonMain/kotlin/.../chart/state/ChartViewportState.kt`
 - `samples/android-showcase/src/commonMain/kotlin/.../ShowcaseApp.kt`
-- `chart-compose/src/commonMain/kotlin/.../chart/ComposePlotApp.kt`
-- `docs/ios-host-runbook.md`
+- `docs/ios-library-usage.md`
 
 ## Current limitations
 

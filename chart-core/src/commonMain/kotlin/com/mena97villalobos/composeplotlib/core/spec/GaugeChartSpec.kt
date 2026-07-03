@@ -11,11 +11,16 @@ import com.mena97villalobos.composeplotlib.core.model.ChartColor
  * `sweepDegrees * progress`. A full ring uses `sweepDegrees = 360`; a smaller sweep (e.g. `270`) yields a
  * speedometer-style arc gauge. There is no selection or legend — a gauge shows a single read-only value.
  *
- * @property progress Fraction filled; clamped to `0.0..1.0` when planned.
+ * @property progress Fraction filled; clamped to `0.0..1.0` when planned (see [clampedProgress]).
+ * @property id Chart identity string; defaults to `"gauge"`.
+ * @property trackColor Color of the full background track arc; defaults to [ChartColor.LightGray].
+ * @property progressColor Color of the foreground progress arc; defaults to [ChartColor.Blue].
  * @property strokeWidthPx Ring thickness in **pixels**.
  * @property roundedCaps When true, the progress arc is drawn with round end caps.
  * @property startAngleDegrees Arc start angle; default `-90` (12 o'clock), matching [com.mena97villalobos.composeplotlib.core.layout.DrawCommand.Arc].
- * @property sweepDegrees Total angular extent of the track and the span representing 100% progress.
+ * @property sweepDegrees Total angular extent of the track and the span representing 100% progress. Defaults to `360.0` (full ring).
+ * @property accessibility Host-agnostic accessibility strings; see [ChartAccessibilitySpec].
+ * @property contentPadding Minimum padding around the gauge in **pixels**.
  */
 data class GaugeChartSpec(
     val progress: Double,

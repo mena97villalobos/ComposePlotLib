@@ -42,7 +42,7 @@ Defaults lean on the `ChartColor.*` companions so a minimal spec is visibly usab
 
 ## Plot chrome (`ChartChromeTheme`)
 
-Cartesian and pie composables accept an optional `chromeTheme` parameter. When omitted, they use **`chartChromeTheme()`**, a `@Composable` that reads **Material 3** `MaterialTheme.colorScheme` and builds:
+All chart composables accept an optional `chromeTheme` parameter. When omitted, they use **`chartChromeTheme()`**, a `@Composable` that reads **Material 3** `MaterialTheme.colorScheme` and builds:
 
 - Plot border color/width (set width to `0` to hide the frame).
 - Legend panel fill, border, and corner radius (`null` fill or zero border width turns those off).
@@ -58,7 +58,7 @@ There is **no** global singleton theme in the library: pass `chromeTheme` per ch
 - **Chrome** follows Material when you use `chartChromeTheme()` inside a `MaterialTheme` that switches `colorScheme` (light/dark/dynamic).
 - **Data colors** (`ChartColor` on series, bars, pie slices, selection) are **your** responsibility. Common patterns:
   - Hard-code `ChartColor` constants for brand palettes.
-  - **`MaterialChartPalette` helpers (M13):** map Compose / Material colors to **`ChartColor`** without hand-packing ARGB:
+  - **`MaterialChartPalette` helpers:** map Compose / Material colors to **`ChartColor`** without hand-packing ARGB:
     - `Color.toChartColor(fallback = …)` — converts via Compose `Color.toArgb()` into sRGB ARGB (color-space conversion when needed); **`Color.Unspecified`** returns `fallback` (default `ChartColor.Black`).
     - `ColorScheme.toMaterialChartPalette()` / `materialChartPalette()` — snapshot of Material 3 tokens as **`ChartColor`**: `primary`, `onPrimary`, `primaryContainer`, `secondary`, `tertiary`, `error`, `onSurface`, `onSurfaceVariant`, `outline`, `outlineVariant`, plus **`surface`**, **`surfaceVariant`**, **`primaryFixed`**, **`secondaryFixed`** (tonal accents and surfaces—still not a full token bridge).
     - Optional spec helpers ([`MaterialChartSpecTheme.kt`](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/theme/MaterialChartSpecTheme.kt)): **`seriesAccentColors()`**, **`LineChartSpec.withMaterialSeriesColors`**, **`BarChartSpec.withMaterialGroupColors`**, **`ScatterChartSpec.withMaterialScatterSeriesColors`** — cycle accents across series/groups without hand-mapping each style.
@@ -88,7 +88,7 @@ Goldens live under `samples/android-showcase/src/androidUnitTest/resources/robor
 
 ## Font scale and label density
 
-Tick gaps, axis insets, and legend spacing account for **accessibility font scale** via `ChartLayoutInput.labelLayoutScale` (built-in charts set this from `LocalDensity.fontScale`). This affects **layout**, not the ARGB values in `AxisLabelStyle`. See **Layout and text measurement** in [`production-readiness-next-steps.md`](production-readiness-next-steps.md).
+Tick gaps, axis insets, and legend spacing account for **accessibility font scale** via `ChartLayoutInput.labelLayoutScale` (built-in charts set this from `LocalDensity.fontScale`). This affects **layout**, not the ARGB values in `AxisLabelStyle`. See **Layout and text measurement** in [`roadmap.md`](roadmap.md).
 
 ## Related docs
 

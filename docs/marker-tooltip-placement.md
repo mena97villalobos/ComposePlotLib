@@ -1,6 +1,6 @@
 # Marker and tooltip placement
 
-Selection markers are optional composables (`marker` parameter) on `LineChart`, `BarChart`, `ScatterChart`, `CombinedCartesianChart`, and `PieChart`. The library positions them near the selection anchor in **chart (canvas) pixels**, using the measured size of the marker after layout.
+Selection markers are optional composables (`marker` parameter) on `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CandlestickChart`, `CombinedCartesianChart`, `HeatmapChart`, `RadarChart`, `SankeyChart`, and `PieChart`. The library positions them near the selection anchor in **chart (canvas) pixels**, using the measured size of the marker after layout.
 
 ## Public API
 
@@ -32,7 +32,7 @@ The library does not render multiple simultaneous selection tooltips by default.
 
 ## Showcase
 
-The Android **Line chart** showcase includes:
+The Android **Line chart** showcase (`samples/android-showcase` — `LineChartShowcaseScreen.kt`) includes:
 
 - **High-Y / tooltip edge** demo: tap near the top of the plot so the tooltip flips below when there is no room above. Uses `ChartMarkerPlacement(callout = ChartMarkerCalloutLeader.DefaultElbow)` and `DefaultChartMarker(showOutline = true)`.
 - **Custom callout + focusable marker:** `ChartMarkerCalloutLeader.custom` draws a straight segment from the anchor to the box center; the marker includes a **Button** with `requestFocusOnMarker` enabled for keyboard / a11y QA.

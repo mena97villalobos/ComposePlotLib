@@ -29,7 +29,7 @@ Path: `chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core
 - `layout/ChartPlanner.kt` (line, bar, scatter — `planScatterChart`, shared cartesian frame; **pie** — `planPieChart`; **heatmap** — `planHeatmapChart`; **candlestick** — `planCandlestickChart`; **gauge** — `planGaugeChart`)
 - `layout/ChartLayoutPlan.kt`, `layout/LineChartPlan.kt`, `layout/BarChartPlan.kt`, `layout/ScatterChartPlan.kt`, `layout/PieChartPlan.kt`, `layout/PieChartLayoutMath.kt`, `layout/HeatmapChartPlan.kt`, `layout/CandlestickChartPlan.kt`, `layout/GaugeChartPlan.kt`
 - `spec/LineChartSpec.kt`, `spec/BarChartSpec.kt`, `spec/ScatterChartSpec.kt`, `spec/PieChartSpec.kt`, `spec/HeatmapChartSpec.kt`, `spec/CandlestickChartSpec.kt`, `spec/GaugeChartSpec.kt`
-- `model/ScatterSeries.kt`, `model/PieChartSlice.kt`
+- `model/ScatterSeries.kt`, `model/PieChartSlice.kt` (non-exhaustive; the `model/` package also holds `LineSeries.kt`, `BarSeries.kt`, `BarGroup.kt`, `CandlestickSeries.kt`, `OHLCPoint.kt`, `HeatmapCell.kt`, `ChartPoint.kt`, `ChartColor.kt`, …)
 - `selection/PieHitResolver.kt`
 - `visible/ScatterPlotPoints.kt` (scatter hit-test candidate points)
 - `viewport/ViewportState.kt`
@@ -57,20 +57,20 @@ Path: `chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/c
 - internal renderer orchestration
 
 ### Public API files (non-exhaustive)
-- `LineChart.kt`, `BarChart.kt`, `ScatterChart.kt`, `PieChart.kt`, `RadarChart.kt`, `CombinedCartesianChart.kt`, `SankeyChart.kt`, `HeatmapChart.kt`, `CandlestickChart.kt`, `GaugeChart.kt`, `Sparkline.kt`
+- `LineChart.kt`, `BarChart.kt`, `StackedBarChart.kt`, `ScatterChart.kt`, `PieChart.kt`, `RadarChart.kt`, `CombinedCartesianChart.kt`, `SankeyChart.kt`, `HeatmapChart.kt`, `CandlestickChart.kt`, `GaugeChart.kt`, `Sparkline.kt`
 - `theme/ChartChromeTheme.kt` (`chartChromeTheme()`, `ChartChromeTheme.Default`); `theme/MaterialChartPalette.kt` (`materialChartPalette()`, `Color.toChartColor()`); `theme/MaterialChartSpecTheme.kt` (`seriesAccentColors`, `withMaterialSeriesColors`, …)
 - `ChartGestureConfig.kt`, `ChartMarker.kt`, `ChartNoData.kt`, `ChartAnimationPolicy.kt`, `ChartCustomAccessibilityAction.kt`
 - `ChartViewports.kt` (e.g. `defaultViewport`)
 - `state/ChartViewportState.kt`, `state/ChartSelectionState.kt`, `state/RememberChartStates.kt`
 
 ### Platform source sets (expect/actual)
-- `androidMain`, `iosMain` — e.g. reduced-motion probe for `ChartAnimationPolicy` (see `internal/accessibility/`)
+- `androidMain`, `iosMain` — e.g. reduced-motion probe for `ChartAnimationPolicy` (see `internal/accessibility/ChartReducedMotion.kt`, `ChartReducedMotionPreference.kt`, `ChartMarkerFocusHandoff.kt`)
 
 ### Internal implementation files
 - `internal/canvas/ComposeCanvasAdapter.kt`
 - `internal/gesture/ChartGestureHandler.kt`, `ChartFlingRuntime.kt`, related gesture wiring
 - `internal/accessibility/ChartSemantics.kt` and platform motion preference
-- `internal/render/LineChartRenderer.kt`, `internal/render/ScatterChartRenderer.kt`, `internal/render/BarChartRenderer.kt`, `internal/render/PieChartRenderer.kt`, `internal/render/HeatmapChartRenderer.kt`, `internal/render/CandlestickChartRenderer.kt`, `internal/render/GaugeChartRenderer.kt`
+- `internal/render/LineChartRenderer.kt`, `internal/render/ScatterChartRenderer.kt`, `internal/render/BarChartRenderer.kt`, `internal/render/PieChartRenderer.kt`, `internal/render/RadarChartRenderer.kt`, `internal/render/CombinedCartesianChartRenderer.kt`, `internal/render/SankeyChartRenderer.kt`, `internal/render/HeatmapChartRenderer.kt`, `internal/render/CandlestickChartRenderer.kt`, `internal/render/GaugeChartRenderer.kt`
 
 ### When to edit `chart-compose`
 Edit `chart-compose` when a change affects:
@@ -107,4 +107,4 @@ Edit it when:
 If you are unsure where code belongs:
 - If it can be tested without UI and reused by multiple chart types, put it in `chart-core`
 - If it depends on Compose runtime or canvas, put it in `chart-compose`
-- If it is demo-only or a milestone preview, put it in `samples/android-showcase` (there is no separate host module)
+- If it is demo-only or a preview of an in-progress feature, put it in `samples/android-showcase` (there is no separate host module)

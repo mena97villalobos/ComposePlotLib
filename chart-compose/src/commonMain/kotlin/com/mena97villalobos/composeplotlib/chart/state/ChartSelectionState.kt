@@ -9,6 +9,7 @@ import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 /** Holds optional [ChartSelection] for chart tap feedback and marker overlays. */
 @Stable
 class ChartSelectionState {
+    /** Current selection, or `null` when nothing is selected. Mutate via [select] / [clear]. */
     var selection by mutableStateOf<ChartSelection?>(null)
         private set
 

@@ -143,7 +143,7 @@ marker overrides), and bubble point sizing.
 3. **Required**: Add a showcase screen in `samples/android-showcase/src/commonMain/kotlin/.../screens`
    and wire it into `ShowcaseApp.kt` (with a Roborazzi screenshot scenario).
 4. Update docs: `AGENTS.md`, `docs/architecture.md`, `docs/api-and-state.md`,
-   `docs/module-guide.md`, `docs/production-readiness-next-steps.md`, and any other file whose
+   `docs/module-guide.md`, `docs/roadmap.md`, and any other file whose
    claims become false.
 
 ## Key Files
@@ -155,7 +155,7 @@ marker overrides), and bubble point sizing.
 - `chart-compose/.../chart/state/ChartViewportState.kt` — viewport state
 - `samples/android-showcase/.../ShowcaseApp.kt` — showcase navigation host (add each new chart family here)
 - `docs/architecture.md`, `docs/api-and-state.md`, `docs/module-guide.md` — design docs
-- `docs/production-readiness-next-steps.md` — primary backlog
+- `docs/roadmap.md` — roadmap / open-work backlog
 
 ## CI
 

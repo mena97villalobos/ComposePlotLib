@@ -71,7 +71,7 @@ Use **`:chart-compose:compileKotlinIosArm64`** when targeting physical devices. 
 ## Scope and limitations
 
 - **Roborazzi** and committed screenshot goldens in this repo are **Android-only**; iOS remains manual or custom CI.
-- **Text measurement** may differ slightly from Android for the same logical layout; see **Cross-Platform Readiness → iOS** in [`production-readiness-next-steps.md`](production-readiness-next-steps.md).
+- **Text measurement** may differ slightly from Android for the same logical layout; see the iOS text-measurement parity notes in [`roadmap.md`](roadmap.md).
 
 ## Related
 

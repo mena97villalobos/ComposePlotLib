@@ -20,15 +20,25 @@ import com.mena97villalobos.composeplotlib.core.model.ChartColor
  * [toChartColor].
  */
 data class MaterialChartPalette(
+    /** Primary accent (Material `primary`); first series color and default selection highlight. */
     val primary: ChartColor,
+    /** Content color drawn on top of [primary] (Material `onPrimary`). */
     val onPrimary: ChartColor,
+    /** Tonal container for [primary] (Material `primaryContainer`); softer fills/backgrounds. */
     val primaryContainer: ChartColor,
+    /** Second series accent (Material `secondary`). */
     val secondary: ChartColor,
+    /** Third series accent (Material `tertiary`). */
     val tertiary: ChartColor,
+    /** Error/emphasis accent (Material `error`); last color in [seriesAccentColors]. */
     val error: ChartColor,
+    /** Primary foreground text/marks over surfaces (Material `onSurface`). */
     val onSurface: ChartColor,
+    /** Muted foreground for axis/legend text (Material `onSurfaceVariant`). */
     val onSurfaceVariant: ChartColor,
+    /** Border/divider color (Material `outline`). */
     val outline: ChartColor,
+    /** Subtle border/gridline color (Material `outlineVariant`). */
     val outlineVariant: ChartColor,
     /** Plot / sheet backgrounds and fills (Material `surface`). */
     val surface: ChartColor,

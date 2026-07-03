@@ -61,6 +61,10 @@ fun isUtcMinuteOfDayInSession(
     return m in startMinuteOfDay..endMinuteOfDay
 }
 
+/**
+ * Formats [epochMillis] (Unix epoch milliseconds) as a zero-padded UTC `yyyy-MM-dd HH:mm` string.
+ * Proleptic-Gregorian and not leap-second aware; backs [CompactUtcAxisLabelFormatter].
+ */
 fun formatEpochMillisUtcYmdHm(epochMillis: Long): String {
     val day = epochMillis.floorDiv(86_400_000L)
     val sodMs = epochMillis.mod(86_400_000L)

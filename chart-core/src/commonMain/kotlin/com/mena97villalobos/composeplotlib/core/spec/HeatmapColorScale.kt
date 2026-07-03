@@ -8,6 +8,11 @@ import com.mena97villalobos.composeplotlib.core.model.HeatmapCell
  *
  * Values at or below [minValue] map to [minColor]; values at or above [maxValue] map to [maxColor].
  * When [minValue] == [maxValue] the midpoint color is returned for all inputs.
+ *
+ * @property minValue Domain value mapped to [minColor]; defaults to `0.0`. See [auto] to derive from cell data.
+ * @property maxValue Domain value mapped to [maxColor]; defaults to `1.0`. See [auto] to derive from cell data.
+ * @property minColor Color for values at or below [minValue]; defaults to [ChartColor.White].
+ * @property maxColor Color for values at or above [maxValue]; defaults to [ChartColor.Blue].
  */
 data class HeatmapColorScale(
     val minValue: Double = 0.0,

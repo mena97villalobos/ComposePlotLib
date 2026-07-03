@@ -1,6 +1,6 @@
 # API And State Guide
 
-See also **[`README.md`](README.md)** (documentation index) and **[`production-readiness-next-steps.md`](production-readiness-next-steps.md)** (production gaps).
+See also **[`README.md`](README.md)** (documentation index) and **[`roadmap.md`](roadmap.md)** (roadmap / open work).
 
 ## Current Public API
 The current public surface is intentionally small.
@@ -232,7 +232,7 @@ Radial progress ring: track + progress arc with optional rounded caps and an opt
 `Sparkline` is a thin convenience wrapper over `LineChart` with **axes, grid, and legend off**, zero padding, and **non-interactive** defaults, plus optional area fill (`LineStyle.areaFill`). It reuses `LineChartSpec` / `LineSeries`; there is no separate spec type. Intended for compact inline trend rendering.
 
 ## Layout input and font scale
-`chart-core` plans charts from `ChartLayoutInput` (`canvasSize`, `viewport`, optional `ChartTextMeasurementInput`, **`labelLayoutScale`** defaulting to `1.0`). Tick label **boxes** come from measured text (Compose two-pass `TextMeasurer`); **`labelLayoutScale`** scales the planner’s fixed gaps and padding (horizontal/vertical tick label spacing, axis offsets, legend spacing) so accessibility font scaling does not squeeze chrome. The bundled chart composables set `labelLayoutScale` from `LocalDensity.current.fontScale`. The planner also hides tick labels whose boxes would extend past the canvas and reserves bottom axis space using measured descender depth when it exceeds a nominal margin. Optional **`AxisSpec.xTickLabelOverlapStrategy.StaggerAdjacent`** alternates a second row of X labels; **`LegendStyle.labelMaxChars`** ellipsizes legend text; optional **`minVisibleXTickLabels` / `minVisibleYTickLabels`** and **`raiseTickDensityCapFromMeasuredLabelWidth`** tune label visibility and tick-density caps (see **`AxisSpec`** KDoc). A full baseline policy for all label paths and tighter iOS/Android measurement parity under stress remain open; see **`docs/production-readiness-next-steps.md`** (layout / text measurement).
+`chart-core` plans charts from `ChartLayoutInput` (`canvasSize`, `viewport`, optional `ChartTextMeasurementInput`, **`labelLayoutScale`** defaulting to `1.0`). Tick label **boxes** come from measured text (Compose two-pass `TextMeasurer`); **`labelLayoutScale`** scales the planner’s fixed gaps and padding (horizontal/vertical tick label spacing, axis offsets, legend spacing) so accessibility font scaling does not squeeze chrome. The bundled chart composables set `labelLayoutScale` from `LocalDensity.current.fontScale`. The planner also hides tick labels whose boxes would extend past the canvas and reserves bottom axis space using measured descender depth when it exceeds a nominal margin. Optional **`AxisSpec.xTickLabelOverlapStrategy.StaggerAdjacent`** alternates a second row of X labels; **`LegendStyle.labelMaxChars`** ellipsizes legend text; optional **`minVisibleXTickLabels` / `minVisibleYTickLabels`** and **`raiseTickDensityCapFromMeasuredLabelWidth`** tune label visibility and tick-density caps (see **`AxisSpec`** KDoc). A full baseline policy for all label paths and tighter iOS/Android measurement parity under stress remain open; see **`docs/roadmap.md`** (layout / text measurement).
 
 ## Why Specs Are Immutable
 The library is being built to avoid the mutable, setter-heavy API style common in older chart libraries.
@@ -304,7 +304,7 @@ Charts accept:
 - `noDataUi: ChartNoDataUi?` — title/message (+ optional `contentDescription`) rendered with `DefaultNoDataOverlay` / `ChartNoDataContent`
 
 Helpers:
-- `ChartNoDataDefaults.lineChart()` / `barChart()` / `scatterChart()` — preset copy for apps and showcase
+- `ChartNoDataDefaults.lineChart()` / `barChart()` / `scatterChart()` / `pieChart()` — preset copy for apps and showcase
 - `DefaultNoDataOverlay(...)`, `ChartNoDataContent(...)`
 
 When both `noData` and `noDataUi` are null, a default overlay is used.
@@ -324,7 +324,7 @@ Current draw command types:
 - `Rect`
 - `Circle`
 - `Text` — planner may set **`firstBaselineFromTop`** (from `TextLayoutMetrics`) so `ComposeCanvasAdapter` aligns the rendered baseline to the measurement pass; legend uses the same baseline rule from `LegendEntryPlan.labelMetrics`
-- `Path` (stroke or fill; **1.1.0** adds `PathDrawStyle.VerticalGradientFill` for line area / threshold-band gradient fill), `ClipRect`, `Group`, `RoundRect`, `Arc` (see **`production-readiness-next-steps.md`** → Draw commands)
+- `Path` (stroke or fill; **1.1.0** adds `PathDrawStyle.VerticalGradientFill` for line area / threshold-band gradient fill), `ClipRect`, `Group`, `RoundRect`, `Arc` (see **`roadmap.md`**)
 
 **Chrome:** `ChartChromeTheme.layerCompositingForTranslucentGroups` opts into save-layer rendering for translucent `Group` (see **`style-and-theme.md`**).
 
@@ -376,7 +376,7 @@ Parent layouts can add screen-level semantics (e.g. `ShowcaseApp` and per-chart 
 - **Theming:** style system exists; deeper Material integration and docs are ongoing
 - **Animation:** defaults keep motion off (`viewportChangesEnabled` / `gestureViewportEasingEnabled` / `selectionHighlightEnabled` / `dataTransitionEnabled` false); opt in per chart. **`LineChart`** can morph coordinates between specs when structure matches (`canMorphLineSpecs` in **chart-core**).
 - **Axes:** category and epoch-ms time scales are supported; locale/time-zone labeling is custom-formatter territory (`CompactUtcAxisLabelFormatter` / `formatEpochMillisUtcYmdHm` for UTC)
-- **Multi-axis:** no right Y-axis or dual-axis plans yet
+- **Multi-axis:** secondary (right) *Y* is supported for `CombinedCartesianChart` as a data-derived axis; it is not yet an independent zoom target in `ChartViewportState` v1
 - **Performance:** large-dataset and decimation story not proven
 
 ## How To Add New Public API Safely

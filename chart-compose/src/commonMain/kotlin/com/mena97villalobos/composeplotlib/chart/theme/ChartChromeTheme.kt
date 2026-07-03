@@ -13,12 +13,15 @@ import androidx.compose.ui.graphics.Color
 data class ChartChromeTheme(
     /** Stroke around the plot area; set [plotBorderStrokeWidthPx] to `0` to hide. */
     val plotBorderColor: Color,
+    /** Width of the plot border stroke in pixels; `0` hides the border. */
     val plotBorderStrokeWidthPx: Float,
     /** Filled behind legend entries; `null` skips the fill. */
     val legendBackgroundColor: Color?,
     /** Outline for the legend region; `null` or zero width skips. */
     val legendBorderColor: Color?,
+    /** Width of the legend outline stroke in pixels; `0` (or a null [legendBorderColor]) skips it. */
     val legendBorderStrokeWidthPx: Float,
+    /** Corner radius of the legend panel background/outline in pixels. */
     val legendCornerRadiusPx: Float,
     /** Clip drawing to [com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan.canvasBounds]. */
     val clipCanvasToCanvasBounds: Boolean,

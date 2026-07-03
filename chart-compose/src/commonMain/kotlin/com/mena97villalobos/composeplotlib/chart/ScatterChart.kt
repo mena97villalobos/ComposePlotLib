@@ -59,7 +59,18 @@ import kotlin.math.max
  * Scatter chart: draws [spec] as point markers only (no connecting segments), plans layout via [ChartPlanner], and wires
  * gestures to [viewportState] / [selectionState].
  *
- * @param marker optional selection overlay; [markerPlacement] controls flip/slide containment.
+ * @param spec immutable description of point series, axes, grid, and legend
+ * @param modifier layout modifier for the outer [Box]
+ * @param viewportState pan/zoom state; default uses [defaultViewport] of [spec]
+ * @param selectionState tap selection; cleared when the selected point leaves the viewport
+ * @param gestureConfig tap (selection), transform (pan/zoom/double-tap zoom), and optional fling policies
+ * @param marker optional composable overlay at the selected point; receives [ChartMarkerData]
+ * @param markerPlacement flip/slide tooltip placement; see [ChartMarkerPlacement]
+ * @param noData custom empty state when every series has no points; if non-null, takes precedence over [noDataUi]
+ * @param noDataUi structured empty copy when [noData] is null; otherwise a plain [DefaultNoDataOverlay]
+ * @param accessibilityCustomActions optional TalkBack / VoiceOver actions (e.g. reset viewport)
+ * @param animation optional programmatic viewport easing and marker fade-in; [ChartAnimationPolicy.respectSystemReducedMotion] is applied first
+ * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
  */
 @Composable
 fun ScatterChart(

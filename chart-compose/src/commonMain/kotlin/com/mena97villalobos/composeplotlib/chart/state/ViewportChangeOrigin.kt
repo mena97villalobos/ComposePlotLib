@@ -9,6 +9,9 @@ package com.mena97villalobos.composeplotlib.chart.state
  * [com.mena97villalobos.composeplotlib.chart.ChartAnimationPolicy.viewportChangesEnabled] is on.
  */
 enum class ViewportChangeOrigin {
+    /** Direct-manipulation change (pan/zoom/fling); the rendered viewport snaps immediately. */
     Gesture,
+
+    /** API-driven change; the rendered viewport may animate when viewport-change animations are enabled. */
     Programmatic,
 }

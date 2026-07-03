@@ -53,14 +53,25 @@ import kotlin.math.roundToInt
 /**
  * Pie / donut chart: radial layout via [ChartPlanner.planPieChart], tap slice selection, optional marker overlay.
  *
- * @param centerContent optional composable rendered at the center of the chart. For donut charts
- *   ([PieChartSpec.holeRadiusRatio] > 0) the overlay is sized to fit exactly inside the hole and its content is
- *   centered. For solid pies the overlay is unconstrained and centered at the pie center point.
- * @param markerPlacement same flip/slide containment as cartesian charts ([ChartMarkerPlacement] defaults to plot bounds).
- *
  * Pan/zoom are **off** by default ([ChartGestureConfig.transform] disabled) because this family does not use the
  * cartesian viewport. You can still enable transforms for future extensions; they only affect the dummy
  * [ChartViewportState] passed into layout measurement.
+ *
+ * @param spec slices, hole ratio, labels, and styling; see [PieChartSpec]
+ * @param modifier layout modifier for the outer [Box]
+ * @param viewportState viewport state passed into layout measurement; not used for panning since this family is radial
+ * @param selectionState tap selection over slices
+ * @param gestureConfig tap (selection) and fling policies; defaults to [ChartGestureConfig.PieDefault] (pan/zoom off)
+ * @param centerContent optional composable rendered at the center of the chart. For donut charts
+ *   ([PieChartSpec.holeRadiusRatio] > 0) the overlay is sized to fit exactly inside the hole and its content is
+ *   centered. For solid pies the overlay is unconstrained and centered at the pie center point.
+ * @param marker optional composable overlay at the selected slice; receives [ChartMarkerData]
+ * @param markerPlacement same flip/slide containment as cartesian charts ([ChartMarkerPlacement] defaults to plot bounds).
+ * @param noData custom empty state when the spec has no drawable slices; if non-null, takes precedence over [noDataUi]
+ * @param noDataUi structured empty copy when [noData] is null; otherwise a plain [DefaultNoDataOverlay]
+ * @param accessibilityCustomActions optional TalkBack / VoiceOver actions
+ * @param animation optional programmatic viewport easing and marker fade-in; [ChartAnimationPolicy.respectSystemReducedMotion] is applied first
+ * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
  */
 @Composable
 fun PieChart(

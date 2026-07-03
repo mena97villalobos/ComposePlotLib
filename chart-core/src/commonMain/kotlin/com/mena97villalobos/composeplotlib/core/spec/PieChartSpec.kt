@@ -24,7 +24,9 @@ val DefaultPieSliceValueFormatter: (PieChartSlice) -> String = { s -> "${s.label
  * each drawable wedge; very large gaps shrink wedges—see [com.mena97villalobos.composeplotlib.core.layout.PieSweep]).
  */
 data class PieChartSpec(
+    /** Wedges to draw in order; only slices with a positive [PieChartSlice.value] contribute span (see [hasDrawableSlices]). */
     val slices: List<PieChartSlice>,
+    /** Chart identity used for selection matching; see [com.mena97villalobos.composeplotlib.core.selection.HighlightTarget.seriesId]. Defaults to `"pie"`. */
     val id: String = "pie",
     /**
      * Inner hole size as a fraction of the outer radius in `[0..1)`.
@@ -41,9 +43,13 @@ data class PieChartSpec(
      * Coerced per slice so total gaps fit in 360°; `0` keeps a continuous pie.
      */
     val sliceGapDegrees: Double = 0.0,
+    /** Host-agnostic accessibility strings; see [ChartAccessibilitySpec]. */
     val accessibility: ChartAccessibilitySpec = ChartAccessibilitySpec(),
+    /** Legend visibility and styling; see [LegendSpec]. */
     val legend: LegendSpec = LegendSpec(),
+    /** Highlight styling for the selected slice; see [SelectionStyle]. */
     val selectionStyle: SelectionStyle = SelectionStyle(),
+    /** Minimum padding around chart content in **pixels** (reserves space for legend and callout labels). */
     val contentPadding: InsetsD = InsetsD(left = 24.0, top = 48.0, right = 24.0, bottom = 24.0),
     /** Marker / a11y text for the selected slice. */
     val sliceValueFormatter: (PieChartSlice) -> String = DefaultPieSliceValueFormatter,

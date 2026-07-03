@@ -37,6 +37,8 @@ import kotlin.math.roundToInt
  * [centerContent] slot (e.g. a percentage label) centered in the ring. Radial and read-only — there is no pan/zoom
  * or selection.
  *
+ * @param spec progress value, angular sweep, colors, and styling; see [GaugeChartSpec]
+ * @param modifier layout modifier for the outer [Box]
  * @param centerContent optional composable centered inside the ring (measured, then centered at the ring center).
  * @param chromeTheme plot chrome; defaults to the Material-aware [chartChromeTheme].
  */

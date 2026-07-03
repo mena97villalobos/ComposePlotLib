@@ -4,7 +4,7 @@ This file is the working guide for AI agents and future contributors operating i
 
 ## Obligations for AI agents and contributors
 - **Showcase (`samples/android-showcase`)** — When you add a **new public chart family** (new top-level composable wired to `chart-core` planning), you **must** add a showcase screen in [`samples/android-showcase/.../screens`](samples/android-showcase/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/samples/android/screens), wire it into **`ShowcaseApp.kt`**, and add a **Roborazzi** scenario so the family is screenshot-tested.
-- **Documentation** — You **must** update documentation to match the **current** behavior and surface area: at minimum **`AGENTS.md`**, **`docs/api-and-state.md`**, **`docs/architecture.md`**, and any other `docs/*.md` file whose claims become false (e.g. **`docs/module-guide.md`**, **`docs/production-readiness-next-steps.md`**). For releases or broad API changes, walk **`docs/api-checklist.md`** and refresh it if the supported surface changes. Do not leave docs describing fewer charts than the code ships.
+- **Documentation** — You **must** update documentation to match the **current** behavior and surface area: at minimum **`AGENTS.md`**, **`docs/api-and-state.md`**, **`docs/architecture.md`**, and any other `docs/*.md` file whose claims become false (e.g. **`docs/module-guide.md`**, **`docs/roadmap.md`**). For releases or broad API changes, walk **`docs/api-checklist.md`** and refresh it if the supported surface changes. Do not leave docs describing fewer charts than the code ships.
 
 ## Project Intent
 `ComposePlotLib` is a Kotlin Multiplatform and Compose Multiplatform charting library intended to become a modern successor to MPAndroidChart.
@@ -78,8 +78,8 @@ When adding features, fit them into this flow instead of bypassing it.
 - After intentional UI changes to showcase charts, refresh screenshot baselines with:
   `./gradlew :samples:android-showcase:recordRoborazziDebug`
 - Use the showcase app as a manual verification surface for rendering changes.
-- **Perf / scale (M8):** scatter decimation and planner invariants are covered by `chart-core` unit tests (`ScatterRenderPipelineTest`, `ChartPlannerTest.scatterChart_decimation_capsCircleCommands`); optional JVM microbenchmarks live in `:chart-core-benchmarks` (`./gradlew :chart-core-benchmarks:jmh --no-configuration-cache`; see `docs/performance-benchmarks.md`). Unit tests are regression checks, not timed benchmarks.
-- **Gestures (M10):** `ChartGestureConfig` companion presets (`CartesianDefault`, `PieDefault`, `readOnly`, `exploreOnly`, `cartesianInteractive`, `cartesianInteractiveFullExploration`); iOS touch QA matrices and maintainer log in `docs/ios-gesture-validation.md` (compile gate alone is `./gradlew :chart-compose:compileKotlinIosSimulatorArm64`; physical device row still required before release touch QA).
+- **Perf / scale:** scatter decimation and planner invariants are covered by `chart-core` unit tests (`ScatterRenderPipelineTest`, `ChartPlannerTest.scatterChart_decimation_capsCircleCommands`); optional JVM microbenchmarks live in `:chart-core-benchmarks` (`./gradlew :chart-core-benchmarks:jmh --no-configuration-cache`; see `docs/performance-benchmarks.md`). Unit tests are regression checks, not timed benchmarks.
+- **Gestures:** `ChartGestureConfig` companion presets (`CartesianDefault`, `PieDefault`, `readOnly`, `exploreOnly`, `cartesianInteractive`, `cartesianInteractiveFullExploration`); iOS touch QA matrices and maintainer log in `docs/ios-gesture-validation.md` (compile gate alone is `./gradlew :chart-compose:compileKotlinIosSimulatorArm64`; physical device row still required before release touch QA).
 
 ## Known current limitations
 - Text/legend layout is measurement-assisted but still imperfect (long labels, font scale, iOS text parity).
@@ -90,7 +90,7 @@ When adding features, fit them into this flow instead of bypassing it.
 - iOS uses the same Compose pipeline (as a consumed library); automated visual regression is **Android (Roborazzi)** only.
 - **Large datasets:** line series support `LineRenderSpec` decimation and optional `usePlotWidthPixelBudget` (`LineChart`). Scatter supports `ScatterRenderSpec` + `ScatterRenderPipeline` (domain pre-filter + decimation when capped; Compose pixel budget mirrors line; default path keeps all points then plot-disc culling). Large-series **invariant / smoke** tests live in `ScatterRenderPipelineTest` / `ChartPlannerTest`; JVM **JMH** harness ships in `:chart-core-benchmarks`; **CI** micro-benchmarks remain optional (`docs/performance-benchmarks.md`).
 - **Pie / donut:** optional `PieSliceLabelsSpec` draws leader polylines and text from the planner; placement is per-slice with clamping to the plot — not a full collision-avoidance pass across labels.
-- **Combined cartesian:** `CombinedCartesianChart` overlays line/bar/scatter layers; **secondary Y** is **data-derived** in the planner (not independently panned/zoomed via `ChartViewportState` in v1). Right-axis tick text uses `yAxisSecondary.labelStyle` via `DrawCommand.Text.isSecondaryYAxisTick` (M14).
+- **Combined cartesian:** `CombinedCartesianChart` overlays line/bar/scatter layers; **secondary Y** is **data-derived** in the planner (not independently panned/zoomed via `ChartViewportState` in v1). Right-axis tick text uses `yAxisSecondary.labelStyle` via `DrawCommand.Text.isSecondaryYAxisTick`.
 
 ## When Adding New Features
 - If the feature changes coordinate behavior, update:
@@ -104,7 +104,7 @@ When adding features, fit them into this flow instead of bypassing it.
   `samples/android-showcase/src/commonMain/kotlin/.../screens`
 
 ## New chart families
-Prefer this order (see `docs/production-readiness-next-steps.md` → **New Chart Families**):
+Prefer this order (see `docs/roadmap.md`):
 
 1. **Scatter** — **shipped**; same cartesian pipeline as line/bar (`ScatterChartSpec`, `planScatterChart`, `ScatterChart`).
 2. **Pie / donut** — **shipped**; radial planning, `DrawCommand.Arc` (+ optional `innerRadius`), `PieHitResolver`, `PieChart`, showcase (**`AGENTS.md` → Obligations**).
@@ -120,7 +120,7 @@ Prefer this order (see `docs/production-readiness-next-steps.md` → **New Chart
 6. **Candlestick / OHLC** — **shipped (1.1.0, library-only)** (`CandlestickChartSpec`, `OHLCPoint`,
    `CandlestickSeries`, `CandlestickStyle`, `CandlestickRenderSpec`, `planCandlestickChart`,
    `CandlestickChart`); cartesian body + wick rendering, bull/bear coloring, decimation, pan/zoom,
-   tap-to-OHLC marker. App-side adoption (B15) stays gated on an OHLC data feed.
+   tap-to-OHLC marker. App-side adoption stays gated on an OHLC data feed.
 7. **Sparkline** — **shipped (1.1.0)** (`Sparkline`); a thin axis-less / grid-less / non-interactive
    wrapper over `LineChart` with optional area fill.
 
@@ -134,7 +134,7 @@ on `ScatterChart` (per-point `markerRadius`).
 Cartesian planning is split for clarity: tick/chrome (`ChartChromeLayout.kt`), final frame (`CartesianLayoutPlanner.kt`, `CartesianFrame`), orchestration + draw commands (`ChartPlanner.kt`). See **`docs/architecture.md`** → *Planner passes*.
 
 ## File areas to read first
-- `docs/production-readiness-next-steps.md`
+- `docs/roadmap.md`
 - `docs/README.md`, `docs/architecture.md`, `docs/api-and-state.md`, `docs/api-checklist.md`, `docs/viewport-configuration.md`, `docs/style-and-theme.md`, `docs/chart-families-overview.md`
 - `chart-core/src/commonMain/kotlin/.../layout/ChartPlanner.kt`
 - `chart-core/src/commonMain/kotlin/.../layout/ChartLayoutPlan.kt`
@@ -153,12 +153,9 @@ Cartesian planning is split for clarity: tick/chrome (`ChartChromeLayout.kt`), f
 
 ## Documentation map
 - **`docs/README.md`** — index of all documentation files  
-- **`docs/ai-agent-full-backlog-prompt.md`** — AI agent system prompt, **residual mission index**, verification  
-- **`docs/ai-agent-milestone-prompts.md`** — copy-paste **residual** task blocks (open items only; retired M3→M8, M7, M12, M13, M14, M16)  
-- **`docs/production-readiness-next-steps.md`** — **primary backlog** for production readiness  
+- **`docs/roadmap.md`** — **single source of truth for open work**: current state, priorities, feature backlog, production-hardening workstreams, and showcase roadmap  
 - **`docs/architecture.md`**, **`docs/api-and-state.md`**, **`docs/api-checklist.md`**, **`docs/viewport-configuration.md`**, **`docs/style-and-theme.md`**, **`docs/marker-tooltip-placement.md`**, **`docs/chart-families-overview.md`**, **`docs/module-guide.md`**, **`docs/showcase-guide.md`**  
 - **`docs/ios-library-usage.md`** — KMP+iOS integration for consuming apps
-- **`docs/implementation-roadmap.md`**, **`docs/feature-inventory.md`**, **`docs/android-showcase-plan.md`** — long-range scope and showcase IA
 
 <!-- code-review-graph MCP tools -->
 

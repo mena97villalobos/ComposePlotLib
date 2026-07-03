@@ -5,7 +5,12 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Inclusive numeric interval [start, endInclusive] with helpers used by viewport and transforms.
+ * Inclusive numeric interval [[start], [endInclusive]] with helpers used by viewport and transforms.
+ *
+ * Non-finite bounds (±Infinity) are permitted; only `start <= endInclusive` is enforced (see the `init` note).
+ *
+ * @property start Inclusive lower bound.
+ * @property endInclusive Inclusive upper bound; must be `>= start`.
  */
 data class ClosedRangeD(
     val start: Double,
@@ -21,11 +26,16 @@ data class ClosedRangeD(
         }
     }
 
+    /** Width of the interval (`endInclusive - start`); `0` for a point, may be non-finite. */
     val span: Double get() = endInclusive - start
+
+    /** Center of the interval (`start + span / 2`). */
     val midpoint: Double get() = start + span / 2.0
 
+    /** Returns [value] clamped into this interval. */
     fun clamp(value: Double): Double = value.coerceIn(start, endInclusive)
 
+    /** True when this interval and [other] share at least one point (inclusive edges). */
     fun intersects(other: ClosedRangeD): Boolean = start <= other.endInclusive && other.start <= endInclusive
 
     /** Inclusive intersection, or `null` if ranges do not overlap. */
@@ -38,12 +48,20 @@ data class ClosedRangeD(
         return ClosedRangeD(lo, hi)
     }
 
+    /** Returns this interval shifted by [delta], preserving [span]. */
     fun translate(delta: Double): ClosedRangeD =
         ClosedRangeD(
             start = start + delta,
             endInclusive = endInclusive + delta,
         )
 
+    /**
+     * Scales this interval about [pivot]. [scale] > `1` shrinks the span (zoom **in**); < `1` grows it. The scale is
+     * sanitized via [FpMath.sanitizeZoomScale], and bounds are re-ordered so the result stays `start <= endInclusive`.
+     *
+     * @param pivot Fixed point the interval is scaled around.
+     * @param scale Multiplicative zoom factor.
+     */
     fun scaleAround(
         pivot: Double,
         scale: Double,
