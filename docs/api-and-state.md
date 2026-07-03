@@ -63,7 +63,7 @@ Main types:
 - `LegendSpec`
 
 `AxisSpec` supports:
-- `scale: AxisScale` — **`Linear`**, **`Category(categories)`** (integer indices → label strings; ticks respect `tickMin`/`tickMax` ∩ viewport), or **`TimeEpochMillis`** (duration-nice ticks in ms; default formatter path uses compact UTC labels; see **`docs/axis-category-time-cookbook.md`**)
+- `scale: AxisScale` — **`Linear`**, **`Category(categories)`** (integer indices → label strings; ticks respect `tickMin`/`tickMax` ∩ viewport), **`TimeEpochMillis`** (duration-nice ticks in ms; default formatter path uses compact UTC labels; see **`docs/axis-category-time-cookbook.md`**), **`Log(base = 10.0)`** (logarithmic — decades evenly spaced, power-of-base ticks with 2×/5× minors over ≤2 decades; for strictly positive data — non-positive values are treated as gaps; intended for line/scatter), or **`SymLog(base, linearThreshold)`** (log away from zero, linear within `±linearThreshold`, for data spanning zero/negatives)
 - `labelFormatter: (Double) -> String`
 - `categoryLabelMaxChars` — optional cap on category tick-label length (ellipsis); ignored for linear/time scales
 - `epochMillisTickPolicy` — optional post-pass on time-scale tick **values** (`All` default; `WeekdaysUtc`; `WeekdaysFixedOffset` for fixed-offset weekends; `ExcludeUtcDays` for app-supplied UTC day indices; `SessionUtcMinutes` for a UTC minute-of-day window; `Combined` to chain policies—see **`docs/axis-category-time-cookbook.md`**)
@@ -377,7 +377,7 @@ Parent layouts can add screen-level semantics (e.g. `ShowcaseApp` and per-chart 
 - **Marker:** placement and viewport-edge clipping are basic
 - **Theming:** style system exists; deeper Material integration and docs are ongoing
 - **Animation:** defaults keep motion off (`viewportChangesEnabled` / `gestureViewportEasingEnabled` / `selectionHighlightEnabled` / `dataTransitionEnabled` false); opt in per chart. **`LineChart`** can morph coordinates between specs when structure matches (`canMorphLineSpecs` in **chart-core**).
-- **Axes:** category and epoch-ms time scales are supported; locale/time-zone labeling is custom-formatter territory (`CompactUtcAxisLabelFormatter` / `formatEpochMillisUtcYmdHm` for UTC)
+- **Axes:** linear, category, epoch-ms time, and **log / symlog** scales are supported; locale/time-zone labeling is custom-formatter territory (`CompactUtcAxisLabelFormatter` / `formatEpochMillisUtcYmdHm` for UTC)
 - **Multi-axis:** secondary (right) *Y* is supported for `CombinedCartesianChart` as a data-derived axis; it is not yet an independent zoom target in `ChartViewportState` v1
 - **Performance:** large-dataset and decimation story not proven
 

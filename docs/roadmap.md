@@ -75,8 +75,8 @@ These are durable architecture rules, not backlog items. They gate how — not w
 The highest-leverage gaps versus nearly every competitor, each a strong architectural fit and mostly
 `chart-core` math:
 
-1. **Logarithmic (+ symlog) axis scale** — the most glaring scale gap; `AxisScale` is already a sealed
-   hierarchy, so this is tick generation + a value→fraction transform. *(M, strong)*
+1. ~~**Logarithmic (+ symlog) axis scale**~~ — ✅ **shipped:** `AxisScale.Log(base)` / `AxisScale.SymLog(base, linearThreshold)`
+   with a scale-aware `ChartTransform` (evenly-spaced decades) + decade/minor tick generation (line & scatter). *(M, strong)*
 2. ~~**Null / missing-data gap handling** (`connectNulls` / span-gaps)~~ — ✅ **shipped:** `ChartPoint.gap(x)`
    marks a missing sample (non-finite y); line/area break at gaps, or `LineRenderSpec.connectAcrossGaps` bridges. *(S, strong)*
 3. **Per-point / per-bar data labels** — value labels with a formatter and overlap avoidance, reusing the
@@ -101,7 +101,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Logarithmic + symlog scale | P0 | M | strong | Nearly universal elsewhere; pure `chart-core` math. |
+| ~~Logarithmic + symlog scale~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `AxisScale.Log` / `AxisScale.SymLog` + scale-aware `ChartTransform`. |
 | Inverted / reversed axis direction | P2 | S | strong | A sign flip in the axis transform. |
 | Normalization / percent (100%) stacking for bars **and** areas | P2 | S | strong | Offset mode on the existing stack planner. |
 | More than two Y axes / N stacked axes with per-axis layer binding | P3 | M | moderate | Generalizes the combined secondary-Y seam. |

@@ -1577,6 +1577,34 @@ public final class com/mena97villalobos/composeplotlib/core/spec/AxisScale$Linea
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/spec/AxisScale$Log : com/mena97villalobos/composeplotlib/core/spec/AxisScale {
+	public fun <init> ()V
+	public fun <init> (D)V
+	public synthetic fun <init> (DILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()D
+	public final fun copy (D)Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$Log;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$Log;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$Log;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBase ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/AxisScale$SymLog : com/mena97villalobos/composeplotlib/core/spec/AxisScale {
+	public fun <init> ()V
+	public fun <init> (DD)V
+	public synthetic fun <init> (DDILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()D
+	public final fun component2 ()D
+	public final fun copy (DD)Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$SymLog;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$SymLog;DDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$SymLog;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBase ()D
+	public final fun getLinearThreshold ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/spec/AxisScale$TimeEpochMillis : com/mena97villalobos/composeplotlib/core/spec/AxisScale {
 	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$TimeEpochMillis;
 	public fun equals (Ljava/lang/Object;)Z
@@ -2861,15 +2889,79 @@ public final class com/mena97villalobos/composeplotlib/core/spec/XTickLabelOverl
 	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/XTickLabelOverlapStrategy;
 }
 
+public abstract interface class com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform {
+	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Companion;
+	public abstract fun forward (D)D
+	public abstract fun inverse (D)D
+	public fun isIdentity ()Z
+}
+
+public final class com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Companion {
+	public final fun forScale (Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;)Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$DefaultImpls {
+	public static fun isIdentity (Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;)Z
+}
+
+public final class com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Identity : com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform {
+	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Identity;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun forward (D)D
+	public fun hashCode ()I
+	public fun inverse (D)D
+	public fun isIdentity ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Log : com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform {
+	public fun <init> ()V
+	public fun <init> (D)V
+	public synthetic fun <init> (DILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()D
+	public final fun copy (D)Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Log;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Log;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Log;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun forward (D)D
+	public final fun getBase ()D
+	public fun hashCode ()I
+	public fun inverse (D)D
+	public fun isIdentity ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$SymLog : com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform {
+	public fun <init> ()V
+	public fun <init> (DD)V
+	public synthetic fun <init> (DDILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()D
+	public final fun component2 ()D
+	public final fun copy (DD)Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$SymLog;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$SymLog;DDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$SymLog;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun forward (D)D
+	public final fun getBase ()D
+	public final fun getLinearThreshold ()D
+	public fun hashCode ()I
+	public fun inverse (D)D
+	public fun isIdentity ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/transform/ChartTransform {
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform$Companion;
-	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;)V
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;
 	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;
-	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getXScale ()Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;
 	public final fun getXTransform ()Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;
+	public final fun getYScale ()Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform;
 	public final fun getYTransform ()Lcom/mena97villalobos/composeplotlib/core/transform/LinearTransform1D;
 	public fun hashCode ()I
 	public final fun toDomain (Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;)Lcom/mena97villalobos/composeplotlib/core/domain/XyPoint;
@@ -2878,7 +2970,8 @@ public final class com/mena97villalobos/composeplotlib/core/transform/ChartTrans
 }
 
 public final class com/mena97villalobos/composeplotlib/core/transform/ChartTransform$Companion {
-	public final fun forPlotBounds (Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
+	public final fun forPlotBounds (Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
+	public static synthetic fun forPlotBounds$default (Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform$Companion;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/transform/ChartTransform;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/transform/LinearTransform1D {

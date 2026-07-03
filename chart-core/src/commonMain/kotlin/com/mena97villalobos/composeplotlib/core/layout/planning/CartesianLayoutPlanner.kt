@@ -85,7 +85,8 @@ internal object CartesianLayoutPlanner {
                 xStaggerExtraBelowPlot = xStaggerExtraBelow,
             )
         val plotBounds = bounds.canvasBounds.inset(reservedRegions.contentInsets)
-        val transform = ChartTransform.forPlotBounds(bounds.viewport, plotBounds)
+        val transform =
+            ChartTransform.forPlotBounds(bounds.viewport, plotBounds, xScale = xAxis.scale, yScale = yAxis.scale)
         val xGap = (xAxis.minHorizontalTickLabelGapPx ?: X_TICK_LABEL_MIN_HORIZONTAL_GAP) * labelScale
         val yGap = (yAxis.minVerticalTickLabelGapPx ?: Y_TICK_LABEL_MIN_VERTICAL_GAP) * labelScale
         val xMinDensityCap =

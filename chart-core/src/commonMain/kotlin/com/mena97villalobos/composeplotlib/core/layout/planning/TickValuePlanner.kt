@@ -13,8 +13,10 @@ import com.mena97villalobos.composeplotlib.core.spec.isUtcMinuteOfDayInSession
 import com.mena97villalobos.composeplotlib.core.spec.isUtcWeekendCalendarDay
 import com.mena97villalobos.composeplotlib.core.spec.utcMillisToUtcDayIndex
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.ln
 import kotlin.math.log10
 import kotlin.math.max
 import kotlin.math.min
@@ -112,7 +114,75 @@ internal fun planAxisValues(
                 axis.tickCount,
                 axis.epochMillisTickPolicy,
             )
+        is AxisScale.Log -> planLogTicks(searchRange.start, searchRange.endInclusive, s.base, axis.tickCount)
+        is AxisScale.SymLog ->
+            planSymLogTicks(searchRange.start, searchRange.endInclusive, s.base, s.linearThreshold, axis.tickCount)
     }
+}
+
+/** Log ticks: powers of [base] within `[loRaw, hiRaw]`, with 2×/5× minor ticks when the range spans ≤ 2 decades. */
+internal fun planLogTicks(
+    loRaw: Double,
+    hiRaw: Double,
+    base: Double,
+    tickCount: Int,
+): List<Double> {
+    if (tickCount < 1 || !loRaw.isFinite() || !hiRaw.isFinite()) return emptyList()
+    var lo = min(loRaw, hiRaw)
+    val hi = max(loRaw, hiRaw)
+    if (hi <= 0.0) return emptyList()
+    if (base <= 1.0 || !base.isFinite()) return generateNiceNumericTicks(lo, hi, tickCount)
+    if (lo <= 0.0) lo = hi / base.pow(4.0)
+    val lnBase = ln(base)
+    val e0 = floor(ln(lo) / lnBase).toInt()
+    val e1 = ceil(ln(hi) / lnBase).toInt()
+    val mantissas = if (e1 - e0 <= 2) listOf(1.0, 2.0, 5.0) else listOf(1.0)
+    val out = ArrayList<Double>()
+    var e = e0
+    while (e <= e1) {
+        val decade = base.pow(e.toDouble())
+        for (m in mantissas) {
+            val v = m * decade
+            if (v >= lo * (1.0 - 1e-9) && v <= hi * (1.0 + 1e-9)) out.add(v)
+        }
+        e++
+    }
+    return out.distinct().sorted()
+}
+
+/** Symmetric-log ticks: `0`, `±linearThreshold`, and symmetric decades of [base] beyond the threshold, within range. */
+internal fun planSymLogTicks(
+    loRaw: Double,
+    hiRaw: Double,
+    base: Double,
+    linearThreshold: Double,
+    tickCount: Int,
+): List<Double> {
+    if (tickCount < 1 || !loRaw.isFinite() || !hiRaw.isFinite()) return emptyList()
+    val lo = min(loRaw, hiRaw)
+    val hi = max(loRaw, hiRaw)
+    val thr = if (linearThreshold > 0.0 && linearThreshold.isFinite()) linearThreshold else 1.0
+    if (base <= 1.0 || !base.isFinite()) return generateNiceNumericTicks(lo, hi, tickCount)
+    val lnBase = ln(base)
+    val out = ArrayList<Double>()
+    if (0.0 in lo..hi) out.add(0.0)
+    for (s in intArrayOf(-1, 1)) {
+        if (s < 0 && lo >= -thr) continue
+        if (s > 0 && hi <= thr) continue
+        val thrV = s * thr
+        if (thrV in lo..hi) out.add(thrV)
+        val outerAbs = if (s > 0) hi else abs(lo)
+        if (outerAbs <= thr) continue
+        val e1 = ceil(ln(outerAbs) / lnBase).toInt()
+        val e0 = floor(ln(thr) / lnBase).toInt()
+        var e = e0
+        while (e <= e1) {
+            val v = s * base.pow(e.toDouble())
+            if (abs(v) >= thr && v >= lo && v <= hi) out.add(v)
+            e++
+        }
+    }
+    return out.distinct().sorted()
 }
 
 internal fun filterWeekdaysUtcTicks(values: List<Double>): List<Double> = values.filter { !isUtcWeekendCalendarDay(it) }.distinct().sorted()
@@ -301,6 +371,7 @@ internal object TickDensityReducer {
                     )
                 if (withPolicy.size > target) subsampleSortedValues(withPolicy, target) else withPolicy
             }
+            is AxisScale.Log, is AxisScale.SymLog -> subsampleSortedValues(values, target)
         }
     }
 }

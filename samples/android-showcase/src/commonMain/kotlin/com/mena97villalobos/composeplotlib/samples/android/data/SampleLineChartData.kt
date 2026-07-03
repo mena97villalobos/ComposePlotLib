@@ -6,6 +6,7 @@ import com.mena97villalobos.composeplotlib.core.model.LineSeries
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.AxisLineStyle
+import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.AxisTickDensity
 import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
@@ -152,6 +153,42 @@ fun gappedLineChartSpec(connectAcrossGaps: Boolean = false): LineChartSpec =
         accessibility =
             ChartAccessibilitySpec(
                 contentDescription = "Showcase line chart with missing-data gaps.",
+            ),
+    )
+
+/**
+ * Exponentially growing series on a **logarithmic** Y axis ([AxisScale.Log]) so several orders of magnitude read
+ * clearly and decades are evenly spaced (exponential growth renders as a straight line).
+ */
+fun logScaleLineChartSpec(): LineChartSpec =
+    LineChartSpec(
+        series =
+            listOf(
+                LineSeries(
+                    id = "growth",
+                    label = "Users",
+                    lineStyle = LineStyle(color = ChartColor.Green),
+                    pointStyle = PointStyle(visible = true, radius = 4.0),
+                    points =
+                        listOf(
+                            ChartPoint(0.0, 2.0),
+                            ChartPoint(1.0, 6.0),
+                            ChartPoint(2.0, 18.0),
+                            ChartPoint(3.0, 55.0),
+                            ChartPoint(4.0, 170.0),
+                            ChartPoint(5.0, 520.0),
+                            ChartPoint(6.0, 1600.0),
+                            ChartPoint(7.0, 4800.0),
+                            ChartPoint(8.0, 15000.0),
+                        ),
+                ),
+            ),
+        yAxis = AxisSpec(scale = AxisScale.Log(), tickCount = 6),
+        grid = GridSpec(lineStyle = GridLineStyle(color = ChartColor.LightGray)),
+        legend = LegendSpec(),
+        accessibility =
+            ChartAccessibilitySpec(
+                contentDescription = "Showcase line chart with a logarithmic Y axis.",
             ),
     )
 

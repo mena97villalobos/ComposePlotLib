@@ -46,6 +46,7 @@ import com.mena97villalobos.composeplotlib.samples.android.data.largeDenseLineCh
 import com.mena97villalobos.composeplotlib.samples.android.data.layoutStressLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.lineChartSpecCustomCalloutFocusDemo
 import com.mena97villalobos.composeplotlib.samples.android.data.lineChartSpecTooltipEdgeDemo
+import com.mena97villalobos.composeplotlib.samples.android.data.logScaleLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleLargeDenseLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleLineChartSpec
 
@@ -62,6 +63,7 @@ fun LineChartShowcaseScreen() {
             LineShowcaseVariant.LargeSeries -> largeSpec
             LineShowcaseVariant.LayoutStress -> layoutStressSpec
             LineShowcaseVariant.Gaps -> gappedLineChartSpec(connectAcrossGaps = connectGaps)
+            LineShowcaseVariant.LogY -> logScaleLineChartSpec()
         }
     val dataExtent =
         when (variant) {
@@ -132,6 +134,9 @@ fun LineChartShowcaseScreen() {
             }
             Button(onClick = { variant = LineShowcaseVariant.Gaps }) {
                 Text("Gaps")
+            }
+            Button(onClick = { variant = LineShowcaseVariant.LogY }) {
+                Text("Log Y")
             }
         }
         Row(
@@ -312,4 +317,7 @@ private enum class LineShowcaseVariant {
 
     /** Missing-data gaps: line/area break at [ChartPoint.gap] markers unless connectAcrossGaps is on. */
     Gaps,
+
+    /** Logarithmic Y axis (AxisScale.Log): exponential data reads as a straight line, decades evenly spaced. */
+    LogY,
 }

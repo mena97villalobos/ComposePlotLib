@@ -248,6 +248,8 @@ fun LineChart(
                                     ChartTransform.forPlotBounds(
                                         viewport = renderViewport,
                                         plotBounds = currentPlan.layout.plotBounds,
+                                        xScale = effectiveSpec.xAxis.scale,
+                                        yScale = effectiveSpec.yAxis.scale,
                                     )
                                 val touch = OffsetD(offset.x.toDouble(), offset.y.toDouble())
                                 val specForHit =
@@ -305,6 +307,8 @@ fun LineChart(
                                     ChartTransform.forPlotBounds(
                                         viewport = renderViewport,
                                         plotBounds = currentPlan.layout.plotBounds,
+                                        xScale = effectiveSpec.xAxis.scale,
+                                        yScale = effectiveSpec.yAxis.scale,
                                     )
                                 val pivot = transform.toDomain(OffsetD(centroid.x.toDouble(), centroid.y.toDouble()))
                                 val plotWidth = max(currentPlan.layout.plotBounds.width, 1.0)

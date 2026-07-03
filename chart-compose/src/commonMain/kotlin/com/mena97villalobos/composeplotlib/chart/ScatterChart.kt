@@ -207,6 +207,8 @@ fun ScatterChart(
                                     ChartTransform.forPlotBounds(
                                         viewport = renderViewport,
                                         plotBounds = currentPlan.layout.plotBounds,
+                                        xScale = spec.xAxis.scale,
+                                        yScale = spec.yAxis.scale,
                                     )
                                 val touch = OffsetD(offset.x.toDouble(), offset.y.toDouble())
                                 val specForHit =
@@ -281,6 +283,8 @@ fun ScatterChart(
                                     ChartTransform.forPlotBounds(
                                         viewport = renderViewport,
                                         plotBounds = currentPlan.layout.plotBounds,
+                                        xScale = spec.xAxis.scale,
+                                        yScale = spec.yAxis.scale,
                                     )
                                 val pivot = transform.toDomain(OffsetD(centroid.x.toDouble(), centroid.y.toDouble()))
                                 val plotWidth = max(currentPlan.layout.plotBounds.width, 1.0)
