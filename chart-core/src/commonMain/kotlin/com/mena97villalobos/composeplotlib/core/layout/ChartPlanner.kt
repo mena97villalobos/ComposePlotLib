@@ -29,12 +29,14 @@ import com.mena97villalobos.composeplotlib.core.model.toCloseXyPoints
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.selection.SankeyHitResolver
+import com.mena97villalobos.composeplotlib.core.selection.WaterfallHitResolver
 import com.mena97villalobos.composeplotlib.core.spec.AreaFillMode
 import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
+import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
@@ -63,6 +65,7 @@ import com.mena97villalobos.composeplotlib.core.spec.SankeyOrientation
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
+import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
 import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
 import com.mena97villalobos.composeplotlib.core.spec.hasDrawableSweep
@@ -230,6 +233,30 @@ object ChartPlanner {
                 buildLineSeriesCommands(it, frame.viewport, frame.transform, frame.plotBounds, spec.lineRender)
             }
 
+        if (spec.errorBars.enabled) {
+            val anchors = ArrayList<ErrorBarAnchor>()
+            for (series in visibleSeries) {
+                for (p in series.points) {
+                    if (p.isGap || !p.x.isFinite() || !p.y.isFinite() || (p.yLow == null && p.yHigh == null)) continue
+                    val center = frame.transform.toPixel(XyPoint(p.x, p.y))
+                    val lowPx = p.yLow?.let { frame.transform.toPixel(XyPoint(p.x, it)).y }
+                    val highPx = p.yHigh?.let { frame.transform.toPixel(XyPoint(p.x, it)).y }
+                    anchors.add(ErrorBarAnchor(center.x, center.y, lowPx, highPx))
+                }
+            }
+            plotCommands += buildErrorBarCommands(anchors, spec.errorBars, frame.plotBounds)
+        }
+        if (spec.trendlines.isNotEmpty()) {
+            plotCommands +=
+                buildTrendlineCommands(
+                    trendlines = spec.trendlines,
+                    seriesPoints = visibleSeries.associate { it.id to it.toXyPoints() },
+                    orderedSeriesIds = visibleSeries.map { it.id },
+                    transform = frame.transform,
+                    plotBounds = frame.plotBounds,
+                )
+        }
+
         if (spec.dataLabels.enabled) {
             val (charW, lineH) = estimateLabelCharBox(input)
             val anchors = ArrayList<DataLabelAnchor>()
@@ -252,7 +279,23 @@ object ChartPlanner {
         }
 
         if (selection != null) {
-            plotCommands += buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
+            plotCommands +=
+                if (spec.crosshair.enabled) {
+                    val (chW, chH) = estimateLabelCharBox(input)
+                    buildCrosshairCommands(
+                        selection = selection,
+                        crosshair = spec.crosshair,
+                        selectionStyle = spec.selectionStyle,
+                        transform = frame.transform,
+                        plotBounds = frame.plotBounds,
+                        xLabelFormatter = spec.xAxis.labelFormatter,
+                        yLabelFormatter = spec.yAxis.labelFormatter,
+                        charWidthPx = chW,
+                        lineHeightPx = chH,
+                    )
+                } else {
+                    buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
+                }
         }
 
         val overlayCommands =
@@ -327,6 +370,30 @@ object ChartPlanner {
                 )
             }
 
+        if (spec.errorBars.enabled) {
+            val anchors = ArrayList<ErrorBarAnchor>()
+            for (series in visibleSeries) {
+                for (p in series.points) {
+                    if (p.isGap || !p.x.isFinite() || !p.y.isFinite() || (p.yLow == null && p.yHigh == null)) continue
+                    val center = frame.transform.toPixel(XyPoint(p.x, p.y))
+                    val lowPx = p.yLow?.let { frame.transform.toPixel(XyPoint(p.x, it)).y }
+                    val highPx = p.yHigh?.let { frame.transform.toPixel(XyPoint(p.x, it)).y }
+                    anchors.add(ErrorBarAnchor(center.x, center.y, lowPx, highPx))
+                }
+            }
+            plotCommands += buildErrorBarCommands(anchors, spec.errorBars, frame.plotBounds)
+        }
+        if (spec.trendlines.isNotEmpty()) {
+            plotCommands +=
+                buildTrendlineCommands(
+                    trendlines = spec.trendlines,
+                    seriesPoints = visibleSeries.associate { it.id to it.toXyPoints() },
+                    orderedSeriesIds = visibleSeries.map { it.id },
+                    transform = frame.transform,
+                    plotBounds = frame.plotBounds,
+                )
+        }
+
         if (spec.dataLabels.enabled) {
             val (charW, lineH) = estimateLabelCharBox(input)
             val anchors = ArrayList<DataLabelAnchor>()
@@ -349,7 +416,23 @@ object ChartPlanner {
         }
 
         if (selection != null) {
-            plotCommands += buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
+            plotCommands +=
+                if (spec.crosshair.enabled) {
+                    val (chW, chH) = estimateLabelCharBox(input)
+                    buildCrosshairCommands(
+                        selection = selection,
+                        crosshair = spec.crosshair,
+                        selectionStyle = spec.selectionStyle,
+                        transform = frame.transform,
+                        plotBounds = frame.plotBounds,
+                        xLabelFormatter = spec.xAxis.labelFormatter,
+                        yLabelFormatter = spec.yAxis.labelFormatter,
+                        charWidthPx = chW,
+                        lineHeightPx = chH,
+                    )
+                } else {
+                    buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
+                }
         }
 
         val overlayCommands =
@@ -1685,6 +1768,19 @@ object ChartPlanner {
                 selection = selection,
                 selectionStyle = spec.selectionStyle,
             )
+        if (spec.errorBars.enabled && spec.orientation == BarChartOrientation.Vertical) {
+            val anchors =
+                barSegments.mapNotNull { seg ->
+                    val entry = seg.entry
+                    if (!entry.y.isFinite() || (entry.yLow == null && entry.yHigh == null)) return@mapNotNull null
+                    val crossPx = (seg.bounds.left + seg.bounds.right) / 2.0
+                    val centerPx = frame.transform.toPixel(XyPoint(0.0, entry.y)).y
+                    val lowPx = entry.yLow?.let { frame.transform.toPixel(XyPoint(0.0, it)).y }
+                    val highPx = entry.yHigh?.let { frame.transform.toPixel(XyPoint(0.0, it)).y }
+                    ErrorBarAnchor(crossPx, centerPx, lowPx, highPx)
+                }
+            plotCommands += buildErrorBarCommands(anchors, spec.errorBars, frame.plotBounds)
+        }
         if (spec.dataLabels.enabled) {
             val (charW, lineH) = estimateLabelCharBox(input)
             val anchors =
@@ -1955,6 +2051,335 @@ object ChartPlanner {
         selection: ChartSelection,
         candle: PlannedCandle,
     ): Boolean = selection.target.seriesId == candle.seriesId && selection.target.pointIndex == candle.index
+
+    /**
+     * Box-and-whisker chart: per category emits whiskers (min..q1, q3..max) with end caps, a translucent Q1–Q3 box
+     * with a border, a median line, and outlier points. Selection strokes an accent around the selected box.
+     *
+     * @param selection optional box highlight: matches when `selection.target.seriesId` equals the series id and
+     * `selection.target.pointIndex` is the **global** entry index.
+     * @param tickValuePass optional precomputed pass-2 tick values for [spec]'s primary axes (default: compute)
+     */
+    fun planBoxPlotChart(
+        input: ChartLayoutInput,
+        spec: BoxPlotChartSpec,
+        selection: ChartSelection? = null,
+        tickValuePass: TickValuePass? = null,
+    ): BoxPlotChartPlan {
+        val frame =
+            layoutCartesianFrame(
+                input = input,
+                xAxis = spec.xAxis,
+                yAxis = spec.yAxis,
+                legend = spec.legend,
+                contentPadding = spec.contentPadding,
+                legendLabelColors = spec.series.map { it.label to it.style.boxColor },
+                tickValuePass = tickValuePass,
+            )
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (spec.xAxis.showGridLines || spec.yAxis.showGridLines) {
+            plotCommands +=
+                buildGridLines(
+                    plotBounds = frame.plotBounds,
+                    xTicks = if (spec.xAxis.showGridLines) frame.xTicks else emptyList(),
+                    yTicks = if (spec.yAxis.showGridLines) frame.yTicks else emptyList(),
+                    lineStyle = spec.grid.lineStyle,
+                )
+        }
+        val boxes = computePlannedBoxes(spec, frame.transform, frame.plotBounds)
+        plotCommands += buildBoxPlotDrawCommands(boxes, selection, spec.selectionStyle)
+
+        val overlayCommands =
+            buildAxisAndTickLabelsOverlay(
+                frame.plotBounds,
+                spec.xAxis,
+                spec.yAxis,
+                frame.xTicks,
+                frame.yTicks,
+            )
+
+        return BoxPlotChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = frame.canvasBounds,
+                    plotBounds = frame.plotBounds,
+                    reservedRegions = frame.reservedRegions,
+                    xTicks = frame.xTicks,
+                    yTicks = frame.yTicks,
+                    legendEntries = frame.legendEntries,
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
+                ),
+            selection = selection,
+            boxes = boxes,
+        )
+    }
+
+    private fun computePlannedBoxes(
+        spec: BoxPlotChartSpec,
+        transform: ChartTransform,
+        plotBounds: RectD,
+    ): List<PlannedBox> {
+        if (spec.series.isEmpty()) return emptyList()
+        val out = mutableListOf<PlannedBox>()
+        for (series in spec.series) {
+            val style = series.style
+            val half = style.boxWidthPx / 2.0
+            val hitHalf = max(half, CANDLE_MIN_TAP_HALF_WIDTH)
+            val capHalf = half * style.whiskerCapFraction.coerceIn(0.0, 1.0)
+            series.entries.forEachIndexed { index, e ->
+                val centerXPx = transform.toPixel(XyPoint(e.x, 0.0)).x
+                if (!VisibleRangeCalculator.barColumnIntersectsPlotHorizontally(centerXPx, style.boxWidthPx, plotBounds)) {
+                    return@forEachIndexed
+                }
+                val q1Y = transform.toPixel(XyPoint(e.x, e.q1)).y
+                val q3Y = transform.toPixel(XyPoint(e.x, e.q3)).y
+                val medianY = transform.toPixel(XyPoint(e.x, e.median)).y
+                val minY = transform.toPixel(XyPoint(e.x, e.min)).y
+                val maxY = transform.toPixel(XyPoint(e.x, e.max)).y
+                val boxTop = min(q1Y, q3Y)
+                var boxBottom = max(q1Y, q3Y)
+                if (boxBottom - boxTop < 1.0) boxBottom = boxTop + 1.0
+                out +=
+                    PlannedBox(
+                        seriesId = series.id,
+                        index = index,
+                        entry = e,
+                        boxBounds = RectD(centerXPx - half, boxTop, centerXPx + half, boxBottom),
+                        hitBounds = RectD(centerXPx - hitHalf, min(minY, maxY), centerXPx + hitHalf, max(minY, maxY)),
+                        medianY = medianY,
+                        whiskerTop = OffsetD(centerXPx, maxY),
+                        whiskerBottom = OffsetD(centerXPx, minY),
+                        capHalfWidth = capHalf,
+                        outlierCenters = e.outliers.map { OffsetD(centerXPx, transform.toPixel(XyPoint(e.x, it)).y) },
+                        style = style,
+                    )
+            }
+        }
+        return out
+    }
+
+    private fun buildBoxPlotDrawCommands(
+        boxes: List<PlannedBox>,
+        selection: ChartSelection?,
+        selectionStyle: SelectionStyle,
+    ): List<DrawCommand> {
+        val out = ArrayList<DrawCommand>(boxes.size * 8)
+        for (box in boxes) {
+            val style = box.style
+            val cx = (box.boxBounds.left + box.boxBounds.right) / 2.0
+            // Whiskers from the box edges out to max/min, with end caps.
+            out += DrawCommand.Line(OffsetD(cx, box.boxBounds.top), box.whiskerTop, style.whiskerColor, style.strokeWidth)
+            out += DrawCommand.Line(OffsetD(cx, box.boxBounds.bottom), box.whiskerBottom, style.whiskerColor, style.strokeWidth)
+            out +=
+                DrawCommand.Line(
+                    OffsetD(cx - box.capHalfWidth, box.whiskerTop.y),
+                    OffsetD(cx + box.capHalfWidth, box.whiskerTop.y),
+                    style.whiskerColor,
+                    style.strokeWidth,
+                )
+            out +=
+                DrawCommand.Line(
+                    OffsetD(cx - box.capHalfWidth, box.whiskerBottom.y),
+                    OffsetD(cx + box.capHalfWidth, box.whiskerBottom.y),
+                    style.whiskerColor,
+                    style.strokeWidth,
+                )
+            // Box fill + border.
+            out += DrawCommand.Rect(bounds = box.boxBounds, color = style.boxColor.withAlpha(style.boxFillAlpha))
+            out +=
+                DrawCommand.RoundRect(
+                    bounds = box.boxBounds,
+                    cornerRadius = 0.0,
+                    style = ShapeDrawStyle.Stroke(color = style.borderColor, strokeWidth = style.strokeWidth),
+                )
+            // Median line across the box.
+            out +=
+                DrawCommand.Line(
+                    OffsetD(box.boxBounds.left, box.medianY),
+                    OffsetD(box.boxBounds.right, box.medianY),
+                    style.medianColor,
+                    style.strokeWidth,
+                )
+            for (center in box.outlierCenters) {
+                out += DrawCommand.Circle(center = center, radius = style.outlierRadius, color = style.outlierColor)
+            }
+            if (selection != null &&
+                selection.target.seriesId == box.seriesId &&
+                selection.target.pointIndex == box.index
+            ) {
+                out +=
+                    DrawCommand.RoundRect(
+                        bounds = box.boxBounds,
+                        cornerRadius = 0.0,
+                        style =
+                            ShapeDrawStyle.Stroke(
+                                color = selectionStyle.lineColor,
+                                strokeWidth = selectionStyle.lineStrokeWidth * 2.0,
+                            ),
+                    )
+            }
+        }
+        return out
+    }
+
+    /**
+     * Waterfall chart: each step's bar floats from the running total before the step to the running total after it
+     * (increases / decreases / totals colored distinctly), with optional connector lines between consecutive bars.
+     * Selection strokes an accent around the selected bar.
+     *
+     * @param selection optional bar highlight: matches when `selection.target.pointIndex` is the entry index.
+     * @param tickValuePass optional precomputed pass-2 tick values for [spec]'s primary axes (default: compute)
+     */
+    fun planWaterfallChart(
+        input: ChartLayoutInput,
+        spec: WaterfallChartSpec,
+        selection: ChartSelection? = null,
+        tickValuePass: TickValuePass? = null,
+    ): WaterfallChartPlan {
+        val frame =
+            layoutCartesianFrame(
+                input = input,
+                xAxis = spec.xAxis,
+                yAxis = spec.yAxis,
+                legend = LegendSpec(),
+                contentPadding = spec.contentPadding,
+                legendLabelColors = emptyList(),
+                tickValuePass = tickValuePass,
+            )
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (spec.xAxis.showGridLines || spec.yAxis.showGridLines) {
+            plotCommands +=
+                buildGridLines(
+                    plotBounds = frame.plotBounds,
+                    xTicks = if (spec.xAxis.showGridLines) frame.xTicks else emptyList(),
+                    yTicks = if (spec.yAxis.showGridLines) frame.yTicks else emptyList(),
+                    lineStyle = spec.grid.lineStyle,
+                )
+        }
+        val bars = computePlannedWaterfallBars(spec, frame.transform, frame.plotBounds)
+        plotCommands += buildWaterfallDrawCommands(bars, spec, frame.transform, selection)
+
+        val overlayCommands =
+            buildAxisAndTickLabelsOverlay(
+                frame.plotBounds,
+                spec.xAxis,
+                spec.yAxis,
+                frame.xTicks,
+                frame.yTicks,
+            )
+
+        return WaterfallChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = frame.canvasBounds,
+                    plotBounds = frame.plotBounds,
+                    reservedRegions = frame.reservedRegions,
+                    xTicks = frame.xTicks,
+                    yTicks = frame.yTicks,
+                    legendEntries = frame.legendEntries,
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
+                ),
+            selection = selection,
+            bars = bars,
+        )
+    }
+
+    private fun computePlannedWaterfallBars(
+        spec: WaterfallChartSpec,
+        transform: ChartTransform,
+        plotBounds: RectD,
+    ): List<PlannedWaterfallBar> {
+        if (spec.entries.isEmpty()) return emptyList()
+        val half = spec.barWidthPx / 2.0
+        val out = mutableListOf<PlannedWaterfallBar>()
+        var cumulative = 0.0
+        spec.entries.forEachIndexed { index, e ->
+            val startValue: Double
+            val endValue: Double
+            val color: ChartColor
+            val isIncrease: Boolean
+            if (e.isTotal) {
+                startValue = 0.0
+                endValue = cumulative
+                color = spec.totalColor
+                isIncrease = cumulative >= 0.0
+            } else {
+                startValue = cumulative
+                endValue = cumulative + e.delta
+                cumulative = endValue
+                color = if (e.delta >= 0.0) spec.increaseColor else spec.decreaseColor
+                isIncrease = e.delta >= 0.0
+            }
+            val cx = transform.toPixel(XyPoint(index.toDouble(), 0.0)).x
+            if (!VisibleRangeCalculator.barColumnIntersectsPlotHorizontally(cx, spec.barWidthPx, plotBounds)) {
+                return@forEachIndexed
+            }
+            val yA = transform.toPixel(XyPoint(index.toDouble(), startValue)).y
+            val yB = transform.toPixel(XyPoint(index.toDouble(), endValue)).y
+            val top = min(yA, yB)
+            var bottom = max(yA, yB)
+            if (bottom - top < 1.0) bottom = top + 1.0
+            out +=
+                PlannedWaterfallBar(
+                    index = index,
+                    entry = e,
+                    bounds = RectD(cx - half, top, cx + half, bottom),
+                    startValue = startValue,
+                    endValue = endValue,
+                    cumulativeAfter = cumulative,
+                    isTotal = e.isTotal,
+                    isIncrease = isIncrease,
+                    color = color,
+                )
+        }
+        return out
+    }
+
+    private fun buildWaterfallDrawCommands(
+        bars: List<PlannedWaterfallBar>,
+        spec: WaterfallChartSpec,
+        transform: ChartTransform,
+        selection: ChartSelection?,
+    ): List<DrawCommand> {
+        val out = ArrayList<DrawCommand>(bars.size * 3)
+        if (spec.connectors && bars.size > 1) {
+            for (i in 0 until bars.size - 1) {
+                val a = bars[i]
+                val b = bars[i + 1]
+                val y = transform.toPixel(XyPoint(0.0, a.cumulativeAfter)).y
+                out +=
+                    DrawCommand.Line(
+                        start = OffsetD(a.bounds.right, y),
+                        end = OffsetD(b.bounds.left, y),
+                        color = spec.connectorColor,
+                        strokeWidth = spec.connectorStrokeWidth,
+                    )
+            }
+        }
+        for (bar in bars) {
+            out += DrawCommand.Rect(bounds = bar.bounds, color = bar.color)
+            if (selection != null &&
+                selection.target.seriesId == WaterfallHitResolver.SERIES_ID &&
+                selection.target.pointIndex == bar.index
+            ) {
+                out +=
+                    DrawCommand.RoundRect(
+                        bounds = bar.bounds,
+                        cornerRadius = 0.0,
+                        style =
+                            ShapeDrawStyle.Stroke(
+                                color = spec.selectionStyle.lineColor,
+                                strokeWidth = spec.selectionStyle.lineStrokeWidth * 2.0,
+                            ),
+                    )
+            }
+        }
+        return out
+    }
 
     private fun buildLineSeriesCommands(
         series: LineSeries,

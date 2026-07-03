@@ -35,6 +35,42 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   selected element pans out of view.
 - One new draw primitive: `PathDrawStyle.LinearGradientFill` (point-to-point gradient; used for
   sankey ribbons).
+- **`ChartColor` ergonomic factories** — `ChartColor.rgb(r, g, b)` / `argb(a, r, g, b)` (0..255
+  channels), `hex("#RRGGBB" / "#AARRGGBB" / "#RGB")`, and `hsl(hue, saturation, lightness, alpha)`,
+  plus `withAlpha(fraction)` and read-only `alpha` / `red` / `green` / `blue` channel accessors and a
+  `ChartColor.Transparent` constant. All KMP-safe (no `java.*` / Compose types).
+- **Error bars / uncertainty whiskers** — `ChartPoint.yLow` / `yHigh` (line & scatter) and
+  `BarEntry.yLow` / `yHigh` (vertical bar charts) carry per-datum bounds; `ErrorBarsSpec` (on
+  `LineChartSpec` / `ScatterChartSpec` / `BarChartSpec`) styles the whisker + end caps. Bounds may be
+  asymmetric or one-sided; a datum with neither bound draws nothing.
+- **Trendline / regression overlays** — `TrendlineSpec` on `LineChartSpec` / `ScatterChartSpec`
+  fits `TrendlineType.Linear` (ordinary least squares, with an optional mean-response confidence band)
+  or `TrendlineType.MovingAverage(window)` per series. Backed by a new public, KMP-safe
+  `com.mena97villalobos.composeplotlib.core.math.LinearRegression` (`fit` → slope / intercept /
+  r² / residual std-dev / mean-response standard error).
+  - `ChartPoint` and `BarEntry` gained trailing `yLow` / `yHigh` parameters; precompiled callers of
+    their constructors / `copy` must recompile.
+- **Crosshair / axis-pointer** — `CrosshairSpec` on `LineChartSpec` / `ScatterChartSpec` draws a
+  vertical and/or horizontal guideline through the active selection, plus optional axis-value chips at
+  the plot's inner edges (formatted with each axis' `labelFormatter`). Disabled by default; when
+  enabled it replaces the plain vertical selection guideline.
+- **Accessible data-table ("view data")** — `ChartDataTable` in `chart-core` plus
+  `lineChartDataTable` / `scatterChartDataTable` / `barChartDataTable` builders turn any spec into
+  headers + formatted rows; the `ChartDataTable(...)` composable (`chart-compose`) renders it as a
+  scrollable, screen-reader-navigable table (each row is one merged semantics node).
+- **Streaming / real-time append helpers** — `StreamingSeriesBuffer` (bounded ring buffer, `chart-core`)
+  and the `rememberStreamingSeries` / `StreamingSeriesState` Compose helpers publish an immutable
+  snapshot on each `append`, so a line/scatter spec rebuilt from `state.points` replans without
+  unbounded growth. Pairs with `ChartAnimationPolicy` data-transition easing.
+- **Box-and-whisker (boxplot) chart family** — `BoxPlotChart` composable + `BoxPlotChartSpec` /
+  `BoxPlotSeries` / `BoxPlotEntry` / `BoxPlotStyle`. Draws the Q1–Q3 box, median line, Tukey whiskers
+  with caps, and outlier points; `BoxPlotEntry.fromSamples(x, values)` computes the five-number summary
+  (linear-interpolation quartiles + 1.5·IQR whiskers/outliers). Pan/zoom/fling/double-tap, tap
+  selection (`BoxPlotHitResolver`), no-data, and TalkBack/VoiceOver semantics.
+- **Waterfall chart family** — `WaterfallChart` composable + `WaterfallChartSpec` / `WaterfallEntry`.
+  Each step's bar floats between the running total before and after it (increase / decrease / total
+  markers colored distinctly) with optional connector lines. Pan/zoom/fling/double-tap, tap selection
+  (`WaterfallHitResolver`), no-data, and TalkBack/VoiceOver semantics.
 
 ### Changed
 

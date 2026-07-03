@@ -9,13 +9,20 @@ Full API surfaces for each chart family live in **[`api-and-state.md`](api-and-s
 
 ## `ChartColor` (ARGB in `chart-core`)
 
-`ChartColor` in `chart-core` wraps `0xAARRGGBB` as a `Long`. Predefined companions (`Black`, `White`, `Gray`, `LightGray`, `Blue`, `Green`, `Red`) match the defaults in `ChartStyles.kt`.
+`ChartColor` in `chart-core` wraps `0xAARRGGBB` as a `Long`. Predefined companions (`Black`, `White`, `Gray`, `LightGray`, `Blue`, `Green`, `Red`, `Transparent`) match the defaults in `ChartStyles.kt`.
 
-Custom colors:
+Custom colors — pack ARGB directly, or use the ergonomic factories (all KMP-safe, no platform types):
 
 ```kotlin
-val brand = ChartColor(0xFF6750A4)
+val brand = ChartColor(0xFF6750A4)          // packed 0xAARRGGBB
+val a = ChartColor.rgb(103, 80, 164)        // opaque, 0..255 channels
+val b = ChartColor.argb(128, 103, 80, 164)  // with 0..255 alpha
+val c = ChartColor.hex("#6750A4")           // "#RGB" / "#RRGGBB" / "#AARRGGBB" (alpha-first)
+val d = ChartColor.hsl(258.0, 0.34, 0.48)   // hue 0..360, saturation/lightness 0..1
+val faded = brand.withAlpha(0.4)            // replace alpha with a 0..1 fraction
 ```
+
+Channels are readable as `brand.alpha` / `brand.red` / `brand.green` / `brand.blue` (each `0..255`).
 
 The Compose adapter maps ARGB to `Color` when stroking/filling. Use the same definition on Android and iOS.
 

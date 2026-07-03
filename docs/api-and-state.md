@@ -16,6 +16,8 @@ The current public surface is intentionally small.
 - `CombinedCartesianChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — multi-layer cartesian overlay (`CombinedCartesianChartSpec`); tap hit-testing is **top-layer-first** (`CombinedCartesianHitResolver`). **Secondary *Y*** is data-derived in `chart-core` on each plan (min/max of secondary-bound layers; not an independent zoom target in `ChartViewportState` v1). See **`docs/design-combined-cartesian-layers.md`** §3.1.
 - `CandlestickChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — cartesian OHLC chart (`CandlestickChartSpec`); draws bodies + wicks with bull/bear coloring, supports pan/zoom, **decimation** (`CandlestickRenderSpec`), and a **tap-to-OHLC** marker. Same gesture/marker/no-data/a11y shape as line/bar/scatter, including chart-level **`accessibilityCustomActions`** and **Shift+arrow keyboard selection-roam** (see **Accessibility**).
 - `HeatmapChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — 2-D grid of colored cells (`HeatmapChartSpec`); each cell's color encodes a numeric value via `HeatmapColorScale`. Column labels map to the X axis, row labels to the Y axis (row 0 at the bottom). Tap selects a cell via `HeatmapHitResolver`; pan/zoom reuse `ChartViewportState`. Same marker/no-data/a11y shape as the other cartesian charts (Image role + optional `accessibilityCustomActions`; no keyboard selection-roam).
+- `BoxPlotChart(spec, modifier, viewportState, selectionState, gestureConfig, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — box-and-whisker chart (`BoxPlotChartSpec`); per category draws the Q1–Q3 box, median line, whiskers with caps, and outlier points. Pan/zoom/fling/double-tap, tap selection via `BoxPlotHitResolver`, no-data, Image-role a11y (no marker slot or keyboard selection-roam yet).
+- `WaterfallChart(spec, modifier, viewportState, selectionState, gestureConfig, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — waterfall / running-total chart (`WaterfallChartSpec`); floating bars colored by increase/decrease/total with optional connectors. Pan/zoom/fling/double-tap, tap selection via `WaterfallHitResolver`, no-data, Image-role a11y (no marker slot or keyboard selection-roam yet).
 - `GaugeChart(spec, modifier, centerContent)` — radial progress / gauge ring (`GaugeChartSpec`); track + progress arc with optional rounded caps and an optional **`centerContent`** slot. **Non-interactive**: no viewport, selection, or gesture parameters.
 - `Sparkline(...)` — thin convenience wrapper over `LineChart` with **axes, grid, and legend off**, zero padding, and **non-interactive** defaults; optional area fill. Intended for inline/compact trend rendering.
 
@@ -216,6 +218,22 @@ Main types:
 Cartesian family on the shared line/bar/scatter axis + viewport stack: bodies + wicks with bull/bear coloring, **pan/zoom**, **decimation**, and a **tap-to-OHLC** marker. Compose entry: `CandlestickChart`.
 
 **Accessibility / keyboard:** `CandlestickChart` exposes chart-level **Image-role** semantics (default summary lists the series; `stateDescription` reflects the selected candle when `exposeSelectionState` is on), an optional **`accessibilityCustomActions`** parameter, and **keyboard selection-roam** when `ChartAccessibilitySpec.keyboardSelectionRoamEnabled` is on and tap selection is enabled: **Shift+Left/Right** steps between candles within a series in domain (x/time) order, **Shift+Up/Down** switches series, and plain arrows pan (when `keyboardViewportNudgeEnabled`). Roam is backed by the public `KeyboardSelectionRoam.candlestickChartRoam(plan, current, deltaPoint, deltaSeries)`, which walks `plan.candles` by stable global point index (decimation-safe; both axes clamp, no wrap).
+
+### Box-and-whisker (boxplot)
+Main types:
+- `BoxPlotChartSpec` — `series: List<BoxPlotSeries>`, `accessibility`, `xAxis` / `yAxis` (`AxisSpec`), `grid`, `legend`, `selectionStyle`, `contentPadding`.
+- `BoxPlotSeries` — `id`, `label`, `entries: List<BoxPlotEntry>`, `style: BoxPlotStyle`.
+- `BoxPlotEntry` — `x`, `min`, `q1`, `median`, `q3`, `max`, `outliers: List<Double>`. `BoxPlotEntry.fromSamples(x, values, whiskerMultiplier = 1.5)` computes the five-number summary (linear-interpolation quartiles + Tukey whiskers/outliers).
+- `BoxPlotStyle` — `boxColor` / `boxFillAlpha`, `borderColor`, `medianColor`, `whiskerColor`, `strokeWidth`, `boxWidthPx`, `whiskerCapFraction`, `outlierColor`, `outlierRadius`.
+
+Cartesian family on the shared axis + viewport stack: box + median + whiskers + outliers, **pan/zoom**, and tap selection via `BoxPlotHitResolver`. Compose entry: `BoxPlotChart`. Image-role a11y with optional `accessibilityCustomActions` (no marker slot or keyboard selection-roam yet).
+
+### Waterfall
+Main types:
+- `WaterfallChartSpec` — `entries: List<WaterfallEntry>`, `increaseColor` / `decreaseColor` / `totalColor`, `barWidthPx`, `connectors` / `connectorColor` / `connectorStrokeWidth`, `accessibility`, `xAxis` / `yAxis` (`AxisSpec`), `grid`, `selectionStyle`, `contentPadding`.
+- `WaterfallEntry` — `delta`, `isTotal` (a `0..runningTotal` marker that does not change the running total), `label`.
+
+Cartesian family on the shared axis + viewport stack: floating running-total bars colored by increase/decrease/total with optional connectors, **pan/zoom**, and tap selection via `WaterfallHitResolver` (`HighlightTarget.seriesId == WaterfallHitResolver.SERIES_ID`, `pointIndex` = entry index). Compose entry: `WaterfallChart`. Image-role a11y with optional `accessibilityCustomActions` (no marker slot or keyboard selection-roam yet).
 
 ### Heatmap
 Main types:

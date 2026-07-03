@@ -28,6 +28,13 @@ import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
  * legends. Hidden series are excluded from drawing but still occupy a legend row. Empty by default.
  * @property annotations Freeform data-anchored marks (points, text, boxes, segments) drawn over the plot; empty by
  * default. See [ChartAnnotation].
+ * @property errorBars Styling for per-point uncertainty whiskers; drawn only for points that set
+ * [ChartPoint.yLow][com.mena97villalobos.composeplotlib.core.model.ChartPoint.yLow] /
+ * [yHigh][com.mena97villalobos.composeplotlib.core.model.ChartPoint.yHigh]. See [ErrorBarsSpec].
+ * @property trendlines Optional fitted overlays (linear regression / moving average) with optional confidence
+ * bands, computed from each referenced series' data; empty by default. See [TrendlineSpec].
+ * @property crosshair Crosshair / axis-pointer overlay drawn through the active selection; disabled by default.
+ * See [CrosshairSpec].
  */
 data class ScatterChartSpec(
     val series: List<ScatterSeries>,
@@ -44,6 +51,9 @@ data class ScatterChartSpec(
     val dataLabels: DataLabelsSpec = DataLabelsSpec(),
     val hiddenSeriesIds: Set<String> = emptySet(),
     val annotations: List<ChartAnnotation> = emptyList(),
+    val errorBars: ErrorBarsSpec = ErrorBarsSpec(),
+    val trendlines: List<TrendlineSpec> = emptyList(),
+    val crosshair: CrosshairSpec = CrosshairSpec(),
 ) {
     init {
         requireUniqueIds(series.map { it.id }, "ScatterChartSpec.series ids")

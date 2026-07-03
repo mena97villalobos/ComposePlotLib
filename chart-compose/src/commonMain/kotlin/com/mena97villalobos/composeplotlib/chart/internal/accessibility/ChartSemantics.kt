@@ -26,6 +26,7 @@ import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.core.layout.SankeyChartPlan
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartLiveRegionMode
@@ -37,6 +38,7 @@ import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import kotlin.math.roundToInt
 
 /** Adds TalkBack / VoiceOver content, optional custom actions, focus, and an Image role for line charts. */
@@ -507,6 +509,170 @@ internal fun Modifier.candlestickChartAccessibility(
         .focusable(enabled = wantsFocus)
         .then(semanticsModifier)
 }
+
+/** Adds TalkBack / VoiceOver content, optional custom actions, focus, and an Image role for box-and-whisker charts. */
+internal fun Modifier.boxPlotChartAccessibility(
+    spec: BoxPlotChartSpec,
+    selectionState: ChartSelectionState,
+    emptyStateDescription: String? = null,
+    customAccessibilityActions: List<ChartCustomAccessibilityAction> = emptyList(),
+): Modifier {
+    val wantsFocus =
+        spec.accessibility.requestFocusForAccessibility ||
+            spec.accessibility.keyboardViewportNudgeEnabled ||
+            spec.accessibility.requestFocusOnMarker
+    val mergeDescendants = !spec.accessibility.requestFocusOnMarker
+    val semanticsModifier =
+        Modifier.semantics(mergeDescendants = mergeDescendants) {
+            role = Role.Image
+            val summary =
+                spec.accessibility.contentDescription
+                    ?: defaultBoxPlotChartSemanticSummary(spec)
+            val noData = spec.series.all { it.entries.isEmpty() }
+            contentDescription =
+                if (noData) {
+                    emptyStateDescription ?: "$summary $ACCESSIBILITY_NO_DATA_SUFFIX"
+                } else {
+                    summary
+                }
+            if (spec.accessibility.exposeSelectionState) {
+                when (spec.accessibility.selectionLiveRegionMode) {
+                    ChartLiveRegionMode.Off -> Unit
+                    ChartLiveRegionMode.Polite -> liveRegion = LiveRegionMode.Polite
+                    ChartLiveRegionMode.Assertive -> liveRegion = LiveRegionMode.Assertive
+                }
+                val selection = selectionState.selection
+                if (selection != null) {
+                    val series = spec.series.firstOrNull { it.id == selection.target.seriesId }
+                    val entry = series?.entries?.getOrNull(selection.target.pointIndex)
+                    if (series != null && entry != null) {
+                        val fmt = spec.yAxis.labelFormatter
+                        stateDescription =
+                            "${series.label}: median ${fmt(entry.median)}, quartiles ${fmt(entry.q1)} to " +
+                            "${fmt(entry.q3)}, range ${fmt(entry.min)} to ${fmt(entry.max)}."
+                    }
+                }
+            }
+            if (customAccessibilityActions.isNotEmpty()) {
+                customActions =
+                    customAccessibilityActions.map { a ->
+                        CustomAccessibilityAction(a.label) {
+                            a.onClick()
+                            true
+                        }
+                    }
+            }
+        }
+    return this
+        .focusable(enabled = wantsFocus)
+        .then(semanticsModifier)
+}
+
+private fun defaultBoxPlotChartSemanticSummary(spec: BoxPlotChartSpec): String =
+    when {
+        spec.series.isEmpty() -> "Box plot chart with no series."
+        else -> {
+            val names = spec.series.joinToString { it.label }
+            val keys =
+                if (spec.accessibility.keyboardViewportNudgeEnabled) {
+                    " When focused, arrow keys pan; plus and minus zoom; Escape clears selection."
+                } else {
+                    ""
+                }
+            "Box plot chart. Series: $names. Use pinch to zoom and drag to pan. Tap a box to select.$keys"
+        }
+    }
+
+/** Adds TalkBack / VoiceOver content, optional custom actions, focus, and an Image role for waterfall charts. */
+internal fun Modifier.waterfallChartAccessibility(
+    spec: WaterfallChartSpec,
+    selectionState: ChartSelectionState,
+    emptyStateDescription: String? = null,
+    customAccessibilityActions: List<ChartCustomAccessibilityAction> = emptyList(),
+): Modifier {
+    val wantsFocus =
+        spec.accessibility.requestFocusForAccessibility ||
+            spec.accessibility.keyboardViewportNudgeEnabled ||
+            spec.accessibility.requestFocusOnMarker
+    val mergeDescendants = !spec.accessibility.requestFocusOnMarker
+    val semanticsModifier =
+        Modifier.semantics(mergeDescendants = mergeDescendants) {
+            role = Role.Image
+            val summary =
+                spec.accessibility.contentDescription
+                    ?: defaultWaterfallChartSemanticSummary(spec)
+            val noData = spec.entries.isEmpty()
+            contentDescription =
+                if (noData) {
+                    emptyStateDescription ?: "$summary $ACCESSIBILITY_NO_DATA_SUFFIX"
+                } else {
+                    summary
+                }
+            if (spec.accessibility.exposeSelectionState) {
+                when (spec.accessibility.selectionLiveRegionMode) {
+                    ChartLiveRegionMode.Off -> Unit
+                    ChartLiveRegionMode.Polite -> liveRegion = LiveRegionMode.Polite
+                    ChartLiveRegionMode.Assertive -> liveRegion = LiveRegionMode.Assertive
+                }
+                val selection = selectionState.selection
+                if (selection != null) {
+                    waterfallSelectionDescription(spec, selection.target.pointIndex)?.let { stateDescription = it }
+                }
+            }
+            if (customAccessibilityActions.isNotEmpty()) {
+                customActions =
+                    customAccessibilityActions.map { a ->
+                        CustomAccessibilityAction(a.label) {
+                            a.onClick()
+                            true
+                        }
+                    }
+            }
+        }
+    return this
+        .focusable(enabled = wantsFocus)
+        .then(semanticsModifier)
+}
+
+private fun waterfallSelectionDescription(
+    spec: WaterfallChartSpec,
+    index: Int,
+): String? {
+    if (index !in spec.entries.indices) return null
+    val fmt = spec.yAxis.labelFormatter
+    var cumulative = 0.0
+    for (i in spec.entries.indices) {
+        val e = spec.entries[i]
+        val before = cumulative
+        if (!e.isTotal) cumulative += e.delta
+        if (i == index) {
+            val label = e.label.ifEmpty { "Step ${i + 1}" }
+            return if (e.isTotal) {
+                "$label: total ${fmt(before)}."
+            } else {
+                val magnitude = if (e.delta >= 0.0) e.delta else -e.delta
+                val direction = if (e.delta >= 0.0) "increase" else "decrease"
+                "$label: $direction of ${fmt(magnitude)}, running total ${fmt(cumulative)}."
+            }
+        }
+    }
+    return null
+}
+
+private fun defaultWaterfallChartSemanticSummary(spec: WaterfallChartSpec): String =
+    when {
+        spec.entries.isEmpty() -> "Waterfall chart with no steps."
+        else -> {
+            val keys =
+                if (spec.accessibility.keyboardViewportNudgeEnabled) {
+                    " When focused, arrow keys pan; plus and minus zoom; Escape clears selection."
+                } else {
+                    ""
+                }
+            "Waterfall chart with ${spec.entries.size} steps. Use pinch to zoom and drag to pan. " +
+                "Tap a bar to inspect its contribution.$keys"
+        }
+    }
 
 private const val ACCESSIBILITY_NO_DATA_SUFFIX = "No data to display."
 

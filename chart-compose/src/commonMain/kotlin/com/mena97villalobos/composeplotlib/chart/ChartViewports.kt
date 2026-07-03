@@ -5,6 +5,7 @@ import com.mena97villalobos.composeplotlib.core.math.FpMath
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
@@ -15,6 +16,7 @@ import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.math.abs
 
@@ -235,6 +237,62 @@ fun defaultViewport(spec: CandlestickChartSpec): ChartViewport {
     val maxY = highs.max().ensureSpan(minY)
     return ChartViewport(
         xRange = ClosedRangeD(minX, maxX),
+        yRange = ClosedRangeD(minY, maxY),
+    )
+}
+
+/**
+ * [ChartViewport] spanning box entries: X across category positions, Y across all whisker min/max and outlier
+ * values (so nothing clips). Uses a unit range when the spec is empty.
+ */
+fun defaultViewport(spec: BoxPlotChartSpec): ChartViewport {
+    val entries = spec.series.flatMap { it.entries }
+    val xs = entries.map { it.x }.filter { it.isFinite() }
+    val lows = entries.flatMap { listOf(it.min) + it.outliers }.filter { it.isFinite() }
+    val highs = entries.flatMap { listOf(it.max) + it.outliers }.filter { it.isFinite() }
+    if (xs.isEmpty() || lows.isEmpty() || highs.isEmpty()) {
+        return ChartViewport(
+            xRange = ClosedRangeD(0.0, 1.0),
+            yRange = ClosedRangeD(0.0, 1.0),
+        )
+    }
+    val minX = xs.min()
+    val maxX = xs.max().ensureSpan(minX)
+    val minY = lows.min()
+    val maxY = highs.max().ensureSpan(minY)
+    return ChartViewport(
+        xRange = ClosedRangeD(minX, maxX),
+        yRange = ClosedRangeD(minY, maxY),
+    )
+}
+
+/**
+ * [ChartViewport] for a waterfall: X spans all category positions (`[-0.5, n-0.5]`); Y spans the running-total
+ * envelope including the `0` baseline. Uses a unit range when the spec is empty.
+ */
+fun defaultViewport(spec: WaterfallChartSpec): ChartViewport {
+    if (spec.entries.isEmpty()) {
+        return ChartViewport(
+            xRange = ClosedRangeD(0.0, 1.0),
+            yRange = ClosedRangeD(0.0, 1.0),
+        )
+    }
+    var cumulative = 0.0
+    val values = ArrayList<Double>()
+    values += 0.0
+    for (e in spec.entries) {
+        if (e.isTotal) {
+            values += cumulative
+        } else {
+            cumulative += e.delta
+            values += cumulative
+        }
+    }
+    val minY = minOf(0.0, values.min())
+    val maxY = maxOf(0.0, values.max()).ensureSpan(minY)
+    val n = spec.entries.size
+    return ChartViewport(
+        xRange = ClosedRangeD(-0.5, (n - 1).toDouble() + 0.5),
         yRange = ClosedRangeD(minY, maxY),
     )
 }

@@ -2,6 +2,10 @@ public final class com/mena97villalobos/composeplotlib/chart/BarChartKt {
 	public static final fun BarChart (Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;III)V
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/BoxPlotChartKt {
+	public static final fun BoxPlotChart (Lcom/mena97villalobos/composeplotlib/core/spec/BoxPlotChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/CandlestickChartKt {
 	public static final fun CandlestickChart (Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;III)V
 }
@@ -58,6 +62,13 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartCustomAccessib
 public final class com/mena97villalobos/composeplotlib/chart/ChartCustomAccessibilityActionKt {
 	public static final fun chartAccessibilityActionsMergeViewport (Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Ljava/util/List;)Ljava/util/List;
 	public static final fun chartViewportAccessibilityActions (Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;)Ljava/util/List;
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/ChartDataTableKt {
+	public static final fun ChartDataTable-6a0pyJM (Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;Landroidx/compose/ui/Modifier;FLandroidx/compose/runtime/Composer;II)V
+	public static final fun ChartDataTable-6a0pyJM (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Landroidx/compose/ui/Modifier;FLandroidx/compose/runtime/Composer;II)V
+	public static final fun ChartDataTable-6a0pyJM (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;Landroidx/compose/ui/Modifier;FLandroidx/compose/runtime/Composer;II)V
+	public static final fun ChartDataTable-6a0pyJM (Lcom/mena97villalobos/composeplotlib/core/table/ChartDataTable;Landroidx/compose/ui/Modifier;FLandroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/ChartFlingGesturePolicy {
@@ -296,6 +307,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartTransformGestu
 
 public final class com/mena97villalobos/composeplotlib/chart/ChartViewportsKt {
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/BoxPlotChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
@@ -304,6 +316,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartViewportsKt {
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/RadarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/WaterfallChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/CombinedCartesianChartKt {
@@ -351,6 +364,10 @@ public final class com/mena97villalobos/composeplotlib/chart/StackedBarChartKt {
 	public static final fun StackedBarChart (Lcom/mena97villalobos/composeplotlib/core/spec/StackedBarChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;III)V
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/WaterfallChartKt {
+	public static final fun WaterfallChart (Lcom/mena97villalobos/composeplotlib/core/spec/WaterfallChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/internal/accessibility/ChartReducedMotionPreference_androidKt {
 	public static final fun chartReducedMotionPreferred (Landroidx/compose/runtime/Composer;I)Z
 }
@@ -389,6 +406,19 @@ public final class com/mena97villalobos/composeplotlib/chart/state/ChartViewport
 public final class com/mena97villalobos/composeplotlib/chart/state/RememberChartStatesKt {
 	public static final fun rememberChartSelectionState (Landroidx/compose/runtime/Composer;I)Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;
 	public static final fun rememberChartViewportState (Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/viewport/ViewportConstraints;Lcom/mena97villalobos/composeplotlib/core/viewport/ViewportAxisPolicy;Landroidx/compose/runtime/Composer;II)Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/state/StreamingSeriesState {
+	public static final field $stable I
+	public final fun append (Lcom/mena97villalobos/composeplotlib/core/model/ChartPoint;)V
+	public final fun appendAll (Ljava/lang/Iterable;)V
+	public final fun clear ()V
+	public final fun getCapacity ()I
+	public final fun getPoints ()Ljava/util/List;
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/state/StreamingSeriesStateKt {
+	public static final fun rememberStreamingSeries (ILjava/util/List;Landroidx/compose/runtime/Composer;II)Lcom/mena97villalobos/composeplotlib/chart/state/StreamingSeriesState;
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/state/ViewportChangeOrigin : java/lang/Enum {

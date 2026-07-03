@@ -8,12 +8,21 @@ import com.mena97villalobos.composeplotlib.core.spec.BarStyle
  * on chart Y for [com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation.Horizontal]);
  * **y** is the value (plotted on chart Y / X respectively).
  *
+ * The `yLow` / `yHigh` fields are optional **error-bar** bounds (absolute value along the value axis), rendered for
+ * **vertical** bar charts whose spec carries an enabled
+ * [ErrorBarsSpec][com.mena97villalobos.composeplotlib.core.spec.ErrorBarsSpec]. Either may be set independently;
+ * both null means no whisker. (Horizontal bar charts do not draw error bars yet.)
+ *
  * @property x Category position along the bar's category axis, in domain space.
  * @property y Bar value along the value axis, in domain space.
+ * @property yLow Lower error-bar bound (absolute value), or null for no lower whisker.
+ * @property yHigh Upper error-bar bound (absolute value), or null for no upper whisker.
  */
 data class BarEntry(
     val x: Double,
     val y: Double,
+    val yLow: Double? = null,
+    val yHigh: Double? = null,
 )
 
 /**

@@ -40,6 +40,14 @@ Explicit-column Sankey diagram: **`SankeyChartSpec`** provides nodes with a `col
 
 Cartesian OHLC chart: **`CandlestickChartSpec`** holds **`CandlestickSeries`** of **`OHLCPoint`** (`x`, `open`, `high`, `low`, `close`) with per-series **`CandlestickStyle`** (bull/bear colors, body/wick widths, wick coloring). Shares the line/bar/scatter axis + viewport stack: bodies + wicks, bull/bear coloring, **`CandlestickRenderSpec`** decimation for long series, pan/zoom, and a **tap-to-OHLC** marker. Chart-level Image-role accessibility with optional **`accessibilityCustomActions`** and **keyboard selection-roam** (Shift+Left/Right steps candles within a series, Shift+Up/Down switches series, plain arrows pan), backed by **`KeyboardSelectionRoam.candlestickChartRoam`**. *(Shipped in 1.1.0; screenshot-tested in the Android showcase.)*
 
+## Box-and-whisker (boxplot)
+
+Cartesian distribution chart: **`BoxPlotChartSpec`** holds **`BoxPlotSeries`** of **`BoxPlotEntry`** (`x`, `min`, `q1`, `median`, `q3`, `max`, `outliers`) with per-series **`BoxPlotStyle`** (box fill/alpha, border, median, whisker, outlier colors + widths). Each category draws the Q1–Q3 box, a median line, whiskers with end caps, and outlier points. **`BoxPlotEntry.fromSamples(x, values, whiskerMultiplier)`** computes the five-number summary (linear-interpolation quartiles + Tukey 1.5·IQR whiskers/outliers). Shares the cartesian axis + viewport stack: pan/zoom, tap selection (**`BoxPlotHitResolver`**), no-data, Image-role accessibility with `accessibilityCustomActions`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
+## Waterfall
+
+Cartesian running-total chart: **`WaterfallChartSpec`** holds an ordered list of **`WaterfallEntry`** (`delta`, `isTotal`, `label`). Each step's bar floats from the running total before the step to the total after it — increases, decreases, and **`isTotal`** markers (spanning `0..runningTotal`) are colored distinctly — with optional connector lines. Shares the cartesian axis + viewport stack: pan/zoom, tap selection (**`WaterfallHitResolver`**), no-data, Image-role accessibility with `accessibilityCustomActions`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Gauge / progress-ring
 
 Radial progress ring: **`GaugeChartSpec`** (`progress` 0..1, `trackColor`, `progressColor`, `strokeWidthPx`, `roundedCaps`, `startAngleDegrees`, `sweepDegrees`) draws a track + progress arc with an optional **`centerContent`** composable slot. **Non-interactive** — no pan/zoom/selection. *(Shipped in 1.1.0.)*

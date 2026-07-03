@@ -77,7 +77,7 @@ It currently contains:
 - `model`
   Immutable chart data like `LineSeries`, `ScatterSeries`, `BarGroup`, `PieChartSlice`, `ChartPoint`
 - `spec`
-  Immutable chart configuration such as `LineChartSpec`, `ScatterChartSpec`, `BarChartSpec`, `PieChartSpec`, `RadarChartSpec`, `SankeyChartSpec`, `HeatmapChartSpec`, `CandlestickChartSpec`, `GaugeChartSpec`, `AxisSpec`, `ChartAccessibilitySpec` / `ChartLiveRegionMode`; additive 1.1.0 types `ReferenceLine` / `ReferenceOrientation`, `MarkerShape`, `AreaFillMode`
+  Immutable chart configuration such as `LineChartSpec`, `ScatterChartSpec`, `BarChartSpec`, `PieChartSpec`, `RadarChartSpec`, `SankeyChartSpec`, `HeatmapChartSpec`, `CandlestickChartSpec`, `BoxPlotChartSpec`, `WaterfallChartSpec`, `GaugeChartSpec`, `AxisSpec`, `ChartAccessibilitySpec` / `ChartLiveRegionMode`; additive 1.1.0 types `ReferenceLine` / `ReferenceOrientation`, `MarkerShape`, `AreaFillMode`; additive 1.2.0 types `ErrorBarsSpec`, `TrendlineSpec`, `CrosshairSpec`
 - `layout`
   Planner inputs, outputs, ticks, legend entries, and draw commands
 
@@ -85,7 +85,7 @@ It currently contains:
 `chart-compose` is the public Compose-facing module.
 
 It currently contains:
-- public chart composables: `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`, `HeatmapChart`, `CandlestickChart`, `GaugeChart`, `Sparkline`
+- public chart composables: `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`, `HeatmapChart`, `CandlestickChart`, `BoxPlotChart`, `WaterfallChart`, `GaugeChart`, `Sparkline`; plus the `ChartDataTable` "view data" composable and `rememberStreamingSeries` streaming helper
 - public state types: `ChartViewportState`, `ChartSelectionState`
 - helpers: default viewport, gesture config (**`ChartGestureConfig`** + companion presets for hosts / iOS QA), markers + **`ChartMarkerPlacement`** / **`ChartMarkerCalloutLeader`**, no-data, **`ChartAnimationPolicy`** (opt-in programmatic viewport easing, optional gesture chase, marker highlight fade in/out on selection / clear, optional **`LineChart`** data morph), **`MaterialChartPalette`** / **`withMaterialSeriesColors`**-style helpers (`materialChartPalette()`, `Color.toChartColor()`), custom accessibility actions
 - internal gesture adapter, fling runtime, accessibility semantics (including optional **marker focus handoff** when `ChartAccessibilitySpec.requestFocusOnMarker` is set on a spec, and optional **Shift+arrow selection roam** when `keyboardSelectionRoamEnabled` is set)
@@ -107,7 +107,7 @@ It currently contains:
 ## Current Rendering Pipeline
 The current rendering pipeline is:
 
-1. App builds `LineChartSpec`, `BarChartSpec`, `StackedBarChartSpec`, `ScatterChartSpec`, `PieChartSpec`, `RadarChartSpec`, `SankeyChartSpec`, `HeatmapChartSpec`, `CandlestickChartSpec`, or `GaugeChartSpec`
+1. App builds `LineChartSpec`, `BarChartSpec`, `StackedBarChartSpec`, `ScatterChartSpec`, `PieChartSpec`, `RadarChartSpec`, `SankeyChartSpec`, `HeatmapChartSpec`, `CandlestickChartSpec`, `BoxPlotChartSpec`, `WaterfallChartSpec`, or `GaugeChartSpec`
 2. Composable resolves a default viewport if no state is supplied
 3. `ChartPlanner` runs on `ChartLayoutInput` (with **`labelLayoutScale`** aligned to host font scale in built-in composables); Compose typically performs a **measured second pass** after `TextMeasurer` fills tick/legend metrics (and **pie slice label** metrics when `PieChartSpec.sliceLabels` is enabled). Cartesian composables reuse **`ChartPlanner.computeCartesianTickValuePass`** (`TickValuePass`) across those passes when the viewport and primary axes are unchanged, then the planner computes:
    - plot bounds
@@ -128,7 +128,7 @@ The planner matches a **multi-pass** shape (measurement is host-driven; core rea
 | Tick values | Domain ticks before pixel density | `TickValuePass`, `ChartPlanner.computeCartesianTickValuePass` |
 | Chrome | Legend rows + reserved insets for axes | `ChartChromeLayout.kt` (`buildLegendEntries`, `buildReservedRegions`) |
 | Final cartesian layout | Plot `RectD`, `ChartTransform`, resolved `AxisTick` lists | `CartesianLayoutPlanner` → `CartesianFrame` |
-| Draw plan | `DrawCommand` lists (grid, series, axes, selection) | `ChartPlanner.planLineChart` / `planBarChart` / `planScatterChart` / `planCombinedCartesianChart` / `planSankeyChart` / `planHeatmapChart` / `planCandlestickChart` / `planGaugeChart` |
+| Draw plan | `DrawCommand` lists (grid, series, axes, selection) | `ChartPlanner.planLineChart` / `planBarChart` / `planScatterChart` / `planCombinedCartesianChart` / `planSankeyChart` / `planHeatmapChart` / `planCandlestickChart` / `planBoxPlotChart` / `planWaterfallChart` / `planGaugeChart` |
 
 `planPieChart` uses chrome helpers + radial layout only (empty axis ticks). See **[`roadmap.md`](roadmap.md)** for planner-evolution direction.
 

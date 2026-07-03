@@ -24,6 +24,9 @@ import com.mena97villalobos.composeplotlib.core.model.BarGroup
  * legends. Hidden groups are excluded from drawing but still occupy a legend row. Empty by default.
  * @property annotations Freeform data-anchored marks (points, text, boxes, segments) drawn over the plot; empty by
  * default. See [ChartAnnotation].
+ * @property errorBars Styling for per-entry uncertainty whiskers; drawn only for **vertical** bar entries that set
+ * [BarEntry.yLow][com.mena97villalobos.composeplotlib.core.model.BarEntry.yLow] /
+ * [yHigh][com.mena97villalobos.composeplotlib.core.model.BarEntry.yHigh]. See [ErrorBarsSpec].
  */
 data class BarChartSpec(
     val groups: List<BarGroup>,
@@ -45,6 +48,7 @@ data class BarChartSpec(
     val dataLabels: DataLabelsSpec = DataLabelsSpec(),
     val hiddenSeriesIds: Set<String> = emptySet(),
     val annotations: List<ChartAnnotation> = emptyList(),
+    val errorBars: ErrorBarsSpec = ErrorBarsSpec(),
 ) {
     init {
         requireUniqueIds(groups.map { it.id }, "BarChartSpec.groups ids")

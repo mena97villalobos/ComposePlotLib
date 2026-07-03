@@ -7,6 +7,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.TextStyle
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
@@ -17,6 +18,7 @@ import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 
 @Composable
 @ReadOnlyComposable
@@ -64,6 +66,36 @@ internal fun chartLabelTextStyles(spec: CandlestickChartSpec): ChartLabelTextSty
     val typo = MaterialTheme.typography
     val legend = legendStyleFrom(typo, spec.legend.style)
     val y = tickStyleFrom(typo, spec.yAxis.labelStyle)
+    return ChartLabelTextStyles(
+        xAxis = tickStyleFrom(typo, spec.xAxis.labelStyle),
+        yAxis = y,
+        legend = legend,
+        pieSliceLabel = legend,
+        yAxisSecondaryTick = y,
+    )
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: BoxPlotChartSpec): ChartLabelTextStyles {
+    val typo = MaterialTheme.typography
+    val legend = legendStyleFrom(typo, spec.legend.style)
+    val y = tickStyleFrom(typo, spec.yAxis.labelStyle)
+    return ChartLabelTextStyles(
+        xAxis = tickStyleFrom(typo, spec.xAxis.labelStyle),
+        yAxis = y,
+        legend = legend,
+        pieSliceLabel = legend,
+        yAxisSecondaryTick = y,
+    )
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: WaterfallChartSpec): ChartLabelTextStyles {
+    val typo = MaterialTheme.typography
+    val y = tickStyleFrom(typo, spec.yAxis.labelStyle)
+    val legend = legendStyleFrom(typo, LegendStyle())
     return ChartLabelTextStyles(
         xAxis = tickStyleFrom(typo, spec.xAxis.labelStyle),
         yAxis = y,

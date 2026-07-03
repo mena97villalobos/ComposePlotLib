@@ -18,27 +18,31 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ## 1. Current state (as of 2026-07, `1.2.0` unreleased)
 
-**Chart families (12):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+**Chart families (14):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
 `RadarChart`, `SankeyChart` (orientation, Tableau-10 palette, gradient ribbons — reworked for 1.2.0),
-`HeatmapChart`, `GaugeChart`, `CandlestickChart`, plus the axis-less `Sparkline` wrapper.
+`HeatmapChart`, `GaugeChart`, `CandlestickChart`, `BoxPlotChart` (Tukey five-number summaries), `WaterfallChart`
+(running-total bars), plus the axis-less `Sparkline` wrapper.
 
 **Cartesian depth:** area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`), reference/threshold
 lines, marker shapes with per-point overrides, per-point bubble sizing on scatter, clustered/stacked/horizontal
-bars, dual (secondary, data-derived) Y on combined charts.
+bars, dual (secondary, data-derived) Y on combined charts, error bars (`ErrorBarsSpec` on line/scatter/vertical
+bars), and fitted trendline overlays (`TrendlineSpec`: linear + moving-average, optional confidence band).
 
-**Axes & scales:** `Linear`, `Category`, `TimeEpochMillis` (UTC / fixed-offset tick policies), tick-density and
-X-label overlap strategies. **No log scale, no inverted axis, UTC-only time.**
+**Axes & scales:** `Linear`, `Category`, `TimeEpochMillis` (UTC / fixed-offset tick policies), `Log` / `SymLog`,
+tick-density and X-label overlap strategies. **No inverted axis, UTC-only time.**
 
 **Interaction:** tap-select (per-family hit resolvers), pan, per-axis pinch zoom, double-tap (in / out /
 reset), fling, keyboard viewport nudge and selection roam, programmatic `ChartViewportState`, custom marker
-slot, gesture presets. **Tap-centric — no hover, brush, crosshair, or legend interactivity.**
+slot, gesture presets, interactive legend toggle, crosshair / axis-pointer (`CrosshairSpec`, line/scatter).
+**No hover or brush yet.**
 
-**Theming:** `ChartColor` (named presets), a Material 3 palette bridge, per-element style classes,
-`ChartChromeTheme`, Heatmap/Sankey color scales.
+**Theming:** `ChartColor` (named presets + `rgb`/`argb`/`hex`/`hsl`/`withAlpha` factories), a Material 3 palette
+bridge, per-element style classes, `ChartChromeTheme`, Heatmap/Sankey color scales.
 
 **Accessibility:** Image role + focus, keyboard viewport/selection roam (most families), live region,
-custom actions, reduced-motion. **No data-table alternative or chart-level narrative summary.**
+custom actions, reduced-motion, data-table "view data" surface (`ChartDataTable`). **No chart-level narrative
+summary yet.**
 
 **Performance:** viewport windowing → pixel clip, Uniform / MinMaxY decimation, plot-width pixel budget,
 tick-value reuse, grid-line cache.
@@ -85,10 +89,10 @@ The highest-leverage gaps versus nearly every competitor, each a strong architec
    dimmed legend row) + `onLegendItemClick` tap-to-toggle on the composables. *(M, strong)*
 5. ~~**Annotations layer**~~ — ✅ **shipped:** `ChartAnnotation` (Point / Text / Box-region / Segment) anchored in
    data space, on line/scatter/bar specs (`annotations`). *(L, strong)*
-6. **`ChartColor` ergonomics** — `rgb()` / hex / `withAlpha()` factory helpers on the value class; a frequent
-   papercut, trivial and KMP-safe. *(S, strong)*
-7. **Crosshair / axis-pointer** — a tracking rule + axis value labels following the pointer/selection,
-   extending the existing selection + marker pipeline. *(M, strong)*
+6. ~~**`ChartColor` ergonomics**~~ — ✅ **shipped:** `ChartColor.rgb()` / `argb()` / `hex()` / `hsl()` factories,
+   `withAlpha(fraction)`, and `alpha`/`red`/`green`/`blue` channel accessors. *(S, strong)*
+7. ~~**Crosshair / axis-pointer**~~ — ✅ **shipped:** `CrosshairSpec` on line/scatter draws vertical + horizontal
+   guidelines through the selection plus axis-value chips at the plot edges. *(M, strong)*
 
 ---
 
@@ -113,9 +117,9 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Error bars / uncertainty whiskers (line/bar/scatter) | P1 | M | strong | Per-point low/high is model data; whiskers are planner output. |
-| Box-and-whisker (boxplot) family | P1 | M | strong | Quartile/whisker/outlier geometry over a category axis. |
-| Waterfall family (running-total bars + connectors) | P1 | M | strong | Bar layout variant with cumulative baselines. |
+| ~~Error bars / uncertainty whiskers (line/bar/scatter)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `ChartPoint.yLow`/`yHigh` + `BarEntry.yLow`/`yHigh` (vertical bars) + `ErrorBarsSpec`; whiskers are planner output. |
+| ~~Box-and-whisker (boxplot) family~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `BoxPlotChart` / `BoxPlotChartSpec` + `BoxPlotEntry.fromSamples` (Tukey quartiles/whiskers/outliers). |
+| ~~Waterfall family (running-total bars + connectors)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `WaterfallChart` / `WaterfallChartSpec` (floating bars, sign coloring, total markers, connectors). |
 | OHLC/candlestick variants (HLC bar, Heikin-Ashi, hollow) | P3 | S | strong | Transform + body-style tweaks on the shipped candlestick. |
 | Histogram / density / violin | P3 | M | moderate | Binning/KDE transforms; bins render as bars. |
 | Financial extras: range-selector strip, data grouping, indicators (SMA/EMA/RSI/MACD/Bollinger) | P3 | XL | moderate | Indicators are core math; the navigator is a linked viewport. |
@@ -141,14 +145,14 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 |---|---|---|---|---|
 | ~~Annotations layer (point / text / box-region / segment)~~ ✅ | ~~P0~~ | L | strong | **Shipped:** `ChartAnnotation` on line/scatter/bar (`annotations`). |
 | ~~Data labels (per-point/bar value labels + collision avoidance)~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `DataLabelsSpec` on line/scatter/bar. |
-| Trendline / regression overlays (linear, moving-average) + confidence bands | P1 | M | strong | Ideal `chart-core` math → ordinary series/band. Differentiator vs Vico/Koala. |
+| ~~Trendline / regression overlays (linear, moving-average) + confidence bands~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `TrendlineSpec` (`TrendlineType.Linear` / `MovingAverage`) + confidence bands on line/scatter; public `LinearRegression` in `chart-core`. |
 | Line interpolation: stepped and spline/monotone-cubic | P2 | M | strong | Curve fitting → path segments the DrawCommand model already supports. |
 
 ### 4.5 Interaction & exploration
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Crosshair / axis-pointer | P1 | M | strong | Axis-projected guideline on the selection pipeline. |
+| ~~Crosshair / axis-pointer~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `CrosshairSpec` (line/scatter) — vertical + horizontal guidelines + axis-value chips on the selection pipeline. |
 | ~~Interactive legend (toggle)~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `hiddenSeriesIds` + `onLegendItemClick` (line/scatter/bar). Hover-highlight still open. |
 | Range brush / box selection (+ linked filtering) | P2 | L | moderate | Drag-rectangle → domain selection + selection-region model. |
 | Range selector / minimap / brush navigator | P2 | L | moderate | Compact overview bound to the main `ChartViewportState`. |
@@ -160,7 +164,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Streaming / real-time append helpers (incremental push, ring-buffer, append transitions) | P1 | L | moderate | A diff-aware model producer that appends without full replan, respecting immutability (Vico-style). |
+| ~~Streaming / real-time append helpers (incremental push, ring-buffer, append transitions)~~ ✅ | ~~P1~~ | L | moderate | **Shipped:** `StreamingSeriesBuffer` (bounded ring buffer, `chart-core`) + `rememberStreamingSeries` / `StreamingSeriesState` (observable snapshots, pairs with data-transition easing). |
 | ~~Null-gap handling~~ ✅ | ~~P0~~ | S | strong | **Shipped:** `ChartPoint.gap(x)` + `LineRenderSpec.connectAcrossGaps`. |
 | LTTB (largest-triangle-three-buckets) decimation | P2 | S | strong | Shape-preserving alternative to Uniform/MinMaxY. |
 | Percent / normalized stacking (see 4.1) | P2 | S | strong | Stack-offset mode. |
@@ -169,7 +173,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| `ChartColor` constructors (`rgb`/hex/hsl + `withAlpha`) | P1 | S | strong | Frequent papercut; trivial. |
+| ~~`ChartColor` constructors (`rgb`/hex/hsl + `withAlpha`)~~ ✅ | ~~P1~~ | S | strong | **Shipped:** `ChartColor.rgb`/`argb`/`hex`/`hsl` + `withAlpha` + channel accessors. |
 | Named sequential/diverging/categorical palettes (viridis, turbo, tableau, colorbrewer) | P2 | M | strong | Palette tables + interpolation; complements Heatmap/Sankey scales. |
 | Named light/dark theme presets + auto dark-mode adaptation | P3 | S | strong | Package opinionated presets on the Material bridge. |
 | Dark-mode-aware **data** palettes (planner does not auto-shift series colors today) | P3 | M | moderate | Requires a theme-aware color-resolution pass. |
@@ -180,7 +184,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Data-table alternative / "view data" surface (screen-reader-navigable value list) | P1 | M | strong | Planner knows every datum; high-value, KMP-clean. |
+| ~~Data-table alternative / "view data" surface (screen-reader-navigable value list)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `ChartDataTable` model + `lineChartDataTable` / `scatterChartDataTable` / `barChartDataTable` builders (`chart-core`) + `ChartDataTable(...)` composable with row-level semantics. |
 | Keyboard selection-roam for Heatmap & Gauge (parity with the rest) | P2 | S | strong | Add grid/arc roam resolvers to the existing pattern. |
 | Whole-chart auto-generated screen-reader summary (trend, min/max, series count) | P2 | M | strong | Chart-level narrative in `chart-core`; matches Highcharts/ECharts a11y. |
 | Sonification (data-to-audio) | P3 | XL | weak | Platform audio via `expect`/`actual`; niche, defer. |

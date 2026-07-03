@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.BoxPlotChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
@@ -35,6 +36,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowc
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChartShowcaseScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,6 +118,14 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Candlestick ->
                     Column(detailModifier) {
                         CandlestickChartShowcaseScreen()
+                    }
+                ShowcaseDestination.BoxPlot ->
+                    Column(detailModifier) {
+                        BoxPlotChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Waterfall ->
+                    Column(detailModifier) {
+                        WaterfallChartShowcaseScreen()
                     }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
@@ -204,6 +214,18 @@ private fun ShowcaseHomeScreen(
             Text("Candlestick chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.BoxPlot) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Box plot chart")
+        }
+        OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Waterfall) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Waterfall chart")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -226,5 +248,7 @@ private enum class ShowcaseDestination(
     Heatmap("Heatmap chart"),
     Gauge("Gauge chart"),
     Candlestick("Candlestick chart"),
+    BoxPlot("Box plot chart"),
+    Waterfall("Waterfall chart"),
     DomainAxes("Domain axes"),
 }

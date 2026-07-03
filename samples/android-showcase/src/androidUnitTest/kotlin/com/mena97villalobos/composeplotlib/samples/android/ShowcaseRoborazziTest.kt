@@ -17,6 +17,7 @@ import com.dropbox.differ.SimpleImageComparator
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.BoxPlotChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
@@ -27,6 +28,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowc
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChartShowcaseScreen
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -348,6 +350,30 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     CandlestickChartShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun boxPlotChartShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    BoxPlotChartShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun waterfallChartShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    WaterfallChartShowcaseScreen()
                 }
             }
         }
