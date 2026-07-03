@@ -37,6 +37,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
@@ -700,6 +701,93 @@ object ChartPlanner {
                     legendEntries = emptyList(),
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = emptyList(),
+                ),
+        )
+    }
+
+    /**
+     * Bullet graph: horizontal qualitative range [bands][BulletChartSpec.bands] behind a featured measure bar
+     * ([value][BulletChartSpec.value]) and an optional [target][BulletChartSpec.target] marker. Read-only (no
+     * selection); optional min/max bound labels sit in the bottom padding.
+     */
+    fun planBulletChart(
+        input: ChartLayoutInput,
+        spec: BulletChartSpec,
+    ): BulletChartPlan {
+        val labelScale = input.labelLayoutScale.normalizedLabelLayoutScale()
+        val bounds = input.toPlanningBounds()
+        val reservedRegions =
+            buildReservedRegions(
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                xTickLabels = emptyList(),
+                yTickLabels = emptyList(),
+                legendEntries = emptyList(),
+                textMeasurements = input.textMeasurements,
+                xAxisEnabled = false,
+                yAxisEnabled = false,
+                labelLayoutScale = labelScale,
+            )
+        val plot = bounds.canvasBounds.inset(reservedRegions.contentInsets)
+        val plotCommands = mutableListOf<DrawCommand>()
+        val overlayCommands = mutableListOf<DrawCommand>()
+        val span = spec.domainMax - spec.domainMin
+
+        if (plot.width > 0.0 && plot.height > 0.0 && span > 0.0 && span.isFinite()) {
+            fun toX(v: Double): Double = (plot.left + ((v - spec.domainMin) / span) * plot.width).coerceIn(plot.left, plot.right)
+
+            var prev = spec.domainMin
+            for (band in spec.bands) {
+                if (!band.end.isFinite()) continue
+                val x0 = toX(prev)
+                val x1 = toX(band.end)
+                if (x1 > x0) plotCommands += DrawCommand.Rect(RectD(x0, plot.top, x1, plot.bottom), band.color)
+                prev = band.end
+            }
+
+            val measureThickness = plot.height * spec.measureThicknessFraction.coerceIn(0.05, 1.0)
+            val measureTop = plot.top + (plot.height - measureThickness) / 2.0
+            val valueX = toX(spec.value)
+            if (valueX > plot.left) {
+                plotCommands +=
+                    DrawCommand.Rect(RectD(plot.left, measureTop, valueX, measureTop + measureThickness), spec.measureColor)
+            }
+
+            spec.target?.let { t ->
+                if (t.isFinite()) {
+                    val tx = toX(t)
+                    plotCommands +=
+                        DrawCommand.Line(
+                            start = OffsetD(tx, plot.top),
+                            end = OffsetD(tx, plot.bottom),
+                            color = spec.targetColor,
+                            strokeWidth = spec.targetThicknessPx,
+                        )
+                }
+            }
+
+            if (spec.showBoundLabels) {
+                val (charW, _) = estimateLabelCharBox(input)
+                overlayCommands +=
+                    DrawCommand.Text(spec.valueFormatter(spec.domainMin), OffsetD(plot.left, plot.bottom + 4.0), ChartColor.Gray)
+                val maxLabel = spec.valueFormatter(spec.domainMax)
+                val maxWidth = charW.coerceAtLeast(1.0) * maxLabel.length
+                overlayCommands +=
+                    DrawCommand.Text(maxLabel, OffsetD((plot.right - maxWidth).coerceAtLeast(plot.left), plot.bottom + 4.0), ChartColor.Gray)
+            }
+        }
+
+        return BulletChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plot,
+                    reservedRegions = reservedRegions,
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
                 ),
         )
     }

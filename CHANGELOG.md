@@ -96,6 +96,13 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Reversed axis direction** — `AxisSpec.inverted` reverses an axis (X right→left, Y top→bottom) via the plot
   transform, so data, grid, ticks, markers, and selection all follow on every cartesian family. Pan/zoom
   direction is additionally reversed on `LineChart` / `ScatterChart` / `BarChart`.
+- **Bubble chart family** — `BubbleChart` composable + `BubbleChartSpec` / `BubbleSeries` / `BubblePoint`,
+  where each bubble's size (`z`) maps to a radius via an **area-proportional** `BubbleSizeScale` (`radiusFor`,
+  `auto`, `legendTicks`). Rendering, gestures, selection, and markers reuse the scatter pipeline
+  (`BubbleChartSpec.toScatterSpec`); the composable overlays an optional size legend.
+- **Bullet graph family** — `BulletChart` composable + `BulletChartSpec` / `BulletBand`: a compact linear KPI
+  display with qualitative range bands behind a measure bar and an optional target marker. Read-only
+  (gauge-style, no pan/zoom/selection), with optional min/max bound labels.
 
 ### Changed
 

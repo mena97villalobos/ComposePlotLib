@@ -8,6 +8,7 @@ import androidx.compose.ui.text.TextStyle
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
@@ -73,6 +74,16 @@ internal fun chartLabelTextStyles(spec: CandlestickChartSpec): ChartLabelTextSty
         pieSliceLabel = legend,
         yAxisSecondaryTick = y,
     )
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(
+    @Suppress("UNUSED_PARAMETER") spec: BulletChartSpec,
+): ChartLabelTextStyles {
+    // Bullet draws only min/max bound labels via the x-axis text slot.
+    val y = MaterialTheme.typography.labelSmall
+    return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
 }
 
 @Composable

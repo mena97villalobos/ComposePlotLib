@@ -18,6 +18,8 @@ The current public surface is intentionally small.
 - `HeatmapChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — 2-D grid of colored cells (`HeatmapChartSpec`); each cell's color encodes a numeric value via `HeatmapColorScale`. Column labels map to the X axis, row labels to the Y axis (row 0 at the bottom). Tap selects a cell via `HeatmapHitResolver`; pan/zoom reuse `ChartViewportState`. Same marker/no-data/a11y shape as the other cartesian charts (Image role + optional `accessibilityCustomActions`; no keyboard selection-roam).
 - `BoxPlotChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — box-and-whisker chart (`BoxPlotChartSpec`); per category draws the Q1–Q3 box, median line, whiskers with caps, and outlier points. Pan/zoom/fling/double-tap, tap **and Shift+arrow keyboard selection-roam**, an optional **marker** slot (five-number summary), no-data, and Image-role a11y.
 - `WaterfallChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — waterfall / running-total chart (`WaterfallChartSpec`); floating bars colored by increase/decrease/total with optional connectors. Pan/zoom/fling/double-tap, tap **and Shift+Left/Right keyboard selection-roam**, an optional **marker** slot (contribution + running total), no-data, and Image-role a11y.
+- `BubbleChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme, showSizeLegend, sizeLegendValueFormatter)` — bubble chart (`BubbleChartSpec`); bubble area encodes `z` via `BubbleSizeScale`. Reuses the scatter pipeline (`toScatterSpec`) for rendering/gestures/selection/markers; overlays an optional size legend.
+- `BulletChart(spec, modifier, chromeTheme)` — linear KPI **bullet graph** (`BulletChartSpec`); qualitative bands + measure bar + optional target marker. **Non-interactive** (gauge-style): no viewport, selection, or gesture parameters.
 - `GaugeChart(spec, modifier, centerContent)` — radial progress / gauge ring (`GaugeChartSpec`); track + progress arc with optional rounded caps and an optional **`centerContent`** slot. **Non-interactive**: no viewport, selection, or gesture parameters.
 - `Sparkline(...)` — thin convenience wrapper over `LineChart` with **axes, grid, and legend off**, zero padding, and **non-interactive** defaults; optional area fill. Intended for inline/compact trend rendering.
 
@@ -234,6 +236,22 @@ Main types:
 - `WaterfallEntry` — `delta`, `isTotal` (a `0..runningTotal` marker that does not change the running total), `label`.
 
 Cartesian family on the shared axis + viewport stack: floating running-total bars colored by increase/decrease/total with optional connectors, **pan/zoom**, tap selection via `WaterfallHitResolver` (`HighlightTarget.seriesId == WaterfallHitResolver.SERIES_ID`, `pointIndex` = entry index), **Shift+Left/Right keyboard selection-roam** (`KeyboardSelectionRoam.waterfallChartRoam`) when `keyboardSelectionRoamEnabled`, and an optional **marker** slot. Compose entry: `WaterfallChart`. Image-role a11y with optional `accessibilityCustomActions`.
+
+### Bubble
+Main types:
+- `BubbleChartSpec` — `series: List<BubbleSeries>`, `sizeScale: BubbleSizeScale`, `accessibility`, `xAxis` / `yAxis`, `grid`, `legend`, `selectionStyle`, `contentPadding`. `toScatterSpec()` projects to a `ScatterChartSpec` (per-point `markerRadius` / `markerColor`).
+- `BubbleSeries` — `id`, `label`, `points: List<BubblePoint>`, `color`.
+- `BubblePoint` — `x`, `y`, `z` (size value), optional per-bubble `color`.
+- `BubbleSizeScale` — `minValue` / `maxValue` / `minRadiusPx` / `maxRadiusPx`; `radiusFor(z)` is **area-proportional**, plus `auto(values)` and `legendTicks(count)`.
+
+Reuses the scatter pipeline for planning, hit-testing, pan/zoom, and markers. Compose entry: `BubbleChart` (overlays a size legend via `showSizeLegend`).
+
+### Bullet
+Main types:
+- `BulletChartSpec` — `value`, `bands: List<BulletBand>`, `domainMax`, `target?`, `domainMin`, `measureColor`, `targetColor`, `measureThicknessFraction`, `targetThicknessPx`, `id`, `showBoundLabels`, `valueFormatter`, `accessibility`, `contentPadding`.
+- `BulletBand` — `end`, `color` (a qualitative range from the previous band's end).
+
+Read-only linear KPI display (no selection/pan-zoom). Compose entry: `BulletChart`.
 
 ### Heatmap
 Main types:

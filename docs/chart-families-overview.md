@@ -48,6 +48,14 @@ Cartesian distribution chart: **`BoxPlotChartSpec`** holds **`BoxPlotSeries`** o
 
 Cartesian running-total chart: **`WaterfallChartSpec`** holds an ordered list of **`WaterfallEntry`** (`delta`, `isTotal`, `label`). Each step's bar floats from the running total before the step to the total after it — increases, decreases, and **`isTotal`** markers (spanning `0..runningTotal`) are colored distinctly — with optional connector lines. Shares the cartesian axis + viewport stack: pan/zoom, tap **and keyboard selection-roam** (Shift+Left/Right steps the sequence — via **`WaterfallHitResolver`** / **`KeyboardSelectionRoam.waterfallChartRoam`**), an optional **marker** slot (contribution + running total), no-data, and Image-role accessibility with `accessibilityCustomActions`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
+## Bubble
+
+Cartesian magnitude chart: **`BubbleChartSpec`** holds **`BubbleSeries`** of **`BubblePoint`** (`x`, `y`, `z`, optional `color`). Each bubble's **area** scales with `z` via an **area-proportional** **`BubbleSizeScale`** (`radiusFor` / `auto` / `legendTicks`). Rendering, gestures, selection, and markers reuse the scatter pipeline — **`BubbleChartSpec.toScatterSpec()`** projects bubbles to scatter points with per-point `markerRadius`. The `BubbleChart` composable overlays an optional **size legend**. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
+## Bullet
+
+Compact linear KPI display (Stephen Few's bullet graph): **`BulletChartSpec`** holds a featured `value` (measure bar), qualitative range **`BulletBand`**s (background), an optional `target` marker, and a `[domainMin, domainMax]` scale. **Read-only** — no axes/selection/pan-zoom (like the Gauge); optional min/max bound labels. Compose entry: `BulletChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Gauge / progress-ring
 
 Radial progress ring: **`GaugeChartSpec`** (`progress` 0..1, `trackColor`, `progressColor`, `strokeWidthPx`, `roundedCaps`, `startAngleDegrees`, `sweepDegrees`) draws a track + progress arc with an optional **`centerContent`** composable slot. **Non-interactive** — no pan/zoom/selection. *(Shipped in 1.1.0.)*

@@ -26,6 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BoxPlotChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.BubbleChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.BulletChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
@@ -127,6 +129,14 @@ fun ShowcaseApp() {
                     Column(detailModifier) {
                         WaterfallChartShowcaseScreen()
                     }
+                ShowcaseDestination.Bubble ->
+                    Column(detailModifier) {
+                        BubbleChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Bullet ->
+                    Column(detailModifier) {
+                        BulletChartShowcaseScreen()
+                    }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
                         DomainAxesShowcaseScreen()
@@ -226,6 +236,18 @@ private fun ShowcaseHomeScreen(
             Text("Waterfall chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Bubble) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Bubble chart")
+        }
+        OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Bullet) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Bullet graph")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -250,5 +272,7 @@ private enum class ShowcaseDestination(
     Candlestick("Candlestick chart"),
     BoxPlot("Box plot chart"),
     Waterfall("Waterfall chart"),
+    Bubble("Bubble chart"),
+    Bullet("Bullet graph"),
     DomainAxes("Domain axes"),
 }

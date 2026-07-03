@@ -6,6 +6,8 @@ import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BubbleChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
@@ -43,6 +45,14 @@ fun defaultViewport(spec: LineChartSpec): ChartViewport {
         yRange = ClosedRangeD(minY, maxY),
     )
 }
+
+/** [ChartViewport] for a bubble chart — derived from its equivalent scatter projection. */
+fun defaultViewport(spec: BubbleChartSpec): ChartViewport = defaultViewport(spec.toScatterSpec())
+
+/** Trivial unit [ChartViewport] for a bullet graph (linear, non-cartesian — the plan ignores the viewport). */
+fun defaultViewport(
+    @Suppress("UNUSED_PARAMETER") spec: BulletChartSpec,
+): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
 
 /** [ChartViewport] that fits all scatter points; uses a small default range when there is no (finite) data. */
 fun defaultViewport(spec: ScatterChartSpec): ChartViewport {
