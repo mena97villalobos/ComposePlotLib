@@ -32,6 +32,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsS
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RangeBrushShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.RangeSelectorShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.StackedAreaChartShowcaseScreen
@@ -417,6 +418,18 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     RangeBrushShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun rangeSelectorShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    RangeSelectorShowcaseScreen()
                 }
             }
         }

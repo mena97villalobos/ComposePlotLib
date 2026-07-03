@@ -290,6 +290,38 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartRangeBrush {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/ChartRangeSelectorKt {
+	public static final fun ChartRangeSelector (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/ChartRangeSelectorStyle;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/ChartRangeSelectorStyle {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;DD)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component2 ()D
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component5 ()D
+	public final fun component6 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component7 ()D
+	public final fun component8 ()D
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;DD)Lcom/mena97villalobos/composeplotlib/chart/ChartRangeSelectorStyle;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/chart/ChartRangeSelectorStyle;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/chart/ChartRangeSelectorStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDimColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getHandleWidthPx ()D
+	public final fun getLineColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getLineWidthPx ()D
+	public final fun getVerticalInsetPx ()D
+	public final fun getWindowBorder ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getWindowBorderWidthPx ()D
+	public final fun getWindowFill ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/ChartTapGesturePolicy {
 	public static final field $stable I
 	public fun <init> ()V

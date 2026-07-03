@@ -127,6 +127,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   `onBrush`, with `ChartBrushAxis.Horizontal` / `Vertical` / `Both`. While a brush is attached it takes over the
   drag channel (pan/zoom/tap suspended). Pairs with `ChartViewportState.zoomTo(...)` for zoom-to-selection or
   drives linked filtering.
+- **Range selector / minimap** — `ChartRangeSelector(spec, viewportState, style)` renders a compact full-width
+  overview over the whole pan/zoom domain with a draggable window bound to the shared `ChartViewportState`: drag
+  the window to pan, its edges to zoom, or outside it to jump. Place it beneath a chart sharing the same
+  viewport to get a brush navigator that stays in lock-step.
 
 ### Changed
 

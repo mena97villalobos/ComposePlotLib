@@ -40,6 +40,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsS
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RangeBrushShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.RangeSelectorShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.StackedAreaChartShowcaseScreen
@@ -161,6 +162,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.RangeBrush ->
                     Column(detailModifier) {
                         RangeBrushShowcaseScreen()
+                    }
+                ShowcaseDestination.RangeSelector ->
+                    Column(detailModifier) {
+                        RangeSelectorShowcaseScreen()
                     }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
@@ -303,6 +308,12 @@ private fun ShowcaseHomeScreen(
             Text("Range brush (box selection)")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.RangeSelector) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Range selector (minimap)")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -334,5 +345,6 @@ private enum class ShowcaseDestination(
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),
     RangeBrush("Range brush"),
+    RangeSelector("Range selector"),
     DomainAxes("Domain axes"),
 }
