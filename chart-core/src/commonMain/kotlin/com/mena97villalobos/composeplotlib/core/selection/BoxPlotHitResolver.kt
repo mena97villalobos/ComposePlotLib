@@ -17,17 +17,22 @@ object BoxPlotHitResolver {
             boxesHitTestFirst.firstOrNull { box ->
                 box.hitBounds.isValidForAxisAlignedHit() && box.hitBounds.contains(touchPoint)
             } ?: return null
-        val topCenter = OffsetD((hit.boxBounds.left + hit.boxBounds.right) / 2.0, hit.boxBounds.top)
+        return selectionFor(hit)
+    }
+
+    /** Builds the [ChartSelection] for [box]; shared by tap resolution and keyboard roam so they are identical. */
+    internal fun selectionFor(box: PlannedBox): ChartSelection {
+        val topCenter = OffsetD((box.boxBounds.left + box.boxBounds.right) / 2.0, box.boxBounds.top)
         return ChartSelection(
             target =
                 HighlightTarget(
-                    seriesId = hit.seriesId,
-                    pointIndex = hit.index,
-                    point = XyPoint(hit.entry.x, hit.entry.median),
+                    seriesId = box.seriesId,
+                    pointIndex = box.index,
+                    point = XyPoint(box.entry.x, box.entry.median),
                 ),
             pixelOffset = topCenter,
-            markerAnchor = hit.boxBounds.center,
-            hitBounds = hit.hitBounds,
+            markerAnchor = box.boxBounds.center,
+            hitBounds = box.hitBounds,
         )
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.chart.BoxPlotChart
 import com.mena97villalobos.composeplotlib.chart.ChartGestureConfig
+import com.mena97villalobos.composeplotlib.chart.DefaultChartMarker
 import com.mena97villalobos.composeplotlib.chart.defaultViewport
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
@@ -27,6 +28,7 @@ import com.mena97villalobos.composeplotlib.core.model.BoxPlotEntry
 import com.mena97villalobos.composeplotlib.core.model.BoxPlotSeries
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 
 @Composable
 fun BoxPlotChartShowcaseScreen() {
@@ -53,6 +55,11 @@ fun BoxPlotChartShowcaseScreen() {
                     ),
                 ),
             xAxis = AxisSpec(labelFormatter = { value -> labels.getOrNull(value.toInt()) ?: "" }),
+            accessibility =
+                ChartAccessibilitySpec(
+                    keyboardViewportNudgeEnabled = true,
+                    keyboardSelectionRoamEnabled = true,
+                ),
         )
     val viewportState = rememberChartViewportState(initialViewport = defaultViewport(spec))
     val selectionState = rememberChartSelectionState()
@@ -100,6 +107,7 @@ fun BoxPlotChartShowcaseScreen() {
             viewportState = viewportState,
             selectionState = selectionState,
             gestureConfig = ChartGestureConfig.cartesianInteractive(),
+            marker = { markerData -> DefaultChartMarker(markerData) },
         )
         Text(
             text =

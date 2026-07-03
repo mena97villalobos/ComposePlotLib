@@ -9,9 +9,11 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.core.layout.BarChartPlan
+import com.mena97villalobos.composeplotlib.core.layout.BoxPlotChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CandlestickChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedCartesianChartPlan
+import com.mena97villalobos.composeplotlib.core.layout.WaterfallChartPlan
 import com.mena97villalobos.composeplotlib.core.selection.KeyboardSelectionRoam
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
@@ -131,6 +133,58 @@ internal fun Modifier.chartCandlestickKeyboardSelectionRoam(
                 current = selectionState.selection,
                 deltaPoint = deltaPoint,
                 deltaSeries = deltaSeries,
+            ) ?: return@onKeyEvent false
+        selectionState.select(next)
+        true
+    }
+}
+
+internal fun Modifier.chartBoxPlotKeyboardSelectionRoam(
+    enabled: Boolean,
+    selectionState: ChartSelectionState,
+    tapSelectionEnabled: Boolean,
+    boxPlotPlan: () -> BoxPlotChartPlan?,
+): Modifier {
+    if (!enabled || !tapSelectionEnabled) return this
+    return onKeyEvent { event ->
+        if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
+        if (!event.isShiftPressed) return@onKeyEvent false
+        val plan = boxPlotPlan() ?: return@onKeyEvent false
+        val (deltaPoint, deltaSeries) = shiftArrowDeltas(event.key) ?: return@onKeyEvent false
+        val next =
+            KeyboardSelectionRoam.boxPlotChartRoam(
+                plan = plan,
+                current = selectionState.selection,
+                deltaPoint = deltaPoint,
+                deltaSeries = deltaSeries,
+            ) ?: return@onKeyEvent false
+        selectionState.select(next)
+        true
+    }
+}
+
+internal fun Modifier.chartWaterfallKeyboardSelectionRoam(
+    enabled: Boolean,
+    selectionState: ChartSelectionState,
+    tapSelectionEnabled: Boolean,
+    waterfallPlan: () -> WaterfallChartPlan?,
+): Modifier {
+    if (!enabled || !tapSelectionEnabled) return this
+    return onKeyEvent { event ->
+        if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
+        if (!event.isShiftPressed) return@onKeyEvent false
+        val plan = waterfallPlan() ?: return@onKeyEvent false
+        val delta =
+            when (event.key) {
+                Key.DirectionLeft -> -1
+                Key.DirectionRight -> 1
+                else -> return@onKeyEvent false
+            }
+        val next =
+            KeyboardSelectionRoam.waterfallChartRoam(
+                plan = plan,
+                current = selectionState.selection,
+                delta = delta,
             ) ?: return@onKeyEvent false
         selectionState.select(next)
         true

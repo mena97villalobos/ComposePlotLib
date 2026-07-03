@@ -4,11 +4,13 @@ import com.mena97villalobos.composeplotlib.core.domain.XyPoint
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.BarChartPlan
+import com.mena97villalobos.composeplotlib.core.layout.BoxPlotChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CandlestickChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedCartesianChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedHitTestLayer
 import com.mena97villalobos.composeplotlib.core.layout.PlannedBarSegment
 import com.mena97villalobos.composeplotlib.core.layout.PlannedCandle
+import com.mena97villalobos.composeplotlib.core.layout.WaterfallChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.forHitTestFromDrawOrder
 import com.mena97villalobos.composeplotlib.core.model.toXyPoints
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
@@ -224,6 +226,76 @@ object KeyboardSelectionRoam {
             pIdx = 0
         }
         return chartSelectionForCandle(ordered[pIdx])
+    }
+
+    /**
+     * Keyboard selection-roam over **planned** boxes: Shift+Left/Right step [deltaPoint] within a series along the
+     * x (category) axis; Shift+Up/Down switch series via [deltaSeries]. Both axes **clamp** (no wrap). Builds a
+     * [ChartSelection] identical to [BoxPlotHitResolver.resolvePlanned] so roam and tap selections are interchangeable.
+     */
+    fun boxPlotChartRoam(
+        plan: BoxPlotChartPlan,
+        current: ChartSelection?,
+        deltaPoint: Int,
+        deltaSeries: Int,
+    ): ChartSelection? {
+        if (deltaPoint == 0 && deltaSeries == 0) return current
+        val boxes = plan.boxes
+        if (boxes.isEmpty()) return null
+
+        val seriesIds = boxes.map { it.seriesId }.distinct()
+        var sIdx = seriesIds.indexOfFirst { it == current?.target?.seriesId }
+        if (sIdx < 0) sIdx = 0
+        if (deltaSeries != 0) {
+            sIdx = (sIdx + deltaSeries).coerceIn(0, seriesIds.lastIndex)
+        }
+        val seriesId = seriesIds[sIdx]
+
+        val ordered = boxes.filter { it.seriesId == seriesId }.sortedBy { it.entry.x }
+        if (ordered.isEmpty()) return null
+
+        var pIdx =
+            if (current != null && current.target.seriesId == seriesId) {
+                ordered.indexOfFirst { it.index == current.target.pointIndex }
+            } else {
+                -1
+            }
+        if (deltaPoint != 0) {
+            pIdx =
+                if (pIdx < 0) {
+                    if (deltaPoint > 0) 0 else ordered.lastIndex
+                } else {
+                    (pIdx + deltaPoint).coerceIn(0, ordered.lastIndex)
+                }
+        } else if (pIdx < 0) {
+            pIdx = 0
+        }
+        return BoxPlotHitResolver.selectionFor(ordered[pIdx])
+    }
+
+    /**
+     * Keyboard selection-roam over **planned** waterfall bars: Shift+Left/Right step [delta] along the sequence
+     * (single logical series). Clamps at both ends (no wrap). Builds a [ChartSelection] identical to
+     * [WaterfallHitResolver.resolvePlanned] so roam and tap selections are interchangeable.
+     */
+    fun waterfallChartRoam(
+        plan: WaterfallChartPlan,
+        current: ChartSelection?,
+        delta: Int,
+    ): ChartSelection? {
+        if (delta == 0) return current
+        val ordered = plan.bars.sortedBy { (it.bounds.left + it.bounds.right) * 0.5 }
+        if (ordered.isEmpty()) return null
+
+        val currentIdx =
+            current?.let { sel -> ordered.indexOfFirst { it.index == sel.target.pointIndex } } ?: -1
+        val nextIdx =
+            when {
+                currentIdx < 0 && delta > 0 -> 0
+                currentIdx < 0 && delta < 0 -> ordered.lastIndex
+                else -> (currentIdx + delta).coerceIn(0, ordered.lastIndex)
+            }
+        return WaterfallHitResolver.selectionFor(ordered[nextIdx])
     }
 
     private fun chartSelectionForCandle(hit: PlannedCandle): ChartSelection {

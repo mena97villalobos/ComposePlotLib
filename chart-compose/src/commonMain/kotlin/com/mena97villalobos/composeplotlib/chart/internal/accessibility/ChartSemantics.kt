@@ -14,6 +14,7 @@ import androidx.compose.ui.semantics.stateDescription
 import com.mena97villalobos.composeplotlib.chart.ChartCustomAccessibilityAction
 import com.mena97villalobos.composeplotlib.chart.accessibilitySummaryText
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildBarMarkerData
+import com.mena97villalobos.composeplotlib.chart.internal.marker.buildBoxPlotMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildCandlestickMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildCombinedMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildHeatmapMarkerData
@@ -22,6 +23,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.marker.buildPieMarkerD
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildRadarMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildSankeyMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildScatterMarkerData
+import com.mena97villalobos.composeplotlib.chart.internal.marker.buildWaterfallMarkerData
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.core.layout.SankeyChartPlan
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
@@ -520,6 +522,7 @@ internal fun Modifier.boxPlotChartAccessibility(
     val wantsFocus =
         spec.accessibility.requestFocusForAccessibility ||
             spec.accessibility.keyboardViewportNudgeEnabled ||
+            spec.accessibility.keyboardSelectionRoamEnabled ||
             spec.accessibility.requestFocusOnMarker
     val mergeDescendants = !spec.accessibility.requestFocusOnMarker
     val semanticsModifier =
@@ -543,14 +546,8 @@ internal fun Modifier.boxPlotChartAccessibility(
                 }
                 val selection = selectionState.selection
                 if (selection != null) {
-                    val series = spec.series.firstOrNull { it.id == selection.target.seriesId }
-                    val entry = series?.entries?.getOrNull(selection.target.pointIndex)
-                    if (series != null && entry != null) {
-                        val fmt = spec.yAxis.labelFormatter
-                        stateDescription =
-                            "${series.label}: median ${fmt(entry.median)}, quartiles ${fmt(entry.q1)} to " +
-                            "${fmt(entry.q3)}, range ${fmt(entry.min)} to ${fmt(entry.max)}."
-                    }
+                    val data = buildBoxPlotMarkerData(spec, selection)
+                    if (data != null) stateDescription = data.accessibilitySummaryText()
                 }
             }
             if (customAccessibilityActions.isNotEmpty()) {
@@ -573,12 +570,7 @@ private fun defaultBoxPlotChartSemanticSummary(spec: BoxPlotChartSpec): String =
         spec.series.isEmpty() -> "Box plot chart with no series."
         else -> {
             val names = spec.series.joinToString { it.label }
-            val keys =
-                if (spec.accessibility.keyboardViewportNudgeEnabled) {
-                    " When focused, arrow keys pan; plus and minus zoom; Escape clears selection."
-                } else {
-                    ""
-                }
+            val keys = keyboardHint(spec.accessibility)
             "Box plot chart. Series: $names. Use pinch to zoom and drag to pan. Tap a box to select.$keys"
         }
     }
@@ -593,6 +585,7 @@ internal fun Modifier.waterfallChartAccessibility(
     val wantsFocus =
         spec.accessibility.requestFocusForAccessibility ||
             spec.accessibility.keyboardViewportNudgeEnabled ||
+            spec.accessibility.keyboardSelectionRoamEnabled ||
             spec.accessibility.requestFocusOnMarker
     val mergeDescendants = !spec.accessibility.requestFocusOnMarker
     val semanticsModifier =
@@ -616,7 +609,8 @@ internal fun Modifier.waterfallChartAccessibility(
                 }
                 val selection = selectionState.selection
                 if (selection != null) {
-                    waterfallSelectionDescription(spec, selection.target.pointIndex)?.let { stateDescription = it }
+                    val data = buildWaterfallMarkerData(spec, selection)
+                    if (data != null) stateDescription = data.accessibilitySummaryText()
                 }
             }
             if (customAccessibilityActions.isNotEmpty()) {
@@ -634,41 +628,11 @@ internal fun Modifier.waterfallChartAccessibility(
         .then(semanticsModifier)
 }
 
-private fun waterfallSelectionDescription(
-    spec: WaterfallChartSpec,
-    index: Int,
-): String? {
-    if (index !in spec.entries.indices) return null
-    val fmt = spec.yAxis.labelFormatter
-    var cumulative = 0.0
-    for (i in spec.entries.indices) {
-        val e = spec.entries[i]
-        val before = cumulative
-        if (!e.isTotal) cumulative += e.delta
-        if (i == index) {
-            val label = e.label.ifEmpty { "Step ${i + 1}" }
-            return if (e.isTotal) {
-                "$label: total ${fmt(before)}."
-            } else {
-                val magnitude = if (e.delta >= 0.0) e.delta else -e.delta
-                val direction = if (e.delta >= 0.0) "increase" else "decrease"
-                "$label: $direction of ${fmt(magnitude)}, running total ${fmt(cumulative)}."
-            }
-        }
-    }
-    return null
-}
-
 private fun defaultWaterfallChartSemanticSummary(spec: WaterfallChartSpec): String =
     when {
         spec.entries.isEmpty() -> "Waterfall chart with no steps."
         else -> {
-            val keys =
-                if (spec.accessibility.keyboardViewportNudgeEnabled) {
-                    " When focused, arrow keys pan; plus and minus zoom; Escape clears selection."
-                } else {
-                    ""
-                }
+            val keys = keyboardHint(spec.accessibility)
             "Waterfall chart with ${spec.entries.size} steps. Use pinch to zoom and drag to pan. " +
                 "Tap a bar to inspect its contribution.$keys"
         }

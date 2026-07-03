@@ -6,6 +6,7 @@ import com.mena97villalobos.composeplotlib.core.model.BoxPlotEntry
 import com.mena97villalobos.composeplotlib.core.model.BoxPlotSeries
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.selection.BoxPlotHitResolver
+import com.mena97villalobos.composeplotlib.core.selection.KeyboardSelectionRoam
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
@@ -73,6 +74,52 @@ class BoxPlotTest {
         val selection = assertNotNull(p.selection)
         assertEquals(0, selection.target.pointIndex)
         assertEquals(2, count<DrawCommand.RoundRect>(p)) // border + selection accent
+    }
+
+    @Test
+    fun keyboardRoamStepsWithinAndSwitchesSeries() {
+        val spec =
+            BoxPlotChartSpec(
+                series =
+                    listOf(
+                        BoxPlotSeries(
+                            "s1",
+                            "S1",
+                            listOf(
+                                BoxPlotEntry(0.0, 2.0, 6.0, 10.0, 14.0, 18.0),
+                                BoxPlotEntry(1.0, 3.0, 7.0, 11.0, 15.0, 19.0),
+                            ),
+                        ),
+                        BoxPlotSeries(
+                            "s2",
+                            "S2",
+                            listOf(
+                                BoxPlotEntry(0.0, 1.0, 5.0, 9.0, 13.0, 17.0),
+                                BoxPlotEntry(1.0, 2.0, 6.0, 10.0, 14.0, 18.0),
+                            ),
+                        ),
+                    ),
+                xAxis = AxisSpec(showGridLines = false),
+                yAxis = AxisSpec(showGridLines = false),
+            )
+        val plan = ChartPlanner.planBoxPlotChart(input, spec)
+
+        val first = assertNotNull(KeyboardSelectionRoam.boxPlotChartRoam(plan, null, deltaPoint = 1, deltaSeries = 0))
+        assertEquals("s1", first.target.seriesId)
+        assertEquals(0, first.target.pointIndex)
+
+        val second = assertNotNull(KeyboardSelectionRoam.boxPlotChartRoam(plan, first, 1, 0))
+        assertEquals(1, second.target.pointIndex)
+
+        // Switching series (Shift+Down) resets to the first entry of the new series (matches candlestick).
+        val down = assertNotNull(KeyboardSelectionRoam.boxPlotChartRoam(plan, second, 0, 1))
+        assertEquals("s2", down.target.seriesId)
+        assertEquals(0, down.target.pointIndex)
+
+        // Clamp at the right end (no wrap).
+        val right = assertNotNull(KeyboardSelectionRoam.boxPlotChartRoam(plan, down, 1, 0))
+        val clamp = assertNotNull(KeyboardSelectionRoam.boxPlotChartRoam(plan, right, 1, 0))
+        assertEquals(1, clamp.target.pointIndex)
     }
 
     @Test

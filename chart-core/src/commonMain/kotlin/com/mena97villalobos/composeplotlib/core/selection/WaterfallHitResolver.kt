@@ -20,17 +20,22 @@ object WaterfallHitResolver {
             barsHitTestFirst.firstOrNull { bar ->
                 bar.bounds.isValidForAxisAlignedHit() && bar.bounds.contains(touchPoint)
             } ?: return null
-        val topCenter = OffsetD((hit.bounds.left + hit.bounds.right) / 2.0, hit.bounds.top)
+        return selectionFor(hit)
+    }
+
+    /** Builds the [ChartSelection] for [bar]; shared by tap resolution and keyboard roam so they are identical. */
+    internal fun selectionFor(bar: PlannedWaterfallBar): ChartSelection {
+        val topCenter = OffsetD((bar.bounds.left + bar.bounds.right) / 2.0, bar.bounds.top)
         return ChartSelection(
             target =
                 HighlightTarget(
                     seriesId = SERIES_ID,
-                    pointIndex = hit.index,
-                    point = XyPoint(hit.index.toDouble(), hit.endValue),
+                    pointIndex = bar.index,
+                    point = XyPoint(bar.index.toDouble(), bar.endValue),
                 ),
             pixelOffset = topCenter,
-            markerAnchor = hit.bounds.center,
-            hitBounds = hit.bounds,
+            markerAnchor = bar.bounds.center,
+            hitBounds = bar.bounds,
         )
     }
 }

@@ -4,6 +4,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.SizeD
 import com.mena97villalobos.composeplotlib.core.model.WaterfallEntry
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
+import com.mena97villalobos.composeplotlib.core.selection.KeyboardSelectionRoam
 import com.mena97villalobos.composeplotlib.core.selection.WaterfallHitResolver
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
@@ -87,5 +88,24 @@ class WaterfallTest {
     fun tapOutsideResolvesNull() {
         val plan = ChartPlanner.planWaterfallChart(input, spec)
         assertNull(WaterfallHitResolver.resolvePlanned(plan.barsForHitTest(), OffsetD(2.0, 2.0)))
+    }
+
+    @Test
+    fun keyboardRoamStepsAlongSequenceAndClamps() {
+        val plan = ChartPlanner.planWaterfallChart(input, spec)
+
+        // From nothing, Right -> first bar; Left -> last bar.
+        assertEquals(0, assertNotNull(KeyboardSelectionRoam.waterfallChartRoam(plan, null, delta = 1)).target.pointIndex)
+        assertEquals(3, assertNotNull(KeyboardSelectionRoam.waterfallChartRoam(plan, null, delta = -1)).target.pointIndex)
+
+        val first = assertNotNull(KeyboardSelectionRoam.waterfallChartRoam(plan, null, delta = 1))
+        val at1 = assertNotNull(KeyboardSelectionRoam.waterfallChartRoam(plan, first, delta = 1))
+        assertEquals(1, at1.target.pointIndex)
+        assertEquals(WaterfallHitResolver.SERIES_ID, at1.target.seriesId)
+
+        // Clamp at the left end (no wrap).
+        val back = assertNotNull(KeyboardSelectionRoam.waterfallChartRoam(plan, at1, delta = -1))
+        val clamp = assertNotNull(KeyboardSelectionRoam.waterfallChartRoam(plan, back, delta = -1))
+        assertEquals(0, clamp.target.pointIndex)
     }
 }

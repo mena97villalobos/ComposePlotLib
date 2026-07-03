@@ -7,6 +7,7 @@ import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
+import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
@@ -16,6 +17,7 @@ import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import kotlin.math.round
 
 /** Builds [ChartMarkerData] for the selected line point using spec formatters. */
@@ -258,6 +260,68 @@ internal fun buildCandlestickMarkerData(
         xLabel = spec.xAxis.labelFormatter(point.x),
         yLabel = spec.yAxis.labelFormatter(point.close),
         valueLabel = spec.valueFormatter(point),
+    )
+}
+
+/** Builds [ChartMarkerData] for the selected box (five-number summary lands in `valueLabel`). */
+internal fun buildBoxPlotMarkerData(
+    spec: BoxPlotChartSpec,
+    selection: ChartSelection,
+): ChartMarkerData? {
+    val series = spec.series.firstOrNull { it.id == selection.target.seriesId } ?: return null
+    val entry = series.entries.getOrNull(selection.target.pointIndex) ?: return null
+    val fmt = spec.yAxis.labelFormatter
+    val valueLabel =
+        "median ${fmt(entry.median)} (Q1 ${fmt(entry.q1)}, Q3 ${fmt(entry.q3)}; ${fmt(entry.min)}–${fmt(entry.max)})"
+    return ChartMarkerData(
+        selection = selection,
+        seriesId = series.id,
+        seriesLabel = series.label,
+        xLabel = spec.xAxis.labelFormatter(entry.x),
+        yLabel = fmt(entry.median),
+        valueLabel = valueLabel,
+        accessibilitySummary =
+            "Selected ${series.label}: median ${fmt(entry.median)}, quartiles ${fmt(entry.q1)} to " +
+                "${fmt(entry.q3)}, range ${fmt(entry.min)} to ${fmt(entry.max)}.",
+    )
+}
+
+/** Builds [ChartMarkerData] for the selected waterfall bar (contribution + running total in `valueLabel`). */
+internal fun buildWaterfallMarkerData(
+    spec: WaterfallChartSpec,
+    selection: ChartSelection,
+): ChartMarkerData? {
+    val index = selection.target.pointIndex
+    val entry = spec.entries.getOrNull(index) ?: return null
+    val label = entry.label.ifEmpty { "Step ${index + 1}" }
+    val fmt = spec.yAxis.labelFormatter
+    var cumulative = 0.0
+    for (i in 0..index) {
+        val e = spec.entries[i]
+        if (!e.isTotal) cumulative += e.delta
+    }
+    val magnitude = if (entry.delta >= 0.0) entry.delta else -entry.delta
+    val valueLabel =
+        if (entry.isTotal) {
+            "total ${fmt(cumulative)}"
+        } else {
+            "${if (entry.delta >= 0.0) "+" else ""}${fmt(entry.delta)} (total ${fmt(cumulative)})"
+        }
+    val accessibilitySummary =
+        if (entry.isTotal) {
+            "Selected $label: total ${fmt(cumulative)}."
+        } else {
+            "Selected $label: ${if (entry.delta >= 0.0) "increase" else "decrease"} of ${fmt(magnitude)}, " +
+                "running total ${fmt(cumulative)}."
+        }
+    return ChartMarkerData(
+        selection = selection,
+        seriesId = selection.target.seriesId,
+        seriesLabel = label,
+        xLabel = label,
+        yLabel = fmt(cumulative),
+        valueLabel = valueLabel,
+        accessibilitySummary = accessibilitySummary,
     )
 }
 

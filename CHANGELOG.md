@@ -65,12 +65,16 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Box-and-whisker (boxplot) chart family** — `BoxPlotChart` composable + `BoxPlotChartSpec` /
   `BoxPlotSeries` / `BoxPlotEntry` / `BoxPlotStyle`. Draws the Q1–Q3 box, median line, Tukey whiskers
   with caps, and outlier points; `BoxPlotEntry.fromSamples(x, values)` computes the five-number summary
-  (linear-interpolation quartiles + 1.5·IQR whiskers/outliers). Pan/zoom/fling/double-tap, tap
-  selection (`BoxPlotHitResolver`), no-data, and TalkBack/VoiceOver semantics.
+  (linear-interpolation quartiles + 1.5·IQR whiskers/outliers). Pan/zoom/fling/double-tap, tap selection
+  (`BoxPlotHitResolver`), **Shift+arrow keyboard selection-roam** (`KeyboardSelectionRoam.boxPlotChartRoam`
+  — Left/Right steps entries, Up/Down switches series), an optional animated **marker** slot (five-number
+  summary), no-data, and TalkBack/VoiceOver semantics.
 - **Waterfall chart family** — `WaterfallChart` composable + `WaterfallChartSpec` / `WaterfallEntry`.
   Each step's bar floats between the running total before and after it (increase / decrease / total
   markers colored distinctly) with optional connector lines. Pan/zoom/fling/double-tap, tap selection
-  (`WaterfallHitResolver`), no-data, and TalkBack/VoiceOver semantics.
+  (`WaterfallHitResolver`), **Shift+Left/Right keyboard selection-roam**
+  (`KeyboardSelectionRoam.waterfallChartRoam`), an optional animated **marker** slot (contribution +
+  running total), no-data, and TalkBack/VoiceOver semantics.
 
 ### Changed
 

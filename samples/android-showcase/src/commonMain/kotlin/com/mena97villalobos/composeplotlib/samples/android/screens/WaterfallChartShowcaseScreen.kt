@@ -19,12 +19,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.chart.ChartGestureConfig
+import com.mena97villalobos.composeplotlib.chart.DefaultChartMarker
 import com.mena97villalobos.composeplotlib.chart.WaterfallChart
 import com.mena97villalobos.composeplotlib.chart.defaultViewport
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.model.WaterfallEntry
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
+import com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 
 @Composable
@@ -41,6 +43,11 @@ fun WaterfallChartShowcaseScreen() {
                     WaterfallEntry(delta = 0.0, isTotal = true, label = "Net"),
                 ),
             xAxis = AxisSpec(labelFormatter = { value -> labels.getOrNull(value.toInt()) ?: "" }),
+            accessibility =
+                ChartAccessibilitySpec(
+                    keyboardViewportNudgeEnabled = true,
+                    keyboardSelectionRoamEnabled = true,
+                ),
         )
     val viewportState = rememberChartViewportState(initialViewport = defaultViewport(spec))
     val selectionState = rememberChartSelectionState()
@@ -88,6 +95,7 @@ fun WaterfallChartShowcaseScreen() {
             viewportState = viewportState,
             selectionState = selectionState,
             gestureConfig = ChartGestureConfig.cartesianInteractive(),
+            marker = { markerData -> DefaultChartMarker(markerData) },
         )
         Text(
             text =

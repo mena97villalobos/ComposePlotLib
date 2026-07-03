@@ -16,19 +16,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.rememberTextMeasurer
+import com.mena97villalobos.composeplotlib.chart.internal.accessibility.RequestFocusWhenChartMarkerShown
+import com.mena97villalobos.composeplotlib.chart.internal.accessibility.chartMarkerFocusContainer
+import com.mena97villalobos.composeplotlib.chart.internal.accessibility.rememberChartMarkerFocusRequester
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.resolveChartAnimationPolicy
 import com.mena97villalobos.composeplotlib.chart.internal.accessibility.waterfallChartAccessibility
 import com.mena97villalobos.composeplotlib.chart.internal.animation.rememberAnimatedChartViewport
+import com.mena97villalobos.composeplotlib.chart.internal.animation.rememberSelectionMarkerAppearance
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.chartLabelTextStyles
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.ChartFlingRuntime
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.cartesianDoubleTapViewportEnabled
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartCartesianKeyboardViewport
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartGestures
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartWaterfallKeyboardSelectionRoam
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.effectiveTransformFlags
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.handleCartesianChartDoubleTapViewport
 import com.mena97villalobos.composeplotlib.chart.internal.layout.chartLayoutBaseInput
 import com.mena97villalobos.composeplotlib.chart.internal.layout.measuredLayoutInput
+import com.mena97villalobos.composeplotlib.chart.internal.marker.ChartMarkerOverlay
+import com.mena97villalobos.composeplotlib.chart.internal.marker.buildWaterfallMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.render.WaterfallChartRenderer
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.ChartViewportState
@@ -47,17 +54,20 @@ import kotlin.math.max
 /**
  * Waterfall chart: each step's bar floats from the running total before the step to the running total after it
  * (increases green, decreases red, totals a distinct color), with optional connectors. Plans layout via
- * [ChartPlanner] and wires pan / zoom / double-tap / fling and tap selection to [viewportState] / [selectionState].
+ * [ChartPlanner] and wires pan / zoom / double-tap / fling, tap selection, keyboard selection-roam, and an optional
+ * marker overlay to [viewportState] / [selectionState].
  *
  * @param spec immutable description of waterfall steps, axes, colors, and grid
  * @param modifier layout modifier for the outer [Box]
  * @param viewportState pan/zoom state; default uses [defaultViewport] of [spec]
  * @param selectionState tap selection; cleared when the selected bar leaves the viewport
  * @param gestureConfig tap (selection), transform (pan/zoom/double-tap zoom), and optional fling policies
+ * @param marker optional composable overlay at the selected bar; receives [ChartMarkerData]
+ * @param markerPlacement flip/slide tooltip placement; see [ChartMarkerPlacement]
  * @param noData custom empty state when there are no steps; if non-null, takes precedence over [noDataUi]
  * @param noDataUi structured empty copy when [noData] is null; otherwise a plain [DefaultNoDataOverlay]
  * @param accessibilityCustomActions optional TalkBack / VoiceOver actions (e.g. reset viewport)
- * @param animation optional programmatic viewport easing; [ChartAnimationPolicy.respectSystemReducedMotion] applies first
+ * @param animation optional programmatic viewport easing and marker fade-in
  * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
  */
 @Composable
@@ -67,6 +77,8 @@ fun WaterfallChart(
     viewportState: ChartViewportState = rememberChartViewportState(initialViewport = defaultViewport(spec)),
     selectionState: ChartSelectionState = rememberChartSelectionState(),
     gestureConfig: ChartGestureConfig = ChartGestureConfig(),
+    marker: (@Composable BoxScope.(ChartMarkerData) -> Unit)? = null,
+    markerPlacement: ChartMarkerPlacement = ChartMarkerPlacement.Default,
     noData: (@Composable BoxScope.() -> Unit)? = null,
     noDataUi: ChartNoDataUi? = null,
     accessibilityCustomActions: List<ChartCustomAccessibilityAction> = emptyList(),
@@ -133,6 +145,12 @@ fun WaterfallChart(
         }
 
     val latestPlan = rememberUpdatedState(plan)
+    val markerFocusRequester = rememberChartMarkerFocusRequester()
+    RequestFocusWhenChartMarkerShown(
+        enabled = spec.accessibility.requestFocusOnMarker && marker != null,
+        selection = selectionState.selection,
+        focusRequester = markerFocusRequester,
+    )
 
     Box(
         modifier =
@@ -142,6 +160,11 @@ fun WaterfallChart(
                     selectionState,
                     emptyStateDescription,
                     accessibilityCustomActions,
+                ).chartWaterfallKeyboardSelectionRoam(
+                    enabled = spec.accessibility.keyboardSelectionRoamEnabled,
+                    selectionState = selectionState,
+                    tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
+                    waterfallPlan = { latestPlan.value },
                 ).chartCartesianKeyboardViewport(
                     enabled = spec.accessibility.keyboardViewportNudgeEnabled,
                     transformEnabled = gestureConfig.transform.enabled,
@@ -149,6 +172,7 @@ fun WaterfallChart(
                     viewportState = viewportState,
                     tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
                     onClearSelection = { selectionState.clear() },
+                    reserveShiftDirectionKeysForSelectionRoam = spec.accessibility.keyboardSelectionRoamEnabled,
                 ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
                 }.chartGestures(
@@ -239,6 +263,36 @@ fun WaterfallChart(
             if (spec.entries.isEmpty()) return@Canvas
             with(WaterfallChartRenderer) {
                 render(currentPlan, textMeasurer, renderStyles)
+            }
+        }
+
+        val markerData = selectionState.selection?.let { buildWaterfallMarkerData(spec, it) }
+        val markerAppearance =
+            rememberSelectionMarkerAppearance(
+                markerData = markerData,
+                selectionPresent = selectionState.selection != null,
+                enabled = resolvedAnimation.selectionHighlightEnabled,
+                durationMillis = resolvedAnimation.selectionDurationMillis,
+            )
+        val layoutForMarker = plan?.layout
+        if (marker != null && markerAppearance.contentData != null && layoutForMarker != null) {
+            val overlayData = markerAppearance.contentData
+            val anchor = overlayData.selection.markerPosition()
+            ChartMarkerOverlay(
+                anchorX = anchor.x,
+                anchorY = anchor.y,
+                plotBounds = layoutForMarker.plotBounds,
+                canvasBounds = layoutForMarker.canvasBounds,
+                placement = markerPlacement,
+                contentAlpha = markerAppearance.alpha,
+                markerContainerModifier =
+                    Modifier.chartMarkerFocusContainer(
+                        enabled = spec.accessibility.requestFocusOnMarker,
+                        focusRequester = markerFocusRequester,
+                        contentDescription = overlayData.accessibilitySummaryText(),
+                    ),
+            ) {
+                marker(overlayData)
             }
         }
 
