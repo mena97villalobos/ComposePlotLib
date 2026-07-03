@@ -56,6 +56,10 @@ Cartesian magnitude chart: **`BubbleChartSpec`** holds **`BubbleSeries`** of **`
 
 Compact linear KPI display (Stephen Few's bullet graph): **`BulletChartSpec`** holds a featured `value` (measure bar), qualitative range **`BulletBand`**s (background), an optional `target` marker, and a `[domainMin, domainMax]` scale. **Read-only** — no axes/selection/pan-zoom (like the Gauge); optional min/max bound labels. Compose entry: `BulletChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
+## Stacked area
+
+Cartesian composition chart: **`StackedAreaChartSpec`** holds shared **`xValues`** and index-aligned **`StackedAreaSeries`** bands, accumulated per **`AreaStackOffset`** — **`Zero`** (absolute), **`Expand`** (100%), or **`Silhouette`** (streamgraph). Filled bands over axes + grid + legend, with pan/zoom (no per-point selection). Compose entry: `StackedAreaChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Funnel
 
 Non-cartesian stage chart: **`FunnelChartSpec`** holds ordered **`FunnelStage`**s (`label`, `value`, optional `color`), drawn as stacked, centered trapezoids tapering from each stage's width (∝ value, widest = full plot) to the next — the classic conversion funnel. Palette-colored with optional centered labels. **Read-only** (no axes/selection/pan-zoom, like Gauge/Bullet). Compose entry: `FunnelChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*

@@ -20,6 +20,7 @@ The current public surface is intentionally small.
 - `WaterfallChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme)` — waterfall / running-total chart (`WaterfallChartSpec`); floating bars colored by increase/decrease/total with optional connectors. Pan/zoom/fling/double-tap, tap **and Shift+Left/Right keyboard selection-roam**, an optional **marker** slot (contribution + running total), no-data, and Image-role a11y.
 - `BubbleChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme, showSizeLegend, sizeLegendValueFormatter)` — bubble chart (`BubbleChartSpec`); bubble area encodes `z` via `BubbleSizeScale`. Reuses the scatter pipeline (`toScatterSpec`) for rendering/gestures/selection/markers; overlays an optional size legend.
 - `BulletChart(spec, modifier, chromeTheme)` — linear KPI **bullet graph** (`BulletChartSpec`); qualitative bands + measure bar + optional target marker. **Non-interactive** (gauge-style): no viewport, selection, or gesture parameters.
+- `StackedAreaChart(spec, modifier, viewportState, gestureConfig, noData, noDataUi, animation, chromeTheme)` — **stacked-area** chart (`StackedAreaChartSpec`); filled bands accumulated per `AreaStackOffset` (Zero / Expand / Silhouette). Cartesian pan/zoom; no per-point selection.
 - `FunnelChart(spec, modifier, chromeTheme)` — **funnel** chart (`FunnelChartSpec`); stacked centered trapezoids tapering by stage value. **Non-interactive** (gauge-style).
 - `GaugeChart(spec, modifier, centerContent)` — radial progress / gauge ring (`GaugeChartSpec`); track + progress arc with optional rounded caps and an optional **`centerContent`** slot. **Non-interactive**: no viewport, selection, or gesture parameters.
 - `Sparkline(...)` — thin convenience wrapper over `LineChart` with **axes, grid, and legend off**, zero padding, and **non-interactive** defaults; optional area fill. Intended for inline/compact trend rendering.
@@ -260,6 +261,14 @@ Main types:
 - `FunnelStage` — `label`, `value`, optional `color`.
 
 Read-only stacked-trapezoid chart (no selection/pan-zoom). Compose entry: `FunnelChart`.
+
+### Stacked area
+Main types:
+- `StackedAreaChartSpec` — `xValues: List<Double>`, `series: List<StackedAreaSeries>`, `offset: AreaStackOffset`, `accessibility`, `xAxis` / `yAxis`, `grid`, `legend`, `contentPadding`.
+- `StackedAreaSeries` — `id`, `label`, `values: List<Double>` (index-aligned to `xValues`), `color`.
+- `AreaStackOffset` — `Zero` (absolute), `Expand` (100%), `Silhouette` (streamgraph).
+
+Cartesian filled-band chart with pan/zoom (no per-point selection). Compose entry: `StackedAreaChart`.
 
 ### Heatmap
 Main types:

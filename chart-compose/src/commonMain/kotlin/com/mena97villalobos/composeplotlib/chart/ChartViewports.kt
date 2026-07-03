@@ -3,8 +3,11 @@ package com.mena97villalobos.composeplotlib.chart
 import com.mena97villalobos.composeplotlib.core.domain.XyPoint
 import com.mena97villalobos.composeplotlib.core.math.FpMath
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
+import com.mena97villalobos.composeplotlib.core.spec.AreaStackOffset
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
+import com.mena97villalobos.composeplotlib.core.spec.BarStackMode
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BubbleChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
@@ -19,6 +22,7 @@ import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.math.abs
@@ -59,6 +63,35 @@ fun defaultViewport(
 fun defaultViewport(
     @Suppress("UNUSED_PARAMETER") spec: FunnelChartSpec,
 ): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
+
+/** [ChartViewport] for a stacked-area chart: X across [xValues]; Y across the stacked total per its offset. */
+fun defaultViewport(spec: StackedAreaChartSpec): ChartViewport {
+    val xs = spec.xValues.filter { it.isFinite() }
+    if (xs.isEmpty() || spec.series.isEmpty()) {
+        return ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
+    }
+    val minX = xs.min()
+    val maxX = xs.max().ensureSpan(minX)
+    var maxTotal = 0.0
+    for (i in spec.xValues.indices) {
+        var total = 0.0
+        for (s in spec.series) {
+            val v = s.values.getOrElse(i) { 0.0 }
+            if (v.isFinite()) total += v
+        }
+        if (total > maxTotal) maxTotal = total
+    }
+    val yRange =
+        when (spec.offset) {
+            AreaStackOffset.Expand -> ClosedRangeD(0.0, 1.0)
+            AreaStackOffset.Silhouette -> {
+                val half = (maxTotal / 2.0).coerceAtLeast(0.5)
+                ClosedRangeD(-half, half)
+            }
+            AreaStackOffset.Zero -> ClosedRangeD(0.0, maxTotal.ensureSpan(0.0))
+        }
+    return ChartViewport(xRange = ClosedRangeD(minX, maxX), yRange = yRange)
+}
 
 /** [ChartViewport] that fits all scatter points; uses a small default range when there is no (finite) data. */
 fun defaultViewport(spec: ScatterChartSpec): ChartViewport {
@@ -206,6 +239,17 @@ fun defaultViewport(spec: BarChartSpec): ChartViewport {
             xRange = ClosedRangeD(0.0, 1.0),
             yRange = ClosedRangeD(0.0, 1.0),
         )
+    }
+    // 100% (percent-of-total) stacking normalizes each category to [0, 1] on the value axis.
+    if (spec.stackMode == BarStackMode.PercentOfTotal && spec.resolvedBarLayout() == BarLayoutMode.Stacked) {
+        val minCat = entries.minOf { it.x }
+        val maxCat = entries.maxOf { it.x }.ensureSpan(minCat)
+        return when (spec.orientation) {
+            BarChartOrientation.Vertical ->
+                ChartViewport(xRange = ClosedRangeD(minCat, maxCat), yRange = ClosedRangeD(0.0, 1.0))
+            BarChartOrientation.Horizontal ->
+                ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(minCat, maxCat))
+        }
     }
     return when (spec.orientation) {
         BarChartOrientation.Vertical -> {

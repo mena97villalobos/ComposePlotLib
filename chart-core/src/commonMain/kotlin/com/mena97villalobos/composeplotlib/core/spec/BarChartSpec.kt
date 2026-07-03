@@ -49,6 +49,11 @@ data class BarChartSpec(
     val hiddenSeriesIds: Set<String> = emptySet(),
     val annotations: List<ChartAnnotation> = emptyList(),
     val errorBars: ErrorBarsSpec = ErrorBarsSpec(),
+    /**
+     * How stacked bars accumulate (only applies when the resolved layout is [BarLayoutMode.Stacked]);
+     * [BarStackMode.PercentOfTotal] normalizes each category to 100%. See [BarStackMode].
+     */
+    val stackMode: BarStackMode = BarStackMode.Absolute,
 ) {
     init {
         requireUniqueIds(groups.map { it.id }, "BarChartSpec.groups ids")

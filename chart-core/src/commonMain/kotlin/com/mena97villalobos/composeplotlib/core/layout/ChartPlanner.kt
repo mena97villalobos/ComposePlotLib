@@ -31,11 +31,13 @@ import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.selection.SankeyHitResolver
 import com.mena97villalobos.composeplotlib.core.selection.WaterfallHitResolver
 import com.mena97villalobos.composeplotlib.core.spec.AreaFillMode
+import com.mena97villalobos.composeplotlib.core.spec.AreaStackOffset
 import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
+import com.mena97villalobos.composeplotlib.core.spec.BarStackMode
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
@@ -69,6 +71,7 @@ import com.mena97villalobos.composeplotlib.core.spec.SankeyOrientation
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
+import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
 import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
@@ -1934,6 +1937,7 @@ object ChartPlanner {
                 transform = frame.transform,
                 plotBounds = frame.plotBounds,
                 layerId = null,
+                percentStack = spec.stackMode == BarStackMode.PercentOfTotal,
             )
         plotCommands +=
             buildBarDrawCommands(
@@ -2004,6 +2008,103 @@ object ChartPlanner {
             orientation = spec.orientation,
             barSegments = barSegments,
         )
+    }
+
+    /**
+     * Stacked-area chart: fills a band per series accumulated over the shared x values, per the
+     * [offset][StackedAreaChartSpec.offset] (zero / 100% expand / streamgraph silhouette). Cartesian frame with
+     * grid + axis overlay; no per-point selection.
+     */
+    fun planStackedAreaChart(
+        input: ChartLayoutInput,
+        spec: StackedAreaChartSpec,
+        tickValuePass: TickValuePass? = null,
+    ): StackedAreaChartPlan {
+        val frame =
+            layoutCartesianFrame(
+                input = input,
+                xAxis = spec.xAxis,
+                yAxis = spec.yAxis,
+                legend = spec.legend,
+                contentPadding = spec.contentPadding,
+                legendLabelColors = spec.series.map { it.label to it.color },
+                tickValuePass = tickValuePass,
+                legendSeriesIds = spec.series.map { it.id },
+            )
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (spec.xAxis.showGridLines || spec.yAxis.showGridLines) {
+            plotCommands +=
+                buildGridLines(
+                    plotBounds = frame.plotBounds,
+                    xTicks = if (spec.xAxis.showGridLines) frame.xTicks else emptyList(),
+                    yTicks = if (spec.yAxis.showGridLines) frame.yTicks else emptyList(),
+                    lineStyle = spec.grid.lineStyle,
+                )
+        }
+        plotCommands += buildStackedAreaCommands(spec, frame.transform, frame.plotBounds)
+
+        val overlayCommands =
+            buildAxisAndTickLabelsOverlay(frame.plotBounds, spec.xAxis, spec.yAxis, frame.xTicks, frame.yTicks)
+
+        return StackedAreaChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = frame.canvasBounds,
+                    plotBounds = frame.plotBounds,
+                    reservedRegions = frame.reservedRegions,
+                    xTicks = frame.xTicks,
+                    yTicks = frame.yTicks,
+                    legendEntries = frame.legendEntries,
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
+                ),
+        )
+    }
+
+    private fun buildStackedAreaCommands(
+        spec: StackedAreaChartSpec,
+        transform: ChartTransform,
+        plotBounds: RectD,
+    ): List<DrawCommand> {
+        val xs = spec.xValues
+        val n = xs.size
+        val m = spec.series.size
+        if (n < 2 || m == 0) return emptyList()
+        val lower = Array(m) { DoubleArray(n) }
+        val upper = Array(m) { DoubleArray(n) }
+        for (i in 0 until n) {
+            val values =
+                DoubleArray(m) { s ->
+                    spec.series[s]
+                        .values
+                        .getOrElse(i) { 0.0 }
+                        .let { if (it.isFinite()) it else 0.0 }
+                }
+            val total = values.sum()
+            var cumulative = if (spec.offset == AreaStackOffset.Silhouette) -total / 2.0 else 0.0
+            for (s in 0 until m) {
+                val contribution =
+                    if (spec.offset == AreaStackOffset.Expand) {
+                        if (total != 0.0) values[s] / total else 0.0
+                    } else {
+                        values[s]
+                    }
+                lower[s][i] = cumulative
+                cumulative += contribution
+                upper[s][i] = cumulative
+            }
+        }
+        val out = ArrayList<DrawCommand>(m)
+        for (s in 0 until m) {
+            val segments = ArrayList<PathSegment>(2 * n + 2)
+            segments += PathSegment.MoveTo(transform.toPixel(XyPoint(xs[0], upper[s][0])))
+            for (i in 1 until n) segments += PathSegment.LineTo(transform.toPixel(XyPoint(xs[i], upper[s][i])))
+            for (i in n - 1 downTo 0) segments += PathSegment.LineTo(transform.toPixel(XyPoint(xs[i], lower[s][i])))
+            segments += PathSegment.Close
+            out += DrawCommand.Path(segments = segments, style = PathDrawStyle.Fill(color = spec.series[s].color))
+        }
+        return out
     }
 
     /**
@@ -2837,6 +2938,7 @@ object ChartPlanner {
         transform: ChartTransform,
         plotBounds: RectD,
         layerId: String? = null,
+        percentStack: Boolean = false,
     ): List<PlannedBarSegment> {
         if (groups.isEmpty()) {
             return emptyList()
@@ -2872,6 +2974,7 @@ object ChartPlanner {
                                 plotBounds,
                                 layoutMode,
                                 layerId,
+                                percentStack,
                             )
                     }
                 BarChartOrientation.Horizontal ->
@@ -2903,6 +3006,7 @@ object ChartPlanner {
                                 plotBounds,
                                 layoutMode,
                                 layerId,
+                                percentStack,
                             )
                     }
             }
@@ -3097,6 +3201,9 @@ object ChartPlanner {
         return out
     }
 
+    /** A stacked bar segment's positive contribution to its category total (non-finite / negative → 0). */
+    private fun positiveStackValue(v: Double): Double = if (v.isFinite() && v > 0.0) v else 0.0
+
     private fun buildStackedBarSegments(
         groups: List<BarGroup>,
         viewport: ChartViewport,
@@ -3104,6 +3211,7 @@ object ChartPlanner {
         plotBounds: RectD,
         barLayoutMode: BarLayoutMode,
         layerId: String?,
+        percentStack: Boolean = false,
     ): List<PlannedBarSegment> {
         val n = groups.first().entries.size
         val y0 = viewport.yRange.start
@@ -3115,11 +3223,18 @@ object ChartPlanner {
             if (!VisibleRangeCalculator.barColumnIntersectsPlotHorizontally(columnCenterX, columnBarWidth, plotBounds)) {
                 continue
             }
+            val categoryTotal = if (percentStack) groups.sumOf { positiveStackValue(it.entries[j].y) } else 0.0
             var cumulative = y0
             for (group in groups) {
                 val entry = group.entries[j]
+                val contribution =
+                    if (percentStack) {
+                        if (categoryTotal > 0.0) positiveStackValue(entry.y) / categoryTotal else 0.0
+                    } else {
+                        entry.y
+                    }
                 val yLo = cumulative
-                val yHi = cumulative + entry.y
+                val yHi = cumulative + contribution
                 cumulative = yHi
                 val centerX = transform.toPixel(XyPoint(categoryX, y0)).x
                 val pTop = transform.toPixel(XyPoint(categoryX, yHi))
@@ -3152,6 +3267,7 @@ object ChartPlanner {
         plotBounds: RectD,
         barLayoutMode: BarLayoutMode,
         layerId: String?,
+        percentStack: Boolean = false,
     ): List<PlannedBarSegment> {
         val n = groups.first().entries.size
         val x0 = viewport.xRange.start
@@ -3163,11 +3279,18 @@ object ChartPlanner {
             if (!VisibleRangeCalculator.barRowIntersectsPlotVertically(columnCenterY, columnBarThickness, plotBounds)) {
                 continue
             }
+            val categoryTotal = if (percentStack) groups.sumOf { positiveStackValue(it.entries[j].y) } else 0.0
             var cumulative = x0
             for (group in groups) {
                 val entry = group.entries[j]
+                val contribution =
+                    if (percentStack) {
+                        if (categoryTotal > 0.0) positiveStackValue(entry.y) / categoryTotal else 0.0
+                    } else {
+                        entry.y
+                    }
                 val xLo = cumulative
-                val xHi = cumulative + entry.y
+                val xHi = cumulative + contribution
                 cumulative = xHi
                 val pLeft = transform.toPixel(XyPoint(xLo, categoryY))
                 val pRight = transform.toPixel(XyPoint(xHi, categoryY))

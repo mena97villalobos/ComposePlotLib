@@ -106,6 +106,13 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Funnel chart family** — `FunnelChart` composable + `FunnelChartSpec` / `FunnelStage`: ordered stages as
   stacked, centered trapezoids that taper from each stage's width (∝ value) to the next, colored from the
   spec palette with optional centered labels. Read-only.
+- **Stacked-area chart family** — `StackedAreaChart` composable + `StackedAreaChartSpec` / `StackedAreaSeries`:
+  index-aligned bands stacked over shared x values with `AreaStackOffset.Zero` (absolute), `Expand` (100%),
+  or `Silhouette` (streamgraph). Cartesian with grid/legend and pan/zoom (no per-point selection).
+- **100% / percent bar stacking** — `BarChartSpec.stackMode` / `StackedBarChartSpec.stackMode`
+  (`BarStackMode.PercentOfTotal`) normalizes each stacked category to fill the `[0, 1]` value axis; the
+  `BarChart` / `StackedBarChart` default viewport switches to `[0, 1]` automatically. Segments keep their raw
+  values for markers/labels. Default `Absolute` (unchanged).
 
 ### Changed
 

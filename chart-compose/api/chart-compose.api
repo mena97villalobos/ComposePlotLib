@@ -327,6 +327,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartViewportsKt {
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/RadarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/StackedAreaChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/WaterfallChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 }
 
@@ -373,6 +374,10 @@ public final class com/mena97villalobos/composeplotlib/chart/ScatterChartKt {
 
 public final class com/mena97villalobos/composeplotlib/chart/SparklineKt {
 	public static final fun Sparkline (Ljava/util/List;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/StackedAreaChartKt {
+	public static final fun StackedAreaChart (Lcom/mena97villalobos/composeplotlib/core/spec/StackedAreaChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/StackedBarChartKt {

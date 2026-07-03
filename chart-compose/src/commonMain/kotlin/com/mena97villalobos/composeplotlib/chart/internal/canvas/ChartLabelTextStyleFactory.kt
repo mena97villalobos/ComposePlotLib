@@ -20,6 +20,7 @@ import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 
 @Composable
@@ -95,6 +96,21 @@ internal fun chartLabelTextStyles(
     // Funnel draws stage labels via the x-axis text slot.
     val y = MaterialTheme.typography.labelMedium
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: StackedAreaChartSpec): ChartLabelTextStyles {
+    val typo = MaterialTheme.typography
+    val legend = legendStyleFrom(typo, spec.legend.style)
+    val y = tickStyleFrom(typo, spec.yAxis.labelStyle)
+    return ChartLabelTextStyles(
+        xAxis = tickStyleFrom(typo, spec.xAxis.labelStyle),
+        yAxis = y,
+        legend = legend,
+        pieSliceLabel = legend,
+        yAxisSecondaryTick = y,
+    )
 }
 
 @Composable

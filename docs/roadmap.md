@@ -18,11 +18,11 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ## 1. Current state (as of 2026-07, `1.2.0` unreleased)
 
-**Chart families (17):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+**Chart families (18):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
 `RadarChart`, `SankeyChart` (orientation, Tableau-10 palette, gradient ribbons — reworked for 1.2.0),
 `HeatmapChart`, `GaugeChart`, `CandlestickChart`, `BoxPlotChart` (Tukey five-number summaries), `WaterfallChart`
-(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), plus the axis-less
+(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), plus the axis-less
 `Sparkline` wrapper.
 
 **Cartesian depth:** area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`), reference/threshold
@@ -108,7 +108,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 |---|---|---|---|---|
 | ~~Logarithmic + symlog scale~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `AxisScale.Log` / `AxisScale.SymLog` + scale-aware `ChartTransform`. |
 | ~~Inverted / reversed axis direction~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `AxisSpec.inverted` — reverses the axis transform (rendering on all cartesian families; pan/zoom on line/scatter/bar). |
-| Normalization / percent (100%) stacking for bars **and** areas | P2 | S | strong | Offset mode on the existing stack planner. |
+| ~~Normalization / percent (100%) stacking for bars **and** areas~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `BarChartSpec.stackMode` (`BarStackMode.PercentOfTotal`) + `StackedAreaChartSpec.offset` (`AreaStackOffset.Expand`). |
 | More than two Y axes / N stacked axes with per-axis layer binding | P3 | M | moderate | Generalizes the combined secondary-Y seam. |
 | Independent secondary-Y pan/zoom channel | P3 | M | moderate | Needs an extra viewport channel + gesture routing. |
 | Broken axis (skip empty ranges) | P3 | M | moderate | Piecewise transform + break glyphs. |
@@ -131,7 +131,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 |---|---|---|---|---|
 | ~~Bubble chart as a first-class family (z→radius scale + size legend)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `BubbleChart` / `BubbleChartSpec` / `BubbleSeries` + area-proportional `BubbleSizeScale` + size legend; reuses the scatter pipeline via `toScatterSpec`. |
 | ~~Bullet graph (KPI target/threshold bands)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `BulletChart` / `BulletChartSpec` / `BulletBand` — qualitative bands + measure bar + target marker (read-only, gauge-style). |
-| First-class stacked area (+ percent / streamgraph offsets) | P2 | M | strong | Area fill exists; needs a stacking/offset engine. |
+| ~~First-class stacked area (+ percent / streamgraph offsets)~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `StackedAreaChart` / `StackedAreaChartSpec` / `StackedAreaSeries` with `AreaStackOffset.Zero` / `Expand` / `Silhouette` (streamgraph). |
 | ~~Funnel family~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `FunnelChart` / `FunnelChartSpec` / `FunnelStage` — stacked centered trapezoids (read-only, gauge-style). |
 | Radial bar / circular progress-bar | P3 | S | strong | Shares Gauge/Pie arc geometry. |
 | Treemap | P3 | L | moderate | Squarified layout + hierarchical model + label fitting. |
@@ -168,7 +168,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Streaming / real-time append helpers (incremental push, ring-buffer, append transitions)~~ ✅ | ~~P1~~ | L | moderate | **Shipped:** `StreamingSeriesBuffer` (bounded ring buffer, `chart-core`) + `rememberStreamingSeries` / `StreamingSeriesState` (observable snapshots, pairs with data-transition easing). |
 | ~~Null-gap handling~~ ✅ | ~~P0~~ | S | strong | **Shipped:** `ChartPoint.gap(x)` + `LineRenderSpec.connectAcrossGaps`. |
 | ~~LTTB (largest-triangle-three-buckets) decimation~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `LineDecimationStrategy.Lttb` — shape-preserving alternative to Uniform/MinMaxY. |
-| Percent / normalized stacking (see 4.1) | P2 | S | strong | Stack-offset mode. |
+| ~~Percent / normalized stacking (see 4.1)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `BarStackMode.PercentOfTotal` + `AreaStackOffset.Expand`. |
 
 ### 4.7 Theming & color system
 

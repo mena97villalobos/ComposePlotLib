@@ -39,6 +39,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowc
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.StackedAreaChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChartShowcaseScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,6 +142,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Funnel ->
                     Column(detailModifier) {
                         FunnelChartShowcaseScreen()
+                    }
+                ShowcaseDestination.StackedArea ->
+                    Column(detailModifier) {
+                        StackedAreaChartShowcaseScreen()
                     }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
@@ -259,6 +264,12 @@ private fun ShowcaseHomeScreen(
             Text("Funnel chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Stacked area chart")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -286,5 +297,6 @@ private enum class ShowcaseDestination(
     Bubble("Bubble chart"),
     Bullet("Bullet graph"),
     Funnel("Funnel chart"),
+    StackedArea("Stacked area chart"),
     DomainAxes("Domain axes"),
 }
