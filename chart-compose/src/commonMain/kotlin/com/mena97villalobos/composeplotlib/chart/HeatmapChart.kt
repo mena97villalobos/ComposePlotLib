@@ -24,6 +24,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.animation.rememberSele
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.chartLabelTextStyles
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartGestures
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartHeatmapKeyboardSelectionRoam
 import com.mena97villalobos.composeplotlib.chart.internal.layout.chartLayoutBaseInput
 import com.mena97villalobos.composeplotlib.chart.internal.layout.measuredLayoutInput
 import com.mena97villalobos.composeplotlib.chart.internal.marker.ChartMarkerOverlay
@@ -170,6 +171,12 @@ fun HeatmapChart(
                     selectionState,
                     emptyStateDescription,
                     accessibilityCustomActions,
+                ).chartHeatmapKeyboardSelectionRoam(
+                    enabled = spec.accessibility.keyboardSelectionRoamEnabled,
+                    specId = spec.id,
+                    selectionState = selectionState,
+                    tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
+                    heatmapPlan = { latestPlan.value },
                 ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
                 }.chartGestures(

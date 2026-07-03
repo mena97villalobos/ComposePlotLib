@@ -17,6 +17,21 @@ public final class com/mena97villalobos/composeplotlib/core/ChartLibraryInfoKt {
 	public static final fun chartLibraryInfo ()Lcom/mena97villalobos/composeplotlib/core/ChartLibraryInfo;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/accessibility/ChartNarrativeKt {
+	public static final fun barChartNarrative (Lcom/mena97villalobos/composeplotlib/core/spec/BarChartSpec;)Ljava/lang/String;
+	public static final fun lineChartNarrative (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;)Ljava/lang/String;
+	public static final fun scatterChartNarrative (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;)Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/accessibility/ChartTrend : java/lang/Enum {
+	public static final field Falling Lcom/mena97villalobos/composeplotlib/core/accessibility/ChartTrend;
+	public static final field Rising Lcom/mena97villalobos/composeplotlib/core/accessibility/ChartTrend;
+	public static final field Steady Lcom/mena97villalobos/composeplotlib/core/accessibility/ChartTrend;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/accessibility/ChartTrend;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/accessibility/ChartTrend;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/domain/DataDomain {
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/domain/DataDomain$Companion;
 	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;)V
@@ -1682,6 +1697,7 @@ public final class com/mena97villalobos/composeplotlib/core/selection/KeyboardSe
 	public final fun boxPlotChartRoam (Lcom/mena97villalobos/composeplotlib/core/layout/BoxPlotChartPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;II)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 	public final fun candlestickChartRoam (Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;II)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 	public final fun combinedCartesianRoam (Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/CombinedCartesianChartPlan;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;I)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
+	public final fun heatmapRoam (Lcom/mena97villalobos/composeplotlib/core/layout/HeatmapChartPlan;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;II)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 	public final fun lineChartRoam (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;II)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 	public final fun pieChartRoam (Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;I)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
 	public final fun scatterChartRoam (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;II)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
@@ -2126,8 +2142,8 @@ public final class com/mena97villalobos/composeplotlib/core/spec/CandlestickStyl
 
 public final class com/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec {
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;ZZZZZLcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;)V
-	public synthetic fun <init> (Ljava/lang/String;ZZZZZLcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;ZZZZZLcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;Z)V
+	public synthetic fun <init> (Ljava/lang/String;ZZZZZLcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Z
 	public final fun component3 ()Z
@@ -2135,11 +2151,13 @@ public final class com/mena97villalobos/composeplotlib/core/spec/ChartAccessibil
 	public final fun component5 ()Z
 	public final fun component6 ()Z
 	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;
-	public final fun copy (Ljava/lang/String;ZZZZZLcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;)Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Ljava/lang/String;ZZZZZLcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun component8 ()Z
+	public final fun copy (Ljava/lang/String;ZZZZZLcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;Z)Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Ljava/lang/String;ZZZZZLcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;ZILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContentDescription ()Ljava/lang/String;
 	public final fun getExposeSelectionState ()Z
+	public final fun getIncludeDataNarrative ()Z
 	public final fun getKeyboardSelectionRoamEnabled ()Z
 	public final fun getKeyboardViewportNudgeEnabled ()Z
 	public final fun getRequestFocusForAccessibility ()Z
@@ -2252,6 +2270,30 @@ public final class com/mena97villalobos/composeplotlib/core/spec/ChartLiveRegion
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;
 	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/ChartLiveRegionMode;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/ChartPalettes {
+	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/spec/ChartPalettes;
+	public final fun cyclic (Ljava/util/List;I)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getCategory10 ()Ljava/util/List;
+	public final fun getColorblindSafe ()Ljava/util/List;
+	public final fun getTableau10 ()Ljava/util/List;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/ColorGradient {
+	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/spec/ColorGradient$Companion;
+	public fun <init> (Ljava/util/List;)V
+	public final fun colorAt (D)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getStops ()Ljava/util/List;
+	public final fun sample (I)Ljava/util/List;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/ColorGradient$Companion {
+	public final fun getBrBG ()Lcom/mena97villalobos/composeplotlib/core/spec/ColorGradient;
+	public final fun getPlasma ()Lcom/mena97villalobos/composeplotlib/core/spec/ColorGradient;
+	public final fun getRdBu ()Lcom/mena97villalobos/composeplotlib/core/spec/ColorGradient;
+	public final fun getTurbo ()Lcom/mena97villalobos/composeplotlib/core/spec/ColorGradient;
+	public final fun getViridis ()Lcom/mena97villalobos/composeplotlib/core/spec/ColorGradient;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec {
@@ -2716,6 +2758,7 @@ public final class com/mena97villalobos/composeplotlib/core/spec/LineChartSpec {
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/LineDecimationStrategy : java/lang/Enum {
+	public static final field Lttb Lcom/mena97villalobos/composeplotlib/core/spec/LineDecimationStrategy;
 	public static final field MinMaxY Lcom/mena97villalobos/composeplotlib/core/spec/LineDecimationStrategy;
 	public static final field Uniform Lcom/mena97villalobos/composeplotlib/core/spec/LineDecimationStrategy;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;

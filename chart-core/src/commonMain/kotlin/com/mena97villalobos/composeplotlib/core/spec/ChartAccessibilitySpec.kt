@@ -43,4 +43,11 @@ data class ChartAccessibilitySpec(
      * announcements for dynamic `stateDescription` updates.
      */
     val selectionLiveRegionMode: ChartLiveRegionMode = ChartLiveRegionMode.Polite,
+    /**
+     * When true and [contentDescription] is null, the chart's auto-generated summary is prefixed with a
+     * data narrative (per-series point count, min/max range, and first→last trend) produced by
+     * `chart-core` (see `lineChartNarrative` / `scatterChartNarrative` / `barChartNarrative`). Currently
+     * applied to line, scatter, and bar charts. Off by default to keep the default summary terse.
+     */
+    val includeDataNarrative: Boolean = false,
 )

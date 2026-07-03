@@ -34,6 +34,7 @@ object LineRenderPipeline {
             return when (spec.decimation) {
                 LineDecimationStrategy.Uniform -> uniformSampleRange(points, range, cap)
                 LineDecimationStrategy.MinMaxY -> minMaxYSampleRange(points, range, cap)
+                LineDecimationStrategy.Lttb -> lttbSampleRange(points, range, cap)
             }
         }
 
@@ -50,7 +51,98 @@ object LineRenderPipeline {
         return when (spec.decimation) {
             LineDecimationStrategy.Uniform -> uniformIndexed(window, cap)
             LineDecimationStrategy.MinMaxY -> minMaxYIndexed(window, cap)
+            LineDecimationStrategy.Lttb -> lttbIndexed(window, cap)
         }
+    }
+
+    private fun lttbSampleRange(
+        points: List<XyPoint>,
+        range: IndexRange,
+        maxPoints: Int,
+    ): List<Pair<Int, XyPoint>> {
+        val n = range.endInclusive - range.start + 1
+        return lttbCore(
+            n = n,
+            maxPoints = maxPoints,
+            globalIndexAt = { local -> range.start + local },
+            pointAt = { local -> points[range.start + local] },
+        )
+    }
+
+    private fun lttbIndexed(
+        window: List<Pair<Int, XyPoint>>,
+        maxPoints: Int,
+    ): List<Pair<Int, XyPoint>> =
+        lttbCore(
+            n = window.size,
+            maxPoints = maxPoints,
+            globalIndexAt = { local -> window[local].first },
+            pointAt = { local -> window[local].second },
+        )
+
+    /**
+     * Largest-Triangle-Three-Buckets over `n` local samples `0..n-1`. [globalIndexAt] / [pointAt] map a local index
+     * to its stable global index and domain point. Keeps the first and last sample and one point per interior bucket.
+     * Falls back to returning every sample when `n <= maxPoints` or `maxPoints < 3`.
+     */
+    private inline fun lttbCore(
+        n: Int,
+        maxPoints: Int,
+        globalIndexAt: (Int) -> Int,
+        pointAt: (Int) -> XyPoint,
+    ): List<Pair<Int, XyPoint>> {
+        if (n <= 0) return emptyList()
+        if (maxPoints < 3 || n <= maxPoints) {
+            return ArrayList<Pair<Int, XyPoint>>(n).apply {
+                for (i in 0 until n) add(globalIndexAt(i) to pointAt(i))
+            }
+        }
+        val out = ArrayList<Pair<Int, XyPoint>>(maxPoints)
+        out.add(globalIndexAt(0) to pointAt(0))
+        // Interior points 1..n-2 are split into (maxPoints - 2) buckets.
+        val bucketSize = (n - 2).toDouble() / (maxPoints - 2)
+        var selected = 0 // local index of the last kept point
+        for (bucket in 0 until maxPoints - 2) {
+            // Average point of the *next* bucket (used as the third triangle vertex).
+            val nextStart = (kotlin.math.floor((bucket + 1) * bucketSize).toInt() + 1).coerceIn(1, n - 1)
+            val nextEnd = (kotlin.math.floor((bucket + 2) * bucketSize).toInt() + 1).coerceIn(nextStart, n)
+            var avgX = 0.0
+            var avgY = 0.0
+            var avgCount = 0
+            for (j in nextStart until nextEnd) {
+                val p = pointAt(j)
+                avgX += p.x
+                avgY += p.y
+                avgCount++
+            }
+            if (avgCount == 0) {
+                val last = pointAt(n - 1)
+                avgX = last.x
+                avgY = last.y
+            } else {
+                avgX /= avgCount
+                avgY /= avgCount
+            }
+            // Current bucket range.
+            val rangeStart = (kotlin.math.floor(bucket * bucketSize).toInt() + 1).coerceIn(1, n - 1)
+            val rangeEnd = (kotlin.math.floor((bucket + 1) * bucketSize).toInt() + 1).coerceIn(rangeStart + 1, n)
+            val a = pointAt(selected)
+            var bestArea = -1.0
+            var bestIdx = rangeStart
+            for (j in rangeStart until rangeEnd) {
+                val p = pointAt(j)
+                // Twice the triangle area (constant 0.5 dropped — only the argmax matters).
+                val area = kotlin.math.abs((a.x - avgX) * (p.y - a.y) - (a.x - p.x) * (avgY - a.y))
+                if (area > bestArea) {
+                    bestArea = area
+                    bestIdx = j
+                }
+            }
+            out.add(globalIndexAt(bestIdx) to pointAt(bestIdx))
+            selected = bestIdx
+        }
+        out.add(globalIndexAt(n - 1) to pointAt(n - 1))
+        return out
     }
 
     private fun buildWindowIndexed(

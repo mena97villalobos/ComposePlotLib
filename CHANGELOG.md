@@ -75,6 +75,20 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   (`WaterfallHitResolver`), **Shift+Left/Right keyboard selection-roam**
   (`KeyboardSelectionRoam.waterfallChartRoam`), an optional animated **marker** slot (contribution +
   running total), no-data, and TalkBack/VoiceOver semantics.
+- **LTTB decimation** — `LineDecimationStrategy.Lttb` (largest-triangle-three-buckets): a
+  shape-preserving downsampling option that keeps the visually significant vertices (peaks, troughs,
+  inflections) far better than `Uniform`, at ~half the vertices of `MinMaxY`.
+- **Named color palettes** — `ChartPalettes` (categorical `Tableau10` / `Category10` / `ColorblindSafe`
+  lists + `cyclic(...)` wrap-around indexing) and `ColorGradient` (sequential `Viridis` / `Plasma` /
+  `Turbo` and diverging `RdBu` / `BrBG`, with `colorAt(t)` interpolation and `sample(count)`). All
+  KMP-safe in `chart-core`.
+- **Auto-generated data narrative (accessibility)** — `lineChartNarrative` / `scatterChartNarrative` /
+  `barChartNarrative` in `chart-core` produce a screen-reader summary (per-series point count, min/max
+  range, first→last trend). Opt in via `ChartAccessibilitySpec.includeDataNarrative` to prefix the
+  chart's `contentDescription`, or call them directly.
+- **Heatmap keyboard selection-roam** — `HeatmapChart` now supports Shift+arrow grid navigation
+  (`KeyboardSelectionRoam.heatmapRoam`) when `ChartAccessibilitySpec.keyboardSelectionRoamEnabled` is on,
+  clamping at edges and skipping gaps in sparse grids.
 
 ### Changed
 

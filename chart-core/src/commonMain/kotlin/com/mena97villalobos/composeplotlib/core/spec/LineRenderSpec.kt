@@ -79,4 +79,12 @@ enum class LineDecimationStrategy {
      * preserving spikes better than [Uniform] for large datasets.
      */
     MinMaxY,
+
+    /**
+     * Largest-Triangle-Three-Buckets: keeps the first and last point and, per bucket, the point forming the
+     * largest triangle with the previously kept point and the next bucket's average. Shape-preserving — it keeps
+     * the visually significant vertices (peaks, troughs, inflections) far better than [Uniform] while producing a
+     * single point per bucket (about half the vertices of [MinMaxY] for the same bucket count).
+     */
+    Lttb,
 }

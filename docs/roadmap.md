@@ -166,7 +166,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 |---|---|---|---|---|
 | ~~Streaming / real-time append helpers (incremental push, ring-buffer, append transitions)~~ ✅ | ~~P1~~ | L | moderate | **Shipped:** `StreamingSeriesBuffer` (bounded ring buffer, `chart-core`) + `rememberStreamingSeries` / `StreamingSeriesState` (observable snapshots, pairs with data-transition easing). |
 | ~~Null-gap handling~~ ✅ | ~~P0~~ | S | strong | **Shipped:** `ChartPoint.gap(x)` + `LineRenderSpec.connectAcrossGaps`. |
-| LTTB (largest-triangle-three-buckets) decimation | P2 | S | strong | Shape-preserving alternative to Uniform/MinMaxY. |
+| ~~LTTB (largest-triangle-three-buckets) decimation~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `LineDecimationStrategy.Lttb` — shape-preserving alternative to Uniform/MinMaxY. |
 | Percent / normalized stacking (see 4.1) | P2 | S | strong | Stack-offset mode. |
 
 ### 4.7 Theming & color system
@@ -174,7 +174,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | ~~`ChartColor` constructors (`rgb`/hex/hsl + `withAlpha`)~~ ✅ | ~~P1~~ | S | strong | **Shipped:** `ChartColor.rgb`/`argb`/`hex`/`hsl` + `withAlpha` + channel accessors. |
-| Named sequential/diverging/categorical palettes (viridis, turbo, tableau, colorbrewer) | P2 | M | strong | Palette tables + interpolation; complements Heatmap/Sankey scales. |
+| ~~Named sequential/diverging/categorical palettes (viridis, turbo, tableau, colorbrewer)~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `ChartPalettes` (Tableau10 / Category10 / ColorblindSafe) + `ColorGradient` (Viridis / Plasma / Turbo / RdBu / BrBG) with `colorAt`/`sample`. |
 | Named light/dark theme presets + auto dark-mode adaptation | P3 | S | strong | Package opinionated presets on the Material bridge. |
 | Dark-mode-aware **data** palettes (planner does not auto-shift series colors today) | P3 | M | moderate | Requires a theme-aware color-resolution pass. |
 | Expanded gradient fills (radial, multi-stop, per-series brushes) across families | P3 | M | moderate | Style + canvas-adapter extension. |
@@ -185,8 +185,8 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | ~~Data-table alternative / "view data" surface (screen-reader-navigable value list)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `ChartDataTable` model + `lineChartDataTable` / `scatterChartDataTable` / `barChartDataTable` builders (`chart-core`) + `ChartDataTable(...)` composable with row-level semantics. |
-| Keyboard selection-roam for Heatmap & Gauge (parity with the rest) | P2 | S | strong | Add grid/arc roam resolvers to the existing pattern. |
-| Whole-chart auto-generated screen-reader summary (trend, min/max, series count) | P2 | M | strong | Chart-level narrative in `chart-core`; matches Highcharts/ECharts a11y. |
+| ~~Keyboard selection-roam for Heatmap & Gauge (parity with the rest)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `KeyboardSelectionRoam.heatmapRoam` (Shift+arrows across the grid). Gauge is a single non-interactive value with no selectable elements, so roam is N/A. |
+| ~~Whole-chart auto-generated screen-reader summary (trend, min/max, series count)~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `lineChartNarrative` / `scatterChartNarrative` / `barChartNarrative` in `chart-core`, opt-in via `ChartAccessibilitySpec.includeDataNarrative`. |
 | Sonification (data-to-audio) | P3 | XL | weak | Platform audio via `expect`/`actual`; niche, defer. |
 
 ### 4.9 Export & interop
@@ -209,7 +209,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| LTTB decimation option (see 4.6) | P2 | S | strong | New `LineDecimationStrategy`. |
+| ~~LTTB decimation option (see 4.6)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `LineDecimationStrategy.Lttb`. |
 | Progressive / frame-chunked rendering for very large sets | P3 | L | moderate | Helps million-point cases; interacts with the animation/gesture loop. |
 | GPU/batch boost renderer | P3 | XL | weak | Compose Canvas has no cross-platform GPU batch path; decimation is the pragmatic substitute. |
 

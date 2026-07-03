@@ -25,6 +25,9 @@ import com.mena97villalobos.composeplotlib.chart.internal.marker.buildSankeyMark
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildScatterMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildWaterfallMarkerData
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
+import com.mena97villalobos.composeplotlib.core.accessibility.barChartNarrative
+import com.mena97villalobos.composeplotlib.core.accessibility.lineChartNarrative
+import com.mena97villalobos.composeplotlib.core.accessibility.scatterChartNarrative
 import com.mena97villalobos.composeplotlib.core.layout.SankeyChartPlan
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
@@ -644,10 +647,11 @@ private fun defaultLineChartSemanticSummary(spec: LineChartSpec): String =
     when {
         spec.series.isEmpty() -> "Line chart with no series."
         else -> {
+            val narrative = if (spec.accessibility.includeDataNarrative) lineChartNarrative(spec) + " " else ""
             val names = spec.series.joinToString { it.label }
             val keys = keyboardHint(spec.accessibility)
             val markerFocus = markerFocusHint(spec.accessibility.requestFocusOnMarker)
-            "Line chart. Series: $names. Use pinch to zoom and drag to pan. Tap a point to select.$keys$markerFocus"
+            "${narrative}Line chart. Series: $names. Use pinch to zoom and drag to pan. Tap a point to select.$keys$markerFocus"
         }
     }
 
@@ -692,10 +696,11 @@ private fun defaultScatterChartSemanticSummary(spec: ScatterChartSpec): String =
     when {
         spec.series.isEmpty() -> "Scatter chart with no series."
         else -> {
+            val narrative = if (spec.accessibility.includeDataNarrative) scatterChartNarrative(spec) + " " else ""
             val names = spec.series.joinToString { it.label }
             val keys = keyboardHint(spec.accessibility)
             val mf = markerFocusHint(spec.accessibility.requestFocusOnMarker)
-            "Scatter chart. Series: $names. Use pinch to zoom and drag to pan. Tap a point to select.$keys$mf"
+            "${narrative}Scatter chart. Series: $names. Use pinch to zoom and drag to pan. Tap a point to select.$keys$mf"
         }
     }
 
@@ -724,6 +729,7 @@ private fun defaultBarChartSemanticSummary(spec: BarChartSpec): String =
     when {
         spec.groups.isEmpty() -> "Bar chart with no groups."
         else -> {
+            val narrative = if (spec.accessibility.includeDataNarrative) barChartNarrative(spec) + " " else ""
             val names = spec.groups.joinToString { it.label }
             val keys = keyboardHint(spec.accessibility)
             val mf = markerFocusHint(spec.accessibility.requestFocusOnMarker)
@@ -732,7 +738,7 @@ private fun defaultBarChartSemanticSummary(spec: BarChartSpec): String =
                     BarChartOrientation.Vertical -> "vertical"
                     BarChartOrientation.Horizontal -> "horizontal"
                 }
-            "Bar chart ($orient). Groups: $names. Use pinch to zoom and drag to pan. Tap a bar to select.$keys$mf"
+            "${narrative}Bar chart ($orient). Groups: $names. Use pinch to zoom and drag to pan. Tap a bar to select.$keys$mf"
         }
     }
 
@@ -763,14 +769,21 @@ internal fun Modifier.heatmapChartAccessibility(
 ): Modifier {
     val wantsFocus =
         spec.accessibility.requestFocusForAccessibility ||
+            spec.accessibility.keyboardSelectionRoamEnabled ||
             spec.accessibility.requestFocusOnMarker
     val mergeDescendants = !spec.accessibility.requestFocusOnMarker
     val semanticsModifier =
         Modifier.semantics(mergeDescendants = mergeDescendants) {
             role = Role.Image
+            val roamHint =
+                if (spec.accessibility.keyboardSelectionRoamEnabled) {
+                    " Shift+arrow keys move the selected cell across the grid."
+                } else {
+                    ""
+                }
             val baseDescription =
                 spec.accessibility.contentDescription
-                    ?: "Heatmap chart with ${spec.rowLabels.size} rows and ${spec.columnLabels.size} columns."
+                    ?: "Heatmap chart with ${spec.rowLabels.size} rows and ${spec.columnLabels.size} columns.$roamHint"
             contentDescription =
                 if (spec.cells.isEmpty()) {
                     emptyStateDescription ?: "$baseDescription $ACCESSIBILITY_NO_DATA_SUFFIX"

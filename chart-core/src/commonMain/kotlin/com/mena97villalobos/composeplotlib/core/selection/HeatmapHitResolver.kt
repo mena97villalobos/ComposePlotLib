@@ -18,16 +18,23 @@ object HeatmapHitResolver {
     ): ChartSelection? {
         if (!touchPoint.x.isFinite() || !touchPoint.y.isFinite()) return null
         val hit = cells.firstOrNull { it.bounds.contains(touchPoint) } ?: return null
-        return ChartSelection(
+        return selectionFor(hit, specId)
+    }
+
+    /** Builds the [ChartSelection] for [cell]; shared by tap resolution and keyboard roam so they are identical. */
+    internal fun selectionFor(
+        cell: PlannedHeatmapCell,
+        specId: String,
+    ): ChartSelection =
+        ChartSelection(
             target =
                 HighlightTarget(
                     seriesId = specId,
-                    pointIndex = hit.cellIndex,
-                    point = XyPoint(hit.col.toDouble(), hit.row.toDouble()),
+                    pointIndex = cell.cellIndex,
+                    point = XyPoint(cell.col.toDouble(), cell.row.toDouble()),
                 ),
-            pixelOffset = hit.bounds.center,
-            markerAnchor = hit.bounds.center,
-            hitBounds = hit.bounds,
+            pixelOffset = cell.bounds.center,
+            markerAnchor = cell.bounds.center,
+            hitBounds = cell.bounds,
         )
-    }
 }

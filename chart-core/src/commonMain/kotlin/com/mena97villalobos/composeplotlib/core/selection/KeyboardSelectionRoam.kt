@@ -8,8 +8,10 @@ import com.mena97villalobos.composeplotlib.core.layout.BoxPlotChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CandlestickChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedCartesianChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedHitTestLayer
+import com.mena97villalobos.composeplotlib.core.layout.HeatmapChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.PlannedBarSegment
 import com.mena97villalobos.composeplotlib.core.layout.PlannedCandle
+import com.mena97villalobos.composeplotlib.core.layout.PlannedHeatmapCell
 import com.mena97villalobos.composeplotlib.core.layout.WaterfallChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.forHitTestFromDrawOrder
 import com.mena97villalobos.composeplotlib.core.model.toXyPoints
@@ -296,6 +298,54 @@ object KeyboardSelectionRoam {
                 else -> (currentIdx + delta).coerceIn(0, ordered.lastIndex)
             }
         return WaterfallHitResolver.selectionFor(ordered[nextIdx])
+    }
+
+    /**
+     * Keyboard selection-roam over a heatmap grid: [deltaCol] steps columns (Left/Right), [deltaRow] steps rows
+     * (Up increases the row index since row 0 is at the bottom). Clamps at the grid edges (no wrap); when the target
+     * coordinate has no cell (sparse grid) it keeps stepping in the same direction until a cell is found or the edge
+     * is reached. From no selection, selects the bottom-left-most cell. Builds a [ChartSelection] identical to
+     * [HeatmapHitResolver.resolve].
+     */
+    fun heatmapRoam(
+        plan: HeatmapChartPlan,
+        specId: String,
+        current: ChartSelection?,
+        deltaCol: Int,
+        deltaRow: Int,
+    ): ChartSelection? {
+        if (deltaCol == 0 && deltaRow == 0) return current
+        val cells = plan.heatmapCells
+        if (cells.isEmpty()) return null
+
+        val byCoord = HashMap<Pair<Int, Int>, PlannedHeatmapCell>(cells.size)
+        var maxCol = 0
+        var maxRow = 0
+        for (c in cells) {
+            byCoord[c.col to c.row] = c
+            if (c.col > maxCol) maxCol = c.col
+            if (c.row > maxRow) maxRow = c.row
+        }
+
+        if (current == null || current.target.seriesId != specId) {
+            val start = cells.minWith(compareBy({ it.row }, { it.col }))
+            return HeatmapHitResolver.selectionFor(start, specId)
+        }
+
+        val point = current.target.point
+        var col = point.x.toInt()
+        var row = point.y.toInt()
+        while (true) {
+            val nextCol = col + deltaCol
+            val nextRow = row + deltaRow
+            if (nextCol < 0 || nextCol > maxCol || nextRow < 0 || nextRow > maxRow) {
+                return current
+            }
+            col = nextCol
+            row = nextRow
+            val cell = byCoord[col to row]
+            if (cell != null) return HeatmapHitResolver.selectionFor(cell, specId)
+        }
     }
 
     private fun chartSelectionForCandle(hit: PlannedCandle): ChartSelection {

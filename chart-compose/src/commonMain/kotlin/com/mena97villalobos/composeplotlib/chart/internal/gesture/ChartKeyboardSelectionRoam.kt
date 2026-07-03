@@ -13,6 +13,7 @@ import com.mena97villalobos.composeplotlib.core.layout.BoxPlotChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.CandlestickChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan
 import com.mena97villalobos.composeplotlib.core.layout.CombinedCartesianChartPlan
+import com.mena97villalobos.composeplotlib.core.layout.HeatmapChartPlan
 import com.mena97villalobos.composeplotlib.core.layout.WaterfallChartPlan
 import com.mena97villalobos.composeplotlib.core.selection.KeyboardSelectionRoam
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
@@ -219,6 +220,40 @@ internal fun Modifier.chartCombinedCartesianKeyboardSelectionRoam(
                 plotBounds = layout.plotBounds,
                 current = selectionState.selection,
                 delta = delta,
+            ) ?: return@onKeyEvent false
+        selectionState.select(next)
+        true
+    }
+}
+
+internal fun Modifier.chartHeatmapKeyboardSelectionRoam(
+    enabled: Boolean,
+    specId: String,
+    selectionState: ChartSelectionState,
+    tapSelectionEnabled: Boolean,
+    heatmapPlan: () -> HeatmapChartPlan?,
+): Modifier {
+    if (!enabled || !tapSelectionEnabled) return this
+    return onKeyEvent { event ->
+        if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
+        if (!event.isShiftPressed) return@onKeyEvent false
+        val plan = heatmapPlan() ?: return@onKeyEvent false
+        // Row 0 is at the bottom, so Up increases the row index.
+        val (deltaCol, deltaRow) =
+            when (event.key) {
+                Key.DirectionLeft -> -1 to 0
+                Key.DirectionRight -> 1 to 0
+                Key.DirectionUp -> 0 to 1
+                Key.DirectionDown -> 0 to -1
+                else -> return@onKeyEvent false
+            }
+        val next =
+            KeyboardSelectionRoam.heatmapRoam(
+                plan = plan,
+                specId = specId,
+                current = selectionState.selection,
+                deltaCol = deltaCol,
+                deltaRow = deltaRow,
             ) ?: return@onKeyEvent false
         selectionState.select(next)
         true
