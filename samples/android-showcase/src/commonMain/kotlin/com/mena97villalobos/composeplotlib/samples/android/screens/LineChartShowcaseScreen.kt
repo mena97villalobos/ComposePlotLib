@@ -41,6 +41,7 @@ import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportStat
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyLineChartSpec
+import com.mena97villalobos.composeplotlib.samples.android.data.gappedLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.largeDenseLineChartInitialViewport
 import com.mena97villalobos.composeplotlib.samples.android.data.layoutStressLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.lineChartSpecCustomCalloutFocusDemo
@@ -51,6 +52,7 @@ import com.mena97villalobos.composeplotlib.samples.android.data.sampleLineChartS
 @Composable
 fun LineChartShowcaseScreen() {
     var variant by remember { mutableStateOf(LineShowcaseVariant.Styled) }
+    var connectGaps by remember { mutableStateOf(false) }
     val largeSpec = remember { sampleLargeDenseLineChartSpec() }
     val layoutStressSpec = remember { layoutStressLineChartSpec() }
     val spec =
@@ -59,6 +61,7 @@ fun LineChartShowcaseScreen() {
             LineShowcaseVariant.Empty -> emptyLineChartSpec()
             LineShowcaseVariant.LargeSeries -> largeSpec
             LineShowcaseVariant.LayoutStress -> layoutStressSpec
+            LineShowcaseVariant.Gaps -> gappedLineChartSpec(connectAcrossGaps = connectGaps)
         }
     val dataExtent =
         when (variant) {
@@ -127,6 +130,9 @@ fun LineChartShowcaseScreen() {
             Button(onClick = { variant = LineShowcaseVariant.LayoutStress }) {
                 Text("Layout")
             }
+            Button(onClick = { variant = LineShowcaseVariant.Gaps }) {
+                Text("Gaps")
+            }
         }
         Row(
             modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -137,6 +143,11 @@ fun LineChartShowcaseScreen() {
                 selectionState.clear()
             }) {
                 Text("Reset")
+            }
+            if (variant == LineShowcaseVariant.Gaps) {
+                Button(onClick = { connectGaps = !connectGaps }) {
+                    Text(if (connectGaps) "Break at gaps" else "Connect gaps")
+                }
             }
             if (variant != LineShowcaseVariant.LargeSeries && variant != LineShowcaseVariant.LayoutStress) {
                 Button(onClick = {
@@ -296,6 +307,9 @@ private enum class LineShowcaseVariant {
     Empty,
     LargeSeries,
 
-    /** Staggered X tick labels + legend ellipses (M5 layout stress). */
+    /** Staggered X tick labels + legend ellipses (layout stress). */
     LayoutStress,
+
+    /** Missing-data gaps: line/area break at [ChartPoint.gap] markers unless connectAcrossGaps is on. */
+    Gaps,
 }

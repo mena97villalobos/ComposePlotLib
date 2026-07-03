@@ -116,6 +116,45 @@ fun emptyLineChartSpec(): LineChartSpec =
             ),
     )
 
+/**
+ * A single series with two missing samples ([ChartPoint.gap]) so the line and area fill break into segments.
+ * Pair with `LineRenderSpec(connectAcrossGaps = true)` to bridge the holes instead.
+ */
+fun gappedLineChartSpec(connectAcrossGaps: Boolean = false): LineChartSpec =
+    LineChartSpec(
+        series =
+            listOf(
+                LineSeries(
+                    id = "sensor",
+                    label = "Sensor",
+                    lineStyle =
+                        LineStyle(
+                            color = ChartColor.Blue,
+                            areaFill = ChartColor(0x551565C0L),
+                            areaFillEnd = ChartColor(0x111565C0L),
+                        ),
+                    pointStyle = PointStyle(visible = true, radius = 4.0),
+                    points =
+                        listOf(
+                            ChartPoint(0.0, 6.0),
+                            ChartPoint(1.0, 9.0),
+                            ChartPoint(2.0, 7.0),
+                            ChartPoint.gap(3.0),
+                            ChartPoint(4.0, 12.0),
+                            ChartPoint(5.0, 15.0),
+                            ChartPoint.gap(6.0),
+                            ChartPoint(7.0, 11.0),
+                            ChartPoint(8.0, 14.0),
+                        ),
+                ),
+            ),
+        lineRender = LineRenderSpec(connectAcrossGaps = connectAcrossGaps),
+        accessibility =
+            ChartAccessibilitySpec(
+                contentDescription = "Showcase line chart with missing-data gaps.",
+            ),
+    )
+
 /** Single series with Y values near the top of the default viewport — demo tooltip flips below the anchor. */
 fun lineChartSpecTooltipEdgeDemo(): LineChartSpec =
     LineChartSpec(

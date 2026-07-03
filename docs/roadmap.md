@@ -77,8 +77,8 @@ The highest-leverage gaps versus nearly every competitor, each a strong architec
 
 1. **Logarithmic (+ symlog) axis scale** — the most glaring scale gap; `AxisScale` is already a sealed
    hierarchy, so this is tick generation + a value→fraction transform. *(M, strong)*
-2. **Null / missing-data gap handling** (`connectNulls` / span-gaps) — nullable Y semantics + a connect
-   policy in polyline building. Table stakes for real time series. *(S, strong)*
+2. ~~**Null / missing-data gap handling** (`connectNulls` / span-gaps)~~ — ✅ **shipped:** `ChartPoint.gap(x)`
+   marks a missing sample (non-finite y); line/area break at gaps, or `LineRenderSpec.connectAcrossGaps` bridges. *(S, strong)*
 3. **Per-point / per-bar data labels** — value labels with a formatter and overlap avoidance, reusing the
    existing text-overlap machinery. *(M, strong)*
 4. **Interactive legend** — tap-to-toggle series visibility and hover/press highlight; visibility becomes an
@@ -161,7 +161,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | Streaming / real-time append helpers (incremental push, ring-buffer, append transitions) | P1 | L | moderate | A diff-aware model producer that appends without full replan, respecting immutability (Vico-style). |
-| Null-gap handling (see 4.4/near-term) | P0 | S | strong | Polyline connect policy. |
+| ~~Null-gap handling~~ ✅ | ~~P0~~ | S | strong | **Shipped:** `ChartPoint.gap(x)` + `LineRenderSpec.connectAcrossGaps`. |
 | LTTB (largest-triangle-three-buckets) decimation | P2 | S | strong | Shape-preserving alternative to Uniform/MinMaxY. |
 | Percent / normalized stacking (see 4.1) | P2 | S | strong | Stack-offset mode. |
 

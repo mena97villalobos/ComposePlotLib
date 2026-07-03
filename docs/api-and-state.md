@@ -84,6 +84,8 @@ Main types:
 
 `LineChartSpec.lineRender` (`LineRenderSpec`) controls viewport windowing (domain **x and y** ranges, continuity padding, optional decimation caps) before pixel-space polyline clipping to `plotBounds`. Set an explicit positive `maxPointsPerSeries` to cap vertices, or enable `usePlotWidthPixelBudget` (with `maxPointsPerSeries <= 0`) so `LineChart` supplies a cap from plot width via `LineRenderSpec.autoMaxPointsForPlotWidthPx` (default oversample `DEFAULT_PLOT_WIDTH_OVERSAMPLE`, ~2.25 samples per horizontal pixel before clamping to 256–16384). `LineDecimationStrategy` chooses uniform index spacing vs per-bucket min/max **y** retention (better for spiky data).
 
+**Missing-data gaps:** mark a missing sample with `ChartPoint.gap(x)` (a non-finite y). By default the line and area fill **break** into separate segments at each gap; set `LineRenderSpec.connectAcrossGaps = true` to skip the holes and **connect** the surrounding points (`connectNulls`). Gap points are excluded from data bounds, decimation, and selection.
+
 ### Area fill, reference lines, and marker shapes
 These additive options (1.1.0) extend existing cartesian charts; defaults preserve prior stroke/point behavior.
 

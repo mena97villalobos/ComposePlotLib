@@ -29,6 +29,12 @@ data class LineRenderSpec(
      * When [maxPointsPerSeries] is positive, this flag is ignored.
      */
     val usePlotWidthPixelBudget: Boolean = false,
+    /**
+     * How **gap** points (samples whose y is non-finite, e.g. [ChartPoint.gap][com.mena97villalobos.composeplotlib.core.model.ChartPoint.gap])
+     * are treated. When `false` (default) the line and area fill **break** at each gap into separate segments; when
+     * `true` gaps are skipped and the surrounding finite points are **connected** across the hole (`connectNulls`).
+     */
+    val connectAcrossGaps: Boolean = false,
 ) {
     companion object {
         /** Default vertices-per-plot-pixel budget for [autoMaxPointsForPlotWidthPx] (tuned M8: slightly below 2.5 for large-series cost). */

@@ -1889,43 +1889,73 @@ object ChartPlanner {
         plotBounds: RectD,
         lineRender: LineRenderSpec,
     ): List<DrawCommand> {
-        val indexed = LineRenderPipeline.prepareIndexed(series.toXyPoints(), viewport, lineRender)
-        if (indexed.isEmpty()) return emptyList()
+        // Split into runs of finite points separated by gap markers (non-finite y). Each run is windowed,
+        // decimated, and drawn independently so the stroke/area break at gaps; connectAcrossGaps bridges them.
+        val runs = finiteLineRuns(series.toXyPoints(), lineRender.connectAcrossGaps)
+        if (runs.isEmpty()) return emptyList()
 
-        val pixelPoints = ArrayList<OffsetD>(indexed.size)
-        for ((_, p) in indexed) {
-            pixelPoints.add(transform.toPixel(p))
-        }
-        val lineFragments = PolylineRectClip.clipPolylineToRect(pixelPoints, plotBounds)
         val commands = mutableListOf<DrawCommand>()
-        // Area fill (if configured) renders beneath the line, built from the full unclipped pixel points;
-        // the plot-bounds clip applied by the renderer trims any overflow.
-        buildAreaFillCommand(pixelPoints, plotBounds, transform, series.lineStyle)?.let { commands += it }
-        for (fragment in lineFragments) {
-            commands +=
-                DrawCommand.Polyline(
-                    points = fragment,
-                    color = series.lineStyle.color,
-                    strokeWidth = series.lineStyle.strokeWidth,
-                )
-        }
+        val pr = series.pointStyle.radius.coerceAtLeast(0.0)
+        for (run in runs) {
+            val indexed = LineRenderPipeline.prepareIndexed(run, viewport, lineRender)
+            if (indexed.isEmpty()) continue
 
-        if (series.pointStyle.visible) {
-            val pr = series.pointStyle.radius.coerceAtLeast(0.0)
-            commands +=
-                pixelPoints.mapNotNull { pixel ->
-                    if (!plotBounds.intersectsDisc(pixel, pr)) {
-                        return@mapNotNull null
-                    }
-                    DrawCommand.Circle(
-                        center = pixel,
-                        radius = pr,
-                        color = series.pointStyle.color ?: series.lineStyle.color,
+            val pixelPoints = ArrayList<OffsetD>(indexed.size)
+            for ((_, p) in indexed) {
+                pixelPoints.add(transform.toPixel(p))
+            }
+            // Area fill (if configured) renders beneath the line, built from the full unclipped pixel points;
+            // the plot-bounds clip applied by the renderer trims any overflow.
+            buildAreaFillCommand(pixelPoints, plotBounds, transform, series.lineStyle)?.let { commands += it }
+            for (fragment in PolylineRectClip.clipPolylineToRect(pixelPoints, plotBounds)) {
+                commands +=
+                    DrawCommand.Polyline(
+                        points = fragment,
+                        color = series.lineStyle.color,
+                        strokeWidth = series.lineStyle.strokeWidth,
                     )
+            }
+            if (series.pointStyle.visible) {
+                for (pixel in pixelPoints) {
+                    if (!plotBounds.intersectsDisc(pixel, pr)) continue
+                    commands +=
+                        DrawCommand.Circle(
+                            center = pixel,
+                            radius = pr,
+                            color = series.pointStyle.color ?: series.lineStyle.color,
+                        )
                 }
+            }
         }
 
         return commands
+    }
+
+    /**
+     * Partitions [points] into runs of finite samples separated by gap markers (non-finite x or y). When
+     * [connectAcrossGaps] is `true`, returns a single run with the gap points removed (bridging the holes).
+     */
+    private fun finiteLineRuns(
+        points: List<XyPoint>,
+        connectAcrossGaps: Boolean,
+    ): List<List<XyPoint>> {
+        if (points.isEmpty()) return emptyList()
+        if (connectAcrossGaps) {
+            val kept = points.filter { it.x.isFinite() && it.y.isFinite() }
+            return if (kept.isEmpty()) emptyList() else listOf(kept)
+        }
+        val runs = ArrayList<List<XyPoint>>()
+        var current = ArrayList<XyPoint>()
+        for (p in points) {
+            if (p.x.isFinite() && p.y.isFinite()) {
+                current.add(p)
+            } else if (current.isNotEmpty()) {
+                runs.add(current)
+                current = ArrayList()
+            }
+        }
+        if (current.isNotEmpty()) runs.add(current)
+        return runs
     }
 
     /**

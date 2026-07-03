@@ -4,7 +4,7 @@ Short orienteer for each **shipped** family. Configuration details, types, and g
 
 ## Line
 
-Continuous series with optional point markers. Strong **`LineRenderSpec`** controls: domain windowing, optional decimation / plot-width pixel budget, and clipping to plot bounds. Shares cartesian **`AxisSpec`** / **`GridSpec`** / **`LegendSpec`** with bar and scatter.
+Continuous series with optional point markers. Strong **`LineRenderSpec`** controls: domain windowing, optional decimation / plot-width pixel budget, clipping to plot bounds, and **missing-data gaps** (`ChartPoint.gap(x)` breaks the line/area; `connectAcrossGaps` bridges them). Shares cartesian **`AxisSpec`** / **`GridSpec`** / **`LegendSpec`** with bar and scatter.
 
 ## Bar
 
