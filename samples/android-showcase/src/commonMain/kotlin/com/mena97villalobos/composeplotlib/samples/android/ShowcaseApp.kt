@@ -31,6 +31,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.BulletChartSh
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.GaugeChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.HeatmapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
@@ -136,6 +137,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Bullet ->
                     Column(detailModifier) {
                         BulletChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Funnel ->
+                    Column(detailModifier) {
+                        FunnelChartShowcaseScreen()
                     }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
@@ -248,6 +253,12 @@ private fun ShowcaseHomeScreen(
             Text("Bullet graph")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Funnel) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Funnel chart")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -274,5 +285,6 @@ private enum class ShowcaseDestination(
     Waterfall("Waterfall chart"),
     Bubble("Bubble chart"),
     Bullet("Bullet graph"),
+    Funnel("Funnel chart"),
     DomainAxes("Domain axes"),
 }

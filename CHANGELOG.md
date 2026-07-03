@@ -103,6 +103,9 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Bullet graph family** — `BulletChart` composable + `BulletChartSpec` / `BulletBand`: a compact linear KPI
   display with qualitative range bands behind a measure bar and an optional target marker. Read-only
   (gauge-style, no pan/zoom/selection), with optional min/max bound labels.
+- **Funnel chart family** — `FunnelChart` composable + `FunnelChartSpec` / `FunnelStage`: ordered stages as
+  stacked, centered trapezoids that taper from each stage's width (∝ value) to the next, colored from the
+  spec palette with optional centered labels. Read-only.
 
 ### Changed
 

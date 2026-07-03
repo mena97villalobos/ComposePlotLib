@@ -39,9 +39,11 @@ import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ChartPalettes
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
+import com.mena97villalobos.composeplotlib.core.spec.FunnelChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
@@ -778,6 +780,88 @@ object ChartPlanner {
         }
 
         return BulletChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plot,
+                    reservedRegions = reservedRegions,
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
+                ),
+        )
+    }
+
+    /**
+     * Funnel chart: ordered [stages][FunnelChartSpec.stages] as stacked, centered trapezoids that taper from each
+     * stage's width (proportional to its value) to the next stage's width. Read-only; optional centered stage labels
+     * are emitted as overlay text.
+     */
+    fun planFunnelChart(
+        input: ChartLayoutInput,
+        spec: FunnelChartSpec,
+    ): FunnelChartPlan {
+        val labelScale = input.labelLayoutScale.normalizedLabelLayoutScale()
+        val bounds = input.toPlanningBounds()
+        val reservedRegions =
+            buildReservedRegions(
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                xTickLabels = emptyList(),
+                yTickLabels = emptyList(),
+                legendEntries = emptyList(),
+                textMeasurements = input.textMeasurements,
+                xAxisEnabled = false,
+                yAxisEnabled = false,
+                labelLayoutScale = labelScale,
+            )
+        val plot = bounds.canvasBounds.inset(reservedRegions.contentInsets)
+        val plotCommands = mutableListOf<DrawCommand>()
+        val overlayCommands = mutableListOf<DrawCommand>()
+        val stages = spec.stages
+        val maxValue = stages.maxOfOrNull { if (it.value.isFinite()) it.value else 0.0 } ?: 0.0
+
+        if (plot.width > 0.0 && plot.height > 0.0 && stages.isNotEmpty() && maxValue > 0.0) {
+            val n = stages.size
+            val gap = spec.gapPx.coerceAtLeast(0.0)
+            val bandHeight = ((plot.height - gap * (n - 1)) / n).coerceAtLeast(0.0)
+            val cx = (plot.left + plot.right) / 2.0
+            val (charW, lineH) = estimateLabelCharBox(input)
+
+            fun widthFor(v: Double): Double = (if (v.isFinite()) (v / maxValue).coerceIn(0.0, 1.0) else 0.0) * plot.width
+
+            for (i in stages.indices) {
+                val stage = stages[i]
+                val top = plot.top + i * (bandHeight + gap)
+                val bottom = top + bandHeight
+                val topHalf = widthFor(stage.value) / 2.0
+                val bottomHalf = widthFor(stages.getOrNull(i + 1)?.value ?: stage.value) / 2.0
+                val color = stage.color ?: ChartPalettes.cyclic(spec.palette, i)
+                plotCommands +=
+                    DrawCommand.Path(
+                        segments =
+                            listOf(
+                                PathSegment.MoveTo(OffsetD(cx - topHalf, top)),
+                                PathSegment.LineTo(OffsetD(cx + topHalf, top)),
+                                PathSegment.LineTo(OffsetD(cx + bottomHalf, bottom)),
+                                PathSegment.LineTo(OffsetD(cx - bottomHalf, bottom)),
+                                PathSegment.Close,
+                            ),
+                        style = PathDrawStyle.Fill(color = color),
+                    )
+                if (spec.showLabels) {
+                    val text = "${stage.label} ${spec.valueFormatter(stage.value)}"
+                    val textWidth = charW.coerceAtLeast(1.0) * text.length
+                    val midY = (top + bottom) / 2.0
+                    overlayCommands +=
+                        DrawCommand.Text(text, OffsetD(cx - textWidth / 2.0, midY - lineH / 2.0), spec.labelColor)
+                }
+            }
+        }
+
+        return FunnelChartPlan(
             layout =
                 ChartLayoutPlan(
                     canvasBounds = bounds.canvasBounds,

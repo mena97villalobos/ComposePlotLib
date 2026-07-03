@@ -18,11 +18,11 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ## 1. Current state (as of 2026-07, `1.2.0` unreleased)
 
-**Chart families (16):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+**Chart families (17):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
 `RadarChart`, `SankeyChart` (orientation, Tableau-10 palette, gradient ribbons — reworked for 1.2.0),
 `HeatmapChart`, `GaugeChart`, `CandlestickChart`, `BoxPlotChart` (Tukey five-number summaries), `WaterfallChart`
-(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), plus the axis-less
+(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), plus the axis-less
 `Sparkline` wrapper.
 
 **Cartesian depth:** area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`), reference/threshold
@@ -132,7 +132,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Bubble chart as a first-class family (z→radius scale + size legend)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `BubbleChart` / `BubbleChartSpec` / `BubbleSeries` + area-proportional `BubbleSizeScale` + size legend; reuses the scatter pipeline via `toScatterSpec`. |
 | ~~Bullet graph (KPI target/threshold bands)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `BulletChart` / `BulletChartSpec` / `BulletBand` — qualitative bands + measure bar + target marker (read-only, gauge-style). |
 | First-class stacked area (+ percent / streamgraph offsets) | P2 | M | strong | Area fill exists; needs a stacking/offset engine. |
-| Funnel family | P2 | M | strong | Trapezoid geometry from ordered values; no axes (like Gauge). |
+| ~~Funnel family~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `FunnelChart` / `FunnelChartSpec` / `FunnelStage` — stacked centered trapezoids (read-only, gauge-style). |
 | Radial bar / circular progress-bar | P3 | S | strong | Shares Gauge/Pie arc geometry. |
 | Treemap | P3 | L | moderate | Squarified layout + hierarchical model + label fitting. |
 | Sunburst / hierarchical radial | P3 | L | moderate | Multi-ring arcs + tree model + drilldown. |

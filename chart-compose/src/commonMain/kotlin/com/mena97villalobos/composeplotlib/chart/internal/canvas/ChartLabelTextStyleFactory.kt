@@ -11,6 +11,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.FunnelChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendStyle
@@ -83,6 +84,16 @@ internal fun chartLabelTextStyles(
 ): ChartLabelTextStyles {
     // Bullet draws only min/max bound labels via the x-axis text slot.
     val y = MaterialTheme.typography.labelSmall
+    return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(
+    @Suppress("UNUSED_PARAMETER") spec: FunnelChartSpec,
+): ChartLabelTextStyles {
+    // Funnel draws stage labels via the x-axis text slot.
+    val y = MaterialTheme.typography.labelMedium
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
 }
 

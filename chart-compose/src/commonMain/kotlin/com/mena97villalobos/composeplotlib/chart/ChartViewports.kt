@@ -12,6 +12,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
+import com.mena97villalobos.composeplotlib.core.spec.FunnelChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
@@ -52,6 +53,11 @@ fun defaultViewport(spec: BubbleChartSpec): ChartViewport = defaultViewport(spec
 /** Trivial unit [ChartViewport] for a bullet graph (linear, non-cartesian — the plan ignores the viewport). */
 fun defaultViewport(
     @Suppress("UNUSED_PARAMETER") spec: BulletChartSpec,
+): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
+
+/** Trivial unit [ChartViewport] for a funnel chart (non-cartesian — the plan ignores the viewport). */
+fun defaultViewport(
+    @Suppress("UNUSED_PARAMETER") spec: FunnelChartSpec,
 ): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
 
 /** [ChartViewport] that fits all scatter points; uses a small default range when there is no (finite) data. */
