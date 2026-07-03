@@ -86,6 +86,7 @@ fun ScatterChart(
     accessibilityCustomActions: List<ChartCustomAccessibilityAction> = emptyList(),
     animation: ChartAnimationPolicy = ChartAnimationPolicy.Default,
     chromeTheme: ChartChromeTheme? = null,
+    onLegendItemClick: ((seriesId: String) -> Unit)? = null,
 ) {
     val resolvedAnimation = resolveChartAnimationPolicy(animation)
     val renderViewport = rememberAnimatedChartViewport(viewportState, resolvedAnimation)
@@ -196,9 +197,21 @@ fun ScatterChart(
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
                 }.chartGestures(
                     onTap =
-                        if (gestureConfig.tap.selectionEnabled) {
+                        if (gestureConfig.tap.selectionEnabled || onLegendItemClick != null) {
                             { offset ->
                                 val currentPlan = plan ?: return@chartGestures
+                                val onLegend = onLegendItemClick
+                                if (onLegend != null) {
+                                    val sid =
+                                        currentPlan.layout.legendEntries
+                                            .firstOrNull { it.seriesId != null && it.bounds.contains(OffsetD(offset.x.toDouble(), offset.y.toDouble())) }
+                                            ?.seriesId
+                                    if (sid != null) {
+                                        onLegend(sid)
+                                        return@chartGestures
+                                    }
+                                }
+                                if (!gestureConfig.tap.selectionEnabled) return@chartGestures
                                 if (spec.series.all { it.points.isEmpty() }) {
                                     selectionState.clear()
                                     return@chartGestures

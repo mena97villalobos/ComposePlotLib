@@ -112,12 +112,14 @@ internal object ComposeCanvasAdapter {
             val drawEntries: DrawScope.() -> Unit = {
                 plan.legendEntries.forEach { entry ->
                     val r = entry.indicatorRadius.toFloat().coerceAtLeast(0.5f)
+                    val base = entry.color.toComposeColor()
+                    val entryColor = if (entry.hidden) base.copy(alpha = base.alpha * 0.38f) else base
                     drawCircle(
-                        color = entry.color.toComposeColor(),
+                        color = entryColor,
                         radius = r,
                         center = entry.indicatorCenter.toComposeOffset(),
                     )
-                    val textStyle = labels.legend.copy(color = entry.color.toComposeColor())
+                    val textStyle = labels.legend.copy(color = entryColor)
                     val layout = textMeasurer.measureChartText(entry.label, textStyle)
                     val topLeft =
                         baselineAlignedTopLeft(

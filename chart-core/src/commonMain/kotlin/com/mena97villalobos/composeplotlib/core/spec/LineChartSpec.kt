@@ -21,6 +21,8 @@ import com.mena97villalobos.composeplotlib.core.model.LineSeries
  * @property referenceLines Static threshold guide lines drawn over the plot; empty by default. See [ReferenceLine].
  * @property contentPadding Minimum padding around chart content in **pixels** (layout reserves space for axes/legend).
  * @property dataLabels Optional per-point value labels; disabled by default. See [DataLabelsSpec].
+ * @property hiddenSeriesIds Ids of series to hide (drawn dimmed in the legend); enables interactive/tap-to-toggle
+ * legends. Hidden series are excluded from drawing but still occupy a legend row. Empty by default.
  */
 data class LineChartSpec(
     val series: List<LineSeries>,
@@ -35,6 +37,7 @@ data class LineChartSpec(
     val referenceLines: List<ReferenceLine> = emptyList(),
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 48.0, right = 24.0, bottom = 40.0),
     val dataLabels: DataLabelsSpec = DataLabelsSpec(),
+    val hiddenSeriesIds: Set<String> = emptySet(),
 ) {
     init {
         requireUniqueIds(series.map { it.id }, "LineChartSpec.series ids")

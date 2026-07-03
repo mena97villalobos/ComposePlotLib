@@ -42,6 +42,7 @@ import com.mena97villalobos.composeplotlib.samples.android.data.sampleStackedBar
 fun BarChartShowcaseScreen() {
     var variant by remember { mutableStateOf(BarShowcaseVariant.Styled) }
     var showValues by remember { mutableStateOf(false) }
+    var hiddenGroups by remember { mutableStateOf(emptySet<String>()) }
     val stackedSpec = remember { sampleStackedBarChartSpec() }
     val baseSpec =
         remember(variant) {
@@ -53,7 +54,10 @@ fun BarChartShowcaseScreen() {
             }
         }
     val spec =
-        if (showValues) baseSpec.copy(dataLabels = DataLabelsSpec(enabled = true)) else baseSpec
+        baseSpec.copy(
+            dataLabels = if (showValues) DataLabelsSpec(enabled = true) else baseSpec.dataLabels,
+            hiddenSeriesIds = hiddenGroups,
+        )
     val viewportState =
         rememberChartViewportState(
             initialViewport = defaultViewport(spec),
@@ -176,6 +180,9 @@ fun BarChartShowcaseScreen() {
                             selectionState.clear()
                         },
                     ),
+                onLegendItemClick = { id ->
+                    hiddenGroups = if (id in hiddenGroups) hiddenGroups - id else hiddenGroups + id
+                },
             )
         }
         Text(

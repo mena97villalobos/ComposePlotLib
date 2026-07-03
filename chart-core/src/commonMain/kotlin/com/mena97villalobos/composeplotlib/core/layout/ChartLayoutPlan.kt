@@ -33,8 +33,22 @@ data class LegendEntryPlan(
     /** Top-left of the label box; vertical placement uses [labelMetrics] for baseline alignment with the swatch. */
     val labelPosition: OffsetD,
     val labelMetrics: TextLayoutMetrics,
+    /** Id of the series/group this row represents, when known (enables tap-to-toggle legends). `null` for pie/radar. */
+    val seriesId: String? = null,
+    /** True when the series is currently hidden (drawn dimmed); toggled via an interactive legend. */
+    val hidden: Boolean = false,
 ) {
     val labelSize: SizeD get() = labelMetrics.size
+
+    /** Tappable bounding box (indicator swatch + label) for interactive-legend hit-testing. */
+    val bounds: RectD
+        get() =
+            RectD(
+                left = indicatorCenter.x - indicatorRadius,
+                top = minOf(indicatorCenter.y - indicatorRadius, labelPosition.y),
+                right = labelPosition.x + labelMetrics.width,
+                bottom = maxOf(indicatorCenter.y + indicatorRadius, labelPosition.y + labelMetrics.height),
+            )
 }
 
 /** Rectangular regions reserved for chrome (axes, legend) derived from [ChartLayoutPlan.plotBounds] insets. */

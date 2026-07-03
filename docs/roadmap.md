@@ -81,8 +81,8 @@ The highest-leverage gaps versus nearly every competitor, each a strong architec
    marks a missing sample (non-finite y); line/area break at gaps, or `LineRenderSpec.connectAcrossGaps` bridges. *(S, strong)*
 3. ~~**Per-point / per-bar data labels**~~ — ✅ **shipped:** `DataLabelsSpec` on line/scatter/bar specs
    (formatter, placement, greedy overlap avoidance). *(M, strong)*
-4. **Interactive legend** — tap-to-toggle series visibility and hover/press highlight; visibility becomes an
-   immutable spec/state field resolved in the planner. *(M, strong)*
+4. ~~**Interactive legend**~~ — ✅ **shipped:** `hiddenSeriesIds` on line/scatter/bar specs (hidden series dropped +
+   dimmed legend row) + `onLegendItemClick` tap-to-toggle on the composables. *(M, strong)*
 5. **Annotations layer** — generalize `ReferenceLine` into `markPoint` / `markLine` / `markArea` (text,
    arrow, box/region, callout) anchored to data or pixels. *(L, strong)*
 6. **`ChartColor` ergonomics** — `rgb()` / hex / `withAlpha()` factory helpers on the value class; a frequent
@@ -149,7 +149,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | Crosshair / axis-pointer | P1 | M | strong | Axis-projected guideline on the selection pipeline. |
-| Interactive legend (toggle/hover-highlight) | P0 | M | strong | Visibility as spec/state; tap surface in `chart-compose`. |
+| ~~Interactive legend (toggle)~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `hiddenSeriesIds` + `onLegendItemClick` (line/scatter/bar). Hover-highlight still open. |
 | Range brush / box selection (+ linked filtering) | P2 | L | moderate | Drag-rectangle → domain selection + selection-region model. |
 | Range selector / minimap / brush navigator | P2 | L | moderate | Compact overview bound to the main `ChartViewportState`. |
 | Cross-chart sync (linked selection & tooltip, `syncId`-style) | P2 | M | moderate | State is hoistable; needs a documented sync + value/index matching. |

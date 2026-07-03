@@ -90,6 +90,7 @@ fun LineChart(
     accessibilityCustomActions: List<ChartCustomAccessibilityAction> = emptyList(),
     animation: ChartAnimationPolicy = ChartAnimationPolicy.Default,
     chromeTheme: ChartChromeTheme? = null,
+    onLegendItemClick: ((seriesId: String) -> Unit)? = null,
 ) {
     val resolvedAnimation = resolveChartAnimationPolicy(animation)
     val morphProgress = remember { Animatable(1f) }
@@ -237,9 +238,21 @@ fun LineChart(
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
                 }.chartGestures(
                     onTap =
-                        if (gestureConfig.tap.selectionEnabled) {
+                        if (gestureConfig.tap.selectionEnabled || onLegendItemClick != null) {
                             { offset ->
                                 val currentPlan = plan ?: return@chartGestures
+                                val onLegend = onLegendItemClick
+                                if (onLegend != null) {
+                                    val sid =
+                                        currentPlan.layout.legendEntries
+                                            .firstOrNull { it.seriesId != null && it.bounds.contains(OffsetD(offset.x.toDouble(), offset.y.toDouble())) }
+                                            ?.seriesId
+                                    if (sid != null) {
+                                        onLegend(sid)
+                                        return@chartGestures
+                                    }
+                                }
+                                if (!gestureConfig.tap.selectionEnabled) return@chartGestures
                                 if (effectiveSpec.series.all { it.points.isEmpty() }) {
                                     selectionState.clear()
                                     return@chartGestures

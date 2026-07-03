@@ -19,6 +19,10 @@ internal fun buildLegendEntries(
     textMeasurements: ChartTextMeasurementInput,
     legendSpec: LegendSpec,
     labelLayoutScale: Double = 1.0,
+    /** Per-entry series id (parallel to [labels]); enables interactive legends. Empty = no ids. */
+    seriesIds: List<String?> = emptyList(),
+    /** Series ids currently hidden; matching entries are marked [LegendEntryPlan.hidden] (drawn dimmed). */
+    hiddenSeriesIds: Set<String> = emptySet(),
 ): List<LegendEntryPlan> {
     if (!legendSpec.enabled || labels.isEmpty()) return emptyList()
 
@@ -33,7 +37,8 @@ internal fun buildLegendEntries(
     var currentY = canvasBounds.top + 8.0 * s
     var rowHeight = 0.0
 
-    return labels.map { (label, color) ->
+    return labels.mapIndexed { index, (label, color) ->
+        val seriesId = seriesIds.getOrNull(index)
         val displayLabel = ellipsizeDisplayLabel(label, legendSpec.style.labelMaxChars)
         val labelMetrics = textMeasurements.legendLabelMetrics(displayLabel)
         val labelWidth = labelMetrics.width
@@ -60,6 +65,8 @@ internal fun buildLegendEntries(
                 indicatorCenter = indicatorCenter,
                 labelPosition = labelPosition,
                 labelMetrics = labelMetrics,
+                seriesId = seriesId,
+                hidden = seriesId != null && seriesId in hiddenSeriesIds,
             )
         currentX += entryWidth + entrySpacing
         entry

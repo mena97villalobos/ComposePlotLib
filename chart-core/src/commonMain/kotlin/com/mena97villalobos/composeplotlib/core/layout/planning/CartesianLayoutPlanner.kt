@@ -45,6 +45,8 @@ internal object CartesianLayoutPlanner {
         rightAxisTickLabels: List<String> = emptyList(),
         reserveRightYAxisSpace: Boolean = false,
         tickValuePass: TickValuePass? = null,
+        legendSeriesIds: List<String?> = emptyList(),
+        hiddenSeriesIds: Set<String> = emptySet(),
     ): CartesianFrame {
         val labelScale = input.labelLayoutScale.normalizedLabelLayoutScale()
         val bounds = input.toPlanningBounds()
@@ -57,6 +59,8 @@ internal object CartesianLayoutPlanner {
                 textMeasurements = input.textMeasurements,
                 legendSpec = legend,
                 labelLayoutScale = labelScale,
+                seriesIds = legendSeriesIds,
+                hiddenSeriesIds = hiddenSeriesIds,
             )
         val xLabelsForReserve = tickPass.xLabels(xAxis)
         val maxXTickLabelHeight =

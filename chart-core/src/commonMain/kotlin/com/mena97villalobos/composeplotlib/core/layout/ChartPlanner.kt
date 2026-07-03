@@ -116,6 +116,8 @@ object ChartPlanner {
         rightAxisTickLabels: List<String> = emptyList(),
         reserveRightYAxisSpace: Boolean = false,
         tickValuePass: TickValuePass? = null,
+        legendSeriesIds: List<String?> = emptyList(),
+        hiddenSeriesIds: Set<String> = emptySet(),
     ): CartesianFrame =
         CartesianLayoutPlanner.resolveCartesianFrame(
             input = input,
@@ -127,6 +129,8 @@ object ChartPlanner {
             rightAxisTickLabels = rightAxisTickLabels,
             reserveRightYAxisSpace = reserveRightYAxisSpace,
             tickValuePass = tickValuePass,
+            legendSeriesIds = legendSeriesIds,
+            hiddenSeriesIds = hiddenSeriesIds,
         )
 
     private fun buildAxisAndTickLabelsOverlay(
@@ -206,8 +210,11 @@ object ChartPlanner {
                 contentPadding = spec.contentPadding,
                 legendLabelColors = spec.series.map { it.label to it.lineStyle.color },
                 tickValuePass = tickValuePass,
+                legendSeriesIds = spec.series.map { it.id },
+                hiddenSeriesIds = spec.hiddenSeriesIds,
             )
 
+        val visibleSeries = spec.series.filter { it.id !in spec.hiddenSeriesIds }
         val plotCommands = mutableListOf<DrawCommand>()
         if (spec.xAxis.showGridLines || spec.yAxis.showGridLines) {
             plotCommands +=
@@ -219,14 +226,14 @@ object ChartPlanner {
                 )
         }
         plotCommands +=
-            spec.series.flatMap {
+            visibleSeries.flatMap {
                 buildLineSeriesCommands(it, frame.viewport, frame.transform, frame.plotBounds, spec.lineRender)
             }
 
         if (spec.dataLabels.enabled) {
             val (charW, lineH) = estimateLabelCharBox(input)
             val anchors = ArrayList<DataLabelAnchor>()
-            for (series in spec.series) {
+            for (series in visibleSeries) {
                 val half = if (series.pointStyle.visible) series.pointStyle.radius.coerceAtLeast(0.0) else 0.0
                 for (p in series.points) {
                     if (!p.x.isFinite() || !p.y.isFinite()) continue
@@ -290,8 +297,11 @@ object ChartPlanner {
                 contentPadding = spec.contentPadding,
                 legendLabelColors = spec.series.map { it.label to it.resolvedPointColor() },
                 tickValuePass = tickValuePass,
+                legendSeriesIds = spec.series.map { it.id },
+                hiddenSeriesIds = spec.hiddenSeriesIds,
             )
 
+        val visibleSeries = spec.series.filter { it.id !in spec.hiddenSeriesIds }
         val plotCommands = mutableListOf<DrawCommand>()
         if (spec.xAxis.showGridLines || spec.yAxis.showGridLines) {
             plotCommands +=
@@ -303,7 +313,7 @@ object ChartPlanner {
                 )
         }
         plotCommands +=
-            spec.series.flatMap {
+            visibleSeries.flatMap {
                 buildScatterSeriesCommands(
                     it,
                     frame.viewport,
@@ -316,7 +326,7 @@ object ChartPlanner {
         if (spec.dataLabels.enabled) {
             val (charW, lineH) = estimateLabelCharBox(input)
             val anchors = ArrayList<DataLabelAnchor>()
-            for (series in spec.series) {
+            for (series in visibleSeries) {
                 for (p in series.points) {
                     if (!p.x.isFinite() || !p.y.isFinite()) continue
                     val pixel = frame.transform.toPixel(XyPoint(p.x, p.y))
@@ -1634,8 +1644,11 @@ object ChartPlanner {
                 contentPadding = spec.contentPadding,
                 legendLabelColors = spec.groups.map { it.label to it.style.color },
                 tickValuePass = tickValuePass,
+                legendSeriesIds = spec.groups.map { it.id },
+                hiddenSeriesIds = spec.hiddenSeriesIds,
             )
 
+        val visibleGroups = spec.groups.filter { it.id !in spec.hiddenSeriesIds }
         val plotCommands = mutableListOf<DrawCommand>()
         if (spec.xAxis.showGridLines || spec.yAxis.showGridLines) {
             plotCommands +=
@@ -1649,7 +1662,7 @@ object ChartPlanner {
         val effectiveBarLayout = spec.resolvedBarLayout()
         val barSegments =
             computePlannedBarSegments(
-                groups = spec.groups,
+                groups = visibleGroups,
                 layoutMode = effectiveBarLayout,
                 clusterBarGapPx = spec.clusterBarGapPx,
                 orientation = spec.orientation,

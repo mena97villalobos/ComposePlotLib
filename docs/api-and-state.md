@@ -88,6 +88,8 @@ Main types:
 
 **Data labels** (`dataLabels: DataLabelsSpec` on `LineChartSpec` / `ScatterChartSpec` / `BarChartSpec`): opt-in per-point / per-bar value labels. `DataLabelsSpec(enabled, valueFormatter, placement, color, offsetPx, avoidOverlap)` — `placement` is `Above` (default) / `Below` / `Left` / `Right` / `Center`; when `avoidOverlap` is on, labels whose boxes would collide or leave the plot are dropped so the rest stay legible.
 
+**Interactive legend / series visibility** (`hiddenSeriesIds: Set<String>` on `LineChartSpec` / `ScatterChartSpec` / `BarChartSpec`): ids listed here are excluded from drawing but still occupy a **dimmed** legend row. `LineChart` / `ScatterChart` / `BarChart` take an optional `onLegendItemClick: (seriesId) -> Unit`; the composable hit-tests taps on legend rows and invokes it, so an app hoisting a `Set<String>` state gets tap-to-toggle series visibility (immutable-spec friendly — rebuild the spec with the updated set).
+
 ### Area fill, reference lines, and marker shapes
 These additive options (1.1.0) extend existing cartesian charts; defaults preserve prior stroke/point behavior.
 
