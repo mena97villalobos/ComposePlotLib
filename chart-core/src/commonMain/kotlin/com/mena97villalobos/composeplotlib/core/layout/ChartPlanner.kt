@@ -223,6 +223,21 @@ object ChartPlanner {
                 buildLineSeriesCommands(it, frame.viewport, frame.transform, frame.plotBounds, spec.lineRender)
             }
 
+        if (spec.dataLabels.enabled) {
+            val (charW, lineH) = estimateLabelCharBox(input)
+            val anchors = ArrayList<DataLabelAnchor>()
+            for (series in spec.series) {
+                val half = if (series.pointStyle.visible) series.pointStyle.radius.coerceAtLeast(0.0) else 0.0
+                for (p in series.points) {
+                    if (!p.x.isFinite() || !p.y.isFinite()) continue
+                    val pixel = frame.transform.toPixel(XyPoint(p.x, p.y))
+                    if (!frame.plotBounds.contains(pixel)) continue
+                    anchors.add(DataLabelAnchor(pixel, spec.dataLabels.valueFormatter(p.y), half))
+                }
+            }
+            plotCommands += buildDataLabelCommands(anchors, spec.dataLabels, frame.plotBounds, charW, lineH)
+        }
+
         plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
 
         if (selection != null) {
@@ -297,6 +312,21 @@ object ChartPlanner {
                     spec.scatterRender,
                 )
             }
+
+        if (spec.dataLabels.enabled) {
+            val (charW, lineH) = estimateLabelCharBox(input)
+            val anchors = ArrayList<DataLabelAnchor>()
+            for (series in spec.series) {
+                for (p in series.points) {
+                    if (!p.x.isFinite() || !p.y.isFinite()) continue
+                    val pixel = frame.transform.toPixel(XyPoint(p.x, p.y))
+                    if (!frame.plotBounds.contains(pixel)) continue
+                    val half = (p.markerRadius ?: series.pointStyle.radius).coerceAtLeast(0.0)
+                    anchors.add(DataLabelAnchor(pixel, spec.dataLabels.valueFormatter(p.y), half))
+                }
+            }
+            plotCommands += buildDataLabelCommands(anchors, spec.dataLabels, frame.plotBounds, charW, lineH)
+        }
 
         plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
 
@@ -1634,6 +1664,25 @@ object ChartPlanner {
                 selection = selection,
                 selectionStyle = spec.selectionStyle,
             )
+        if (spec.dataLabels.enabled) {
+            val (charW, lineH) = estimateLabelCharBox(input)
+            val anchors =
+                barSegments.mapNotNull { seg ->
+                    val v = seg.entry.y
+                    if (!v.isFinite()) return@mapNotNull null
+                    val cx = (seg.bounds.left + seg.bounds.right) / 2.0
+                    val cy = (seg.bounds.top + seg.bounds.bottom) / 2.0
+                    val mark =
+                        when (seg.orientation) {
+                            BarChartOrientation.Vertical ->
+                                OffsetD(cx, if (v >= 0.0) seg.bounds.top else seg.bounds.bottom)
+                            BarChartOrientation.Horizontal ->
+                                OffsetD(if (v >= 0.0) seg.bounds.right else seg.bounds.left, cy)
+                        }
+                    DataLabelAnchor(mark, spec.dataLabels.valueFormatter(v), 0.0)
+                }
+            plotCommands += buildDataLabelCommands(anchors, spec.dataLabels, frame.plotBounds, charW, lineH)
+        }
         plotCommands += buildReferenceLineCommands(spec.referenceLines, frame.transform, frame.plotBounds)
 
         val overlayCommands =

@@ -23,6 +23,7 @@ import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
  * @property selectionStyle Crosshair / highlight styling for the current selection; see [SelectionStyle].
  * @property referenceLines Static threshold guide lines drawn over the plot; empty by default. See [ReferenceLine].
  * @property contentPadding Minimum padding around chart content in **pixels** (layout reserves space for axes/legend).
+ * @property dataLabels Optional per-point value labels; disabled by default. See [DataLabelsSpec].
  */
 data class ScatterChartSpec(
     val series: List<ScatterSeries>,
@@ -36,6 +37,7 @@ data class ScatterChartSpec(
     val selectionStyle: SelectionStyle = SelectionStyle(),
     val referenceLines: List<ReferenceLine> = emptyList(),
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 48.0, right = 24.0, bottom = 40.0),
+    val dataLabels: DataLabelsSpec = DataLabelsSpec(),
 ) {
     init {
         requireUniqueIds(series.map { it.id }, "ScatterChartSpec.series ids")

@@ -20,6 +20,7 @@ import com.mena97villalobos.composeplotlib.core.model.LineSeries
  * @property lineRender Viewport windowing and optional decimation for dense series; see [LineRenderSpec].
  * @property referenceLines Static threshold guide lines drawn over the plot; empty by default. See [ReferenceLine].
  * @property contentPadding Minimum padding around chart content in **pixels** (layout reserves space for axes/legend).
+ * @property dataLabels Optional per-point value labels; disabled by default. See [DataLabelsSpec].
  */
 data class LineChartSpec(
     val series: List<LineSeries>,
@@ -33,6 +34,7 @@ data class LineChartSpec(
     val lineRender: LineRenderSpec = LineRenderSpec(),
     val referenceLines: List<ReferenceLine> = emptyList(),
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 48.0, right = 24.0, bottom = 40.0),
+    val dataLabels: DataLabelsSpec = DataLabelsSpec(),
 ) {
     init {
         requireUniqueIds(series.map { it.id }, "LineChartSpec.series ids")

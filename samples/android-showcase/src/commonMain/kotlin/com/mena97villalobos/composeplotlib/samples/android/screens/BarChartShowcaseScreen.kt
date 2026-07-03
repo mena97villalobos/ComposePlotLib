@@ -32,6 +32,7 @@ import com.mena97villalobos.composeplotlib.chart.defaultViewport
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.model.BarEntry
+import com.mena97villalobos.composeplotlib.core.spec.DataLabelsSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyBarChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleBarChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleHorizontalClusteredBarChartSpec
@@ -40,8 +41,9 @@ import com.mena97villalobos.composeplotlib.samples.android.data.sampleStackedBar
 @Composable
 fun BarChartShowcaseScreen() {
     var variant by remember { mutableStateOf(BarShowcaseVariant.Styled) }
+    var showValues by remember { mutableStateOf(false) }
     val stackedSpec = remember { sampleStackedBarChartSpec() }
-    val spec =
+    val baseSpec =
         remember(variant) {
             when (variant) {
                 BarShowcaseVariant.Styled -> sampleBarChartSpec()
@@ -50,6 +52,8 @@ fun BarChartShowcaseScreen() {
                 BarShowcaseVariant.Horizontal -> sampleHorizontalClusteredBarChartSpec()
             }
         }
+    val spec =
+        if (showValues) baseSpec.copy(dataLabels = DataLabelsSpec(enabled = true)) else baseSpec
     val viewportState =
         rememberChartViewportState(
             initialViewport = defaultViewport(spec),
@@ -99,6 +103,9 @@ fun BarChartShowcaseScreen() {
             }
             Button(onClick = { variant = BarShowcaseVariant.Empty }) {
                 Text("Empty")
+            }
+            Button(onClick = { showValues = !showValues }) {
+                Text(if (showValues) "Hide values" else "Show values")
             }
         }
         Row(

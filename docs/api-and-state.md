@@ -86,6 +86,8 @@ Main types:
 
 **Missing-data gaps:** mark a missing sample with `ChartPoint.gap(x)` (a non-finite y). By default the line and area fill **break** into separate segments at each gap; set `LineRenderSpec.connectAcrossGaps = true` to skip the holes and **connect** the surrounding points (`connectNulls`). Gap points are excluded from data bounds, decimation, and selection.
 
+**Data labels** (`dataLabels: DataLabelsSpec` on `LineChartSpec` / `ScatterChartSpec` / `BarChartSpec`): opt-in per-point / per-bar value labels. `DataLabelsSpec(enabled, valueFormatter, placement, color, offsetPx, avoidOverlap)` — `placement` is `Above` (default) / `Below` / `Left` / `Right` / `Center`; when `avoidOverlap` is on, labels whose boxes would collide or leave the plot are dropped so the rest stay legible.
+
 ### Area fill, reference lines, and marker shapes
 These additive options (1.1.0) extend existing cartesian charts; defaults preserve prior stroke/point behavior.
 

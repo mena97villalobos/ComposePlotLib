@@ -79,8 +79,8 @@ The highest-leverage gaps versus nearly every competitor, each a strong architec
    with a scale-aware `ChartTransform` (evenly-spaced decades) + decade/minor tick generation (line & scatter). *(M, strong)*
 2. ~~**Null / missing-data gap handling** (`connectNulls` / span-gaps)~~ — ✅ **shipped:** `ChartPoint.gap(x)`
    marks a missing sample (non-finite y); line/area break at gaps, or `LineRenderSpec.connectAcrossGaps` bridges. *(S, strong)*
-3. **Per-point / per-bar data labels** — value labels with a formatter and overlap avoidance, reusing the
-   existing text-overlap machinery. *(M, strong)*
+3. ~~**Per-point / per-bar data labels**~~ — ✅ **shipped:** `DataLabelsSpec` on line/scatter/bar specs
+   (formatter, placement, greedy overlap avoidance). *(M, strong)*
 4. **Interactive legend** — tap-to-toggle series visibility and hover/press highlight; visibility becomes an
    immutable spec/state field resolved in the planner. *(M, strong)*
 5. **Annotations layer** — generalize `ReferenceLine` into `markPoint` / `markLine` / `markArea` (text,
@@ -140,7 +140,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | Annotations layer (text / arrow / box / region / callout) | P0 | L | strong | Generalizes `ReferenceLine` into mark* primitives. |
-| Data labels (per-point/bar value labels + collision avoidance) | P0 | M | strong | Reuses text-overlap machinery. |
+| ~~Data labels (per-point/bar value labels + collision avoidance)~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `DataLabelsSpec` on line/scatter/bar. |
 | Trendline / regression overlays (linear, moving-average) + confidence bands | P1 | M | strong | Ideal `chart-core` math → ordinary series/band. Differentiator vs Vico/Koala. |
 | Line interpolation: stepped and spline/monotone-cubic | P2 | M | strong | Curve fitting → path segments the DrawCommand model already supports. |
 
