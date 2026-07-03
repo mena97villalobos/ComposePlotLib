@@ -18,6 +18,13 @@ Implementation-oriented documentation for the library. Start with **`roadmap.md`
 
 **Chart families today:** **[`chart-families-overview.md`](chart-families-overview.md)** and **`api-and-state.md`** (line, bar, stacked bar, scatter, combined, pie/donut, radar, sankey, heatmap, gauge, candlestick, plus a sparkline wrapper; remaining polish in `roadmap.md`). Combined semantics: **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)**.
 
+## Releases
+| File | Purpose |
+|------|---------|
+| [`release-notes-1.2.0.md`](release-notes-1.2.0.md) | 1.2.0 feature list grouped by theme, with entry points |
+| [`migration-1.1-to-1.2.md`](migration-1.1-to-1.2.md) | Upgrading 1.1.0 → 1.2.0 (recompile notes, `ComposePlotApp()` removal, Sankey changes) |
+| [`../CHANGELOG.md`](../CHANGELOG.md) | Full per-version Added / Changed / Fixed / Removed log |
+
 ## Reference and long-range scope
 | File | Purpose |
 |------|---------|
