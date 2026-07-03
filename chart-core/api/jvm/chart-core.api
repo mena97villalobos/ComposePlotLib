@@ -766,17 +766,19 @@ public final class com/mena97villalobos/composeplotlib/core/layout/PlannedHeatma
 }
 
 public final class com/mena97villalobos/composeplotlib/core/layout/PlannedSankeyLink {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/geometry/RectD;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/geometry/RectD;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Ljava/util/List;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()D
 	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
 	public final fun component5 ()Ljava/util/List;
 	public final fun component6 ()Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/geometry/RectD;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSankeyLink;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSankeyLink;Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/geometry/RectD;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSankeyLink;
+	public final fun component7 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/geometry/RectD;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSankeyLink;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSankeyLink;Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/geometry/RectD;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Ljava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSankeyLink;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMarkerAnchor ()Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;
+	public final fun getPathSegments ()Ljava/util/List;
 	public final fun getPixelBounds ()Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
 	public final fun getPixelPolygon ()Ljava/util/List;
 	public final fun getSourceNodeId ()Ljava/lang/String;
@@ -900,6 +902,30 @@ public final class com/mena97villalobos/composeplotlib/core/layout/draw/PathDraw
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getFillRule ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$LinearGradientFill : com/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDDDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDDDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component3 ()D
+	public final fun component4 ()D
+	public final fun component5 ()D
+	public final fun component6 ()D
+	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDDDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;)Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$LinearGradientFill;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$LinearGradientFill;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDDDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$LinearGradientFill;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEndColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getEndX ()D
+	public final fun getEndY ()D
+	public final fun getFillRule ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
+	public final fun getStartColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getStartX ()D
+	public final fun getStartY ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -2478,6 +2504,16 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyChartSpec
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment : java/lang/Enum {
+	public static final field Center Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;
+	public static final field End Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;
+	public static final field Justify Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;
+	public static final field Start Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment : java/lang/Enum {
 	public static final field Bottom Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;
 	public static final field Center Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;
@@ -2489,9 +2525,10 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyColumnVer
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec {
+	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec$Companion;
 	public fun <init> ()V
-	public fun <init> (DDDDLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;DDLcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)V
-	public synthetic fun <init> (DDDDLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;DDLcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (DDDDLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;DDLcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;)V
+	public synthetic fun <init> (DDDDLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;DDLcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()D
 	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;
 	public final fun component11 ()Z
@@ -2499,6 +2536,10 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpe
 	public final fun component13 ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;
 	public final fun component14 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun component15 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component16 ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;
+	public final fun component17 ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;
+	public final fun component18 ()Ljava/util/List;
+	public final fun component19 ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;
 	public final fun component2 ()D
 	public final fun component3 ()D
 	public final fun component4 ()D
@@ -2507,13 +2548,15 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpe
 	public final fun component7 ()D
 	public final fun component8 ()D
 	public final fun component9 ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;
-	public final fun copy (DDDDLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;DDLcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec;DDDDLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;DDLcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec;
+	public final fun copy (DDDDLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;DDLcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec;DDDDLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;DDLcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColumnAlignment ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnAlignment;
 	public final fun getColumnVerticalAlignment ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyColumnVerticalAlignment;
 	public final fun getDefaultLinkColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getDefaultNodeColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getIncomingLinkOrder ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;
+	public final fun getLinkColorMode ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;
 	public final fun getLinkCurvature ()D
 	public final fun getLinkLabels ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec;
 	public final fun getLinksBehindNodes ()Z
@@ -2522,11 +2565,17 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpe
 	public final fun getNodeGap ()D
 	public final fun getNodeLabels ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;
 	public final fun getNodeOrder ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;
+	public final fun getNodePalette ()Ljava/util/List;
 	public final fun getNodeWidth ()D
+	public final fun getOrientation ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;
 	public final fun getOutgoingLinkOrder ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkOrder;
 	public final fun getPlotPaddingFraction ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLayoutSpec$Companion {
+	public final fun getDefaultNodePalette ()Ljava/util/List;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLink {
@@ -2545,6 +2594,16 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLink {
 	public final fun getValue ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode : java/lang/Enum {
+	public static final field SourceNode Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;
+	public static final field SourceToTargetGradient Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;
+	public static final field Static Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;
+	public static final field TargetNode Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/SankeyLinkColorMode;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/SankeyLinkLabelsSpec {
@@ -2611,27 +2670,40 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabel
 	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement : java/lang/Enum {
+	public static final field Adjacent Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;
+	public static final field Inside Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec {
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec$Companion;
 	public fun <init> ()V
-	public fun <init> (ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)V
-	public synthetic fun <init> (ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)V
+	public synthetic fun <init> (ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Z
 	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;
 	public final fun component3 ()D
 	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
-	public final fun copy (ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;
-	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;
+	public final fun component5 ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;
+	public final fun component6 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun copy (ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;ZLcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAdjacentColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getEnabled ()Z
 	public final fun getOrientation ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelOrientation;
 	public final fun getPaddingFractionOfNodeWidth ()D
+	public final fun getPlacement ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelPlacement;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec$Companion {
+	public final fun getDefaultAdjacent ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;
 	public final fun getDefaultInside ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;
 	public final fun getDisabled ()Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeLabelsSpec;
 }
@@ -2645,6 +2717,14 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;
 	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/SankeyNodeOrder;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/SankeyOrientation : java/lang/Enum {
+	public static final field Horizontal Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;
+	public static final field Vertical Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/SankeyOrientation;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec {

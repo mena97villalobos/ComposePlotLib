@@ -42,8 +42,8 @@ Path:
 - `screens/DomainAxesShowcaseScreen.kt`
   Category-scale and epoch-ms time-scale line charts (`AxisScale`)
 
-## Parity with `composeApp`
-**`ComposePlotApp`** (in `chart-compose`, used by `composeApp` and `iosApp`) must stay aligned with shipped chart families: extend it whenever you add a new top-level chart composable. See **`AGENTS.md` → Obligations** and update **`docs/*`** accordingly.
+## Chart-family coverage
+The showcase must stay aligned with shipped chart families: add a showcase screen (wired into `ShowcaseApp` with a Roborazzi scenario) whenever you add a new top-level chart composable. See **`AGENTS.md` → Obligations** and update **`docs/*`** accordingly.
 
 ## Current showcase goals
 The showcase currently proves:

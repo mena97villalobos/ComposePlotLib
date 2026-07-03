@@ -12,7 +12,7 @@ Use this before tagging a release or publishing artifacts. Canonical API narrati
 
 Treat these as the **supported** app-facing API (names may grow; update this list when you add types):
 
-- **Charts:** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `PieChart`, `RadarChart`, `CombinedCartesianChart`, `SankeyChart`, `HeatmapChart`, `CandlestickChart`, `GaugeChart`, `Sparkline`, `ComposePlotApp`
+- **Charts:** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `PieChart`, `RadarChart`, `CombinedCartesianChart`, `SankeyChart`, `HeatmapChart`, `CandlestickChart`, `GaugeChart`, `Sparkline`
 - **State:** `ChartViewportState`, `ChartSelectionState`, `rememberChartViewportState`, `rememberChartSelectionState`, `ViewportChangeOrigin`
 - **Viewport helpers:** `defaultViewport(...)` overloads (`chart/ChartViewports.kt`)
 - **Gestures:** `ChartGestureConfig`, presets on its companion (`cartesianInteractive`, `cartesianInteractiveFullExploration`, …)
@@ -46,8 +46,8 @@ Summarize against **[`module-guide.md`](module-guide.md)** and **`api-and-state.
 
 ## Cross-platform
 
-- [ ] **`ComposePlotApp()`** cycle on **`composeApp`** and **`iosApp`** matches docs: **line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes** (**`AGENTS.md`** obligations).
-- [ ] **Android showcase** + **Roborazzi** are **Android-only**; iOS validation stays manual (**[`ios-host-runbook.md`](ios-host-runbook.md)**).
+- [ ] Every shipped chart family has a **showcase screen** wired into **`ShowcaseApp`** with a **Roborazzi** scenario (**`AGENTS.md`** obligations).
+- [ ] **Android showcase** + **Roborazzi** are **Android-only**; iOS is a **library** target and validation stays manual via a consuming app (**[`ios-library-usage.md`](ios-library-usage.md)**).
 
 ## Documentation when the API changes
 

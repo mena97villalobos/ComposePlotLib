@@ -111,7 +111,7 @@ The library should ship with:
 
 - A separate Android showcase app *(shipped: `samples:android-showcase`)*
 - Curated demo datasets
-- Reference screens for each chart family *(line, bar, scatter, pie, radar, combined, sankey, heatmap, gauge, and candlestick have showcase screens; Sparkline is previewed in `ComposePlotApp` rather than a dedicated showcase screen)*
+- Reference screens for each chart family *(line, bar, scatter, pie, radar, combined, sankey, heatmap, gauge, and candlestick have showcase screens; Sparkline is demoed inside the Line chart showcase screen rather than a dedicated screen)*
 - Performance demo screens
 - Docs linked to showcase examples
 - Generated screenshots for the docs

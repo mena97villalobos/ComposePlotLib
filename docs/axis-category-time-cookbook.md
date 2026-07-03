@@ -94,6 +94,5 @@ Full **exchange calendars** (DST, IANA zones, session open/close in local civil 
 
 ## Where to see it in the repo
 
-- **`ComposePlotApp`** — “Domain axes” preview tab (short category + long-label truncation + epoch time + UTC weekday tick policy).
-- **`samples/android-showcase`** — **Domain axes** screen (`DomainAxesShowcaseScreen`).
+- **`samples/android-showcase`** — **Domain axes** screen (`DomainAxesShowcaseScreen`): short category + long-label truncation + epoch time + UTC weekday tick policy.
 Unit tests: `TickValuePlannerTest`, `UtcEpochAxisFormattingTest`.

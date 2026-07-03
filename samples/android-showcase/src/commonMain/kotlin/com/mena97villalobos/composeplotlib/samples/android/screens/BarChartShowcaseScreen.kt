@@ -1,5 +1,6 @@
 package com.mena97villalobos.composeplotlib.samples.android.screens
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -83,7 +84,10 @@ fun BarChartShowcaseScreen() {
                     "Styled data opts into focus for keyboard/switch navigation.",
             style = MaterialTheme.typography.bodyLarge,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Button(onClick = { variant = BarShowcaseVariant.Styled }) {
                 Text("Styled")
             }
@@ -97,7 +101,10 @@ fun BarChartShowcaseScreen() {
                 Text("Empty")
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Button(onClick = {
                 viewportState.reset()
                 selectionState.clear()

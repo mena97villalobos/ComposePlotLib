@@ -19,12 +19,36 @@ import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionSta
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
-import com.mena97villalobos.composeplotlib.core.spec.SankeyColumnVerticalAlignment
+import com.mena97villalobos.composeplotlib.core.spec.SankeyColumnAlignment
 import com.mena97villalobos.composeplotlib.core.spec.SankeyLayoutSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyLink
+import com.mena97villalobos.composeplotlib.core.spec.SankeyLinkLabelsSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyLinkOrder
 import com.mena97villalobos.composeplotlib.core.spec.SankeyNode
+import com.mena97villalobos.composeplotlib.core.spec.SankeyOrientation
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
+
+private val showcaseNodes =
+    listOf(
+        SankeyNode("Applications", column = 0, label = "Applications (total)"),
+        SankeyNode("Rejected", column = 1, label = "Rejected (screening)"),
+        SankeyNode("Interviews", column = 1),
+        SankeyNode("NoAnswer", column = 1, label = "No answer / ghosted"),
+        SankeyNode("Offers", column = 2, label = "Offers extended"),
+        SankeyNode("Accepted", column = 3, label = "Accepted offer"),
+        SankeyNode("Declined", column = 3, label = "Declined offer"),
+    )
+
+private val showcaseLinks =
+    listOf(
+        SankeyLink("Applications", "Rejected", 9.0),
+        SankeyLink("Applications", "Interviews", 4.0),
+        SankeyLink("Applications", "NoAnswer", 4.0),
+        SankeyLink("Interviews", "Offers", 2.0),
+        SankeyLink("Interviews", "Rejected", 2.0),
+        SankeyLink("Offers", "Accepted", 1.0),
+        SankeyLink("Offers", "Declined", 1.0),
+    )
 
 @Composable
 fun SankeyChartShowcaseScreen() {
@@ -40,29 +64,11 @@ fun SankeyChartShowcaseScreen() {
     val spec =
         SankeyChartSpec(
             id = "job_search",
-            nodes =
-                listOf(
-                    SankeyNode("Applications", column = 0, label = "Applications (total)"),
-                    SankeyNode("Rejected", column = 1, label = "Rejected (screening)"),
-                    SankeyNode("Interviews", column = 1),
-                    SankeyNode("NoAnswer", column = 1, label = "No answer / ghosted"),
-                    SankeyNode("Offers", column = 2, label = "Offers extended"),
-                    SankeyNode("Accepted", column = 3, label = "Accepted offer"),
-                    SankeyNode("Declined", column = 3, label = "Declined offer"),
-                ),
-            links =
-                listOf(
-                    SankeyLink("Applications", "Rejected", 9.0),
-                    SankeyLink("Applications", "Interviews", 4.0),
-                    SankeyLink("Applications", "NoAnswer", 4.0),
-                    SankeyLink("Interviews", "Offers", 2.0),
-                    SankeyLink("Interviews", "Rejected", 2.0),
-                    SankeyLink("Offers", "Accepted", 1.0),
-                    SankeyLink("Offers", "Declined", 1.0),
-                ),
+            nodes = showcaseNodes,
+            links = showcaseLinks,
             layout =
                 SankeyLayoutSpec(
-                    columnVerticalAlignment = SankeyColumnVerticalAlignment.Justify,
+                    columnAlignment = SankeyColumnAlignment.Justify,
                     outgoingLinkOrder = SankeyLinkOrder.TargetTopToBottom,
                     incomingLinkOrder = SankeyLinkOrder.SourceTopToBottom,
                 ),
@@ -91,6 +97,46 @@ fun SankeyChartShowcaseScreen() {
                     ?: "Tap nodes or links. Pan/zoom with two fingers.",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 12.dp),
+        )
+
+        Text(
+            text = "Vertical flow (top → bottom)",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(top = 24.dp),
+        )
+        val verticalViewport =
+            rememberChartViewportState(
+                initialViewport =
+                    ChartViewport(
+                        xRange = ClosedRangeD(0.0, 1.0),
+                        yRange = ClosedRangeD(0.0, 1.0),
+                    ),
+            )
+        val verticalSelection = rememberChartSelectionState()
+        SankeyChart(
+            spec =
+                SankeyChartSpec(
+                    id = "job_search_vertical",
+                    nodes = showcaseNodes,
+                    links = showcaseLinks,
+                    layout =
+                        SankeyLayoutSpec(
+                            orientation = SankeyOrientation.Vertical,
+                            columnAlignment = SankeyColumnAlignment.Justify,
+                            outgoingLinkOrder = SankeyLinkOrder.TargetTopToBottom,
+                            incomingLinkOrder = SankeyLinkOrder.SourceTopToBottom,
+                            linkLabels = SankeyLinkLabelsSpec.Disabled,
+                        ),
+                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(420.dp)
+                    .padding(top = 8.dp),
+            viewportState = verticalViewport,
+            selectionState = verticalSelection,
+            gestureConfig = ChartGestureConfig.cartesianInteractiveFullExploration(),
+            marker = { markerData -> DefaultChartMarker(markerData, showCoordinateLine = false) },
         )
     }
 }

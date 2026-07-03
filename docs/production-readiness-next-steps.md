@@ -15,7 +15,6 @@ It is implementation-focused so maintainers and AI agents can resume work quickl
 | [`module-guide.md`](module-guide.md) | Where code belongs per module |
 | [`showcase-guide.md`](showcase-guide.md) | Android showcase structure, Roborazzi |
 | [`performance-benchmarks.md`](performance-benchmarks.md) | JMH module (`chart-core-benchmarks`), local runs, variance / CI expectations |
-| [`ios-host-runbook.md`](ios-host-runbook.md) | Xcode host, manual iOS validation |
 | [`ios-library-usage.md`](ios-library-usage.md) | Consuming charts from a KMP+iOS app (framework, `ComposeUIViewController`, SwiftUI bridge) |
 | [`style-and-theme.md`](style-and-theme.md) | `ChartColor`, spec styles, `ChartChromeTheme`, light/dark notes |
 | [`chart-families-overview.md`](chart-families-overview.md) | Short orienter per shipped family + links to deep detail |
@@ -31,8 +30,8 @@ It is implementation-focused so maintainers and AI agents can resume work quickl
 - **chart-core**: geometry, viewport math (`ViewportState`, `ViewportConstraints`, `ViewportAxisPolicy`), transforms, selection models, `ChartPlanner` (line + bar + **scatter** + **pie/donut planning**), `DrawCommand` plans, unit tests (viewport, planner, selection).
 - **chart-compose**: `LineChart` / `BarChart` / **`StackedBarChart`** / **`ScatterChart`** / **`PieChart`** / **`RadarChart`** / **`CombinedCartesianChart`** / **`SankeyChart`** / **`HeatmapChart`** / **`CandlestickChart`** / **`GaugeChart`** / **`Sparkline`** (gauge / candlestick / sparkline new in 1.1.0), `ChartViewportState` / `ChartSelectionState`, `ChartGestureConfig` (tap/transform/double-tap zoom in|out|reset/fling), marker slot, **no-data** (`noData` / `noDataUi` / `ChartNoDataDefaults`), **animation** (`ChartAnimationPolicy`: opt-in programmatic viewport easing; optional **gesture viewport chase**; marker fade-in **and fade-out on selection clear** when duration > 0; optional **`LineChart`** same-topology **data** coordinate morph; reduced-motion respected), **accessibility** (Image role, focus opt-in, optional **marker focus handoff** via `ChartAccessibilitySpec.requestFocusOnMarker`, custom actions + `chartViewportAccessibilityActions`, optional keyboard pan/zoom/clear on cartesian charts, `ChartLiveRegionMode`, spec-driven descriptions).
 - **Showcase**: line + bar + **scatter** + **pie/donut** + **radar** + **combined** + **sankey** + **heatmap** + **gauge** + **candlestick** + **domain axes** screens, sample specs, **Roborazzi** goldens (`verifyRoborazziDebug` / `recordRoborazziDebug`).
-- **iOS**: CLI compile gates; `ComposePlotApp` host (line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes); manual runbook + integration notes in **`docs/ios-library-usage.md`**.
-- **Docs**: API, architecture, viewport guide, axis cookbook, marker placement, style/theme guide, chart-family overview, iOS runbook + library usage, production readiness (this file).
+- **iOS**: supported as a **library** target — `chart-core` and `chart-compose` compile for iOS (CLI compile gates); integration notes in **`docs/ios-library-usage.md`**. There is no in-repo runnable iOS demo app.
+- **Docs**: API, architecture, viewport guide, axis cookbook, marker placement, style/theme guide, chart-family overview, iOS library usage, production readiness (this file).
 
 **Not production-ready yet (typical blockers)**
 - Layout/text still fragile under long labels, large font scale, and unproven iOS measurement parity.
@@ -58,7 +57,7 @@ Ordered by **risk to production adoption**. Earlier roadmap items are largely **
 
 **Deferred / future milestones (explicit):**
 - **Baseline strategy:** align every label path (x ticks, y ticks, legend, and any future chrome) to a consistent baseline-centered or cap-height policy using `TextLayoutMetrics` end-to-end, with fewer magic optical offsets in `ChartPlanner`.
-- **iOS / Android measurement parity:** same `TextMeasurer` pipeline on both targets under font scale, locale scripts, and large strings; add targeted manual matrices and, where stable, screenshot or golden comparisons on iOS (see `docs/ios-host-runbook.md`).
+- **iOS / Android measurement parity:** same `TextMeasurer` pipeline on both targets under font scale, locale scripts, and large strings; add targeted manual matrices and, where stable, screenshot or golden comparisons on iOS (see `docs/ios-library-usage.md`).
 
 **Next steps:** exercise layouts on iOS hosts under font scale; refine overlap edge cases if products hit them.
 
@@ -67,7 +66,7 @@ Ordered by **risk to production adoption**. Earlier roadmap items are largely **
 ### 2. Formatters and domain-aware axes
 **Shipped:** `AxisSpec.labelFormatter`; `LineChartSpec` / `ScatterChartSpec` / `BarChartSpec` `valueFormatter` for markers and UI copy; **`AxisScale.Category`** and **`AxisScale.TimeEpochMillis`** with duration-based nice ticks, density reduction, and UTC compact default labels when the axis formatter is still `DefaultAxisLabelFormatter`; cookbook: **`docs/axis-category-time-cookbook.md`**.
 
-**Shipped (M4):** `AxisSpec.categoryLabelMaxChars` for ellipsis truncation on category tick labels; `EpochMillisTickPolicy.WeekdaysUtc` (+ `isUtcWeekendCalendarDay`) drops UTC weekend **tick positions** only (retries with denser nice grids when needed); copy-paste **locale / time zone** patterns in the cookbook; showcase + `ComposePlotApp` domain tab exercise truncation and weekday ticks.
+**Shipped (M4):** `AxisSpec.categoryLabelMaxChars` for ellipsis truncation on category tick labels; `EpochMillisTickPolicy.WeekdaysUtc` (+ `isUtcWeekendCalendarDay`) drops UTC weekend **tick positions** only (retries with denser nice grids when needed); copy-paste **locale / time zone** patterns in the cookbook; the showcase Domain Axes screen exercises truncation and weekday ticks.
 
 **Shipped (M4 — incremental):** [`EpochMillisTickPolicy`](../chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy.kt) adds [`ExcludeUtcDays`](../chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy.kt) (app-supplied UTC day indices), [`SessionUtcMinutes`](../chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy.kt) (UTC minute-of-day window), [`WeekdaysFixedOffset`](../chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy.kt) (fixed-offset weekend filter; no DST), and [`Combined`](../chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core/spec/EpochMillisTickPolicy.kt); unified filtering in [`applyEpochMillisTickFilters`](../chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core/layout/planning/TickValuePlanner.kt); helpers in [`UtcEpochAxisFormatting.kt`](../chart-core/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/core/spec/UtcEpochAxisFormatting.kt). Tests in `TickValuePlannerTest`.
 
@@ -83,7 +82,7 @@ Ordered by **risk to production adoption**. Earlier roadmap items are largely **
 ### 4. Style and theming
 **Shipped:** grouped line/point/bar/axis/grid/legend/selection styles; Material-oriented chrome theme in compose; **style guide:** [`docs/style-and-theme.md`](style-and-theme.md).
 
-**Shipped (M13):** [`MaterialChartPalette`](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/theme/MaterialChartPalette.kt) — `Color.toChartColor()`, `ColorScheme.toMaterialChartPalette()`, `materialChartPalette()` for mapping Material 3 into **`ChartColor`** (including **`surface`**, **`surfaceVariant`**, **`primaryFixed`**, **`secondaryFixed`**); **[`MaterialChartSpecTheme.kt`](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/theme/MaterialChartSpecTheme.kt)** — **`seriesAccentColors`**, **`withMaterialSeriesColors`** / **`withMaterialGroupColors`** / **`withMaterialScatterSeriesColors`**; **`ComposePlotApp`** uses palette-mapped line/bar/scatter previews; **Roborazzi** line matrix adds **`lineChartShowcaseScreen_elevatedFontScale`** (font scale 1.4); record with `./gradlew :samples:android-showcase:recordRoborazziDebug`.
+**Shipped (M13):** [`MaterialChartPalette`](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/theme/MaterialChartPalette.kt) — `Color.toChartColor()`, `ColorScheme.toMaterialChartPalette()`, `materialChartPalette()` for mapping Material 3 into **`ChartColor`** (including **`surface`**, **`surfaceVariant`**, **`primaryFixed`**, **`secondaryFixed`**); **[`MaterialChartSpecTheme.kt`](../chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/chart/theme/MaterialChartSpecTheme.kt)** — **`seriesAccentColors`**, **`withMaterialSeriesColors`** / **`withMaterialGroupColors`** / **`withMaterialScatterSeriesColors`**; the Android showcase uses palette-mapped line/bar/scatter previews; **Roborazzi** line matrix adds **`lineChartShowcaseScreen_elevatedFontScale`** (font scale 1.4); record with `./gradlew :samples:android-showcase:recordRoborazziDebug`.
 
 **Still open:** optional density-row Roborazzi / more family goldens; full design-system token bridge beyond this palette snapshot.
 
@@ -188,7 +187,7 @@ Benefits:
 ### Gesture system
 **Shipped:** public `ChartGestureConfig` (tap selection, transform pan/pinch, per-axis pan/zoom toggles, optional **double-tap zoom in**, optional **double-tap zoom out**, optional **double-tap viewport reset**, optional **pan fling**); axis lock interacts with effective pan/zoom via `ViewportAxisPolicy` (see [viewport-configuration.md](viewport-configuration.md)).
 
-**Shipped (M10):** **`ChartGestureConfig`** companion presets (`CartesianDefault`, `PieDefault`, `readOnly()`, `exploreOnly(...)`, `cartesianInteractive(...)`, **`cartesianInteractiveFullExploration()`**) for host/demo parity; **`docs/ios-gesture-validation.md`** table + maintainer **Validation record** (includes **compile-gate** row; **physical device** row still required before release touch QA); **`docs/ios-host-runbook.md`** cross-links presets and double-tap behavior on the line tab.
+**Shipped (M10):** **`ChartGestureConfig`** companion presets (`CartesianDefault`, `PieDefault`, `readOnly()`, `exploreOnly(...)`, `cartesianInteractive(...)`, **`cartesianInteractiveFullExploration()`**) for host/demo parity; **`docs/ios-gesture-validation.md`** table + maintainer **Validation record** (includes **compile-gate** row; **physical device** row still required before release touch QA); the Android line showcase demonstrates the presets and double-tap behavior.
 
 **Still open:** routine **physical device** gesture passes (add a device row to the validation record when you rely on touch QA for a release).
 
@@ -242,7 +241,7 @@ Status update:
 ## New Chart Families
 Do not add further cartesian or radial families until line, bar, and scatter are **maintainable**: planner tests, showcase coverage, gesture/selection edge cases, and docs for viewport and accessibility stay in good shape.
 
-**Shipped in 1.1.0:** the **gauge** (progress-ring) and **candlestick** (OHLC) families, a thin **sparkline** wrapper over `LineChart`, and additive options on existing charts — **area / threshold-band fill** (`LineStyle.areaFill` / `areaFillEnd` / `areaFillMode`, **line-only**), **reference lines** (`ReferenceLine` via `referenceLines` on line/bar/scatter/combined), and **marker shapes + per-point styling** (`MarkerShape`, `PointStyle.shape` on line/scatter vertices; `ChartPoint.markerShape` / `markerColor` / `markerRadius` are **scatter-only**, where a per-point radius unlocks **bubble** scatter). Candlestick is fully shipped here — previewed in `ComposePlotApp`, screenshot-tested in the Android showcase, with chart-level accessibility, `accessibilityCustomActions`, and Shift+arrow keyboard roam; only **downstream app adoption (B15)** stays gated on a live OHLC data feed.
+**Shipped in 1.1.0:** the **gauge** (progress-ring) and **candlestick** (OHLC) families, a thin **sparkline** wrapper over `LineChart`, and additive options on existing charts — **area / threshold-band fill** (`LineStyle.areaFill` / `areaFillEnd` / `areaFillMode`, **line-only**), **reference lines** (`ReferenceLine` via `referenceLines` on line/bar/scatter/combined), and **marker shapes + per-point styling** (`MarkerShape`, `PointStyle.shape` on line/scatter vertices; `ChartPoint.markerShape` / `markerColor` / `markerRadius` are **scatter-only**, where a per-point radius unlocks **bubble** scatter). Candlestick is fully shipped here — screenshot-tested in the Android showcase, with chart-level accessibility, `accessibilityCustomActions`, and Shift+arrow keyboard roam; only **downstream app adoption (B15)** stays gated on a live OHLC data feed.
 
 **Recommended order (strict):**
 
@@ -250,14 +249,14 @@ Do not add further cartesian or radial families until line, bar, and scatter are
 |-------|--------|-----------|
 | 0 | Line + bar (ongoing) | Establishes `ChartPlanner` → `*Plan` → `DrawCommand` → `ComposeCanvasAdapter`, viewport, selection, markers. |
 | 1 | **Scatter** (**shipped**) | Same cartesian axes, viewport, and transform stack as line charts; `ScatterChartSpec`, `planScatterChart`, `ScatterChart`; shared cartesian frame planning with line/bar; circles only (no segments); nearest-point tap among in-plot points. See **`api-and-state.md`**. |
-| 2 | **Pie / donut** | **Shipped:** core planning + `PieHitResolver`, **`PieChart`** composable, `ComposePlotApp` + showcase + Roborazzi, tap slice selection, optional **`startAngleDegrees`** / **`sliceGapDegrees`**, optional `PieSliceLabelsSpec` canvas callouts (`Polyline` leaders + `Text`), and richer default a11y summary when labels are enabled. |
+| 2 | **Pie / donut** | **Shipped:** core planning + `PieHitResolver`, **`PieChart`** composable, showcase + Roborazzi, tap slice selection, optional **`startAngleDegrees`** / **`sliceGapDegrees`**, optional `PieSliceLabelsSpec` canvas callouts (`Polyline` leaders + `Text`), and richer default a11y summary when labels are enabled. |
 | 3 | **Combined** | **Shipped:** `CombinedCartesianChartSpec`, `planCombinedCartesianChart`, `CombinedCartesianChart`, `CombinedCartesianHitResolver`; shared *X* + primary *Y* from `ChartViewportState`, optional secondary *Y* (**data-derived** in planner; see **§3.1** in [`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)). Dense multi-layer **legend** stress: combined showcase **Dense legend demo** toggle. |
 | 4 | **Gauge / progress-ring** (1.1.0) | **Shipped:** `GaugeChartSpec`, `planGaugeChart`, `GaugeChart`; radial track + progress arc, optional rounded caps, configurable `startAngleDegrees` / `sweepDegrees`, optional `centerContent` slot; **non-interactive** (no viewport/selection/gesture). |
 | 5 | **Candlestick / OHLC** (1.1.0) | **Shipped (library):** `CandlestickChartSpec` (+ `OHLCPoint`, `CandlestickSeries`, `CandlestickStyle`, `CandlestickRenderSpec`, `CandlestickValueFormatter`), `planCandlestickChart`, `CandlestickChart`; bodies + wicks, bull/bear coloring, decimation, pan/zoom, tap-to-OHLC marker. App adoption (B15) gated on an OHLC feed. |
 
 **Out of scope for early combined work:** pie + cartesian in one surface until both families are stable alone.
 
-**Suggested next focus:** optional **independent secondary-*Y* zoom** (future); more planner edge-case tests as layers grow; iOS soak remains manual via `docs/ios-host-runbook.md`. **M14** shipped secondary-axis **tick label** typography (`isSecondaryYAxisTick`); **residual M14** added pie **rotation/gap**, combined **§3.1** policy text + tests, dense legend showcase.
+**Suggested next focus:** optional **independent secondary-*Y* zoom** (future); more planner edge-case tests as layers grow; iOS soak remains manual via a consuming app (`docs/ios-library-usage.md`). **M14** shipped secondary-axis **tick label** typography (`isSecondaryYAxisTick`); **residual M14** added pie **rotation/gap**, combined **§3.1** policy text + tests, dense legend showcase.
 
 ## Performance Work
 
@@ -289,10 +288,9 @@ Current Android support is the most mature path because the showcase app is Andr
 
 ### iOS
 Status:
-- **CLI compile gate**: `./gradlew :composeApp:compileKotlinIosSimulatorArm64` and `:composeApp:compileKotlinIosArm64` succeed (`chart-core` + `chart-compose` + `composeApp`).
-- **Parity with Android host:** the same **`ComposePlotApp()`** preview cycle (**line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes**) ships on both **`composeApp`** (Android) and **`iosApp`** (Xcode); it is not a reduced subset on iOS. **Android-only:** `samples/android-showcase` + Roborazzi.
-- **Host app**: `iosApp` embeds the `ComposeApp` framework via `embedAndSignAppleFrameworkForXcode`; UI entry is `ComposePlotApp()`. See **`AGENTS.md` → Obligations** when adding families.
-- **Runbook**: `docs/ios-host-runbook.md` (Xcode open path, signing, manual checklist, troubleshooting).
+- **CLI compile gate**: `./gradlew :chart-compose:compileKotlinIosSimulatorArm64` and `:chart-compose:compileKotlinIosArm64` succeed (`chart-core` + `chart-compose`).
+- **Library target, no demo host:** iOS is supported as a **library** — the same Compose pipeline compiles for iOS and is consumed from your own Compose Multiplatform app. There is no in-repo runnable iOS demo app. **Android-only:** `samples/android-showcase` + Roborazzi.
+- **Consuming the library**: expose a `ComposeUIViewController { LineChart(...) }` from your app module; see `docs/ios-library-usage.md`.
 
 Still needed for full production parity:
 - routine visual validation on physical devices and older OS versions (gesture checklist: **`docs/ios-gesture-validation.md`** — log outcomes in the **Validation record** table when you rely on them for a release)
@@ -338,27 +336,27 @@ Still useful later:
 | Marker / tooltip placement guide | **Shipped** ([`marker-tooltip-placement.md`](marker-tooltip-placement.md)) |
 | Chart-family detail pages (optional deep-dives) | **Shipped** (summary: [`chart-families-overview.md`](chart-families-overview.md); full API: **`api-and-state.md`**) |
 | Public API release checklist | **Shipped** ([`api-checklist.md`](api-checklist.md)) |
-| iOS usage beyond runbook | **Shipped** ([`ios-library-usage.md`](ios-library-usage.md); runbook: [`ios-host-runbook.md`](ios-host-runbook.md)) |
+| iOS library usage | **Shipped** ([`ios-library-usage.md`](ios-library-usage.md)) |
 
 ## Recommended Next Milestone
 The best next milestone after the current state is:
 
 1. ~~accessibility semantics and chart descriptions~~ (baseline: spec + chart semantics + showcase copy)
 2. ~~screenshot and verification hardening~~ (baseline: Roborazzi + showcase goldens; extend coverage as needed)
-3. ~~iOS validation and platform parity~~ (baseline: native compile + `ComposePlotApp` parity + `docs/ios-host-runbook.md`; extend with device matrix and optional iOS screenshots)
+3. ~~iOS validation and platform parity~~ (baseline: native compile of `chart-core` + `chart-compose` for iOS + `docs/ios-library-usage.md`; extend with device matrix and optional iOS screenshots)
 
 That sequence improves production readiness far more than immediately adding many more chart families.
 
-**Suggested next focus:** optional further `chart-core` tests (degenerate spans, tick planner edge cases, combined edge cases); iOS soak remains manual via `docs/ios-host-runbook.md`.
+**Suggested next focus:** optional further `chart-core` tests (degenerate spans, tick planner edge cases, combined edge cases); iOS soak remains manual via a consuming app (see `docs/ios-library-usage.md`).
 
 ## Suggested concrete task list
 - ~~add public gesture configuration for tap/transform enablement and axis-locking~~ (`ChartGestureConfig`; **M10** presets + iOS gesture QA doc; device parity still periodic)
 - ~~add accessibility semantics for current selection and chart descriptions~~ (follow-ups: optional marker/content polish; shipped: Image role, focus opt-in, custom actions + `chartViewportAccessibilityActions` + `chartAccessibilityActionsMergeViewport`, optional keyboard pan/zoom/clear, **`keyboardSelectionRoamEnabled`**, `ChartLiveRegionMode`, reduced-motion policy field)
 - ~~add empty and no-data handling polish~~ (`noData` / `noDataUi`, defaults, showcase patterns; selection still clears on empty gestures)
 - add more `chart-core` tests for tick, viewport, and selection behavior *(expanded; see Testing Roadmap)*
-- ~~validate iOS rendering and gestures~~ (manual checklist in `docs/ios-host-runbook.md`; optional CI later)
+- ~~validate iOS rendering and gestures~~ (manual via a consuming app; see `docs/ios-library-usage.md`; optional CI later)
 - ~~add screenshot testing for Android showcase screens~~ (extend with more states when useful)
-- ~~implement **viewport/selection animation**~~ — shipped (opt-in; `ComposePlotApp` line tab demonstrates programmatic zoom + policy)
+- ~~implement **viewport/selection animation**~~ — shipped (opt-in; the Android line showcase demonstrates programmatic zoom + policy)
 - **Performance**: benchmark + line decimation / large-dataset strategy
 - ~~**Scatter chart** as first new family after line/bar polish~~ — shipped (`ScatterChart`, `ScatterChartSpec`, `planScatterChart`; see **New Chart Families**)
 
@@ -386,11 +384,10 @@ That sequence improves production readiness far more than immediately adding man
 - `samples/android-showcase/src/androidUnitTest/kotlin/.../ShowcaseRoborazziTest.kt`
 - `samples/android-showcase/src/androidUnitTest/kotlin/.../RoborazziLineChartScenarios.kt`
 - `samples/android-showcase/src/androidUnitTest/resources/roborazzi/*.png`
-- `docs/ios-host-runbook.md`
+- `docs/ios-library-usage.md`
 - `chart-core/.../model/ChartColor.kt`
 - `chart-compose/.../theme/MaterialChartPalette.kt`
 - `chart-compose/.../theme/MaterialChartSpecTheme.kt`
-- `chart-compose/.../chart/ComposePlotApp.kt`
 
 ## Resume checklist
 When picking up the project:
@@ -403,4 +400,4 @@ When picking up the project:
 6. **This file** — gaps and next tasks  
 7. `chart-core/.../layout/ChartPlanner.kt` and current `screens/*` in the showcase  
 
-Optional: `implementation-roadmap.md` for long-range scope; `ios-host-runbook.md` before iOS changes.
+Optional: `implementation-roadmap.md` for long-range scope; `ios-library-usage.md` before iOS changes.

@@ -14,7 +14,6 @@ The current implementation is intentionally small, but the architecture is alrea
 Current modules:
 - `:chart-core`
 - `:chart-compose`
-- `:composeApp`
 - `:samples:android-showcase`
 
 Dependency direction:
@@ -22,7 +21,6 @@ Dependency direction:
 ```mermaid
 flowchart TD
     chartCore[chart-core] --> chartCompose[chart-compose]
-    chartCompose --> composeApp[composeApp]
     chartCompose --> androidShowcase[android-showcase]
 ```
 
@@ -95,9 +93,6 @@ It currently contains:
 This module is allowed to depend on Compose types, pointer input, text measurement, and canvas APIs.
 
 ## Host Modules
-### `composeApp`
-This is the thin shared app host. It should remain a lightweight way to preview the current milestone. It runs **`ComposePlotApp()`**, which **must** cycle **line, bar, stacked bar, horizontal bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, sparkline, and domain axes** previews on Android and iOS (see **`AGENTS.md` → Obligations** when adding chart families). **`samples/android-showcase`** adds richer demos and Roborazzi.
-
 ### `samples/android-showcase`
 This is the main demo surface and should be treated as the visual verification app.
 

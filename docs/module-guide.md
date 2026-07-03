@@ -62,7 +62,6 @@ Path: `chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/c
 - `ChartGestureConfig.kt`, `ChartMarker.kt`, `ChartNoData.kt`, `ChartAnimationPolicy.kt`, `ChartCustomAccessibilityAction.kt`
 - `ChartViewports.kt` (e.g. `defaultViewport`)
 - `state/ChartViewportState.kt`, `state/ChartSelectionState.kt`, `state/RememberChartStates.kt`
-- `ComposePlotApp.kt` — shared Android/iOS milestone host; **must** include a preview for each shipped chart family (**`AGENTS.md` → Obligations**)
 
 ### Platform source sets (expect/actual)
 - `androidMain`, `iosMain` — e.g. reduced-motion probe for `ChartAnimationPolicy` (see `internal/accessibility/`)
@@ -80,21 +79,6 @@ Edit `chart-compose` when a change affects:
 - Compose rendering
 - pointer gestures
 - how planner output is drawn
-
-## `composeApp`
-Path: `composeApp`
-
-### Purpose
-A thin host app for the current milestone. It should not become the main showcase or a place for library internals. It hosts **`ComposePlotApp()`**, which must include a preview for **each shipped chart family** (line, bar, stacked bar, horizontal bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, sparkline, domain axes — see **`AGENTS.md` → Obligations**).
-
-### Good uses
-- quickly preview the current chart milestone on Android and iOS (shared `ComposePlotApp` UI)
-- keep the shared app entrypoint functional for multiplatform hosting
-
-### Bad uses
-- adding library math
-- adding long-lived demo logic
-- adding host-specific chart behavior that should live in `chart-compose`
 
 ## `samples/android-showcase`
 Path: `samples/android-showcase`
@@ -123,5 +107,4 @@ Edit it when:
 If you are unsure where code belongs:
 - If it can be tested without UI and reused by multiple chart types, put it in `chart-core`
 - If it depends on Compose runtime or canvas, put it in `chart-compose`
-- If it is demo-only, put it in `samples/android-showcase`
-- If it is just a current milestone preview, `composeApp` is acceptable
+- If it is demo-only or a milestone preview, put it in `samples/android-showcase` (there is no separate host module)

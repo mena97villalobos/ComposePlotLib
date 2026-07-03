@@ -59,13 +59,13 @@ successor to MPAndroidChart. It targets Android and iOS.
 ./gradlew :samples:android-showcase:verifyRoborazziDebug
 
 # Full pre-PR build (mirrors CI)
-./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :composeApp:assembleDebug
+./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
 
 # After intentional UI changes — refresh screenshot baselines
 ./gradlew :samples:android-showcase:recordRoborazziDebug
 
-# iOS compilation check (macOS only)
-./gradlew :composeApp:compileKotlinIosSimulatorArm64
+# iOS compilation check (macOS only) — the library targets iOS; there is no iOS demo app
+./gradlew :chart-compose:compileKotlinIosSimulatorArm64
 
 # JMH microbenchmarks (optional)
 ./gradlew :chart-core-benchmarks:jmh --no-configuration-cache
@@ -88,11 +88,13 @@ rendering.
 |-----------------------------|------------------------------------------------------------------------------------|
 | `:chart-core`               | Non-UI engine: math, geometry, specs, viewport, transforms, planner, draw commands |
 | `:chart-compose`            | Public Compose API and rendering: composables, gesture handling, canvas adapter    |
-| `:composeApp`               | Thin shared host for milestone previews (Android + iOS via `ComposePlotApp()`)     |
-| `:samples:android-showcase` | Main demo/verification app with Roborazzi screenshot tests                         |
+| `:samples:android-showcase` | The sample app: demo/verification app (Android-only) with Roborazzi screenshot tests |
 | `:chart-core-benchmarks`    | Optional JMH microbenchmarks                                                       |
 
-Dependency direction: `chart-core` → `chart-compose` → `composeApp` / `android-showcase`
+Dependency direction: `chart-core` → `chart-compose` → `android-showcase`
+
+The library targets Android and iOS, but the only runnable sample app is the Android showcase; iOS is
+covered as a library target (compile-gated in CI), with no bundled iOS demo app.
 
 ### Data Flow
 
@@ -138,11 +140,9 @@ marker overrides), and bubble point sizing.
 
 1. Add planner logic and spec types to `chart-core`.
 2. Add the public composable to `chart-compose`.
-3. **Required**: Add a preview tab in `chart-compose/.../ComposePlotApp.kt` so Android and iOS hosts
-   stay aligned.
-4. Add a showcase screen in `samples/android-showcase/src/commonMain/kotlin/.../screens` and wire it
-   into `ShowcaseApp.kt`.
-5. Update docs: `AGENTS.md`, `docs/architecture.md`, `docs/api-and-state.md`,
+3. **Required**: Add a showcase screen in `samples/android-showcase/src/commonMain/kotlin/.../screens`
+   and wire it into `ShowcaseApp.kt` (with a Roborazzi screenshot scenario).
+4. Update docs: `AGENTS.md`, `docs/architecture.md`, `docs/api-and-state.md`,
    `docs/module-guide.md`, `docs/production-readiness-next-steps.md`, and any other file whose
    claims become false.
 
@@ -153,17 +153,16 @@ marker overrides), and bubble point sizing.
 - `chart-compose/.../chart/internal/canvas/ComposeCanvasAdapter.kt` — renders `DrawCommand` to
   Compose canvas
 - `chart-compose/.../chart/state/ChartViewportState.kt` — viewport state
-- `chart-compose/.../chart/ComposePlotApp.kt` — shared Android/iOS milestone host (must preview
-  every shipped family)
-- `samples/android-showcase/.../ShowcaseApp.kt` — showcase navigation host
+- `samples/android-showcase/.../ShowcaseApp.kt` — showcase navigation host (add each new chart family here)
 - `docs/architecture.md`, `docs/api-and-state.md`, `docs/module-guide.md` — design docs
 - `docs/production-readiness-next-steps.md` — primary backlog
 
 ## CI
 
 PRs run on Ubuntu: `ktlintCheck`, JVM + Android unit tests, Roborazzi verification,
-`:composeApp:assembleDebug`. Releases trigger on semver tags (`v*.*.*`) and publish to GitHub
-Packages + GitHub Pages.
+`:samples:android-showcase:assembleDebug`, plus a macOS iOS compile gate for `chart-core` /
+`chart-compose`. Releases trigger on semver tags (`v*.*.*`) and publish to GitHub Packages + GitHub
+Pages.
 
 <!-- code-review-graph MCP tools -->
 

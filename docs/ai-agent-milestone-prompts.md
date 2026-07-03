@@ -13,17 +13,17 @@ Each block below is a **single residual mission**: **only what is still open** f
 - **`chart-core`:** no Compose UI types (`Modifier`, `Color`, `Dp`, `Offset`, `Rect`, `Path`, `Canvas`, `TextStyle`, …). Math, planning, geometry, specs, viewport, selection only.
 - **`chart-compose`:** declarative, immutable-first public APIs; interaction in `ChartViewportState` / `ChartSelectionState`.
 - **Planner before renderer:** change `ChartPlanner` / `ChartLayoutPlan` / specs in `chart-core` before draw/gesture code in `chart-compose`.
-- **Docs:** when behavior or public API changes, update [`AGENTS.md`](../AGENTS.md), [`api-and-state.md`](api-and-state.md), [`architecture.md`](architecture.md), [`production-readiness-next-steps.md`](production-readiness-next-steps.md) (shipped vs open), and any `docs/*.md` that become wrong. New chart families: `ComposePlotApp` + showcase per obligations. Releases / broad API surface: walk [`api-checklist.md`](api-checklist.md).
+- **Docs:** when behavior or public API changes, update [`AGENTS.md`](../AGENTS.md), [`api-and-state.md`](api-and-state.md), [`architecture.md`](architecture.md), [`production-readiness-next-steps.md`](production-readiness-next-steps.md) (shipped vs open), and any `docs/*.md` that become wrong. New chart families: showcase screen + `ShowcaseApp` + Roborazzi per obligations. Releases / broad API surface: walk [`api-checklist.md`](api-checklist.md).
 - **Verify** after substantive changes:
 
   ```bash
-  ./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :composeApp:assembleDebug
+  ./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
   ```
 
   On macOS, if shared or iOS-used paths changed:
 
   ```bash
-  ./gradlew :composeApp:compileKotlinIosSimulatorArm64
+  ./gradlew :chart-compose:compileKotlinIosSimulatorArm64
   ```
 
   If showcase screenshots change intentionally: `./gradlew :samples:android-showcase:recordRoborazziDebug`
@@ -75,7 +75,7 @@ Each block below is a **single residual mission**: **only what is still open** f
 
 **Out of scope:** Breaking default linear axis behavior; untested trading-calendar product.
 
-**Done when:** Tests + docs; optional `ComposePlotApp` / showcase path if user-visible.
+**Done when:** Tests + docs; optional showcase screen if user-visible.
 
 ---
 
@@ -86,7 +86,7 @@ Each block below is a **single residual mission**: **only what is still open** f
 **Open items:**
 - Remaining edge-case overlap; unified baseline policy across all label paths.
 - Optional “min labels to keep” and density-aware thinning tied to measured width.
-- **Deferred:** baseline strategy across x/y ticks, legend, chrome via `TextLayoutMetrics` end-to-end; **iOS / Android measurement parity** under font scale, locale scripts, large strings (see [`ios-host-runbook.md`](ios-host-runbook.md)).
+- **Deferred:** baseline strategy across x/y ticks, legend, chrome via `TextLayoutMetrics` end-to-end; **iOS / Android measurement parity** under font scale, locale scripts, large strings (see [`ios-library-usage.md`](ios-library-usage.md)).
 
 **Scope:** `ChartPlanner`, `ChartLayoutPlan`, `chart-compose` measurement; no Compose types in `chart-core`.
 
@@ -151,7 +151,7 @@ Each block below is a **single residual mission**: **only what is still open** f
 **Open items:**
 - **Physical device** gesture matrix—append a row to [`ios-gesture-validation.md`](ios-gesture-validation.md) when you rely on it for a release (simulator/compile alone are not sufficient for touch timing).
 
-**Scope:** `chart-compose` gestures; `docs/ios-gesture-validation.md`, `docs/ios-host-runbook.md`.
+**Scope:** `chart-compose` gestures; `docs/ios-gesture-validation.md`, `docs/ios-library-usage.md`.
 
 **Out of scope:** Duplicate platform gesture engines.
 

@@ -310,32 +310,6 @@ public final class com/mena97villalobos/composeplotlib/chart/CombinedCartesianCh
 	public static final fun CombinedCartesianChart (Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;III)V
 }
 
-public final class com/mena97villalobos/composeplotlib/chart/ComposableSingletons$ComposePlotAppKt {
-	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/chart/ComposableSingletons$ComposePlotAppKt;
-	public fun <init> ()V
-	public final fun getLambda$-1080403974$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$-1107790102$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$-1140124443$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function2;
-	public final fun getLambda$-1178579533$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$-1439578644$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$-1788307558$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$-462473087$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$-557015015$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$1061438548$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$1275367195$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$1345424086$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$1965178888$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$206919522$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$319212610$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$324931717$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda$746984847$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$89012181$com_mena97villalobos_composeplotlib_chart_compose_release ()Lkotlin/jvm/functions/Function4;
-}
-
-public final class com/mena97villalobos/composeplotlib/chart/ComposePlotAppKt {
-	public static final fun ComposePlotApp (Landroidx/compose/runtime/Composer;I)V
-}
-
 public final class com/mena97villalobos/composeplotlib/chart/GaugeChartKt {
 	public static final fun GaugeChart (Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
@@ -362,7 +336,7 @@ public final class com/mena97villalobos/composeplotlib/chart/RadarChartKt {
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/SankeyChartKt {
-	public static final fun SankeyChart (Lcom/mena97villalobos/composeplotlib/core/spec/SankeyChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SankeyChart (Lcom/mena97villalobos/composeplotlib/core/spec/SankeyChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;III)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/ScatterChartKt {

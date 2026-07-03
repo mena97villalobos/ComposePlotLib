@@ -37,12 +37,11 @@ Implementation-oriented documentation for the library. Start with **`production-
 ## Platform runbooks
 | File | Purpose |
 |------|---------|
-| [`ios-host-runbook.md`](ios-host-runbook.md) | Xcode project, signing, manual validation |
 | [`ios-library-usage.md`](ios-library-usage.md) | Consuming the library from a KMP+iOS app (framework + SwiftUI bridge) |
 | [`ios-gesture-validation.md`](ios-gesture-validation.md) | Gesture checklist on iOS hosts |
 
 ## For AI agents
-Read first: **[`../AGENTS.md`](../AGENTS.md)** (including **Obligations**: keep **`ComposePlotApp`** and **`docs/*`** in sync when adding chart families), then **`production-readiness-next-steps.md`**, **`architecture.md`**, and **`api-and-state.md`**.
+Read first: **[`../AGENTS.md`](../AGENTS.md)** (including **Obligations**: add a **showcase screen** and keep **`docs/*`** in sync when adding chart families), then **`production-readiness-next-steps.md`**, **`architecture.md`**, and **`api-and-state.md`**.
 
 Full automation prompt (**residual mission index** + verification): **[`ai-agent-full-backlog-prompt.md`](ai-agent-full-backlog-prompt.md)**.  
 Copy-paste **residual** agent tasks (open work; see file for ID set): **[`ai-agent-milestone-prompts.md`](ai-agent-milestone-prompts.md)**.

@@ -50,8 +50,8 @@ jobs:
       - name: Roborazzi verification
         run: ./gradlew :samples:android-showcase:verifyRoborazziDebug
 
-      - name: Assemble composeApp (debug)
-        run: ./gradlew :composeApp:assembleDebug
+      - name: Assemble Android showcase (debug)
+        run: ./gradlew :samples:android-showcase:assembleDebug
 
   ios:
     # Compile the Kotlin/Native iOS targets so a commonMain change that breaks iOS
@@ -79,4 +79,3 @@ jobs:
           :chart-core:compileKotlinIosSimulatorArm64
           :chart-compose:compileKotlinIosArm64
           :chart-compose:compileKotlinIosSimulatorArm64
-          :composeApp:compileKotlinIosSimulatorArm64

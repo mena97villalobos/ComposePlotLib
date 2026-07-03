@@ -32,7 +32,7 @@ data class ChartMarkerData(
 internal fun ChartMarkerData.accessibilitySummaryText(): String = accessibilitySummary ?: "Selected $seriesLabel. $valueLabel. X $xLabel, Y $yLabel."
 
 /**
- * Material-styled tooltip marker used by samples and [ComposePlotApp].
+ * Material-styled tooltip marker used by the Android showcase samples.
  *
  * @param showSeriesLabel When false, hides the first (series name) line.
  * @param showCoordinateLine When false, hides the compact `x=, y=` detail row.

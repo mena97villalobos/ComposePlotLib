@@ -31,7 +31,6 @@ dependencyResolutionManagement {
 include(":chart-core")
 include(":chart-core-benchmarks")
 include(":chart-compose")
-include(":composeApp")
 include(":samples:android-showcase")
 
 project(":samples:android-showcase").projectDir = file("samples/android-showcase")

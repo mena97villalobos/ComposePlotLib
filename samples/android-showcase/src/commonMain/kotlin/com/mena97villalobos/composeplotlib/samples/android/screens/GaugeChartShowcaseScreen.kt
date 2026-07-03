@@ -1,5 +1,6 @@
 package com.mena97villalobos.composeplotlib.samples.android.screens
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,7 +64,10 @@ fun GaugeChartShowcaseScreen() {
                     "There is no selection, pan, or zoom — a gauge shows a single value.",
             style = MaterialTheme.typography.bodyLarge,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Button(onClick = { progress = 0.25 }) {
                 Text("25%")
             }

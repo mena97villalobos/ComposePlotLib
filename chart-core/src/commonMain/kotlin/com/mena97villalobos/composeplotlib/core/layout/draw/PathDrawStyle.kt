@@ -26,4 +26,19 @@ sealed interface PathDrawStyle {
         val bottomY: Double,
         val fillRule: FillRule = FillRule.NonZero,
     ) : PathDrawStyle
+
+    /**
+     * General linear-gradient fill between two pixel-space points: [startColor] at ([startX], [startY])
+     * fading to [endColor] at ([endX], [endY]). Orientation-agnostic (sankey ribbons use source→target
+     * attach-point midpoints); renderers build the platform gradient brush.
+     */
+    data class LinearGradientFill(
+        val startColor: ChartColor,
+        val endColor: ChartColor,
+        val startX: Double,
+        val startY: Double,
+        val endX: Double,
+        val endY: Double,
+        val fillRule: FillRule = FillRule.NonZero,
+    ) : PathDrawStyle
 }

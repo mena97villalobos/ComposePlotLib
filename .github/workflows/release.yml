@@ -73,8 +73,8 @@ jobs:
       - name: Roborazzi verification
         run: ./gradlew :samples:android-showcase:verifyRoborazziDebug
 
-      - name: Assemble composeApp (debug)
-        run: ./gradlew :composeApp:assembleDebug
+      - name: Assemble Android showcase (debug)
+        run: ./gradlew :samples:android-showcase:assembleDebug
 
       - name: Dokka HTML
         run: ./gradlew dokkaGenerateHtml

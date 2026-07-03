@@ -48,7 +48,7 @@ flowchart TD
 ```
 
 ## Recommended Project Structure
-The live project already uses focused modules **`chart-core`**, **`chart-compose`**, **`samples:android-showcase`**, and **`composeApp`** (plus **`iosApp`**). Layout/planning and draw commands live in **`chart-core`** (there is no separate `:chart-render` module today).
+The live project already uses focused modules **`chart-core`**, **`chart-compose`**, and **`samples:android-showcase`** (iOS is supported as a **library** target of `chart-core` / `chart-compose`, with no in-repo demo host). Layout/planning and draw commands live in **`chart-core`** (there is no separate `:chart-render` module today).
 
 Recommended end state (reference — optional future split):
 
@@ -311,14 +311,14 @@ Historical bootstrap list *(largely complete)*. For **current** engineering prio
 2. ~~Write the initial public API proposal for line and bar charts.~~ *(Extended to scatter; see `api-and-state.md`.)*
 3. ~~Implement `chart-core` geometry, ranges, and viewport math.~~
 4. ~~Implement a minimal draw-command pipeline.~~
-5. ~~Replace the starter `composeApp` sample with a first chart prototype screen.~~ *(`ComposePlotApp` cycles line, bar, scatter; Android showcase adds richer demos.)*
+5. ~~Replace the starter sample with a first chart prototype screen.~~ *(The Android showcase provides per-family demos; an earlier shared preview host was later removed.)*
 6. ~~Add the dedicated Android showcase app module.~~
 7. ~~Add docs examples sourced from the showcase app.~~ *(Ongoing; see `showcase-guide.md`.)*
 
 ## Success Criteria
 The first milestone should be considered successful when:
 
-- `LineChart`, `BarChart`, and `ScatterChart` render on Android and iOS via **`ComposePlotApp`** (see **`AGENTS.md` → Obligations** when adding families); the Android showcase adds deeper demos and Roborazzi
+- `LineChart`, `BarChart`, and `ScatterChart` render on Android (and iOS as a consumed library); the Android showcase provides per-family demos and Roborazzi (see **`AGENTS.md` → Obligations** when adding families)
 - The API is declarative and Compose-first (immutable specs, explicit viewport/selection state)
 - Pan, zoom, and selection work reliably on cartesian charts (line, bar, scatter)
 - The Android showcase app has **line, bar, and scatter** example screens plus Roborazzi goldens

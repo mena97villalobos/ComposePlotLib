@@ -1,5 +1,6 @@
 package com.mena97villalobos.composeplotlib.samples.android.screens
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -65,7 +66,10 @@ fun PieChartShowcaseScreen() {
             text = "Radial chart: slice labels with leader lines when enabled in the spec; tap inside the ring to select a slice. Pan and zoom are disabled by default.",
             style = MaterialTheme.typography.bodyLarge,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Button(onClick = { variant = PieShowcaseVariant.Pie }) {
                 Text("Pie")
             }
@@ -79,7 +83,10 @@ fun PieChartShowcaseScreen() {
                 Text("Empty")
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Button(onClick = {
                 viewportState.reset()
                 selectionState.clear()

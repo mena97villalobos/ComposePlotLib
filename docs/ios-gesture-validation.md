@@ -2,7 +2,7 @@
 
 Run these checks on **physical** iPhone/iPad hosts (simulator is useful but not sufficient for touch timing and multi-touch routing).
 
-Library-wide iOS status and blocking issues: **`production-readiness-next-steps.md`** (Cross-Platform → iOS). Host setup: **`ios-host-runbook.md`**.
+Library-wide iOS status and blocking issues: **`production-readiness-next-steps.md`** (Cross-Platform → iOS). Consuming the library on iOS: **`ios-library-usage.md`**.
 
 ## Recommended configs (copy-paste)
 
@@ -11,7 +11,7 @@ Use **`ChartGestureConfig`** presets so Android and iOS hosts exercise the **sam
 | Goal | Kotlin |
 |------|--------|
 | Cartesian default (tap + pan/pinch; no double-tap / fling) | `ChartGestureConfig.CartesianDefault` or `ChartGestureConfig()` |
-| Shared host / demo line style (double-tap zoom-in) | `ChartGestureConfig.cartesianInteractive()` — same as **`ComposePlotApp`** line tab |
+| Demo line style (double-tap zoom-in) | `ChartGestureConfig.cartesianInteractive()` — same as the Android line showcase |
 | Full cartesian QA (fling + double-tap zoom out + reset + zoom in) | `ChartGestureConfig.cartesianInteractiveFullExploration()` — same as `cartesianInteractive(doubleTapZoomOutEnabled = true, doubleTapResetViewportEnabled = true, panFlingEnabled = true)` (zoom-in stays on) |
 | Full cartesian QA (manual flag bundle) | `ChartGestureConfig.cartesianInteractive(doubleTapZoomOutEnabled = true, doubleTapResetViewportEnabled = true, panFlingEnabled = true)` then trim flags per row below |
 | Pan/zoom only (no tap selection) | `ChartGestureConfig.exploreOnly()` |
@@ -22,7 +22,7 @@ Always combine with the same **`ChartViewportState`** domain, **`ViewportConstra
 
 ## Line / bar / scatter (shared cartesian pipeline)
 
-Use a screen that shows [LineChart], [BarChart], or [ScatterChart] with data, `transform.enabled = true`, and (optionally) `fling.panFlingEnabled = true`, `transform.doubleTapZoomInEnabled`, `transform.doubleTapZoomOutEnabled`, and/or `transform.doubleTapResetViewportEnabled`. Prefer **`ChartGestureConfig.cartesianInteractive(...)`** when you want parity with **`ComposePlotApp`** without hand-building nested policies.
+Use a screen that shows [LineChart], [BarChart], or [ScatterChart] with data, `transform.enabled = true`, and (optionally) `fling.panFlingEnabled = true`, `transform.doubleTapZoomInEnabled`, `transform.doubleTapZoomOutEnabled`, and/or `transform.doubleTapResetViewportEnabled`. Prefer **`ChartGestureConfig.cartesianInteractive(...)`** (as used by the Android line showcase) when you want that behavior without hand-building nested policies.
 
 | Check | Pass criteria |
 |--------|----------------|
@@ -54,4 +54,4 @@ Confirm [ChartGestureConfig] groups behave independently:
 | 2026-04-06 | CI / dev (no touch) | n/a (compile only) | `compileKotlinIosSimulatorArm64` | **Pass** — shared `chart-compose` gesture code compiles for iOS simulator; does not validate touch timing, fling, or double-tap behavior. |
 | *Add before release* | Physical iPhone/iPad | *e.g. 18.x* | `cartesianInteractive()` or `cartesianInteractiveFullExploration()` | *Pass/fail + notes after manual matrix* |
 
-**Automated gate (no touch):** `./gradlew :composeApp:compileKotlinIosSimulatorArm64` (and device slice if needed) compiles shared gesture code for the iOS host; it does **not** replace a **physical** row. Add a device row when you rely on touch QA for a release.
+**Automated gate (no touch):** `./gradlew :chart-compose:compileKotlinIosSimulatorArm64` (and device slice if needed) compiles shared gesture code for iOS; it does **not** replace a **physical** row. Add a device row when you rely on touch QA for a release.

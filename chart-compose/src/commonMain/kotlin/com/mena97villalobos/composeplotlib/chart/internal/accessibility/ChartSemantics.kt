@@ -20,8 +20,10 @@ import com.mena97villalobos.composeplotlib.chart.internal.marker.buildHeatmapMar
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildLineMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildPieMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildRadarMarkerData
+import com.mena97villalobos.composeplotlib.chart.internal.marker.buildSankeyMarkerData
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildScatterMarkerData
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
+import com.mena97villalobos.composeplotlib.core.layout.SankeyChartPlan
 import com.mena97villalobos.composeplotlib.core.spec.BarChartOrientation
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
@@ -214,6 +216,8 @@ internal fun Modifier.radarChartAccessibility(
 internal fun Modifier.sankeyChartAccessibility(
     spec: SankeyChartSpec,
     selectionState: ChartSelectionState,
+    plan: SankeyChartPlan? = null,
+    emptyStateDescription: String? = null,
     customAccessibilityActions: List<ChartCustomAccessibilityAction> = emptyList(),
 ): Modifier {
     val wantsFocus =
@@ -224,7 +228,14 @@ internal fun Modifier.sankeyChartAccessibility(
     val semanticsModifier =
         Modifier.semantics(mergeDescendants = mergeDescendants) {
             role = Role.Image
-            contentDescription = spec.accessibility.contentDescription ?: "Sankey chart."
+            val summary = spec.accessibility.contentDescription ?: "Sankey chart."
+            val noData = spec.nodes.isEmpty() || spec.links.none { it.value > 0.0 }
+            contentDescription =
+                if (noData) {
+                    emptyStateDescription ?: "$summary $ACCESSIBILITY_NO_DATA_SUFFIX"
+                } else {
+                    summary
+                }
             if (spec.accessibility.exposeSelectionState) {
                 when (spec.accessibility.selectionLiveRegionMode) {
                     ChartLiveRegionMode.Off -> Unit
@@ -232,9 +243,11 @@ internal fun Modifier.sankeyChartAccessibility(
                     ChartLiveRegionMode.Assertive -> liveRegion = LiveRegionMode.Assertive
                 }
                 val sel = selectionState.selection
-                if (sel != null) {
-                    // Requires the composable to provide a plan; if marker data can't be built, fall back to default.
-                    // (SankeyChart currently builds the marker payload itself.)
+                if (sel != null && plan != null) {
+                    val data = buildSankeyMarkerData(spec, plan, sel)
+                    if (data != null) {
+                        stateDescription = data.accessibilitySummaryText()
+                    }
                 }
             }
             if (customAccessibilityActions.isNotEmpty()) {

@@ -2,7 +2,7 @@
 
 ## CI overview
 
-- **Pull requests** (`.github/workflows/pr.yml`): on `ubuntu-latest`, runs `ktlintCheck`, unit tests (`chart-core` JVM + Android, `chart-compose` Android), Roborazzi verification, and `:composeApp:assembleDebug`. Sets `COMPOSEPLOTLIB_VERSION=debug` (also the default from `gradle.properties` when the env var is unset).
+- **Pull requests** (`.github/workflows/pr.yml`): on `ubuntu-latest`, runs `ktlintCheck`, unit tests (`chart-core` JVM + Android, `chart-compose` Android), Roborazzi verification, and `:samples:android-showcase:assembleDebug`. Sets `COMPOSEPLOTLIB_VERSION=debug` (also the default from `gradle.properties` when the env var is unset).
 - **Releases** (`.github/workflows/release.yml`): triggers on tags `vMAJOR.MINOR.PATCH` or `vMAJOR.MINOR.PATCH-prerelease`. Verifies the tag is reachable from `main`, runs the same checks as PRs, builds Dokka HTML, publishes `:chart-core` and `:chart-compose` to **GitHub Packages**, creates a **GitHub Release** with `dokka-html.zip`, and deploys the Dokka site to **GitHub Pages** (see below).
 
 ## Library version in CI

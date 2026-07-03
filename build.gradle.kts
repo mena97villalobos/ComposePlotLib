@@ -21,7 +21,7 @@ plugins {
 // public spec, model, and composable surface are a reviewed `.api` diff (run `apiDump` to refresh).
 // Only the published library modules are validated; apps, the showcase, and benchmarks are excluded.
 apiValidation {
-    ignoredProjects.addAll(listOf("composeApp", "android-showcase", "chart-core-benchmarks"))
+    ignoredProjects.addAll(listOf("android-showcase", "chart-core-benchmarks"))
 }
 
 val composeplotlibVersion: String =

@@ -1,5 +1,6 @@
 package com.mena97villalobos.composeplotlib.samples.android.screens
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -76,7 +77,10 @@ fun CandlestickChartShowcaseScreen() {
                     "the body spans open–close. Tap a candle to inspect its values; pan and zoom with two fingers.",
             style = MaterialTheme.typography.bodyLarge,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Button(onClick = {
                 viewportState.reset()
                 selectionState.clear()

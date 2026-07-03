@@ -2,6 +2,7 @@ package com.mena97villalobos.composeplotlib.core.layout
 
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
+import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 
 data class SankeyChartPlan(
@@ -25,10 +26,15 @@ data class PlannedSankeyLink(
     val sourceNodeId: String,
     val targetNodeId: String,
     val value: Double,
-    /** Conservative pixel bounds for hit-testing (the ribbon can be curved). */
+    /** Pixel bounds of the sampled ribbon outline (tight; used as a hit-test pre-filter). */
     val pixelBounds: RectD,
-    /** Polygon describing the ribbon outline in pixel space (closed). */
+    /**
+     * Simple polygon approximating the ribbon outline in pixel space (closed; both Bézier edges are
+     * flattened into samples so hit-testing matches the drawn ribbon).
+     */
     val pixelPolygon: List<OffsetD>,
-    /** Anchor for markers. */
+    /** Anchor for markers: the ribbon centerline's Bézier midpoint. */
     val markerAnchor: OffsetD,
+    /** Exact ribbon outline segments (as drawn); reusable for selection emphasis overlays. */
+    val pathSegments: List<PathSegment>,
 )

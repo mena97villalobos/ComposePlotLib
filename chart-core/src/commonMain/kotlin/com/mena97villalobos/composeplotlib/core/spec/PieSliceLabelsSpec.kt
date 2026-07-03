@@ -2,7 +2,6 @@ package com.mena97villalobos.composeplotlib.core.spec
 
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.PieChartSlice
-import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 /**
@@ -45,23 +44,12 @@ fun PieSliceLabelsSpec.formatSliceLabel(
 ): String {
     val pct = percent.coerceIn(0.0, 100.0).roundToInt()
     val pctStr = "$pct%"
-    val valStr = formatSliceValue(slice.value)
+    val valStr = formatChartValue(slice.value)
     return when (format) {
         PieSliceLabelFormat.LabelOnly -> slice.label
         PieSliceLabelFormat.PercentOnly -> pctStr
         PieSliceLabelFormat.LabelAndPercent -> "${slice.label} $pctStr"
         PieSliceLabelFormat.ValueOnly -> valStr
         PieSliceLabelFormat.LabelAndValue -> "${slice.label} $valStr"
-    }
-}
-
-private fun formatSliceValue(v: Double): String {
-    if (!v.isFinite()) return "—"
-    val rounded = (v * 10.0).roundToInt() / 10.0
-    val asInt = rounded.roundToInt()
-    return if ((rounded - asInt.toDouble()).absoluteValue < 1e-4) {
-        asInt.toString()
-    } else {
-        rounded.toString()
     }
 }

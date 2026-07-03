@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -23,8 +25,12 @@ import com.mena97villalobos.composeplotlib.chart.internal.animation.rememberAnim
 import com.mena97villalobos.composeplotlib.chart.internal.animation.rememberSelectionMarkerAppearance
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.ChartRenderStyles
 import com.mena97villalobos.composeplotlib.chart.internal.canvas.chartLabelTextStyles
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.ChartFlingRuntime
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.cartesianDoubleTapViewportEnabled
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartCartesianKeyboardViewport
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartGestures
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.effectiveTransformFlags
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.handleCartesianChartDoubleTapViewport
 import com.mena97villalobos.composeplotlib.chart.internal.layout.chartLayoutBaseInput
 import com.mena97villalobos.composeplotlib.chart.internal.layout.measuredLayoutInput
 import com.mena97villalobos.composeplotlib.chart.internal.marker.ChartMarkerOverlay
@@ -39,12 +45,32 @@ import com.mena97villalobos.composeplotlib.chart.theme.chartChromeTheme
 import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.SizeD
 import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner
+import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.selection.SankeyHitResolver
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.math.max
 
+/**
+ * Flow diagram with explicit columns: weighted ribbons route between value-sized node rectangles.
+ *
+ * Layout, ordering, coloring, and [com.mena97villalobos.composeplotlib.core.spec.SankeyOrientation]
+ * (horizontal or vertical flow) come from [SankeyChartSpec.layout]. The default viewport is the
+ * normalized `0..1 × 0..1` domain the sankey planner lays out in; pan/zoom explores within it.
+ *
+ * @param spec nodes, links, and [com.mena97villalobos.composeplotlib.core.spec.SankeyLayoutSpec]
+ * @param viewportState pan/zoom state over the normalized `0..1` sankey domain
+ * @param selectionState tap selection (nodes and ribbons); cleared when the selected element leaves the viewport
+ * @param gestureConfig tap (selection), transform (pan/zoom/double-tap zoom), and optional fling policies
+ * @param marker optional composable overlay at the selected node/ribbon; receives [ChartMarkerData]
+ * @param markerPlacement flip/slide tooltip placement; see [ChartMarkerPlacement]
+ * @param noData custom empty state when the spec has no nodes or no positive-value links; if non-null, takes precedence over [noDataUi]
+ * @param noDataUi structured empty copy when [noData] is null; otherwise a plain [DefaultNoDataOverlay]
+ * @param accessibilityCustomActions optional TalkBack / VoiceOver actions (e.g. reset viewport)
+ * @param animation optional programmatic viewport easing and marker fade-in; [ChartAnimationPolicy.respectSystemReducedMotion] is applied first
+ * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
+ */
 @Composable
 fun SankeyChart(
     spec: SankeyChartSpec,
@@ -54,6 +80,8 @@ fun SankeyChart(
     gestureConfig: ChartGestureConfig = ChartGestureConfig.CartesianDefault,
     marker: (@Composable BoxScope.(ChartMarkerData) -> Unit)? = null,
     markerPlacement: ChartMarkerPlacement = ChartMarkerPlacement.Default,
+    noData: (@Composable BoxScope.() -> Unit)? = null,
+    noDataUi: ChartNoDataUi? = null,
     accessibilityCustomActions: List<ChartCustomAccessibilityAction> = emptyList(),
     animation: ChartAnimationPolicy = ChartAnimationPolicy.Default,
     chromeTheme: ChartChromeTheme? = null,
@@ -67,11 +95,28 @@ fun SankeyChart(
         remember(labelStyles, chromeResolved) {
             ChartRenderStyles(labelStyles, chromeResolved)
         }
+    val hasNoData = spec.nodes.isEmpty() || spec.links.none { it.value > 0.0 }
+    val emptyStateDescription: String? =
+        if (!hasNoData) {
+            null
+        } else {
+            when {
+                noData != null -> null
+                noDataUi != null ->
+                    noDataUi.contentDescription
+                        ?: listOfNotNull(noDataUi.title, noDataUi.message).joinToString(". ")
+                else -> null
+            }
+        }
 
     var canvasSize by remember { mutableStateOf(SizeD.Zero) }
     val fontScale = LocalDensity.current.fontScale
+    val transformFlags = effectiveTransformFlags(gestureConfig, viewportState.axisPolicy)
+    val coroutineScope = rememberCoroutineScope()
+    val flingRuntime = remember(coroutineScope) { ChartFlingRuntime(coroutineScope) }
+
     val plan =
-        remember(spec, renderViewport, selectionState.selection, canvasSize, textMeasurer, fontScale, chromeResolved) {
+        remember(spec, renderViewport, selectionState.selection, canvasSize, textMeasurer, labelStyles, fontScale, chromeResolved) {
             if (canvasSize == SizeD.Zero) {
                 null
             } else {
@@ -120,15 +165,22 @@ fun SankeyChart(
         focusRequester = markerFocusRequester,
     )
 
-    val transformFlags = effectiveTransformFlags(gestureConfig, viewportState.axisPolicy)
-
     Box(
         modifier =
             modifier
                 .sankeyChartAccessibility(
                     spec = spec,
                     selectionState = selectionState,
+                    plan = plan,
+                    emptyStateDescription = emptyStateDescription,
                     customAccessibilityActions = accessibilityCustomActions,
+                ).chartCartesianKeyboardViewport(
+                    enabled = spec.accessibility.keyboardViewportNudgeEnabled,
+                    transformEnabled = gestureConfig.transform.enabled,
+                    flags = transformFlags,
+                    viewportState = viewportState,
+                    tapSelectionEnabled = gestureConfig.tap.selectionEnabled,
+                    onClearSelection = { selectionState.clear() },
                 ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
                 }.chartGestures(
@@ -136,6 +188,10 @@ fun SankeyChart(
                         if (gestureConfig.tap.selectionEnabled) {
                             { offset ->
                                 val currentPlan = plan ?: return@chartGestures
+                                if (hasNoData) {
+                                    selectionState.clear()
+                                    return@chartGestures
+                                }
                                 val touch = OffsetD(offset.x.toDouble(), offset.y.toDouble())
                                 val sel = SankeyHitResolver.resolve(touch, spec, currentPlan)
                                 selectionState.select(sel)
@@ -143,7 +199,21 @@ fun SankeyChart(
                         } else {
                             null
                         },
-                    onDoubleTap = null,
+                    onDoubleTap =
+                        if (cartesianDoubleTapViewportEnabled(gestureConfig)) {
+                            { offset ->
+                                handleCartesianChartDoubleTapViewport(
+                                    offset = offset,
+                                    gestureConfig = gestureConfig,
+                                    transformFlags = transformFlags,
+                                    viewportState = viewportState,
+                                    renderViewport = renderViewport,
+                                    layoutPlan = plan?.layout,
+                                )
+                            }
+                        } else {
+                            null
+                        },
                     onTransform =
                         if (gestureConfig.transform.enabled) {
                             { centroid, pan, zoom ->
@@ -185,12 +255,34 @@ fun SankeyChart(
                             null
                         },
                     flingPolicy = gestureConfig.fling,
-                    flingRuntime = null,
-                    onFlingVelocity = null,
+                    flingRuntime =
+                        if (gestureConfig.transform.enabled && gestureConfig.fling.panFlingEnabled) {
+                            flingRuntime
+                        } else {
+                            null
+                        },
+                    onFlingVelocity =
+                        if (gestureConfig.transform.enabled && gestureConfig.fling.panFlingEnabled) {
+                            { velocity ->
+                                val p = latestPlan.value
+                                if (p != null) {
+                                    flingRuntime.startFling(
+                                        velocityPxPerSec = velocity,
+                                        policy = gestureConfig.fling,
+                                        flags = transformFlags,
+                                        viewportState = viewportState,
+                                        layoutPlan = p.layout,
+                                    )
+                                }
+                            }
+                        } else {
+                            null
+                        },
                 ),
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val currentPlan = plan ?: return@Canvas
+            if (hasNoData) return@Canvas
             with(SankeyChartRenderer) {
                 render(currentPlan, textMeasurer, renderStyles)
             }
@@ -225,15 +317,36 @@ fun SankeyChart(
                 marker(overlayData)
             }
         }
+
+        if (hasNoData) {
+            when {
+                noData != null -> noData()
+                noDataUi != null -> ChartNoDataContent(noDataUi)
+                else -> DefaultNoDataOverlay()
+            }
+        }
+    }
+
+    LaunchedEffect(viewportState.viewport, plan) {
+        val selection = selectionState.selection ?: return@LaunchedEffect
+        val currentPlan = plan ?: return@LaunchedEffect
+        val bounds = currentPlan.layout.plotBounds
+        // Look up the CURRENT pixel geometry of the selected element: the selection's own hitBounds
+        // are frozen at tap time and never track pan/zoom.
+        val elementBounds =
+            when (selection.target.layerId) {
+                SankeyHitResolver.LayerNode -> currentPlan.nodes.getOrNull(selection.target.pointIndex)?.pixelBounds
+                SankeyHitResolver.LayerLink -> currentPlan.links.getOrNull(selection.target.pointIndex)?.pixelBounds
+                else -> null
+            }
+        if (elementBounds == null || !elementBounds.intersects(bounds)) {
+            selectionState.clear()
+        }
     }
 }
 
 private fun defaultViewport(): ChartViewport =
     ChartViewport(
-        xRange =
-            com.mena97villalobos.composeplotlib.core.range
-                .ClosedRangeD(0.0, 1.0),
-        yRange =
-            com.mena97villalobos.composeplotlib.core.range
-                .ClosedRangeD(0.0, 1.0),
+        xRange = ClosedRangeD(0.0, 1.0),
+        yRange = ClosedRangeD(0.0, 1.0),
     )

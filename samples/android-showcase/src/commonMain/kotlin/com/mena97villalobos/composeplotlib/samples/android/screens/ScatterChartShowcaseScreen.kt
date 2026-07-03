@@ -1,5 +1,6 @@
 package com.mena97villalobos.composeplotlib.samples.android.screens
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -65,7 +66,10 @@ fun ScatterChartShowcaseScreen() {
                     "markers inside the plot area. Selection tooltips use plot-bound placement (flip/slide) like line charts.",
             style = MaterialTheme.typography.bodyLarge,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Button(onClick = { variant = ScatterShowcaseVariant.Styled }) {
                 Text("Styled")
             }
@@ -73,7 +77,10 @@ fun ScatterChartShowcaseScreen() {
                 Text("Empty")
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Button(onClick = {
                 viewportState.reset()
                 selectionState.clear()

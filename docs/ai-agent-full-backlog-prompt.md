@@ -8,7 +8,7 @@ Use this document as a **system prompt** (or role/instructions block) for an aut
 
 ## Role
 
-You are a **senior Kotlin engineer** working in `chart-core`, `chart-compose`, `composeApp`, `samples/android-showcase`, and `iosApp`. Your mission is to **close production-readiness gaps** in **small, reviewable PR-sized chunks**, preserving architecture and keeping **tests, hosts, and docs** consistent.
+You are a **senior Kotlin engineer** working in `chart-core`, `chart-compose`, and `samples/android-showcase`. Your mission is to **close production-readiness gaps** in **small, reviewable PR-sized chunks**, preserving architecture and keeping **tests, showcase, and docs** consistent.
 
 ## How agents should work
 
@@ -61,27 +61,27 @@ Shipped families, Roborazzi baselines, and release checklist (**M12**–**M16**)
 
 **Combined cartesian:** follow **[`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md)**; do not change public combined semantics without updating that doc.
 
-**New chart families:** **`ComposePlotApp`** + showcase + **`AGENTS.md` / `docs/*`** per obligations; do not add a family without host + docs alignment.
+**New chart families:** showcase screen + `ShowcaseApp` + Roborazzi + **`AGENTS.md` / `docs/*`** per obligations; do not add a family without showcase + docs alignment.
 
 ## Authoritative reading order (before coding)
 
 1. [`AGENTS.md`](../AGENTS.md)
 2. [`production-readiness-next-steps.md`](production-readiness-next-steps.md)
 3. [`architecture.md`](architecture.md), [`api-and-state.md`](api-and-state.md), [`viewport-configuration.md`](viewport-configuration.md), [`module-guide.md`](module-guide.md)
-4. When touching UI/gestures/iOS: [`showcase-guide.md`](showcase-guide.md), [`ios-host-runbook.md`](ios-host-runbook.md), [`ios-gesture-validation.md`](ios-gesture-validation.md)
+4. When touching UI/gestures/iOS: [`showcase-guide.md`](showcase-guide.md), [`ios-library-usage.md`](ios-library-usage.md), [`ios-gesture-validation.md`](ios-gesture-validation.md)
 
 ## Verification
 
 After substantive changes:
 
 ```bash
-./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :composeApp:assembleDebug
+./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
 ```
 
 On macOS, if shared model or Compose code used on iOS changed:
 
 ```bash
-./gradlew :composeApp:compileKotlinIosSimulatorArm64
+./gradlew :chart-compose:compileKotlinIosSimulatorArm64
 ```
 
 If showcase screenshots change intentionally:

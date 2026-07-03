@@ -342,6 +342,27 @@ private fun DrawScope.drawDrawCommands(
                             style = Fill,
                         )
                     }
+                    is PathDrawStyle.LinearGradientFill -> {
+                        path.fillType =
+                            when (style.fillRule) {
+                                FillRule.NonZero -> PathFillType.NonZero
+                                FillRule.EvenOdd -> PathFillType.EvenOdd
+                            }
+                        drawPath(
+                            path = path,
+                            brush =
+                                Brush.linearGradient(
+                                    colors =
+                                        listOf(
+                                            style.startColor.multiplyAlpha(cf).toComposeColor(),
+                                            style.endColor.multiplyAlpha(cf).toComposeColor(),
+                                        ),
+                                    start = Offset(style.startX.toFloat(), style.startY.toFloat()),
+                                    end = Offset(style.endX.toFloat(), style.endY.toFloat()),
+                                ),
+                            style = Fill,
+                        )
+                    }
                 }
             }
 

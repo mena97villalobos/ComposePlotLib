@@ -30,7 +30,7 @@ Radial multi-series polygon chart: **`RadarChartSpec`** defines ordered axes (sp
 
 ## Sankey (flow)
 
-Explicit-column Sankey diagram: **`SankeyChartSpec`** provides nodes with a `column` index and weighted links between node ids. Layout is planned in normalized domain space (commonly `x=0..1`, `y=0..1`) so pan/zoom reuses **`ChartViewportState`**; hit-testing supports node and link selection. **`SankeyLayoutSpec`** adds SankeyMATIC-like controls for node ordering, per-column vertical alignment, deterministic link stacking via outgoing/incoming link ordering, and optional node/link labels.
+Explicit-column Sankey diagram: **`SankeyChartSpec`** provides nodes with a `column` index (any integer range — indices are normalized) and weighted links between node ids. Layout is planned in normalized domain space (commonly `x=0..1`, `y=0..1`) so pan/zoom reuses **`ChartViewportState`**; hit-testing samples the drawn Bézier ribbons so node and link taps match the visuals. **`SankeyLayoutSpec`** selects the flow direction (**`SankeyOrientation`** `Horizontal` / `Vertical`), applies a **Tableau-10 categorical node palette** (`nodePalette`) with **d3-style source→target gradient ribbons** (**`SankeyLinkColorMode`**, default `SourceToTargetGradient`), and adds SankeyMATIC-like controls for node ordering, cross-axis column alignment (**`SankeyColumnAlignment`**; legacy `columnVerticalAlignment` still maps), deterministic link stacking via outgoing/incoming link ordering, and optional node/link labels — node labels default to d3-style **adjacent** placement (**`SankeyNodeLabelPlacement`**) with inside placement (ellipsized when too long) still available. Node heights follow the d3-sankey scale rule so no column can overflow; selecting a node or ribbon dims the rest of the diagram and outlines the selected element along its actual geometry.
 
 ## Heatmap
 
@@ -38,7 +38,7 @@ Explicit-column Sankey diagram: **`SankeyChartSpec`** provides nodes with a `col
 
 ## Candlestick (OHLC)
 
-Cartesian OHLC chart: **`CandlestickChartSpec`** holds **`CandlestickSeries`** of **`OHLCPoint`** (`x`, `open`, `high`, `low`, `close`) with per-series **`CandlestickStyle`** (bull/bear colors, body/wick widths, wick coloring). Shares the line/bar/scatter axis + viewport stack: bodies + wicks, bull/bear coloring, **`CandlestickRenderSpec`** decimation for long series, pan/zoom, and a **tap-to-OHLC** marker. Chart-level Image-role accessibility with optional **`accessibilityCustomActions`** and **keyboard selection-roam** (Shift+Left/Right steps candles within a series, Shift+Up/Down switches series, plain arrows pan), backed by **`KeyboardSelectionRoam.candlestickChartRoam`**. *(Shipped in 1.1.0; previewed in `ComposePlotApp` and screenshot-tested in the Android showcase.)*
+Cartesian OHLC chart: **`CandlestickChartSpec`** holds **`CandlestickSeries`** of **`OHLCPoint`** (`x`, `open`, `high`, `low`, `close`) with per-series **`CandlestickStyle`** (bull/bear colors, body/wick widths, wick coloring). Shares the line/bar/scatter axis + viewport stack: bodies + wicks, bull/bear coloring, **`CandlestickRenderSpec`** decimation for long series, pan/zoom, and a **tap-to-OHLC** marker. Chart-level Image-role accessibility with optional **`accessibilityCustomActions`** and **keyboard selection-roam** (Shift+Left/Right steps candles within a series, Shift+Up/Down switches series, plain arrows pan), backed by **`KeyboardSelectionRoam.candlestickChartRoam`**. *(Shipped in 1.1.0; screenshot-tested in the Android showcase.)*
 
 ## Gauge / progress-ring
 
@@ -50,9 +50,8 @@ A thin convenience wrapper over **`LineChart`** with axes, grid, and legend off,
 
 ## Domain axes (not a separate chart type)
 
-**`AxisScale.Category`** and **`AxisScale.TimeEpochMillis`** work on line (and other cartesian) specs. See **`axis-category-time-cookbook.md`** and the **Domain axes** tab in **`ComposePlotApp`**.
+**`AxisScale.Category`** and **`AxisScale.TimeEpochMillis`** work on line (and other cartesian) specs. See **`axis-category-time-cookbook.md`** and the **Domain axes** screen in the Android showcase.
 
 ## Samples
 
-- **`ComposePlotApp`** — minimal cross-platform cycle: line → bar → stacked bar → horizontal bar → scatter → pie → radar → combined → sankey → heatmap → gauge → candlestick → sparkline → domain axes.
-- **`samples/android-showcase`** — richer demos and Roborazzi baselines (Android).
+- **`samples/android-showcase`** — the Android demo app: per-family screens (line, bar, stacked bar, horizontal bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, sparkline via the Line screen, domain axes) with Roborazzi baselines.

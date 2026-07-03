@@ -16,10 +16,12 @@ object SankeyHitResolver {
         spec: SankeyChartSpec,
         plan: SankeyChartPlan,
     ): ChartSelection? {
-        // Nodes are drawn on top of links by default; prioritize node hits first.
-        resolveNode(touch, spec, plan.nodes)?.let { return it }
-        resolveLink(touch, spec, plan.links)?.let { return it }
-        return null
+        // Hit priority follows visual z-order: whichever layer draws on top wins the tap.
+        return if (spec.layout.linksBehindNodes) {
+            resolveNode(touch, spec, plan.nodes) ?: resolveLink(touch, spec, plan.links)
+        } else {
+            resolveLink(touch, spec, plan.links) ?: resolveNode(touch, spec, plan.nodes)
+        }
     }
 
     private fun resolveNode(
@@ -86,9 +88,10 @@ private fun pointInPolygon(
     for (i in polygon.indices) {
         val pi = polygon[i]
         val pj = polygon[j]
+        // The crossing precondition guarantees pi.y != pj.y on entry.
         val intersects =
             ((pi.y > p.y) != (pj.y > p.y)) &&
-                (p.x < (pj.x - pi.x) * (p.y - pi.y) / ((pj.y - pi.y).takeIf { it != 0.0 } ?: 1e-9) + pi.x)
+                (p.x < (pj.x - pi.x) * (p.y - pi.y) / (pj.y - pi.y) + pi.x)
         if (intersects) inside = !inside
         j = i
     }

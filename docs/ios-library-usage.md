@@ -1,8 +1,6 @@
 # Using ComposePlotLib on iOS (library integration)
 
-**[`ios-host-runbook.md`](ios-host-runbook.md)** covers the **in-repo** Xcode app: Gradle phases, signing, and a manual checklist for `ComposePlotApp`.
-
-This page describes how a **consumer** composes charts in a **Kotlin Multiplatform** app that also ships an iOS target—the same public APIs as Android, backed by Compose Multiplatform on both sides.
+This page describes how a **consumer** composes charts in a **Kotlin Multiplatform** app that also ships an iOS target—the same public APIs as Android, backed by Compose Multiplatform on both sides. There is no in-repo runnable iOS app; iOS is supported purely as a **library** target.
 
 ## Preconditions
 
@@ -18,31 +16,32 @@ implementation(project(":chart-compose")) // monorepo; substitute Maven coordina
 
 ```kotlin
 iosSimulatorArm64().binaries.framework {
-    baseName = "ComposeApp"
+    baseName = "MyChartsApp"
     isStatic = true
 }
 ```
 
-Adjust `baseName` to your product; Xcode will import that module name (e.g. `import ComposeApp`).
+Adjust `baseName` to your product; Xcode will import that module name (e.g. `import MyChartsApp`).
 
 ## Compose entry point for `UIViewController`
 
-Expose a top-level Kotlin function that returns `ComposeUIViewController { ... }`, and build your UI with the same composables you use on Android (`LineChart`, `BarChart`, etc.). The repo’s **`composeApp`** module does exactly this:
+Expose a top-level Kotlin function (in your app module’s `iosMain`) that returns `ComposeUIViewController { ... }`, and build your UI with the same composables you use on Android (`LineChart`, `BarChart`, etc.):
 
 ```kotlin
-// composeApp/src/iosMain/kotlin/.../MainViewController.kt
-fun MainViewController() = ComposeUIViewController { App() }
+// <your-app>/src/iosMain/kotlin/.../MainViewController.kt
+fun MainViewController() = ComposeUIViewController {
+    LineChart(spec = /* your LineChartSpec */)
+    // …or your own screens composed from the chart composables
+}
 ```
-
-`App()` (in `commonMain`) can call `ComposePlotApp()` or your own screens.
 
 ## Embedding in SwiftUI
 
-Wrap the generated Kotlin facade in `UIViewControllerRepresentable`, as in **`iosApp/iosApp/ContentView.swift`**:
+Wrap the generated Kotlin facade in `UIViewControllerRepresentable`:
 
 ```swift
 import SwiftUI
-import ComposeApp
+import MyChartsApp
 
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
@@ -64,10 +63,10 @@ The exact `MainViewControllerKt` name comes from the Kotlin file + module; if yo
 From the project root (same as **`AGENTS.md`**):
 
 ```bash
-./gradlew :composeApp:compileKotlinIosSimulatorArm64
+./gradlew :chart-compose:compileKotlinIosSimulatorArm64
 ```
 
-Use **`:composeApp:compileKotlinIosArm64`** when targeting physical devices. Replace `:composeApp` with your consumer module if charts live elsewhere.
+Use **`:chart-compose:compileKotlinIosArm64`** when targeting physical devices. Substitute your own consumer module task to compile the charts as embedded in your app.
 
 ## Scope and limitations
 
