@@ -35,8 +35,8 @@ reversed axis direction (`AxisSpec.inverted`), tick-density and X-label overlap 
 
 **Interaction:** tap-select (per-family hit resolvers), pan, per-axis pinch zoom, double-tap (in / out /
 reset), fling, keyboard viewport nudge and selection roam, programmatic `ChartViewportState`, custom marker
-slot, gesture presets, interactive legend toggle, crosshair / axis-pointer (`CrosshairSpec`, line/scatter).
-**No hover or brush yet.**
+slot, gesture presets, interactive legend toggle, crosshair / axis-pointer (`CrosshairSpec`, line/scatter),
+cross-chart viewport sync (`SyncChartViewports`, `syncId`-style linked pan/zoom). **No hover or brush yet.**
 
 **Theming:** `ChartColor` (named presets + `rgb`/`argb`/`hex`/`hsl`/`withAlpha` factories), a Material 3 palette
 bridge, per-element style classes, `ChartChromeTheme`, Heatmap/Sankey color scales.
@@ -157,7 +157,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Interactive legend (toggle)~~ ✅ | ~~P0~~ | M | strong | **Shipped:** `hiddenSeriesIds` + `onLegendItemClick` (line/scatter/bar). Hover-highlight still open. |
 | Range brush / box selection (+ linked filtering) | P2 | L | moderate | Drag-rectangle → domain selection + selection-region model. |
 | Range selector / minimap / brush navigator | P2 | L | moderate | Compact overview bound to the main `ChartViewportState`. |
-| Cross-chart sync (linked selection & tooltip, `syncId`-style) | P2 | M | moderate | State is hoistable; needs a documented sync + value/index matching. |
+| ~~Cross-chart sync (linked selection & tooltip, `syncId`-style)~~ ✅ | ~~P2~~ | M | moderate | **Shipped:** `SyncChartViewports(...)` links a group of `ChartViewportState`s so pan/zoom on one mirrors the shared axis onto the others (`ChartSyncAxis.X` / `Y` / `Both`); linked selection/tooltips by sharing one `ChartSelectionState`. |
 | Distinct hover interaction (pointer-move highlight vs tap) | P3 | M | moderate | Adds a hover channel to gesture policies; matters for desktop/iPad. |
 | Drill-down (click a mark to expand detail) | P3 | M | weak | Mostly app-level; library exposes callbacks + transitions. |
 

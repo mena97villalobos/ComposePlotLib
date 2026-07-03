@@ -400,6 +400,15 @@ public final class com/mena97villalobos/composeplotlib/chart/state/ChartSelectio
 	public final fun select (Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;)V
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/state/ChartSyncAxis : java/lang/Enum {
+	public static final field Both Lcom/mena97villalobos/composeplotlib/chart/state/ChartSyncAxis;
+	public static final field X Lcom/mena97villalobos/composeplotlib/chart/state/ChartSyncAxis;
+	public static final field Y Lcom/mena97villalobos/composeplotlib/chart/state/ChartSyncAxis;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/chart/state/ChartSyncAxis;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/chart/state/ChartSyncAxis;
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/state/ChartViewportState {
 	public static final field $stable I
 	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/viewport/ViewportState;Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;Lcom/mena97villalobos/composeplotlib/core/viewport/ViewportAxisPolicy;)V
@@ -421,6 +430,10 @@ public final class com/mena97villalobos/composeplotlib/chart/state/ChartViewport
 	public final fun zoom (DDDDLcom/mena97villalobos/composeplotlib/chart/state/ViewportChangeOrigin;)V
 	public static synthetic fun zoom$default (Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;DDDDLcom/mena97villalobos/composeplotlib/chart/state/ViewportChangeOrigin;ILjava/lang/Object;)V
 	public final fun zoomTo (DDDD)V
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/state/ChartViewportSyncKt {
+	public static final fun SyncChartViewports ([Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSyncAxis;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/state/RememberChartStatesKt {

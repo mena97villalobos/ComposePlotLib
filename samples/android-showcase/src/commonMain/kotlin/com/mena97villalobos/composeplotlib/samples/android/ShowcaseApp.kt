@@ -35,6 +35,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartSh
 import com.mena97villalobos.composeplotlib.samples.android.screens.GaugeChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.HeatmapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
@@ -146,6 +147,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
                         StackedAreaChartShowcaseScreen()
+                    }
+                ShowcaseDestination.LinkedCharts ->
+                    Column(detailModifier) {
+                        LinkedChartsShowcaseScreen()
                     }
                 ShowcaseDestination.DomainAxes ->
                     Column(detailModifier) {
@@ -270,6 +275,12 @@ private fun ShowcaseHomeScreen(
             Text("Stacked area chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.LinkedCharts) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Linked charts (shared X)")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.DomainAxes) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -298,5 +309,6 @@ private enum class ShowcaseDestination(
     Bullet("Bullet graph"),
     Funnel("Funnel chart"),
     StackedArea("Stacked area chart"),
+    LinkedCharts("Linked charts"),
     DomainAxes("Domain axes"),
 }

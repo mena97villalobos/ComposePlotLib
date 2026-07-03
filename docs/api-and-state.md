@@ -34,6 +34,7 @@ The current public surface is intentionally small.
 - `ChartSelectionState`
 - `rememberChartViewportState(...)` — optional `ViewportConstraints` and `ViewportAxisPolicy`; see `docs/viewport-configuration.md`
 - `rememberChartSelectionState()`
+- `SyncChartViewports(vararg states, axis = ChartSyncAxis.X)` — composable that keeps a group of `ChartViewportState`s aligned on the chosen `ChartSyncAxis` (`X` / `Y` / `Both`); panning/zooming any member mirrors the shared axis onto the others (`syncId`-style linked pan/zoom for dashboards). Each follower clamps to its own domain; link selection/tooltips by sharing one `ChartSelectionState`.
 - Empty overlays: `ChartNoDataUi`, `ChartNoDataDefaults`, `ChartNoDataContent`, `DefaultNoDataOverlay`
 - `ChartAnimationPolicy` on charts — opt-in programmatic **viewport** easing; optional **gesture viewport chase** (`gestureViewportEasingEnabled`, `gestureViewportChaseStiffness`); marker **fade-in / fade-out** (clearing selection) when `selectionHighlightEnabled` and `selectionDurationMillis` > 0; optional **`LineChart`** same-topology **data** coordinate morph (`dataTransitionEnabled`, `dataTransitionDurationMillis`); `respectSystemReducedMotion` disables motion and durations when the user prefers reduced animation (see **Viewport State** / **Accessibility**)
 - `ChartCustomAccessibilityAction` for TalkBack / VoiceOver custom actions on the chart node

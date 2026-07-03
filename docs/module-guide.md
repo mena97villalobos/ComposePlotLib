@@ -61,7 +61,7 @@ Path: `chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/c
 - `theme/ChartChromeTheme.kt` (`chartChromeTheme()`, `ChartChromeTheme.Default`); `theme/MaterialChartPalette.kt` (`materialChartPalette()`, `Color.toChartColor()`); `theme/MaterialChartSpecTheme.kt` (`seriesAccentColors`, `withMaterialSeriesColors`, …)
 - `ChartGestureConfig.kt`, `ChartMarker.kt`, `ChartNoData.kt`, `ChartAnimationPolicy.kt`, `ChartCustomAccessibilityAction.kt`
 - `ChartViewports.kt` (e.g. `defaultViewport`)
-- `state/ChartViewportState.kt`, `state/ChartSelectionState.kt`, `state/RememberChartStates.kt`
+- `state/ChartViewportState.kt`, `state/ChartSelectionState.kt`, `state/RememberChartStates.kt`, `state/ChartViewportSync.kt` (`SyncChartViewports` — cross-chart linked pan/zoom)
 
 ### Platform source sets (expect/actual)
 - `androidMain`, `iosMain` — e.g. reduced-motion probe for `ChartAnimationPolicy` (see `internal/accessibility/ChartReducedMotion.kt`, `ChartReducedMotionPreference.kt`, `ChartMarkerFocusHandoff.kt`)

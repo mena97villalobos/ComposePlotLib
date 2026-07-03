@@ -113,6 +113,11 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   (`BarStackMode.PercentOfTotal`) normalizes each stacked category to fill the `[0, 1]` value axis; the
   `BarChart` / `StackedBarChart` default viewport switches to `[0, 1]` automatically. Segments keep their raw
   values for markers/labels. Default `Absolute` (unchanged).
+- **Cross-chart viewport sync** — `SyncChartViewports(vararg states, axis)` links a group of
+  `ChartViewportState`s so panning or zooming any one mirrors the shared axis window onto the others
+  (`ChartSyncAxis.X` / `Y` / `Both`) — the `syncId` / "connect" pattern for aligned dashboards. Each follower
+  clamps to its own domain and feedback loops are avoided. Link selection/tooltips by sharing one
+  `ChartSelectionState`.
 
 ### Changed
 
