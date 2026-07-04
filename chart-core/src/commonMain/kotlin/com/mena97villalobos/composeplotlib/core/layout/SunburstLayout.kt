@@ -7,15 +7,6 @@ import com.mena97villalobos.composeplotlib.core.spec.SunburstChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SunburstNode
 import com.mena97villalobos.composeplotlib.core.spec.totalValue
 
-/** A laid-out sunburst node: its ring [depth], angular span (degrees), resolved fill [color], and [label]. */
-data class SunburstSlice(
-    val depth: Int,
-    val startAngleDegrees: Double,
-    val sweepAngleDegrees: Double,
-    val color: ChartColor,
-    val label: String,
-)
-
 /**
  * Flattens a [SunburstChartSpec] into angle-and-depth slices. The [SunburstChartSpec.root] spans
  * `[startAngleDegrees, startAngleDegrees + sweepDegrees]`; each child occupies a proportional sub-span within its
