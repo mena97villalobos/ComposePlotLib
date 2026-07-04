@@ -36,6 +36,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartSh
 import com.mena97villalobos.composeplotlib.samples.android.screens.GaugeChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.HeatmapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ImageExportShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.IndicatorsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
@@ -156,6 +157,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.CalendarHeatmap ->
                     Column(detailModifier) {
                         CalendarHeatmapShowcaseScreen()
+                    }
+                ShowcaseDestination.Indicators ->
+                    Column(detailModifier) {
+                        IndicatorsShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -306,6 +311,12 @@ private fun ShowcaseHomeScreen(
             Text("Calendar heatmap")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Indicators) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Technical indicators")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -365,6 +376,7 @@ private enum class ShowcaseDestination(
     Funnel("Funnel chart"),
     RadialBar("Radial bar chart"),
     CalendarHeatmap("Calendar heatmap"),
+    Indicators("Technical indicators"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

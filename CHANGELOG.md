@@ -150,6 +150,9 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   `chartChromeThemeAuto(darkTheme = isSystemInDarkTheme())` give mode-fixed chrome independent of `MaterialTheme`;
   `ChartColor.lighten(fraction)` / `.darken(fraction)` and `ChartPalettes.forDarkBackground(palette, amount)` tint
   categorical data colors for legibility on dark surfaces (the planner still does not auto-shift series colors).
+- **Financial technical indicators** — `TechnicalIndicators` in `chart-core`: `sma` / `ema` / `rsi` / `macd`
+  (`MacdSeries`) / `bollingerBands` (`BollingerBands`) over a value series, index-aligned (`null` until defined)
+  and KMP-safe. Map any result to a `LineSeries` to overlay it on a line or candlestick chart.
 
 ### Changed
 

@@ -46,6 +46,8 @@ bridge, per-element style classes, `ChartChromeTheme`, Heatmap/Sankey color scal
 custom actions, reduced-motion, data-table "view data" surface (`ChartDataTable`). **No chart-level narrative
 summary yet.**
 
+**Analytics:** financial technical indicators (`TechnicalIndicators`: SMA / EMA / RSI / MACD / Bollinger), fitted trendlines, and the accessible data-table / narrative surfaces.
+
 **Performance:** viewport windowing → pixel clip, Uniform / MinMaxY decimation, plot-width pixel budget,
 tick-value reuse, grid-line cache.
 
@@ -124,7 +126,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Waterfall family (running-total bars + connectors)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `WaterfallChart` / `WaterfallChartSpec` (floating bars, sign coloring, total markers, connectors). |
 | OHLC/candlestick variants (HLC bar, Heikin-Ashi, hollow) | P3 | S | strong | Transform + body-style tweaks on the shipped candlestick. |
 | Histogram / density / violin | P3 | M | moderate | Binning/KDE transforms; bins render as bars. |
-| Financial extras: range-selector strip, data grouping, indicators (SMA/EMA/RSI/MACD/Bollinger) | P3 | XL | moderate | Indicators are core math; the navigator is a linked viewport. |
+| ~~Financial extras: range-selector strip, data grouping, indicators (SMA/EMA/RSI/MACD/Bollinger)~~ ✅ | ~~P3~~ | XL | moderate | **Shipped:** `TechnicalIndicators` (SMA / EMA / RSI / MACD / Bollinger, index-aligned, KMP-safe) + the range-selector strip (`ChartRangeSelector`, P2). Overlay any indicator as a `LineSeries`. (Period data-grouping stays caller-side.) |
 
 ### 4.3 Part-to-whole & hierarchical families
 

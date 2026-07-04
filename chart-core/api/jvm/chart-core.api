@@ -170,6 +170,48 @@ public final class com/mena97villalobos/composeplotlib/core/geometry/SizeD$Compa
 	public final fun getZero ()Lcom/mena97villalobos/composeplotlib/core/geometry/SizeD;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/indicators/BollingerBands {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/indicators/BollingerBands;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/indicators/BollingerBands;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/indicators/BollingerBands;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLower ()Ljava/util/List;
+	public final fun getMiddle ()Ljava/util/List;
+	public final fun getUpper ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/indicators/MacdSeries {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/indicators/MacdSeries;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/indicators/MacdSeries;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/indicators/MacdSeries;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHistogram ()Ljava/util/List;
+	public final fun getMacd ()Ljava/util/List;
+	public final fun getSignal ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/indicators/TechnicalIndicators {
+	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/indicators/TechnicalIndicators;
+	public final fun bollingerBands (Ljava/util/List;ID)Lcom/mena97villalobos/composeplotlib/core/indicators/BollingerBands;
+	public static synthetic fun bollingerBands$default (Lcom/mena97villalobos/composeplotlib/core/indicators/TechnicalIndicators;Ljava/util/List;IDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/indicators/BollingerBands;
+	public final fun ema (Ljava/util/List;I)Ljava/util/List;
+	public final fun macd (Ljava/util/List;III)Lcom/mena97villalobos/composeplotlib/core/indicators/MacdSeries;
+	public static synthetic fun macd$default (Lcom/mena97villalobos/composeplotlib/core/indicators/TechnicalIndicators;Ljava/util/List;IIIILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/indicators/MacdSeries;
+	public final fun rsi (Ljava/util/List;I)Ljava/util/List;
+	public static synthetic fun rsi$default (Lcom/mena97villalobos/composeplotlib/core/indicators/TechnicalIndicators;Ljava/util/List;IILjava/lang/Object;)Ljava/util/List;
+	public final fun sma (Ljava/util/List;I)Ljava/util/List;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/layout/AxisTick {
 	public fun <init> (DLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/layout/TextLayoutMetrics;Z)V
 	public synthetic fun <init> (DLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/layout/TextLayoutMetrics;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V

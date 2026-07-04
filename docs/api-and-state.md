@@ -52,6 +52,9 @@ The current public surface is intentionally small.
 - **Data (CSV / JSON):** `ChartDataTable.toCsv(delimiter, lineSeparator)` (RFC 4180) and `ChartDataTable.toJson()` over the `lineChartDataTable` / `scatterChartDataTable` / `barChartDataTable` builders — export a chart's underlying values.
 - **Vector (SVG):** `chartLayoutPlanToSvg(plan, background)` serializes any planned `ChartLayoutPlan` to a standalone SVG (shapes, paths, gradients, arcs, clips) with no DOM; `lineChartToSvg(spec, widthPx, heightPx, viewport, background)` plans a line chart headlessly and returns SVG in one call (`lineChartDataViewport(spec)` computes the default data extent).
 
+### Analytics
+- `TechnicalIndicators.sma / ema / rsi / macd / bollingerBands(values, …)` — index-aligned financial indicators (`null` until defined) in `chart-core`; map any result to a `LineSeries` to overlay it on a line/candlestick chart.
+
 ### Helpers
 - `ChartPlanner.computeCartesianTickValuePass(viewport, xAxis, yAxis)` → `TickValuePass` (pass-2 domain tick values before pixel thinning). Cartesian composables reuse it across the measurement pre-pass and final pass when the viewport and primary axes are unchanged. Optional `tickValuePass` on `ChartPlanner.planLineChart`, `planBarChart`, `planScatterChart`, and `planCombinedCartesianChart` (default: compute internally).
 - `defaultViewport(LineChartSpec)`
