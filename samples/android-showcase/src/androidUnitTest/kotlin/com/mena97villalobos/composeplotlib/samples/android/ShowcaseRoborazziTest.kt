@@ -40,6 +40,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.RangeSelector
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.StackedAreaChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.TreemapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChartShowcaseScreen
 import org.junit.Rule
 import org.junit.Test
@@ -434,6 +435,18 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     RangeSelectorShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun treemapChartShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    TreemapChartShowcaseScreen()
                 }
             }
         }

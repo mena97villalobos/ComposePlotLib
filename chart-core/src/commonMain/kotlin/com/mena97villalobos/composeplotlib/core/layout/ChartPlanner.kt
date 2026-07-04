@@ -76,6 +76,7 @@ import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
 import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
@@ -864,6 +865,48 @@ object ChartPlanner {
         }
 
         return CalendarHeatmapChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = ChartReservedRegions(spec.contentPadding, null, null, null),
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
+                ),
+        )
+    }
+
+    /**
+     * Treemap: tiles [TreemapChartSpec.nodes] into area-proportional rectangles via [squarifiedTreemap] and emits a
+     * filled [DrawCommand.RoundRect] per tile (plus a label when the tile is large enough). Read-only (no selection).
+     */
+    fun planTreemapChart(
+        input: ChartLayoutInput,
+        spec: TreemapChartSpec,
+    ): TreemapChartPlan {
+        val bounds = input.toPlanningBounds()
+        val plotBounds = bounds.canvasBounds.inset(spec.contentPadding)
+        val rects = squarifiedTreemap(spec.nodes.map { it.value }, plotBounds)
+        val gap = spec.cellGapPx.coerceAtLeast(0.0)
+        val plotCommands = mutableListOf<DrawCommand>()
+        val overlayCommands = mutableListOf<DrawCommand>()
+        spec.nodes.forEachIndexed { index, node ->
+            val rect = rects[index]
+            if (rect.width <= 0.0 || rect.height <= 0.0) return@forEachIndexed
+            val left = rect.left + gap / 2.0
+            val top = rect.top + gap / 2.0
+            val right = (rect.right - gap / 2.0).coerceAtLeast(left)
+            val bottom = (rect.bottom - gap / 2.0).coerceAtLeast(top)
+            val tile = RectD(left, top, right, bottom)
+            plotCommands += DrawCommand.RoundRect(tile, spec.cellCornerRadiusPx, ShapeDrawStyle.Fill(node.color))
+            if (spec.showLabels && node.label.isNotEmpty() && tile.width > 34.0 && tile.height > 18.0) {
+                overlayCommands += DrawCommand.Text(text = node.label, position = OffsetD(tile.left + 4.0, tile.top + 4.0), color = spec.labelColor)
+            }
+        }
+        return TreemapChartPlan(
             layout =
                 ChartLayoutPlan(
                     canvasBounds = bounds.canvasBounds,

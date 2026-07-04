@@ -157,6 +157,9 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   `HollowCandles` (bullish bodies outlined) / `OhlcBars` (open-tick-left, close-tick-right) / `HeikinAshi`
   (smoothed)); the `heikinAshi(points)` OHLC transform is public. `CandlestickChartSpec` gained a trailing
   `variant` parameter (recompile precompiled positional callers).
+- **Treemap chart family** — `TreemapChart` composable + `TreemapChartSpec` / `TreemapNode`: area-proportional
+  tiles laid out by a squarified algorithm (`squarifiedTreemap` in `chart-core`, aspect ratios kept near 1) with
+  per-tile fill color and label fitting. Single-level (flat), read-only.
 
 ### Changed
 

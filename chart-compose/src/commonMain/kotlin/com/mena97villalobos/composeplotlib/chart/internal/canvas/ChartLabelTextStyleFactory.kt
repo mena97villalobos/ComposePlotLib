@@ -23,6 +23,7 @@ import com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SankeyChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 
 @Composable
@@ -116,6 +117,16 @@ internal fun chartLabelTextStyles(
     @Suppress("UNUSED_PARAMETER") spec: CalendarHeatmapSpec,
 ): ChartLabelTextStyles {
     // Calendar heatmap draws weekday + month labels via the axis text slots.
+    val y = MaterialTheme.typography.labelSmall
+    return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(
+    @Suppress("UNUSED_PARAMETER") spec: TreemapChartSpec,
+): ChartLabelTextStyles {
+    // Treemap draws tile labels via the axis text slot.
     val y = MaterialTheme.typography.labelSmall
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
 }

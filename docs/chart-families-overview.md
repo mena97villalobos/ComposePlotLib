@@ -64,6 +64,10 @@ Cartesian composition chart: **`StackedAreaChartSpec`** holds shared **`xValues`
 
 Non-cartesian stage chart: **`FunnelChartSpec`** holds ordered **`FunnelStage`**s (`label`, `value`, optional `color`), drawn as stacked, centered trapezoids tapering from each stage's width (∝ value, widest = full plot) to the next — the classic conversion funnel. Palette-colored with optional centered labels. **Read-only** (no axes/selection/pan-zoom, like Gauge/Bullet). Compose entry: `FunnelChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
+## Treemap
+
+Read-only area-proportional tiling: **`TreemapChartSpec`** holds **`TreemapNode`** leaves (`label`, `value`, `color`), laid out by a **squarified** algorithm (`squarifiedTreemap` in `chart-core`) that keeps tile aspect ratios close to 1; tiles are filled with the node color and labeled when large enough. Single-level (flat). **Non-interactive**. Compose entry: `TreemapChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Calendar / year heatmap
 
 Read-only GitHub-contribution-style grid: **`CalendarHeatmapSpec`** holds **`CalendarHeatmapDay`** (`dayIndex`, `value`) placed in a week-column × weekday-row grid (`column = (dayIndex + startWeekday) / 7`, `row = … % 7`, row 0 at top) and colored via the shared **`HeatmapColorScale`**. Callers supply 0-based day offsets (KMP-safe — no date library); optional weekday and **`CalendarMonthLabel`** labels sit in the reserved padding. **Non-interactive**. Compose entry: `CalendarHeatmapChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*

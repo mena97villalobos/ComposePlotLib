@@ -389,6 +389,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartViewportsKt {
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/StackedAreaChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/WaterfallChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 }
 
@@ -447,6 +448,10 @@ public final class com/mena97villalobos/composeplotlib/chart/StackedAreaChartKt 
 
 public final class com/mena97villalobos/composeplotlib/chart/StackedBarChartKt {
 	public static final fun StackedBarChart (Lcom/mena97villalobos/composeplotlib/core/spec/StackedBarChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;III)V
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/TreemapChartKt {
+	public static final fun TreemapChart (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/WaterfallChartKt {

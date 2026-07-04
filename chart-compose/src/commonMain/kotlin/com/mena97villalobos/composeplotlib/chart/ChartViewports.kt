@@ -25,6 +25,7 @@ import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.math.abs
@@ -74,6 +75,11 @@ fun defaultViewport(
 /** Trivial unit [ChartViewport] for a calendar heatmap (grid layout — the plan ignores the viewport). */
 fun defaultViewport(
     @Suppress("UNUSED_PARAMETER") spec: CalendarHeatmapSpec,
+): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
+
+/** Trivial unit [ChartViewport] for a treemap (tile layout — the plan ignores the viewport). */
+fun defaultViewport(
+    @Suppress("UNUSED_PARAMETER") spec: TreemapChartSpec,
 ): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
 
 /** [ChartViewport] for a stacked-area chart: X across [xValues]; Y across the stacked total per its offset. */
