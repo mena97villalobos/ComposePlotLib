@@ -1,6 +1,6 @@
 # ComposePlotLib 1.2.0 — Release notes
 
-A large feature release: **6 new chart families** (13 → 19), first-class **interaction** (linked pan/zoom,
+A large feature release: **13 new chart families** (13 → 26), first-class **interaction** (linked pan/zoom,
 range brush, minimap), **export** (PNG / SVG / CSV / JSON), richer **cartesian depth**, **theming**, and
 **accessibility**, plus a full **Sankey rework**.
 
@@ -9,7 +9,7 @@ additive; the only behavior changes are in Sankey. Full detail lives in **[CHANG
 
 ---
 
-## New chart families (13 → 19)
+## New chart families (13 → 26)
 
 | Family | Entry point | Notes |
 |---|---|---|
@@ -20,6 +20,13 @@ additive; the only behavior changes are in Sankey. Full detail lives in **[CHANG
 | **Funnel** | `FunnelChart` / `FunnelChartSpec` | Stacked centered trapezoids tapering by stage value. Read-only. |
 | **Stacked area** | `StackedAreaChart` / `StackedAreaChartSpec` | `AreaStackOffset.Zero` / `Expand` (100%) / `Silhouette` (streamgraph). Cartesian pan/zoom. |
 | **Radial bar** | `RadialBarChart` / `RadialBarChartSpec` | Concentric progress rings (track + value arc per ring). Read-only, legend. |
+| **Calendar heatmap** | `CalendarHeatmapChart` / `CalendarHeatmapSpec` | GitHub-style week×weekday contribution grid (0-based day offsets, no date lib). |
+| **Treemap** | `TreemapChart` / `TreemapChartSpec` | Squarified area-proportional tiles with label fitting. |
+| **Sunburst** | `SunburstChart` / `SunburstNode` | Hierarchy as concentric rings, angular span ∝ value within parent. |
+| **Circle-packing** | `CirclePackChart` / `CirclePackNode` | Non-overlapping bubbles, area ∝ value (greedy tangent packing). |
+| **Parallel coordinates** | `ParallelCoordinatesChart` / `ParallelAxis` | One vertical axis per dimension, one polyline per record. |
+| **Polar / wind-rose** | `PolarChart` / `PolarSector` | Equal angular wedges, radius ∝ value, over grid rings. |
+| **Violin** | `ViolinChart` / `ViolinCategory` | Mirrored Gaussian KDE distribution per category + median line. |
 
 (Plus the **Sankey rework** — see below.)
 
@@ -60,6 +67,16 @@ additive; the only behavior changes are in Sankey. Full detail lives in **[CHANG
 
 - **Streaming helpers** — `StreamingSeriesBuffer` (bounded ring buffer) + `rememberStreamingSeries` / `StreamingSeriesState`.
 - **LTTB decimation** — `LineDecimationStrategy.Lttb` (shape-preserving downsampling).
+
+## More (added since the first draft of these notes)
+
+- **Analytics:** `TechnicalIndicators` (SMA / EMA / RSI / MACD / Bollinger); distribution helpers `histogramBins` / `kernelDensity` / `silvermanBandwidth`.
+- **Axes:** broken axis (`AxisScale.Broken` + `AxisBreak`) collapses empty domain gaps.
+- **Interaction:** hover-select (`LineChart(hoverEnabled = true)`), drill-down back-stack (`rememberChartDrillState`), independent secondary-Y channel (`ChartViewportState.secondaryYViewport`).
+- **Layout:** faceting / small multiples (`ChartFacetGrid`).
+- **Fills:** radial + multi-stop gradients (`PathDrawStyle.RadialGradientFill`), pattern/texture decal fills (`PathDrawStyle.PatternFill` + `FillPattern`).
+- **Performance:** progressive frame-chunked reveal (`rememberProgressiveReveal`).
+- **Theming:** light/dark chrome presets (`ChartChromeTheme.Light`/`.Dark`, `chartChromeThemeAuto`), dark-aware palettes (`ChartColor.lighten`/`darken`, `ChartPalettes.forDarkBackground`).
 
 ## Sankey rework
 

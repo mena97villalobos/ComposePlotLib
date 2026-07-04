@@ -1,6 +1,6 @@
 # Migrating from 1.1.0 to 1.2.0
 
-`1.2.0` is a large, **mostly additive** release: 19 chart families (up from 13), new interaction,
+`1.2.0` is a large, **mostly additive** release: 26 chart families (up from 13), new interaction,
 export, theming, and accessibility surfaces, plus a Sankey rework. Almost all existing code compiles
 and runs unchanged. This guide covers the few things to check when you upgrade.
 
