@@ -9,6 +9,7 @@ import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.FunnelChartSpec
@@ -107,6 +108,16 @@ internal fun chartLabelTextStyles(spec: RadialBarChartSpec): ChartLabelTextStyle
     val legend = legendStyleFrom(typo, spec.legend.style)
     val y = typo.labelSmall
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = legend, pieSliceLabel = legend, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(
+    @Suppress("UNUSED_PARAMETER") spec: CalendarHeatmapSpec,
+): ChartLabelTextStyles {
+    // Calendar heatmap draws weekday + month labels via the axis text slots.
+    val y = MaterialTheme.typography.labelSmall
+    return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
 }
 
 @Composable

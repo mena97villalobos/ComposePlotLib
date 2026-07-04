@@ -11,6 +11,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BarStackMode
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BubbleChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
@@ -68,6 +69,11 @@ fun defaultViewport(
 /** Trivial unit [ChartViewport] for a radial bar chart (radial, non-cartesian — the plan ignores the viewport). */
 fun defaultViewport(
     @Suppress("UNUSED_PARAMETER") spec: RadialBarChartSpec,
+): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
+
+/** Trivial unit [ChartViewport] for a calendar heatmap (grid layout — the plan ignores the viewport). */
+fun defaultViewport(
+    @Suppress("UNUSED_PARAMETER") spec: CalendarHeatmapSpec,
 ): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
 
 /** [ChartViewport] for a stacked-area chart: X across [xValues]; Y across the stacked total per its offset. */

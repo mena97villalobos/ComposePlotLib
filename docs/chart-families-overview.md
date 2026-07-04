@@ -64,6 +64,10 @@ Cartesian composition chart: **`StackedAreaChartSpec`** holds shared **`xValues`
 
 Non-cartesian stage chart: **`FunnelChartSpec`** holds ordered **`FunnelStage`**s (`label`, `value`, optional `color`), drawn as stacked, centered trapezoids tapering from each stage's width (∝ value, widest = full plot) to the next — the classic conversion funnel. Palette-colored with optional centered labels. **Read-only** (no axes/selection/pan-zoom, like Gauge/Bullet). Compose entry: `FunnelChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
+## Calendar / year heatmap
+
+Read-only GitHub-contribution-style grid: **`CalendarHeatmapSpec`** holds **`CalendarHeatmapDay`** (`dayIndex`, `value`) placed in a week-column × weekday-row grid (`column = (dayIndex + startWeekday) / 7`, `row = … % 7`, row 0 at top) and colored via the shared **`HeatmapColorScale`**. Callers supply 0-based day offsets (KMP-safe — no date library); optional weekday and **`CalendarMonthLabel`** labels sit in the reserved padding. **Non-interactive**. Compose entry: `CalendarHeatmapChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Radial bar / circular progress
 
 Read-only concentric progress rings: **`RadialBarChartSpec`** holds an ordered list of **`RadialBarTrack`** (`label`, `value`, `color`), drawn outermost-first as a background track plus a foreground value arc spanning `sweepDegrees * value / maxValue` (auto-scaled to the largest track when `maxValue` is null). Shares the Gauge/Pie arc geometry; an optional legend labels the rings. **Non-interactive** (no axes/selection/pan-zoom). Compose entry: `RadialBarChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*

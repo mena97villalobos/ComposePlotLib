@@ -18,11 +18,11 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ## 1. Current state (as of 2026-07, `1.2.0` unreleased)
 
-**Chart families (19):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+**Chart families (20):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
 `RadarChart`, `SankeyChart` (orientation, Tableau-10 palette, gradient ribbons — reworked for 1.2.0),
 `HeatmapChart`, `GaugeChart`, `CandlestickChart`, `BoxPlotChart` (Tukey five-number summaries), `WaterfallChart`
-(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), plus the axis-less
+(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), `CalendarHeatmapChart` (year/contribution grid), plus the axis-less
 `Sparkline` wrapper.
 
 **Cartesian depth:** area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`), reference/threshold
@@ -139,7 +139,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Sunburst / hierarchical radial | P3 | L | moderate | Multi-ring arcs + tree model + drilldown. |
 | Circle-packing / bubble-pack | P3 | L | moderate | Enclosure layout over hierarchical data. |
 | Parallel coordinates | P3 | L | moderate | Multi-axis weaving; per-axis brushing is the hard part. |
-| Calendar / year heatmap | P3 | M | strong | Date-indexed grid variant of the shipped Heatmap. |
+| ~~Calendar / year heatmap~~ ✅ | ~~P3~~ | M | strong | **Shipped:** `CalendarHeatmapChart` / `CalendarHeatmapSpec` / `CalendarHeatmapDay` — GitHub-style week×weekday grid, colored via `HeatmapColorScale`; caller supplies 0-based day offsets (KMP-safe, no date lib). |
 
 ### 4.4 Reference, annotations & derived series
 

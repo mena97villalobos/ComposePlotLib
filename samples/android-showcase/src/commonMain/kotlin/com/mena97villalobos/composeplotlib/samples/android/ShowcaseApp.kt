@@ -28,6 +28,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowc
 import com.mena97villalobos.composeplotlib.samples.android.screens.BoxPlotChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BubbleChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BulletChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.CalendarHeatmapShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
@@ -151,6 +152,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.RadialBar ->
                     Column(detailModifier) {
                         RadialBarChartShowcaseScreen()
+                    }
+                ShowcaseDestination.CalendarHeatmap ->
+                    Column(detailModifier) {
+                        CalendarHeatmapShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -295,6 +300,12 @@ private fun ShowcaseHomeScreen(
             Text("Radial bar chart")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.CalendarHeatmap) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Calendar heatmap")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -353,6 +364,7 @@ private enum class ShowcaseDestination(
     Bullet("Bullet graph"),
     Funnel("Funnel chart"),
     RadialBar("Radial bar chart"),
+    CalendarHeatmap("Calendar heatmap"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

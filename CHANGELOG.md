@@ -142,6 +142,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   progress rings (outermost first), each a background track plus a foreground value arc spanning
   `sweepDegrees * value / maxValue` (auto-scaled to the largest track when `maxValue` is null). Read-only
   (gauge-style) with an optional legend.
+- **Calendar / year heatmap family** — `CalendarHeatmapChart` composable + `CalendarHeatmapSpec` /
+  `CalendarHeatmapDay` / `CalendarMonthLabel`: a GitHub-contribution-style week-column × weekday-row grid colored
+  via the shared `HeatmapColorScale`. Callers pass 0-based `dayIndex` offsets (KMP-safe, no date library) with
+  optional weekday and month labels. Read-only.
 
 ### Changed
 

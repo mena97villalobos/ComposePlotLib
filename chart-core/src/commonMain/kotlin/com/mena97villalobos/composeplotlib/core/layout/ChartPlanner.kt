@@ -40,6 +40,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BarLayoutMode
 import com.mena97villalobos.composeplotlib.core.spec.BarStackMode
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ChartPalettes
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
@@ -79,6 +80,7 @@ import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
 import com.mena97villalobos.composeplotlib.core.spec.hasDrawableSweep
 import com.mena97villalobos.composeplotlib.core.spec.resolvedColumnAlignment
 import com.mena97villalobos.composeplotlib.core.spec.resolvedMaxValue
+import com.mena97villalobos.composeplotlib.core.spec.resolvedWeekCount
 import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import com.mena97villalobos.composeplotlib.core.visible.LineRenderPipeline
@@ -794,6 +796,82 @@ object ChartPlanner {
                     legendEntries = legendEntries,
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = emptyList(),
+                ),
+        )
+    }
+
+    /**
+     * Calendar / year heatmap: places each [CalendarHeatmapDay][com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapDay]
+     * in a week-column × weekday-row grid (`column = (dayIndex + startWeekday) / 7`, `row = … % 7`, row 0 at top),
+     * coloring cells by value via the [CalendarHeatmapSpec.colorScale]. Weekday and month labels sit in the reserved
+     * padding. Read-only (no selection).
+     */
+    fun planCalendarHeatmapChart(
+        input: ChartLayoutInput,
+        spec: CalendarHeatmapSpec,
+    ): CalendarHeatmapChartPlan {
+        val bounds = input.toPlanningBounds()
+        val plotBounds = bounds.canvasBounds.inset(spec.contentPadding)
+        val weeks = spec.resolvedWeekCount()
+        val plotCommands = mutableListOf<DrawCommand>()
+        val overlayCommands = mutableListOf<DrawCommand>()
+        if (weeks > 0 && plotBounds.width > 0.0 && plotBounds.height > 0.0) {
+            val cellWidth = plotBounds.width / weeks
+            val cellHeight = plotBounds.height / 7.0
+            val gap = spec.cellGapPx.coerceAtLeast(0.0)
+
+            fun cell(
+                column: Int,
+                row: Int,
+                color: ChartColor,
+            ): DrawCommand {
+                val left = plotBounds.left + column * cellWidth + gap / 2.0
+                val top = plotBounds.top + row * cellHeight + gap / 2.0
+                val right = plotBounds.left + (column + 1) * cellWidth - gap / 2.0
+                val bottom = plotBounds.top + (row + 1) * cellHeight - gap / 2.0
+                return DrawCommand.RoundRect(RectD(left, top, right, bottom), spec.cellCornerRadiusPx, ShapeDrawStyle.Fill(color))
+            }
+
+            for (column in 0 until weeks) {
+                for (row in 0 until 7) {
+                    plotCommands += cell(column, row, spec.emptyCellColor)
+                }
+            }
+            for (day in spec.days) {
+                val position = day.dayIndex + spec.startWeekday
+                if (position < 0) continue
+                val column = position / 7
+                val row = position % 7
+                if (column >= weeks) continue
+                plotCommands += cell(column, row, spec.colorScale.colorFor(day.value))
+            }
+
+            val labelColor = ChartColor(0xFF57606A)
+            spec.weekdayLabels.take(7).forEachIndexed { row, label ->
+                if (label.isNotEmpty()) {
+                    val centerY = plotBounds.top + row * cellHeight + cellHeight / 2.0
+                    overlayCommands += DrawCommand.Text(text = label, position = OffsetD(bounds.canvasBounds.left + 2.0, centerY - 6.0), color = labelColor)
+                }
+            }
+            spec.monthLabels.forEach { month ->
+                if (month.weekIndex in 0 until weeks) {
+                    val x = plotBounds.left + month.weekIndex * cellWidth
+                    overlayCommands += DrawCommand.Text(text = month.label, position = OffsetD(x, plotBounds.top - 14.0), color = labelColor)
+                }
+            }
+        }
+
+        return CalendarHeatmapChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = ChartReservedRegions(spec.contentPadding, null, null, null),
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
                 ),
         )
     }

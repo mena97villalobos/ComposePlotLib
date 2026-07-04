@@ -14,6 +14,10 @@ public final class com/mena97villalobos/composeplotlib/chart/BulletChartKt {
 	public static final fun BulletChart (Lcom/mena97villalobos/composeplotlib/core/spec/BulletChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/CalendarHeatmapChartKt {
+	public static final fun CalendarHeatmapChart (Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/CandlestickChartKt {
 	public static final fun CandlestickChart (Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;III)V
 }
@@ -373,6 +377,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartViewportsKt {
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/BoxPlotChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/BubbleChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/BulletChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/FunnelChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;

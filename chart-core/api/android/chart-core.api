@@ -240,6 +240,17 @@ public final class com/mena97villalobos/composeplotlib/core/layout/BulletChartPl
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/layout/CalendarHeatmapChartPlan {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;)Lcom/mena97villalobos/composeplotlib/core/layout/CalendarHeatmapChartPlan;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/CalendarHeatmapChartPlan;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/CalendarHeatmapChartPlan;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan {
 	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Ljava/util/List;)V
 	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -309,6 +320,7 @@ public final class com/mena97villalobos/composeplotlib/core/layout/ChartPlanner 
 	public final fun planBoxPlotChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/BoxPlotChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/BoxPlotChartPlan;
 	public static synthetic fun planBoxPlotChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/BoxPlotChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/BoxPlotChartPlan;
 	public final fun planBulletChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/BulletChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/BulletChartPlan;
+	public final fun planCalendarHeatmapChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/CalendarHeatmapChartPlan;
 	public final fun planCandlestickChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;
 	public static synthetic fun planCandlestickChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/CandlestickChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/CandlestickChartPlan;
 	public final fun planCombinedCartesianChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/CombinedCartesianChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;ZLcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/CombinedCartesianChartPlan;
@@ -2341,6 +2353,70 @@ public final class com/mena97villalobos/composeplotlib/core/spec/BulletChartSpec
 	public final fun getTargetThicknessPx ()D
 	public final fun getValue ()D
 	public final fun getValueFormatter ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapDay {
+	public fun <init> (ID)V
+	public final fun component1 ()I
+	public final fun component2 ()D
+	public final fun copy (ID)Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapDay;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapDay;IDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapDay;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDayIndex ()I
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpec {
+	public fun <init> (Ljava/util/List;ILjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapColorScale;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLjava/util/List;Ljava/util/List;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;ILjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapColorScale;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLjava/util/List;Ljava/util/List;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun component12 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component2 ()I
+	public final fun component3 ()Ljava/lang/Integer;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapColorScale;
+	public final fun component5 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component6 ()D
+	public final fun component7 ()D
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;ILjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapColorScale;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLjava/util/List;Ljava/util/List;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpec;Ljava/util/List;ILjava/lang/Integer;Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapColorScale;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLjava/util/List;Ljava/util/List;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun getCellCornerRadiusPx ()D
+	public final fun getCellGapPx ()D
+	public final fun getColorScale ()Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapColorScale;
+	public final fun getContentPadding ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun getDays ()Ljava/util/List;
+	public final fun getEmptyCellColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getMonthLabels ()Ljava/util/List;
+	public final fun getStartWeekday ()I
+	public final fun getWeekCount ()Ljava/lang/Integer;
+	public final fun getWeekdayLabels ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpecKt {
+	public static final fun resolvedWeekCount (Lcom/mena97villalobos/composeplotlib/core/spec/CalendarHeatmapSpec;)I
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/CalendarMonthLabel {
+	public fun <init> (ILjava/lang/String;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (ILjava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/CalendarMonthLabel;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/CalendarMonthLabel;ILjava/lang/String;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/CalendarMonthLabel;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getWeekIndex ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
