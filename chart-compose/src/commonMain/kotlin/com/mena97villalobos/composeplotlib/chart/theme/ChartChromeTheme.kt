@@ -1,5 +1,6 @@
 package com.mena97villalobos.composeplotlib.chart.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -34,8 +35,12 @@ data class ChartChromeTheme(
     val layerCompositingForTranslucentGroups: Boolean = false,
 ) {
     companion object {
-        /** Neutral defaults when no Material theme is available (e.g. tests). */
+        /** Neutral defaults when no Material theme is available (e.g. tests). Alias of [Light]. */
         val Default: ChartChromeTheme
+            get() = Light
+
+        /** Light-mode preset: soft light-gray plot border, no legend panel fill. Material-theme-independent. */
+        val Light: ChartChromeTheme
             get() =
                 ChartChromeTheme(
                     plotBorderColor = Color(0xFFE0E0E0),
@@ -48,8 +53,33 @@ data class ChartChromeTheme(
                     clipLegendToLegendBounds = true,
                     layerCompositingForTranslucentGroups = false,
                 )
+
+        /** Dark-mode preset: translucent-white plot border and a subtle translucent legend panel. */
+        val Dark: ChartChromeTheme
+            get() =
+                ChartChromeTheme(
+                    plotBorderColor = Color(0x33FFFFFF),
+                    plotBorderStrokeWidthPx = 1f,
+                    legendBackgroundColor = Color(0x1FFFFFFF),
+                    legendBorderColor = Color(0x33FFFFFF),
+                    legendBorderStrokeWidthPx = 1f,
+                    legendCornerRadiusPx = 6f,
+                    clipCanvasToCanvasBounds = true,
+                    clipLegendToLegendBounds = true,
+                    layerCompositingForTranslucentGroups = false,
+                )
     }
 }
+
+/**
+ * Picks a [ChartChromeTheme] preset by mode: [ChartChromeTheme.Dark] when [darkTheme] (defaults to the system
+ * setting via [isSystemInDarkTheme]), else [ChartChromeTheme.Light]. Unlike [chartChromeTheme] (which derives
+ * chrome from the ambient `MaterialTheme.colorScheme`), this uses the fixed light/dark presets — handy when a chart
+ * is not inside a Material theme or you want mode-fixed chrome.
+ */
+@Composable
+@ReadOnlyComposable
+fun chartChromeThemeAuto(darkTheme: Boolean = isSystemInDarkTheme()): ChartChromeTheme = if (darkTheme) ChartChromeTheme.Dark else ChartChromeTheme.Light
 
 /**
  * Material 3–aware chrome: subtle plot outline, soft legend panel, and safe clipping.

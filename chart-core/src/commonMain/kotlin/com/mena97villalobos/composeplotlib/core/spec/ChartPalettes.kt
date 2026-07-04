@@ -1,6 +1,7 @@
 package com.mena97villalobos.composeplotlib.core.spec
 
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
+import com.mena97villalobos.composeplotlib.core.model.lighten
 import kotlin.math.floor
 
 /**
@@ -84,6 +85,16 @@ object ChartPalettes {
         val i = ((index % palette.size) + palette.size) % palette.size
         return palette[i]
     }
+
+    /**
+     * Adapts a categorical [palette] for a **dark background** by tinting each color toward white by [amount]
+     * (`0..1`), so the mid-tone qualitative defaults keep enough contrast to read. The planner does not shift
+     * series colors on its own; pass the result into your specs when rendering on a dark surface.
+     */
+    fun forDarkBackground(
+        palette: List<ChartColor>,
+        amount: Double = 0.2,
+    ): List<ChartColor> = palette.map { it.lighten(amount) }
 
     private fun paletteOf(vararg argb: Long): List<ChartColor> = argb.map { ChartColor(it) }
 }

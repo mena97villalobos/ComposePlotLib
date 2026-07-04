@@ -573,11 +573,14 @@ public final class com/mena97villalobos/composeplotlib/chart/theme/ChartChromeTh
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme$Companion {
+	public final fun getDark ()Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;
 	public final fun getDefault ()Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;
+	public final fun getLight ()Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/theme/ChartChromeThemeKt {
 	public static final fun chartChromeTheme (Landroidx/compose/runtime/Composer;I)Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;
+	public static final fun chartChromeThemeAuto (ZLandroidx/compose/runtime/Composer;II)Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/theme/MaterialChartPalette {

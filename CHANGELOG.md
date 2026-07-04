@@ -146,6 +146,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   `CalendarHeatmapDay` / `CalendarMonthLabel`: a GitHub-contribution-style week-column × weekday-row grid colored
   via the shared `HeatmapColorScale`. Callers pass 0-based `dayIndex` offsets (KMP-safe, no date library) with
   optional weekday and month labels. Read-only.
+- **Light/dark theming presets + dark-aware palettes** — `ChartChromeTheme.Light` / `.Dark` presets and
+  `chartChromeThemeAuto(darkTheme = isSystemInDarkTheme())` give mode-fixed chrome independent of `MaterialTheme`;
+  `ChartColor.lighten(fraction)` / `.darken(fraction)` and `ChartPalettes.forDarkBackground(palette, amount)` tint
+  categorical data colors for legibility on dark surfaces (the planner still does not auto-shift series colors).
 
 ### Changed
 

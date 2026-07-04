@@ -1545,6 +1545,11 @@ public final class com/mena97villalobos/composeplotlib/core/model/ChartColor$Com
 	public final fun rgb (III)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/model/ChartColorShadesKt {
+	public static final fun darken (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;D)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public static final fun lighten (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;D)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/model/ChartPoint {
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/model/ChartPoint$Companion;
 	public fun <init> (DDLcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;)V
@@ -2624,6 +2629,8 @@ public final class com/mena97villalobos/composeplotlib/core/spec/ChartLiveRegion
 public final class com/mena97villalobos/composeplotlib/core/spec/ChartPalettes {
 	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/spec/ChartPalettes;
 	public final fun cyclic (Ljava/util/List;I)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun forDarkBackground (Ljava/util/List;D)Ljava/util/List;
+	public static synthetic fun forDarkBackground$default (Lcom/mena97villalobos/composeplotlib/core/spec/ChartPalettes;Ljava/util/List;DILjava/lang/Object;)Ljava/util/List;
 	public final fun getCategory10 ()Ljava/util/List;
 	public final fun getColorblindSafe ()Ljava/util/List;
 	public final fun getTableau10 ()Ljava/util/List;

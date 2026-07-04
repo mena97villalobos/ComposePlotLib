@@ -30,6 +30,8 @@ The current public surface is intentionally small.
 
 **Markers:** `ChartMarkerPlacement` / `ChartMarkerContainment` (`PlotBounds` default) control flip/slide tooltip placement inside the layout plan; optional **`ChartMarkerCalloutLeader`** draws an elbow (default) or **`ChartMarkerCustomCallout`** polyline from the anchor to the marker box; **`nudgeAxisAlignedRectToAvoidOverlap`** / **`stackAxisAlignedRectBelow`** help lay out multiple overlay boxes in chart pixels. See **`docs/marker-tooltip-placement.md`**. `DefaultChartMarker` supports optional outline and hiding label rows.
 
+**Theming presets:** `ChartChromeTheme.Light` / `.Dark` + `chartChromeThemeAuto(darkTheme = isSystemInDarkTheme())` for mode-fixed chrome (vs the Material-derived `chartChromeTheme()`); `ChartColor.lighten` / `.darken` and `ChartPalettes.forDarkBackground(palette)` adapt categorical data colors for dark backgrounds.
+
 **Theming:** Data colors and strokes use **`ChartColor`** and style types on specs (`LineStyle`, `BarStyle`, …); plot frame and legend chrome use optional **`ChartChromeTheme`** / `chartChromeTheme()`. Map **`MaterialTheme`** tokens into specs with **`materialChartPalette()`** (includes `surface` / `surfaceVariant` / `primaryFixed` / `secondaryFixed`) / **`Color.toChartColor()`**, or use **`withMaterialSeriesColors`** / **`withMaterialGroupColors`** / **`withMaterialScatterSeriesColors`** (`chart-compose` `theme/`). See **`docs/style-and-theme.md`**.
 
 ### State
