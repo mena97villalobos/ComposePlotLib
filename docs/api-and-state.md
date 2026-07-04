@@ -46,6 +46,7 @@ The current public surface is intentionally small.
 - `ChartSelectionState`
 - `rememberChartViewportState(...)` — optional `ViewportConstraints` and `ViewportAxisPolicy`; see `docs/viewport-configuration.md`
 - `rememberChartSelectionState()`
+- `rememberProgressiveReveal(total, pointsPerFrame, key)` → `Int` — **progressive rendering**: a growing prefix length (a chunk per frame) so a very large series draws in without one blocking frame; slice your data to it.
 - `rememberChartDrillState(root)` → `ChartDrillState<T>` — a **drill-down** back-stack (`drillDown` / `drillUp` / `reset`, plus `current` / `path` / `depth` / `canDrillUp`); wire a chart's selection to `drillDown` and build each level's spec from `current`.
 - `SyncChartViewports(vararg states, axis = ChartSyncAxis.X)` — composable that keeps a group of `ChartViewportState`s aligned on the chosen `ChartSyncAxis` (`X` / `Y` / `Both`); panning/zooming any member mirrors the shared axis onto the others (`syncId`-style linked pan/zoom for dashboards). Each follower clamps to its own domain; link selection/tooltips by sharing one `ChartSelectionState`.
 - `rememberChartCaptureController()` + `Modifier.chartCaptureTarget(controller)` — raster **PNG export**: the modifier records the chart into a `GraphicsLayer`, and `controller.capturePng()` / `controller.captureImageBitmap()` snapshot exactly what was drawn (markers/overlays included). Encoding is the `expect`/`actual` `ImageBitmap.encodeToChartPng()` (Android `Bitmap.compress`, iOS Skia).

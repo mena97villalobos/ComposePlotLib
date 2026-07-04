@@ -521,6 +521,10 @@ public final class com/mena97villalobos/composeplotlib/chart/state/ChartDrillSta
 	public static final fun rememberChartDrillState (Ljava/lang/Object;Landroidx/compose/runtime/Composer;I)Lcom/mena97villalobos/composeplotlib/chart/state/ChartDrillState;
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/state/ChartProgressiveRevealKt {
+	public static final fun rememberProgressiveReveal (IILjava/lang/Object;Landroidx/compose/runtime/Composer;II)I
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/state/ChartSelectionState {
 	public static final field $stable I
 	public fun <init> ()V

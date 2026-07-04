@@ -47,6 +47,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsS
 import com.mena97villalobos.composeplotlib.samples.android.screens.ParallelCoordinatesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PolarChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.ProgressiveRenderShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadialBarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RangeBrushShowcaseScreen
@@ -211,6 +212,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.BrokenAxis ->
                     Column(detailModifier) {
                         BrokenAxisShowcaseScreen()
+                    }
+                ShowcaseDestination.Progressive ->
+                    Column(detailModifier) {
+                        ProgressiveRenderShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -427,6 +432,12 @@ private fun ShowcaseHomeScreen(
             Text("Broken axis")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Progressive) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Progressive rendering")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -497,6 +508,7 @@ private enum class ShowcaseDestination(
     Violin("Violin"),
     DrillDown("Drill-down"),
     BrokenAxis("Broken axis"),
+    Progressive("Progressive rendering"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

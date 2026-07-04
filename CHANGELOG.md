@@ -198,6 +198,9 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   intervals to a small fraction of their length via a piecewise `AxisValueTransform` (the same scale seam as
   Log/SymLog), so widely separated clusters share one plot; ticks inside a break are dropped. Works on any cartesian
   family — set it on `AxisSpec.scale`.
+- **Progressive / frame-chunked rendering** — `rememberProgressiveReveal(total, pointsPerFrame, key)` grows the drawn
+  prefix of a very large series by a chunk each frame (`withFrameNanos`) so no single frame plans the whole set (a
+  smooth draw-in); complements decimation and the plot-width pixel budget.
 
 ### Changed
 

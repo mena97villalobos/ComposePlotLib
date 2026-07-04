@@ -49,8 +49,8 @@ summary yet.**
 
 **Analytics:** financial technical indicators (`TechnicalIndicators`: SMA / EMA / RSI / MACD / Bollinger), fitted trendlines, and the accessible data-table / narrative surfaces.
 
-**Performance:** viewport windowing → pixel clip, Uniform / MinMaxY decimation, plot-width pixel budget,
-tick-value reuse, grid-line cache.
+**Performance:** viewport windowing → pixel clip, Uniform / MinMaxY / LTTB decimation, plot-width pixel budget,
+progressive frame-chunked reveal (`rememberProgressiveReveal`), tick-value reuse, grid-line cache.
 
 **Platforms:** Kotlin Multiplatform — `androidTarget`, `iosArm64`, `iosSimulatorArm64` for both `chart-core`
 and `chart-compose`; JVM target on `chart-core` for tests/tooling. iOS is supported **as a library only**
@@ -215,7 +215,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | ~~LTTB decimation option (see 4.6)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `LineDecimationStrategy.Lttb`. |
-| Progressive / frame-chunked rendering for very large sets | P3 | L | moderate | Helps million-point cases; interacts with the animation/gesture loop. |
+| ~~Progressive / frame-chunked rendering for very large sets~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `rememberProgressiveReveal(total, pointsPerFrame, key)` grows the drawn prefix by a chunk per frame (`withFrameNanos`) so no single frame plans the whole set; complements decimation + the pixel budget. |
 | ~~GPU/batch boost renderer~~ ⏸️ | ~~P3~~ | XL | weak | **Won't do:** Compose Canvas has no cross-platform GPU batch path; decimation (`Uniform` / `MinMaxY` / `Lttb`) + the plot-width pixel budget are the pragmatic substitute. |
 
 ### 4.12 Platform-specific
