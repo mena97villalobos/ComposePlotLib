@@ -167,6 +167,9 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Circle-packing / bubble-pack family** — `CirclePackChart` composable + `CirclePackChartSpec` / `CirclePackNode`:
   non-overlapping circles whose area encodes value, placed by a greedy tangent packing and fit to the plot
   (`circlePackLayout` / `fitPackedCircles` in `chart-core`). Single-level (flat), read-only.
+- **Parallel coordinates chart family** — `ParallelCoordinatesChart` composable + `ParallelCoordinatesChartSpec` /
+  `ParallelAxis` / `ParallelSeries`: several vertical axes (each with its own range) and one polyline per record
+  connecting its value on every axis. Optional series legend. Read-only.
 
 ### Changed
 

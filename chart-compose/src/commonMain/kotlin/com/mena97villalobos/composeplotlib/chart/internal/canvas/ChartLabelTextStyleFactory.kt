@@ -18,6 +18,7 @@ import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LegendStyle
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ParallelCoordinatesChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec
@@ -151,6 +152,16 @@ internal fun chartLabelTextStyles(
     // Circle-packing draws circle labels via the axis text slot.
     val y = MaterialTheme.typography.labelSmall
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: ParallelCoordinatesChartSpec): ChartLabelTextStyles {
+    // Parallel coordinates draws axis labels + an optional series legend.
+    val typo = MaterialTheme.typography
+    val legend = legendStyleFrom(typo, spec.legend.style)
+    val y = typo.labelSmall
+    return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = legend, pieSliceLabel = legend, yAxisSecondaryTick = y)
 }
 
 @Composable

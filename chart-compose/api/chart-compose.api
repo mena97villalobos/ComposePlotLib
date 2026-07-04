@@ -385,6 +385,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartViewportsKt {
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/GaugeChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/ParallelCoordinatesChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/RadarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
@@ -422,6 +423,10 @@ public final class com/mena97villalobos/composeplotlib/chart/LineChartKt {
 public final class com/mena97villalobos/composeplotlib/chart/MarkerRectOverlapKt {
 	public static final fun nudgeAxisAlignedRectToAvoidOverlap (Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;D)Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
 	public static final fun stackAxisAlignedRectBelow (Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;DDD)Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/ParallelCoordinatesChartKt {
+	public static final fun ParallelCoordinatesChart (Lcom/mena97villalobos/composeplotlib/core/spec/ParallelCoordinatesChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/PieChartKt {

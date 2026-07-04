@@ -374,6 +374,7 @@ public final class com/mena97villalobos/composeplotlib/core/layout/ChartPlanner 
 	public static synthetic fun planHeatmapChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/HeatmapChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/HeatmapChartPlan;
 	public final fun planLineChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/LineChartPlan;
 	public static synthetic fun planLineChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/LineChartPlan;
+	public final fun planParallelCoordinatesChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/ParallelCoordinatesChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/ParallelCoordinatesChartPlan;
 	public final fun planPieChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;)Lcom/mena97villalobos/composeplotlib/core/layout/PieChartPlan;
 	public final fun planRadarChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/RadarChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;)Lcom/mena97villalobos/composeplotlib/core/layout/RadarChartPlan;
 	public final fun planRadialBarChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/RadialBarChartPlan;
@@ -792,6 +793,17 @@ public final class com/mena97villalobos/composeplotlib/core/layout/PackedCircle 
 	public final fun getCenterX ()D
 	public final fun getCenterY ()D
 	public final fun getRadius ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/ParallelCoordinatesChartPlan {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;)Lcom/mena97villalobos/composeplotlib/core/layout/ParallelCoordinatesChartPlan;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/ParallelCoordinatesChartPlan;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/ParallelCoordinatesChartPlan;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -3419,6 +3431,67 @@ public final class com/mena97villalobos/composeplotlib/core/spec/MarkerShape : j
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
 	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/MarkerShape;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/ParallelAxis {
+	public fun <init> (Ljava/lang/String;DD)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()D
+	public final fun component3 ()D
+	public final fun copy (Ljava/lang/String;DD)Lcom/mena97villalobos/composeplotlib/core/spec/ParallelAxis;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/ParallelAxis;Ljava/lang/String;DDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/ParallelAxis;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getMax ()D
+	public final fun getMin ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/ParallelCoordinatesChartSpec {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/util/List;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component5 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component6 ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
+	public final fun component7 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun component8 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun copy (Ljava/util/List;Ljava/util/List;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/ParallelCoordinatesChartSpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/ParallelCoordinatesChartSpec;Ljava/util/List;Ljava/util/List;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/ParallelCoordinatesChartSpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun getAxes ()Ljava/util/List;
+	public final fun getAxisColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getAxisLabelColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getContentPadding ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLegend ()Lcom/mena97villalobos/composeplotlib/core/spec/LegendSpec;
+	public final fun getSeries ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/ParallelSeries {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;D)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component5 ()D
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;D)Lcom/mena97villalobos/composeplotlib/core/spec/ParallelSeries;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/ParallelSeries;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/ParallelSeries;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getStrokeWidth ()D
+	public final fun getValues ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/PieChartSpec {

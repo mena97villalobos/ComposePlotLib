@@ -41,6 +41,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.ImageExportSh
 import com.mena97villalobos.composeplotlib.samples.android.screens.IndicatorsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.ParallelCoordinatesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadialBarChartShowcaseScreen
@@ -181,6 +182,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.CirclePack ->
                     Column(detailModifier) {
                         CirclePackChartShowcaseScreen()
+                    }
+                ShowcaseDestination.ParallelCoordinates ->
+                    Column(detailModifier) {
+                        ParallelCoordinatesShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -361,6 +366,12 @@ private fun ShowcaseHomeScreen(
             Text("Circle packing")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.ParallelCoordinates) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Parallel coordinates")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -425,6 +436,7 @@ private enum class ShowcaseDestination(
     Treemap("Treemap"),
     Sunburst("Sunburst"),
     CirclePack("Circle packing"),
+    ParallelCoordinates("Parallel coordinates"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

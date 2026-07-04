@@ -59,6 +59,8 @@ import com.mena97villalobos.composeplotlib.core.spec.LineInterpolation
 import com.mena97villalobos.composeplotlib.core.spec.LineRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineStyle
 import com.mena97villalobos.composeplotlib.core.spec.MarkerShape
+import com.mena97villalobos.composeplotlib.core.spec.ParallelAxis
+import com.mena97villalobos.composeplotlib.core.spec.ParallelCoordinatesChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec
@@ -941,6 +943,90 @@ object ChartPlanner {
                     legendEntries = emptyList(),
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = emptyList(),
+                ),
+        )
+    }
+
+    /**
+     * Parallel coordinates: draws one vertical axis per [ParallelCoordinatesChartSpec.axes] entry and one polyline
+     * per [ParallelCoordinatesChartSpec.series], connecting each series' value on every axis (each axis normalized to
+     * its own `[min, max]`). Read-only (no selection / brushing in v1).
+     */
+    fun planParallelCoordinatesChart(
+        input: ChartLayoutInput,
+        spec: ParallelCoordinatesChartSpec,
+    ): ParallelCoordinatesChartPlan {
+        val labelScale = input.labelLayoutScale.normalizedLabelLayoutScale()
+        val bounds = input.toPlanningBounds()
+        val legendEntries =
+            buildLegendEntries(
+                labels = spec.series.map { it.label to it.color },
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                textMeasurements = input.textMeasurements,
+                legendSpec = spec.legend,
+                labelLayoutScale = labelScale,
+            )
+        val reserved =
+            buildReservedRegions(
+                canvasBounds = bounds.canvasBounds,
+                minimumInsets = spec.contentPadding,
+                xTickLabels = emptyList(),
+                yTickLabels = emptyList(),
+                legendEntries = legendEntries,
+                textMeasurements = input.textMeasurements,
+                xAxisEnabled = false,
+                yAxisEnabled = false,
+                labelLayoutScale = labelScale,
+            )
+        val plotBounds = bounds.canvasBounds.inset(reserved.contentInsets)
+        val axisCount = spec.axes.size
+        val plotCommands = mutableListOf<DrawCommand>()
+        val overlayCommands = mutableListOf<DrawCommand>()
+        if (axisCount >= 1 && plotBounds.width > 0.0 && plotBounds.height > 0.0) {
+            fun axisX(index: Int): Double = if (axisCount == 1) (plotBounds.left + plotBounds.right) / 2.0 else plotBounds.left + index * plotBounds.width / (axisCount - 1)
+
+            fun yFor(
+                axis: ParallelAxis,
+                value: Double,
+            ): Double {
+                val span = axis.max - axis.min
+                val fraction = if (span == 0.0) 0.5 else ((value - axis.min) / span).coerceIn(0.0, 1.0)
+                return plotBounds.bottom - fraction * plotBounds.height
+            }
+
+            for (series in spec.series) {
+                val points =
+                    spec.axes.indices.mapNotNull { i ->
+                        val value = series.values.getOrNull(i) ?: return@mapNotNull null
+                        if (!value.isFinite()) return@mapNotNull null
+                        OffsetD(axisX(i), yFor(spec.axes[i], value))
+                    }
+                if (points.size >= 2) {
+                    plotCommands += DrawCommand.Polyline(points = points, color = series.color, strokeWidth = series.strokeWidth)
+                }
+            }
+            spec.axes.forEachIndexed { i, axis ->
+                val x = axisX(i)
+                overlayCommands +=
+                    DrawCommand.Line(start = OffsetD(x, plotBounds.top), end = OffsetD(x, plotBounds.bottom), color = spec.axisColor, strokeWidth = 1.0)
+                if (axis.label.isNotEmpty()) {
+                    overlayCommands +=
+                        DrawCommand.Text(text = axis.label, position = OffsetD(x - axis.label.length * 3.0, plotBounds.bottom + 6.0), color = spec.axisLabelColor)
+                }
+            }
+        }
+        return ParallelCoordinatesChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = reserved,
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = legendEntries,
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
                 ),
         )
     }
