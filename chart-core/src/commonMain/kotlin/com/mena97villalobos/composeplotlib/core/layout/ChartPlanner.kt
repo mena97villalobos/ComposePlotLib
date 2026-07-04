@@ -4249,6 +4249,7 @@ object ChartPlanner {
         selection: ChartSelection?,
         reserveRightYAxisSpace: Boolean = true,
         tickValuePass: TickValuePass? = null,
+        secondaryYOverride: ClosedRangeD? = null,
     ): CombinedCartesianChartPlan {
         require(spec.layers.isNotEmpty()) { "CombinedCartesianChartSpec.layers must not be empty" }
         val needsSecondary = spec.layers.any { it.yAxisBinding == CombinedCartesianYAxisBinding.SecondaryY }
@@ -4260,7 +4261,7 @@ object ChartPlanner {
         val ySecSpec = spec.yAxisSecondary
         val secondaryViewport =
             if (needsSecondary && ySecSpec != null) {
-                combinedSecondaryViewport(input.viewport, spec)
+                combinedSecondaryViewport(input.viewport, spec, secondaryYOverride)
             } else {
                 null
             }
@@ -4586,7 +4587,11 @@ object ChartPlanner {
     private fun combinedSecondaryViewport(
         primaryViewport: ChartViewport,
         spec: CombinedCartesianChartSpec,
+        override: ClosedRangeD? = null,
     ): ChartViewport {
+        if (override != null) {
+            return ChartViewport(xRange = primaryViewport.xRange, yRange = override)
+        }
         val ys = ArrayList<Double>()
         for (layer in spec.layers) {
             if (layer.yAxisBinding != CombinedCartesianYAxisBinding.SecondaryY) continue

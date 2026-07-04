@@ -552,16 +552,21 @@ public final class com/mena97villalobos/composeplotlib/chart/state/ChartViewport
 	public final fun getConstraints ()Lcom/mena97villalobos/composeplotlib/core/viewport/ViewportConstraints;
 	public final fun getDomain ()Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public final fun getLastViewportChangeOrigin ()Lcom/mena97villalobos/composeplotlib/chart/state/ViewportChangeOrigin;
+	public final fun getSecondaryYViewport ()Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;
 	public final fun getViewport ()Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public final fun getViewportState ()Lcom/mena97villalobos/composeplotlib/core/viewport/ViewportState;
 	public final fun pan (DDLcom/mena97villalobos/composeplotlib/chart/state/ViewportChangeOrigin;)V
 	public static synthetic fun pan$default (Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;DDLcom/mena97villalobos/composeplotlib/chart/state/ViewportChangeOrigin;ILjava/lang/Object;)V
+	public final fun panSecondaryY (D)V
 	public final fun panTo (DD)V
 	public final fun reset ()V
+	public final fun resetSecondaryY ()V
 	public final fun updateAxisPolicy (Lcom/mena97villalobos/composeplotlib/core/viewport/ViewportAxisPolicy;)V
 	public final fun updateConstraints (Lcom/mena97villalobos/composeplotlib/core/viewport/ViewportConstraints;)V
+	public final fun updateSecondaryYViewport (Lcom/mena97villalobos/composeplotlib/core/range/ClosedRangeD;)V
 	public final fun zoom (DDDDLcom/mena97villalobos/composeplotlib/chart/state/ViewportChangeOrigin;)V
 	public static synthetic fun zoom$default (Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;DDDDLcom/mena97villalobos/composeplotlib/chart/state/ViewportChangeOrigin;ILjava/lang/Object;)V
+	public final fun zoomSecondaryY (DD)V
 	public final fun zoomTo (DDDD)V
 }
 

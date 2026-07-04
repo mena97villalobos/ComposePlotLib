@@ -201,6 +201,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Progressive / frame-chunked rendering** — `rememberProgressiveReveal(total, pointsPerFrame, key)` grows the drawn
   prefix of a very large series by a chunk each frame (`withFrameNanos`) so no single frame plans the whole set (a
   smooth draw-in); complements decimation and the plot-width pixel budget.
+- **Independent secondary-Y channel** — `ChartViewportState.secondaryYViewport` (with `updateSecondaryYViewport` /
+  `panSecondaryY` / `zoomSecondaryY` / `resetSecondaryY`): `CombinedCartesianChart` uses it to scale its right axis
+  independently of the primary axes when set; `null` (default) keeps the data-derived behavior. `planCombinedCartesianChart`
+  gained a trailing `secondaryYOverride` parameter.
 
 ### Changed
 

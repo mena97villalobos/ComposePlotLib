@@ -125,6 +125,7 @@ fun CombinedCartesianChart(
             fontScale,
             needsSecondaryReserve,
             cartesianTickPass,
+            viewportState.secondaryYViewport,
         ) {
             if (canvasSize == SizeD.Zero) {
                 null
@@ -138,6 +139,7 @@ fun CombinedCartesianChart(
                         selection = selectionState.selection,
                         reserveRightYAxisSpace = false,
                         tickValuePass = cartesianTickPass,
+                        secondaryYOverride = viewportState.secondaryYViewport,
                     )
                 val secondaryLabels = preliminary.yTicksSecondary.map { it.label }
                 val measured =
@@ -160,6 +162,7 @@ fun CombinedCartesianChart(
                     selection = selectionState.selection,
                     reserveRightYAxisSpace = needsSecondaryReserve,
                     tickValuePass = cartesianTickPass,
+                    secondaryYOverride = viewportState.secondaryYViewport,
                 )
             }
         }

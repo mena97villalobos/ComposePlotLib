@@ -184,6 +184,43 @@ class ChartViewportState(
     fun fitToData() {
         reset()
     }
+
+    /**
+     * Optional **independent secondary-Y** window for [com.mena97villalobos.composeplotlib.chart.CombinedCartesianChart]:
+     * when non-null it overrides the chart's data-derived secondary-Y scale, so the right axis can pan/zoom
+     * independently of the primary axes. `null` (default) keeps the auto (data-derived) behavior.
+     */
+    var secondaryYViewport: ClosedRangeD? by mutableStateOf(null)
+        private set
+
+    /** Sets (or clears with `null`) the independent [secondaryYViewport]. */
+    fun updateSecondaryYViewport(range: ClosedRangeD?) {
+        lastViewportChangeOrigin = ViewportChangeOrigin.Programmatic
+        secondaryYViewport = range
+    }
+
+    /** Pans the [secondaryYViewport] by [delta] domain units; a no-op until a range is established. */
+    fun panSecondaryY(delta: Double) {
+        val current = secondaryYViewport ?: return
+        lastViewportChangeOrigin = ViewportChangeOrigin.Programmatic
+        secondaryYViewport = current.translate(delta)
+    }
+
+    /** Zooms the [secondaryYViewport] about [pivot] (`scale > 1` zooms in); a no-op until a range is established. */
+    fun zoomSecondaryY(
+        scale: Double,
+        pivot: Double,
+    ) {
+        val current = secondaryYViewport ?: return
+        lastViewportChangeOrigin = ViewportChangeOrigin.Programmatic
+        val safeScale = if (scale.isFinite() && scale > 0.0) scale else 1.0
+        secondaryYViewport = current.scaleAround(pivot, safeScale)
+    }
+
+    /** Clears the [secondaryYViewport] override, restoring data-derived (auto) secondary-Y scaling. */
+    fun resetSecondaryY() {
+        secondaryYViewport = null
+    }
 }
 
 private fun ViewportState.finish(
