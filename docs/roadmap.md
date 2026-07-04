@@ -182,7 +182,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Named sequential/diverging/categorical palettes (viridis, turbo, tableau, colorbrewer)~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `ChartPalettes` (Tableau10 / Category10 / ColorblindSafe) + `ColorGradient` (Viridis / Plasma / Turbo / RdBu / BrBG) with `colorAt`/`sample`. |
 | ~~Named light/dark theme presets + auto dark-mode adaptation~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `ChartChromeTheme.Light` / `.Dark` presets + `chartChromeThemeAuto(darkTheme = isSystemInDarkTheme())`. |
 | ~~Dark-mode-aware **data** palettes (planner does not auto-shift series colors today)~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `ChartColor.lighten` / `.darken` + `ChartPalettes.forDarkBackground(palette, amount)` (tint categorical colors for dark surfaces). |
-| Expanded gradient fills (radial, multi-stop, per-series brushes) across families | P3 | M | moderate | Style + canvas-adapter extension. |
+| ~~Expanded gradient fills (radial, multi-stop, per-series brushes) across families~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `PathDrawStyle.RadialGradientFill` + `GradientColorStop` multi-stop primitives (renderer + SVG export); per-series gradient brushes already ship (line area fills, sankey ribbons). |
 | Pattern / texture (decal) fills (colorblind-safe, print) | P3 | M | moderate | Pattern DrawCommand + shader tiling; doubles as a11y. |
 
 ### 4.8 Accessibility beyond markers

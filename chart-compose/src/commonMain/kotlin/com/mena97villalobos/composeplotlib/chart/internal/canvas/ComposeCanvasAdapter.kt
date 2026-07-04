@@ -365,6 +365,27 @@ private fun DrawScope.drawDrawCommands(
                             style = Fill,
                         )
                     }
+                    is PathDrawStyle.RadialGradientFill -> {
+                        path.fillType =
+                            when (style.fillRule) {
+                                FillRule.NonZero -> PathFillType.NonZero
+                                FillRule.EvenOdd -> PathFillType.EvenOdd
+                            }
+                        val colorStops =
+                            style.stops
+                                .map { it.offset.toFloat() to it.color.multiplyAlpha(cf).toComposeColor() }
+                                .toTypedArray()
+                        drawPath(
+                            path = path,
+                            brush =
+                                Brush.radialGradient(
+                                    colorStops = colorStops,
+                                    center = Offset(style.centerX.toFloat(), style.centerY.toFloat()),
+                                    radius = style.radius.toFloat().coerceAtLeast(0.01f),
+                                ),
+                            style = Fill,
+                        )
+                    }
                 }
             }
 

@@ -41,4 +41,17 @@ sealed interface PathDrawStyle {
         val endY: Double,
         val fillRule: FillRule = FillRule.NonZero,
     ) : PathDrawStyle
+
+    /**
+     * **Radial** multi-stop gradient fill: [stops] run from the center `([centerX], [centerY])` (offset `0`) out to
+     * [radius] (offset `1`), all in pixel space. Supports any number of color stops. Renderers build the platform
+     * radial-gradient brush.
+     */
+    data class RadialGradientFill(
+        val stops: List<GradientColorStop>,
+        val centerX: Double,
+        val centerY: Double,
+        val radius: Double,
+        val fillRule: FillRule = FillRule.NonZero,
+    ) : PathDrawStyle
 }

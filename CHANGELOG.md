@@ -179,6 +179,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   `kernelDensity(values, evalPoints, bandwidth?)`, and `silvermanBandwidth(values)` (render histograms via a bar
   chart, densities via a line chart), plus a **`ViolinChart`** family (`ViolinChartSpec` / `ViolinCategory`) drawing a
   mirrored Gaussian KDE per category with a median line. Read-only.
+- **Radial / multi-stop gradient fills** — new draw primitives `PathDrawStyle.RadialGradientFill` (center→edge,
+  pixel space) with a `GradientColorStop` list (any number of stops); rendered by the Compose canvas adapter and
+  serialized by SVG export (`<radialGradient>`). Per-series gradient brushes already ship (line area fills, sankey
+  ribbons).
 
 ### Changed
 

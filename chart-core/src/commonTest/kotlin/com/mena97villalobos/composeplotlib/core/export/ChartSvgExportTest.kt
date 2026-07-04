@@ -6,6 +6,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan
 import com.mena97villalobos.composeplotlib.core.layout.ChartReservedRegions
 import com.mena97villalobos.composeplotlib.core.layout.DrawCommand
+import com.mena97villalobos.composeplotlib.core.layout.draw.GradientColorStop
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
@@ -84,6 +85,40 @@ class ChartSvgExportTest {
         assertTrue(svg.contains("<linearGradient id=\"grad0\""))
         assertTrue(svg.contains("fill=\"url(#grad0)\""))
         assertTrue(svg.contains("M 0 0 L 10 10 Z"))
+    }
+
+    @Test
+    fun serializesRadialMultiStopGradientIntoDefs() {
+        val path =
+            DrawCommand.Path(
+                segments =
+                    listOf(
+                        PathSegment.MoveTo(OffsetD(0.0, 0.0)),
+                        PathSegment.LineTo(OffsetD(20.0, 0.0)),
+                        PathSegment.LineTo(OffsetD(20.0, 20.0)),
+                        PathSegment.Close,
+                    ),
+                style =
+                    PathDrawStyle.RadialGradientFill(
+                        stops =
+                            listOf(
+                                GradientColorStop(0.0, ChartColor(0xFFFFFFFF)),
+                                GradientColorStop(0.5, ChartColor(0xFF4E79A7)),
+                                GradientColorStop(1.0, ChartColor(0xFF1F2933)),
+                            ),
+                        centerX = 10.0,
+                        centerY = 10.0,
+                        radius = 14.0,
+                    ),
+            )
+        val svg = chartLayoutPlanToSvg(planOf(listOf(path)))
+        assertTrue(svg.contains("<radialGradient id=\"grad0\""))
+        assertTrue(svg.contains("cx=\"10\" cy=\"10\" r=\"14\""))
+        // Three stops.
+        assertTrue(svg.contains("offset=\"0\""))
+        assertTrue(svg.contains("offset=\"0.5\""))
+        assertTrue(svg.contains("offset=\"1\""))
+        assertTrue(svg.contains("fill=\"url(#grad0)\""))
     }
 
     @Test

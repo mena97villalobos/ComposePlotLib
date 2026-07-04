@@ -166,6 +166,16 @@ private fun appendPath(
             defs.append(gradientStops(style.startColor, style.endColor)).append("</linearGradient>")
             body.append("<path d=\"$d\" fill=\"url(#$id)\" ").append(fillRuleAttr(style.fillRule)).append("/>")
         }
+        is PathDrawStyle.RadialGradientFill -> {
+            val id = ids.next("grad")
+            defs.append("<radialGradient id=\"$id\" gradientUnits=\"userSpaceOnUse\" ")
+            defs.append("cx=\"${svgNum(style.centerX)}\" cy=\"${svgNum(style.centerY)}\" r=\"${svgNum(style.radius)}\">")
+            style.stops.forEach { stop ->
+                defs.append("<stop offset=\"${svgNum(stop.offset)}\" stop-color=\"${stop.color.svgHex()}\" stop-opacity=\"${svgNum(stop.color.alpha / 255.0)}\"/>")
+            }
+            defs.append("</radialGradient>")
+            body.append("<path d=\"$d\" fill=\"url(#$id)\" ").append(fillRuleAttr(style.fillRule)).append("/>")
+        }
     }
 }
 
