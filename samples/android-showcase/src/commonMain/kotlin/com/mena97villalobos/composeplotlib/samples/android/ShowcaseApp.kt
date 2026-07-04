@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BoxPlotChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.BrokenAxisShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BubbleChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BulletChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CalendarHeatmapShowcaseScreen
@@ -206,6 +207,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.DrillDown ->
                     Column(detailModifier) {
                         DrillDownShowcaseScreen()
+                    }
+                ShowcaseDestination.BrokenAxis ->
+                    Column(detailModifier) {
+                        BrokenAxisShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -416,6 +421,12 @@ private fun ShowcaseHomeScreen(
             Text("Drill-down")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.BrokenAxis) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Broken axis")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -485,6 +496,7 @@ private enum class ShowcaseDestination(
     Faceting("Faceting"),
     Violin("Violin"),
     DrillDown("Drill-down"),
+    BrokenAxis("Broken axis"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

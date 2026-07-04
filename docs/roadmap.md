@@ -32,7 +32,7 @@ bars, dual (secondary, data-derived) Y on combined charts, error bars (`ErrorBar
 bars), and fitted trendline overlays (`TrendlineSpec`: linear + moving-average, optional confidence band).
 
 **Axes & scales:** `Linear`, `Category`, `TimeEpochMillis` (UTC / fixed-offset tick policies), `Log` / `SymLog`,
-reversed axis direction (`AxisSpec.inverted`), tick-density and X-label overlap strategies. **UTC-only time.**
+reversed axis direction (`AxisSpec.inverted`), broken axis (`AxisScale.Broken`), tick-density and X-label overlap strategies. **UTC-only time.**
 
 **Interaction:** tap-select (per-family hit resolvers), pan, per-axis pinch zoom, double-tap (in / out /
 reset), fling, keyboard viewport nudge and selection roam, programmatic `ChartViewportState`, custom marker
@@ -115,7 +115,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Normalization / percent (100%) stacking for bars **and** areas~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `BarChartSpec.stackMode` (`BarStackMode.PercentOfTotal`) + `StackedAreaChartSpec.offset` (`AreaStackOffset.Expand`). |
 | More than two Y axes / N stacked axes with per-axis layer binding | P3 | M | moderate | Generalizes the combined secondary-Y seam. |
 | Independent secondary-Y pan/zoom channel | P3 | M | moderate | Needs an extra viewport channel + gesture routing. |
-| Broken axis (skip empty ranges) | P3 | M | moderate | Piecewise transform + break glyphs. |
+| ~~Broken axis (skip empty ranges)~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `AxisScale.Broken(breaks, compressionFactor)` + `AxisBreak` — a piecewise `AxisValueTransform` compresses empty domain intervals (reuses the Log/SymLog scale seam), and ticks inside a break are dropped. Works on any cartesian family. |
 | ~~IANA / DST-aware time-zone axis~~ ⏸️ | ~~P3~~ | L | weak | **Deferred beyond 1.2.0:** needs a bundled KMP time-zone database + DST-correct tick generation — heavy for the payoff. UTC / fixed-offset time remains supported. |
 
 ### 4.2 Statistical & financial families

@@ -117,6 +117,14 @@ internal fun planAxisValues(
         is AxisScale.Log -> planLogTicks(searchRange.start, searchRange.endInclusive, s.base, axis.tickCount)
         is AxisScale.SymLog ->
             planSymLogTicks(searchRange.start, searchRange.endInclusive, s.base, s.linearThreshold, axis.tickCount)
+        is AxisScale.Broken -> {
+            if (axis.tickCount < 1) {
+                emptyList()
+            } else {
+                generateNiceNumericTicks(searchRange.start, searchRange.endInclusive, axis.tickCount)
+                    .filter { value -> s.breaks.none { value > it.from && value < it.to } }
+            }
+        }
     }
 }
 
@@ -372,6 +380,7 @@ internal object TickDensityReducer {
                 if (withPolicy.size > target) subsampleSortedValues(withPolicy, target) else withPolicy
             }
             is AxisScale.Log, is AxisScale.SymLog -> subsampleSortedValues(values, target)
+            is AxisScale.Broken -> subsampleSortedValues(values, target)
         }
     }
 }

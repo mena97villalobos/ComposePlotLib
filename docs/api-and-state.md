@@ -60,6 +60,9 @@ The current public surface is intentionally small.
 - **Data (CSV / JSON):** `ChartDataTable.toCsv(delimiter, lineSeparator)` (RFC 4180) and `ChartDataTable.toJson()` over the `lineChartDataTable` / `scatterChartDataTable` / `barChartDataTable` builders — export a chart's underlying values.
 - **Vector (SVG):** `chartLayoutPlanToSvg(plan, background)` serializes any planned `ChartLayoutPlan` to a standalone SVG (shapes, paths, gradients, arcs, clips) with no DOM; `lineChartToSvg(spec, widthPx, heightPx, viewport, background)` plans a line chart headlessly and returns SVG in one call (`lineChartDataViewport(spec)` computes the default data extent).
 
+### Axes
+- `AxisScale.Broken(breaks, compressionFactor)` + `AxisBreak(from, to)` on any `AxisSpec.scale` — collapses empty domain intervals (piecewise transform; inside-break ticks dropped) so far-apart clusters share one plot.
+
 ### Analytics
 - `histogramBins(values, binCount)` (→ `HistogramBin`), `kernelDensity(values, evalPoints, bandwidth?)`, `silvermanBandwidth(values)` — `chart-core` distribution helpers (render histograms via a bar chart, densities via a line chart).
 - `TechnicalIndicators.sma / ema / rsi / macd / bollingerBands(values, …)` — index-aligned financial indicators (`null` until defined) in `chart-core`; map any result to a `LineSeries` to overlay it on a line/candlestick chart.

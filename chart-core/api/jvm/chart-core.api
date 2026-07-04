@@ -2172,6 +2172,19 @@ public final class com/mena97villalobos/composeplotlib/core/spec/AreaStackOffset
 	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/spec/AreaStackOffset;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/spec/AxisBreak {
+	public fun <init> (DD)V
+	public final fun component1 ()D
+	public final fun component2 ()D
+	public final fun copy (DD)Lcom/mena97villalobos/composeplotlib/core/spec/AxisBreak;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/AxisBreak;DDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/AxisBreak;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFrom ()D
+	public final fun getTo ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/spec/AxisLabelFormatterKt {
 	public static final fun getDefaultAxisLabelFormatter ()Lkotlin/jvm/functions/Function1;
 	public static final fun getDefaultEpochMillisAxisLabelFormatter ()Lkotlin/jvm/functions/Function1;
@@ -2206,6 +2219,20 @@ public final class com/mena97villalobos/composeplotlib/core/spec/AxisLineStyle {
 }
 
 public abstract interface class com/mena97villalobos/composeplotlib/core/spec/AxisScale {
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/AxisScale$Broken : com/mena97villalobos/composeplotlib/core/spec/AxisScale {
+	public fun <init> (Ljava/util/List;D)V
+	public synthetic fun <init> (Ljava/util/List;DILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()D
+	public final fun copy (Ljava/util/List;D)Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$Broken;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$Broken;Ljava/util/List;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/AxisScale$Broken;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBreaks ()Ljava/util/List;
+	public final fun getCompressionFactor ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/AxisScale$Category : com/mena97villalobos/composeplotlib/core/spec/AxisScale {
@@ -4623,6 +4650,23 @@ public abstract interface class com/mena97villalobos/composeplotlib/core/transfo
 	public abstract fun forward (D)D
 	public abstract fun inverse (D)D
 	public fun isIdentity ()Z
+}
+
+public final class com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Broken : com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform {
+	public fun <init> (Ljava/util/List;D)V
+	public synthetic fun <init> (Ljava/util/List;DILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()D
+	public final fun copy (Ljava/util/List;D)Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Broken;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Broken;Ljava/util/List;DILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Broken;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun forward (D)D
+	public final fun getBreaks ()Ljava/util/List;
+	public final fun getCompressionFactor ()D
+	public fun hashCode ()I
+	public fun inverse (D)D
+	public fun isIdentity ()Z
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/transform/AxisValueTransform$Companion {

@@ -194,6 +194,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   (`drillDown` / `drillUp` / `reset`; `current` / `path` / `depth` / `canDrillUp`). Wire a chart's selection to
   `drillDown` and rebuild each level's spec from `current`; pairs with `ChartViewportState.zoomTo` +
   `ChartAnimationPolicy` for animated drills.
+- **Broken axis** — `AxisScale.Broken(breaks, compressionFactor)` + `AxisBreak(from, to)`: collapses empty domain
+  intervals to a small fraction of their length via a piecewise `AxisValueTransform` (the same scale seam as
+  Log/SymLog), so widely separated clusters share one plot; ticks inside a break are dropped. Works on any cartesian
+  family — set it on `AxisSpec.scale`.
 
 ### Changed
 

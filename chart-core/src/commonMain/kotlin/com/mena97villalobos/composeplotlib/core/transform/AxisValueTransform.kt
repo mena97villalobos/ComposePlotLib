@@ -1,5 +1,6 @@
 package com.mena97villalobos.composeplotlib.core.transform
 
+import com.mena97villalobos.composeplotlib.core.spec.AxisBreak
 import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import kotlin.math.abs
 import kotlin.math.ln
@@ -78,13 +79,67 @@ sealed interface AxisValueTransform {
         }
     }
 
+    /**
+     * **Broken** mapping: identity outside [breaks]; within each break the slope drops to [compressionFactor] so the
+     * collapsed interval occupies only that fraction of its real length in scaled space. Piecewise-linear and
+     * invertible.
+     */
+    data class Broken(
+        val breaks: List<AxisBreak>,
+        val compressionFactor: Double = 0.06,
+    ) : AxisValueTransform {
+        private val f = compressionFactor.coerceIn(0.001, 1.0)
+        private val origins: DoubleArray
+        private val scaledOrigins: DoubleArray
+
+        init {
+            val sorted = breaks.filter { it.to > it.from && it.from.isFinite() && it.to.isFinite() }.sortedBy { it.from }
+            val o = ArrayList<Double>(sorted.size * 2)
+            val s = ArrayList<Double>(sorted.size * 2)
+            var offset = 0.0
+            for (b in sorted) {
+                o.add(b.from)
+                s.add(b.from - offset)
+                offset += (b.to - b.from) * (1.0 - f)
+                o.add(b.to)
+                s.add(b.to - offset)
+            }
+            origins = o.toDoubleArray()
+            scaledOrigins = s.toDoubleArray()
+        }
+
+        override fun forward(value: Double): Double = if (origins.isEmpty()) value else interpolate(value, origins, scaledOrigins)
+
+        override fun inverse(scaled: Double): Double = if (scaledOrigins.isEmpty()) scaled else interpolate(scaled, scaledOrigins, origins)
+    }
+
     companion object {
         /** The value transform implied by an [AxisScale] ([Identity] for linear / category / time). */
         fun forScale(scale: AxisScale): AxisValueTransform =
             when (scale) {
                 is AxisScale.Log -> Log(scale.base)
                 is AxisScale.SymLog -> SymLog(scale.base, scale.linearThreshold)
+                is AxisScale.Broken -> Broken(scale.breaks, scale.compressionFactor)
                 else -> Identity
             }
     }
+}
+
+/** Piecewise-linear interpolation of [x] over control points ([xs] → [ys]); slope-1 extrapolation outside the range. */
+private fun interpolate(
+    x: Double,
+    xs: DoubleArray,
+    ys: DoubleArray,
+): Double {
+    if (x <= xs.first()) return ys.first() + (x - xs.first())
+    if (x >= xs.last()) return ys.last() + (x - xs.last())
+    for (i in 0 until xs.size - 1) {
+        if (x <= xs[i + 1]) {
+            val span = xs[i + 1] - xs[i]
+            if (span <= 0.0) return ys[i + 1]
+            val t = (x - xs[i]) / span
+            return ys[i] + t * (ys[i + 1] - ys[i])
+        }
+    }
+    return ys.last()
 }

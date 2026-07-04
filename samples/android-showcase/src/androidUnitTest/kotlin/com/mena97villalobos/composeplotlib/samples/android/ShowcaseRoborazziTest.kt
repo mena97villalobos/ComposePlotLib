@@ -18,6 +18,7 @@ import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.mena97villalobos.composeplotlib.samples.android.screens.BarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BoxPlotChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.BrokenAxisShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BubbleChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.BulletChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CalendarHeatmapShowcaseScreen
@@ -442,6 +443,18 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     RangeSelectorShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun brokenAxisShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    BrokenAxisShowcaseScreen()
                 }
             }
         }

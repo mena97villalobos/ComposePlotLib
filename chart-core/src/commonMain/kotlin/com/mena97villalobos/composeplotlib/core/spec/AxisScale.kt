@@ -45,4 +45,23 @@ sealed interface AxisScale {
         val base: Double = 10.0,
         val linearThreshold: Double = 1.0,
     ) : AxisScale
+
+    /**
+     * **Broken** axis: a linear scale whose [breaks] (empty domain intervals) are compressed to a small fraction
+     * ([compressionFactor]) of their real length, so widely separated data clusters share one plot without a huge
+     * empty gap. Ticks inside a break are dropped. Breaks should be non-overlapping and within the visible range.
+     *
+     * @property breaks the domain intervals to collapse.
+     * @property compressionFactor how much of each break's real length to keep (`0..1`); default `0.06`.
+     */
+    data class Broken(
+        val breaks: List<AxisBreak>,
+        val compressionFactor: Double = 0.06,
+    ) : AxisScale
 }
+
+/** A collapsed interval `[from, to]` of a [AxisScale.Broken] axis. */
+data class AxisBreak(
+    val from: Double,
+    val to: Double,
+)
