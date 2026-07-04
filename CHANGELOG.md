@@ -187,6 +187,9 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   (`HorizontalStripes` / `VerticalStripes` / `DiagonalStripes` / `Dots` / `Grid`): a tiled decal fill over an optional
   background, clipped to the path. Rendered by the Compose canvas adapter and serialized by SVG export
   (`<pattern>`). Encodes categories by texture — a print- and colorblind-friendly alternative to hue alone.
+- **Hover interaction** — `LineChart(hoverEnabled = true)`: a mouse/stylus hover over the plot selects (highlights)
+  the nearest point without a tap and clears on exit, reusing the tap hit-resolver (no-op on touch-only devices).
+  Pairs with a `marker` for a hover tooltip. `LineChart` gained a trailing `hoverEnabled` parameter.
 
 ### Changed
 

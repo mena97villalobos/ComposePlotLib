@@ -33,6 +33,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.gesture.ChartFlingRunt
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.cartesianDoubleTapViewportEnabled
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartCartesianKeyboardViewport
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartGestures
+import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartHoverGesture
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartLineKeyboardSelectionRoam
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.chartRangeBrushGesture
 import com.mena97villalobos.composeplotlib.chart.internal.gesture.effectiveTransformFlags
@@ -52,6 +53,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.geometry.SizeD
 import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner
+import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.selection.NearestPointResolver
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineRenderSpec
@@ -78,6 +80,7 @@ import kotlin.math.max
  * @param animation optional programmatic viewport easing and marker fade-in; [ChartAnimationPolicy.respectSystemReducedMotion] is applied first
  * @param chromeTheme plot frame, legend panel, and clipping; defaults to Material-aware [chartChromeTheme]
  * @param rangeBrush optional drag-rectangle **range brush / box selection**; when non-null it replaces pan/zoom/tap with a brush that reports the selected domain region (see [ChartRangeBrush])
+ * @param hoverEnabled when true, a mouse/stylus **hover** over the plot selects (highlights) the nearest point without a tap and clears on exit (no-op on touch-only devices); pairs with a `marker` for a hover tooltip
  */
 @Composable
 fun LineChart(
@@ -95,6 +98,7 @@ fun LineChart(
     chromeTheme: ChartChromeTheme? = null,
     onLegendItemClick: ((seriesId: String) -> Unit)? = null,
     rangeBrush: ChartRangeBrush? = null,
+    hoverEnabled: Boolean = false,
 ) {
     val resolvedAnimation = resolveChartAnimationPolicy(animation)
     val morphProgress = remember { Animatable(1f) }
@@ -223,6 +227,30 @@ fun LineChart(
             invertY = effectiveSpec.yAxis.inverted,
         )
 
+    // Nearest-point selection shared by tap and hover.
+    fun resolveNearestSelection(offset: Offset): ChartSelection? {
+        val currentPlan = plan ?: return null
+        if (effectiveSpec.series.all { it.points.isEmpty() }) return null
+        val transform = brushTransform(currentPlan.layout.plotBounds)
+        val touch = OffsetD(offset.x.toDouble(), offset.y.toDouble())
+        val specForHit = effectiveSpec.withPlanningLineRenderBudget(canvasSize, currentPlan.layout.plotBounds.width)
+        return specForHit.series
+            .mapNotNull { series ->
+                val indexed = LineRenderPipeline.prepareIndexed(series.toXyPoints(), renderViewport, specForHit.lineRender)
+                if (indexed.isEmpty()) {
+                    null
+                } else {
+                    NearestPointResolver.resolveIndexed(
+                        seriesId = series.id,
+                        indexedPoints = indexed,
+                        touchPoint = touch,
+                        transform = transform,
+                        maxDistancePx = 28.0,
+                    )
+                }
+            }.minByOrNull { selectionDistance(it.pixelOffset, offset) }
+    }
+
     val markerFocusRequester = rememberChartMarkerFocusRequester()
     RequestFocusWhenChartMarkerShown(
         enabled = spec.accessibility.requestFocusOnMarker && marker != null,
@@ -255,7 +283,11 @@ fun LineChart(
                     reserveShiftDirectionKeysForSelectionRoam = spec.accessibility.keyboardSelectionRoamEnabled,
                 ).onSizeChanged { size ->
                     canvasSize = SizeD(size.width.toDouble(), size.height.toDouble())
-                }.chartRangeBrushGesture(
+                }.chartHoverGesture(
+                    enabled = hoverEnabled && !brushing,
+                    onMove = { offset -> selectionState.select(resolveNearestSelection(offset)) },
+                    onExit = { selectionState.clear() },
+                ).chartRangeBrushGesture(
                     enabled = brushing,
                     onStart = { position ->
                         brushStart = position
@@ -306,40 +338,7 @@ fun LineChart(
                                     selectionState.clear()
                                     return@chartGestures
                                 }
-                                val transform =
-                                    ChartTransform.forPlotBounds(
-                                        viewport = renderViewport,
-                                        plotBounds = currentPlan.layout.plotBounds,
-                                        xScale = effectiveSpec.xAxis.scale,
-                                        yScale = effectiveSpec.yAxis.scale,
-                                        invertX = effectiveSpec.xAxis.inverted,
-                                        invertY = effectiveSpec.yAxis.inverted,
-                                    )
-                                val touch = OffsetD(offset.x.toDouble(), offset.y.toDouble())
-                                val specForHit =
-                                    effectiveSpec.withPlanningLineRenderBudget(
-                                        canvasSize,
-                                        currentPlan.layout.plotBounds.width,
-                                    )
-                                val selection =
-                                    specForHit.series
-                                        .mapNotNull { series ->
-                                            val indexed =
-                                                LineRenderPipeline.prepareIndexed(
-                                                    series.toXyPoints(),
-                                                    renderViewport,
-                                                    specForHit.lineRender,
-                                                )
-                                            if (indexed.isEmpty()) return@mapNotNull null
-                                            NearestPointResolver.resolveIndexed(
-                                                seriesId = series.id,
-                                                indexedPoints = indexed,
-                                                touchPoint = touch,
-                                                transform = transform,
-                                                maxDistancePx = 28.0,
-                                            )
-                                        }.minByOrNull { selectionDistance(it.pixelOffset, offset) }
-                                selectionState.select(selection)
+                                selectionState.select(resolveNearestSelection(offset))
                             }
                         } else {
                             null

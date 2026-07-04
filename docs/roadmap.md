@@ -38,7 +38,7 @@ reversed axis direction (`AxisSpec.inverted`), tick-density and X-label overlap 
 reset), fling, keyboard viewport nudge and selection roam, programmatic `ChartViewportState`, custom marker
 slot, gesture presets, interactive legend toggle, crosshair / axis-pointer (`CrosshairSpec`, line/scatter),
 cross-chart viewport sync (`SyncChartViewports`, `syncId`-style linked pan/zoom), range brush / box selection
-(`ChartRangeBrush` on `LineChart`), and a range selector / minimap navigator (`ChartRangeSelector`). **No hover yet.**
+(`ChartRangeBrush` on `LineChart`), a range selector / minimap navigator (`ChartRangeSelector`), and mouse/stylus hover-select (`LineChart(hoverEnabled = true)`).
 
 **Theming:** `ChartColor` (named presets + `rgb`/`argb`/`hex`/`hsl`/`withAlpha` factories), a Material 3 palette
 bridge, per-element style classes, `ChartChromeTheme`, Heatmap/Sankey color scales.
@@ -162,7 +162,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Range brush / box selection (+ linked filtering)~~ ✅ | ~~P2~~ | L | moderate | **Shipped:** `LineChart(rangeBrush = ChartRangeBrush(...))` drag-rectangle brush → normalized `ChartRangeSelection` (domain rect) via `onBrush`, with `ChartBrushAxis.Horizontal` / `Vertical` / `Both`. Pairs with `zoomTo` for zoom-to-selection or linked filtering. |
 | ~~Range selector / minimap / brush navigator~~ ✅ | ~~P2~~ | L | moderate | **Shipped:** `ChartRangeSelector(spec, viewportState)` — a full-width overview over the pan/zoom domain with a draggable window bound to the shared `ChartViewportState` (drag body to pan, edges to zoom, outside to jump). |
 | ~~Cross-chart sync (linked selection & tooltip, `syncId`-style)~~ ✅ | ~~P2~~ | M | moderate | **Shipped:** `SyncChartViewports(...)` links a group of `ChartViewportState`s so pan/zoom on one mirrors the shared axis onto the others (`ChartSyncAxis.X` / `Y` / `Both`); linked selection/tooltips by sharing one `ChartSelectionState`. |
-| Distinct hover interaction (pointer-move highlight vs tap) | P3 | M | moderate | Adds a hover channel to gesture policies; matters for desktop/iPad. |
+| ~~Distinct hover interaction (pointer-move highlight vs tap)~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `LineChart(hoverEnabled = true)` — mouse/stylus hover selects the nearest point (clears on exit; no-op on touch), reusing the tap hit-resolver; pairs with a `marker` for a hover tooltip. |
 | Drill-down (click a mark to expand detail) | P3 | M | weak | Mostly app-level; library exposes callbacks + transitions. |
 
 ### 4.6 Realtime & data lifecycle
