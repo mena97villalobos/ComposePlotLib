@@ -30,6 +30,7 @@ import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SunburstChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ViolinChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.math.abs
@@ -105,6 +106,17 @@ fun defaultViewport(
 fun defaultViewport(
     @Suppress("UNUSED_PARAMETER") spec: PolarChartSpec,
 ): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
+
+/** [ChartViewport] for a violin chart: X spans the categories; Y spans all samples with small padding. */
+fun defaultViewport(spec: ViolinChartSpec): ChartViewport {
+    val n = spec.categories.size
+    val all = spec.categories.flatMap { it.samples }.filter { it.isFinite() }
+    if (n == 0 || all.isEmpty()) return ChartViewport(ClosedRangeD(0.0, 1.0), ClosedRangeD(0.0, 1.0))
+    val yMin = all.min()
+    val yMax = all.max()
+    val pad = ((yMax - yMin) * 0.05).coerceAtLeast(0.5)
+    return ChartViewport(ClosedRangeD(-0.5, n - 0.5), ClosedRangeD(yMin - pad, (yMax + pad).ensureSpan(yMin - pad)))
+}
 
 /** [ChartViewport] for a stacked-area chart: X across [xValues]; Y across the stacked total per its offset. */
 fun defaultViewport(spec: StackedAreaChartSpec): ChartViewport {

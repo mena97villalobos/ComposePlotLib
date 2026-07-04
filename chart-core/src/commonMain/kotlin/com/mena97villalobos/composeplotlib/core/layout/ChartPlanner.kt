@@ -82,6 +82,7 @@ import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SunburstChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ViolinChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
 import com.mena97villalobos.composeplotlib.core.spec.formatSliceLabel
@@ -89,6 +90,7 @@ import com.mena97villalobos.composeplotlib.core.spec.hasDrawableSweep
 import com.mena97villalobos.composeplotlib.core.spec.resolvedColumnAlignment
 import com.mena97villalobos.composeplotlib.core.spec.resolvedMaxValue
 import com.mena97villalobos.composeplotlib.core.spec.resolvedWeekCount
+import com.mena97villalobos.composeplotlib.core.stats.kernelDensity
 import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import com.mena97villalobos.composeplotlib.core.visible.LineRenderPipeline
@@ -2838,6 +2840,95 @@ object ChartPlanner {
         selection: ChartSelection,
         candle: PlannedCandle,
     ): Boolean = selection.target.seriesId == candle.seriesId && selection.target.pointIndex == candle.index
+
+    /**
+     * Violin: for each [ViolinChartSpec.categories] entry, a mirrored Gaussian kernel-density shape along the value
+     * (y) axis centered on the category's x slot, half-width ∝ density. Reuses the cartesian frame (categorical x).
+     * Read-only (no selection).
+     */
+    fun planViolinChart(
+        input: ChartLayoutInput,
+        spec: ViolinChartSpec,
+        tickValuePass: TickValuePass? = null,
+    ): ViolinChartPlan {
+        val categoryAxis = spec.xAxis.copy(scale = AxisScale.Category(spec.categories.map { it.label }))
+        val frame =
+            layoutCartesianFrame(
+                input = input,
+                xAxis = categoryAxis,
+                yAxis = spec.yAxis,
+                legend = LegendSpec(enabled = false),
+                contentPadding = spec.contentPadding,
+                legendLabelColors = emptyList(),
+                tickValuePass = tickValuePass,
+            )
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (spec.xAxis.showGridLines || spec.yAxis.showGridLines) {
+            plotCommands +=
+                buildGridLines(
+                    plotBounds = frame.plotBounds,
+                    xTicks = if (spec.xAxis.showGridLines) frame.xTicks else emptyList(),
+                    yTicks = if (spec.yAxis.showGridLines) frame.yTicks else emptyList(),
+                    lineStyle = spec.grid.lineStyle,
+                )
+        }
+        val resolution = spec.resolution.coerceAtLeast(2)
+        val halfSlot = (spec.violinWidth.coerceIn(0.0, 1.0)) / 2.0
+        spec.categories.forEachIndexed { index, category ->
+            val samples = category.samples.filter { it.isFinite() }
+            if (samples.size < 2) return@forEachIndexed
+            val yMin = samples.min()
+            val yMax = samples.max()
+            if (yMax <= yMin) return@forEachIndexed
+            val evalYs = (0..resolution).map { yMin + (yMax - yMin) * it / resolution }
+            val densities = kernelDensity(samples, evalYs)
+            val maxDensity = densities.max()
+            if (maxDensity <= 0.0) return@forEachIndexed
+            val halfWidths = densities.map { (it / maxDensity) * halfSlot }
+            val rightEdge = evalYs.indices.map { j -> frame.transform.toPixel(XyPoint(index + halfWidths[j], evalYs[j])) }
+            val leftEdge = evalYs.indices.reversed().map { j -> frame.transform.toPixel(XyPoint(index - halfWidths[j], evalYs[j])) }
+            val outline = rightEdge + leftEdge
+            val segments = mutableListOf<PathSegment>(PathSegment.MoveTo(outline.first()))
+            for (k in 1 until outline.size) segments.add(PathSegment.LineTo(outline[k]))
+            segments.add(PathSegment.Close)
+            plotCommands += DrawCommand.Path(segments = segments, style = PathDrawStyle.Fill(category.color))
+
+            if (spec.showMedian) {
+                val sorted = samples.sorted()
+                val median =
+                    if (sorted.size % 2 == 1) {
+                        sorted[sorted.size / 2]
+                    } else {
+                        (sorted[sorted.size / 2 - 1] + sorted[sorted.size / 2]) / 2.0
+                    }
+                val leftPixel = frame.transform.toPixel(XyPoint(index - halfSlot * 0.6, median))
+                val rightPixel = frame.transform.toPixel(XyPoint(index + halfSlot * 0.6, median))
+                plotCommands += DrawCommand.Line(start = leftPixel, end = rightPixel, color = spec.medianColor, strokeWidth = 1.5)
+            }
+        }
+
+        val overlayCommands =
+            buildAxisAndTickLabelsOverlay(
+                frame.plotBounds,
+                categoryAxis,
+                spec.yAxis,
+                frame.xTicks,
+                frame.yTicks,
+            )
+        return ViolinChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = frame.canvasBounds,
+                    plotBounds = frame.plotBounds,
+                    reservedRegions = frame.reservedRegions,
+                    xTicks = frame.xTicks,
+                    yTicks = frame.yTicks,
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
+                ),
+        )
+    }
 
     /**
      * Box-and-whisker chart: per category emits whiskers (min..q1, q3..max) with end caps, a translucent Q1–Q3 box

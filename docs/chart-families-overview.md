@@ -64,6 +64,10 @@ Cartesian composition chart: **`StackedAreaChartSpec`** holds shared **`xValues`
 
 Non-cartesian stage chart: **`FunnelChartSpec`** holds ordered **`FunnelStage`**s (`label`, `value`, optional `color`), drawn as stacked, centered trapezoids tapering from each stage's width (∝ value, widest = full plot) to the next — the classic conversion funnel. Palette-colored with optional centered labels. **Read-only** (no axes/selection/pan-zoom, like Gauge/Bullet). Compose entry: `FunnelChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
+## Violin
+
+Read-only distribution chart: **`ViolinChartSpec`** holds **`ViolinCategory`** groups (`label`, raw `samples`, `color`), each drawn as a mirrored Gaussian kernel-density shape along the value (y) axis, centered on its category x slot, with half-width proportional to the density (`kernelDensity` in `chart-core`); an optional median line. A shape-focused alternative to the box plot. Cartesian (categorical x, numeric y), **non-interactive**. Compose entry: `ViolinChart`. Related pure helpers: `histogramBins` (bin values → counts, render as a bar chart) and `kernelDensity` / `silvermanBandwidth`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Polar / wind-rose
 
 Read-only radial bar chart: **`PolarChartSpec`** holds **`PolarSector`** entries (`label`, `value`, `color`) that divide the circle into equal angular wedges, each drawn from the center with radius proportional to its value (`value / maxValue`), over optional concentric grid rings. The classic wind-rose form. **Non-interactive**. Compose entry: `PolarChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*

@@ -46,6 +46,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartS
 import com.mena97villalobos.composeplotlib.samples.android.screens.StackedAreaChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SunburstChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.TreemapChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.ViolinChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChartShowcaseScreen
 import org.junit.Rule
 import org.junit.Test
@@ -440,6 +441,18 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     RangeSelectorShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun violinChartShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    ViolinChartShowcaseScreen()
                 }
             }
         }

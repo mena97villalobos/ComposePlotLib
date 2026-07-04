@@ -19,11 +19,11 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ## 1. Current state (as of 2026-07, `1.2.0` unreleased)
 
-**Chart families (25):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+**Chart families (26):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
 `RadarChart`, `SankeyChart` (orientation, Tableau-10 palette, gradient ribbons — reworked for 1.2.0),
 `HeatmapChart`, `GaugeChart`, `CandlestickChart`, `BoxPlotChart` (Tukey five-number summaries), `WaterfallChart`
-(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), `CalendarHeatmapChart` (year/contribution grid), `TreemapChart` (squarified area tiles), `SunburstChart` (hierarchical radial), `CirclePackChart` (bubble-pack), `ParallelCoordinatesChart` (multi-axis), `PolarChart` (polar bar / wind rose), plus the axis-less
+(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), `CalendarHeatmapChart` (year/contribution grid), `TreemapChart` (squarified area tiles), `SunburstChart` (hierarchical radial), `CirclePackChart` (bubble-pack), `ParallelCoordinatesChart` (multi-axis), `PolarChart` (polar bar / wind rose), `ViolinChart` (KDE distributions), plus the axis-less
 `Sparkline` wrapper.
 
 **Cartesian depth:** area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`), reference/threshold
@@ -126,7 +126,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Box-and-whisker (boxplot) family~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `BoxPlotChart` / `BoxPlotChartSpec` + `BoxPlotEntry.fromSamples` (Tukey quartiles/whiskers/outliers). |
 | ~~Waterfall family (running-total bars + connectors)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `WaterfallChart` / `WaterfallChartSpec` (floating bars, sign coloring, total markers, connectors). |
 | ~~OHLC/candlestick variants (HLC bar, Heikin-Ashi, hollow)~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `CandlestickChartSpec.variant` (`CandlestickVariant.Candles` / `HollowCandles` / `OhlcBars` / `HeikinAshi`); `heikinAshi(points)` transform is public. |
-| Histogram / density / violin | P3 | M | moderate | Binning/KDE transforms; bins render as bars. |
+| ~~Histogram / density / violin~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `histogramBins(values, bins)` + `kernelDensity(values, evalPoints)` / `silvermanBandwidth` in `chart-core` (render via bar/line), plus a **`ViolinChart`** family (mirrored KDE per category, median line). |
 | ~~Financial extras: range-selector strip, data grouping, indicators (SMA/EMA/RSI/MACD/Bollinger)~~ ✅ | ~~P3~~ | XL | moderate | **Shipped:** `TechnicalIndicators` (SMA / EMA / RSI / MACD / Bollinger, index-aligned, KMP-safe) + the range-selector strip (`ChartRangeSelector`, P2). Overlay any indicator as a `LineSeries`. (Period data-grouping stays caller-side.) |
 
 ### 4.3 Part-to-whole & hierarchical families

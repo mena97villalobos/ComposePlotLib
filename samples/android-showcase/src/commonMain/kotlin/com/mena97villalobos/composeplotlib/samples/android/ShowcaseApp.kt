@@ -54,6 +54,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartS
 import com.mena97villalobos.composeplotlib.samples.android.screens.StackedAreaChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SunburstChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.TreemapChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.ViolinChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChartShowcaseScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -196,6 +197,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Faceting ->
                     Column(detailModifier) {
                         FacetGridShowcaseScreen()
+                    }
+                ShowcaseDestination.Violin ->
+                    Column(detailModifier) {
+                        ViolinChartShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -394,6 +399,12 @@ private fun ShowcaseHomeScreen(
             Text("Faceting / small multiples")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Violin) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Violin")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -461,6 +472,7 @@ private enum class ShowcaseDestination(
     ParallelCoordinates("Parallel coordinates"),
     Polar("Polar / wind-rose"),
     Faceting("Faceting"),
+    Violin("Violin"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

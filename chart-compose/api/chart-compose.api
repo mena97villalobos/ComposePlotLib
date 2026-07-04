@@ -398,6 +398,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartViewportsKt {
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/StackedAreaChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/SunburstChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/ViolinChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/WaterfallChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 }
 
@@ -476,6 +477,10 @@ public final class com/mena97villalobos/composeplotlib/chart/SunburstChartKt {
 
 public final class com/mena97villalobos/composeplotlib/chart/TreemapChartKt {
 	public static final fun TreemapChart (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/ViolinChartKt {
+	public static final fun ViolinChart (Lcom/mena97villalobos/composeplotlib/core/spec/ViolinChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/WaterfallChartKt {

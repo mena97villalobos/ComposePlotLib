@@ -175,6 +175,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Faceting / small multiples** — `ChartFacetGrid(items, columns, facetTitle) { facet }`: a responsive grid-of-charts
   composition layer with optional per-facet titles. Shared vs per-facet scales is caller-controlled (share a common
   domain / `ChartViewportState` for comparable, linkable facets).
+- **Distributions: histogram / density / violin** — `chart-core` `histogramBins(values, binCount)` (`HistogramBin`),
+  `kernelDensity(values, evalPoints, bandwidth?)`, and `silvermanBandwidth(values)` (render histograms via a bar
+  chart, densities via a line chart), plus a **`ViolinChart`** family (`ViolinChartSpec` / `ViolinCategory`) drawing a
+  mirrored Gaussian KDE per category with a median line. Read-only.
 
 ### Changed
 

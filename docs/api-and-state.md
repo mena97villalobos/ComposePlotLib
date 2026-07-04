@@ -21,6 +21,7 @@ The current public surface is intentionally small.
 - `BubbleChart(spec, modifier, viewportState, selectionState, gestureConfig, marker, markerPlacement, noData, noDataUi, accessibilityCustomActions, animation, chromeTheme, showSizeLegend, sizeLegendValueFormatter)` — bubble chart (`BubbleChartSpec`); bubble area encodes `z` via `BubbleSizeScale`. Reuses the scatter pipeline (`toScatterSpec`) for rendering/gestures/selection/markers; overlays an optional size legend.
 - `BulletChart(spec, modifier, chromeTheme)` — linear KPI **bullet graph** (`BulletChartSpec`); qualitative bands + measure bar + optional target marker. **Non-interactive** (gauge-style): no viewport, selection, or gesture parameters.
 - `StackedAreaChart(spec, modifier, viewportState, gestureConfig, noData, noDataUi, animation, chromeTheme)` — **stacked-area** chart (`StackedAreaChartSpec`); filled bands accumulated per `AreaStackOffset` (Zero / Expand / Silhouette). Cartesian pan/zoom; no per-point selection.
+- `ViolinChart(spec, modifier, chromeTheme)` — **violin** (`ViolinChartSpec` / `ViolinCategory`); mirrored KDE distribution per category + median line. **Non-interactive**.
 - `PolarChart(spec, modifier, chromeTheme)` — **polar bar / wind-rose** (`PolarChartSpec` / `PolarSector`); equal angular wedges, radius ∝ value, over grid rings. **Non-interactive**.
 - `ParallelCoordinatesChart(spec, modifier, chromeTheme)` — **parallel coordinates** (`ParallelCoordinatesChartSpec` / `ParallelAxis` / `ParallelSeries`); one vertical axis per dimension, one polyline per record. **Non-interactive**.
 - `CirclePackChart(spec, modifier, chromeTheme)` — **circle-packing / bubble-pack** (`CirclePackChartSpec` / `CirclePackNode`); non-overlapping circles, area ∝ value. **Non-interactive**.
@@ -59,6 +60,7 @@ The current public surface is intentionally small.
 - **Vector (SVG):** `chartLayoutPlanToSvg(plan, background)` serializes any planned `ChartLayoutPlan` to a standalone SVG (shapes, paths, gradients, arcs, clips) with no DOM; `lineChartToSvg(spec, widthPx, heightPx, viewport, background)` plans a line chart headlessly and returns SVG in one call (`lineChartDataViewport(spec)` computes the default data extent).
 
 ### Analytics
+- `histogramBins(values, binCount)` (→ `HistogramBin`), `kernelDensity(values, evalPoints, bandwidth?)`, `silvermanBandwidth(values)` — `chart-core` distribution helpers (render histograms via a bar chart, densities via a line chart).
 - `TechnicalIndicators.sma / ema / rsi / macd / bollingerBands(values, …)` — index-aligned financial indicators (`null` until defined) in `chart-core`; map any result to a `LineSeries` to overlay it on a line/candlestick chart.
 
 ### Helpers

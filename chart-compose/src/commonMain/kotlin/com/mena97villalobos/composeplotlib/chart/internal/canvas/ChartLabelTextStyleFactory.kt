@@ -28,6 +28,7 @@ import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SunburstChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ViolinChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 
 @Composable
@@ -173,6 +174,20 @@ internal fun chartLabelTextStyles(
     // Polar / wind-rose draws no text in v1.
     val y = MaterialTheme.typography.labelSmall
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(spec: ViolinChartSpec): ChartLabelTextStyles {
+    val typo = MaterialTheme.typography
+    val y = tickStyleFrom(typo, spec.yAxis.labelStyle)
+    return ChartLabelTextStyles(
+        xAxis = tickStyleFrom(typo, spec.xAxis.labelStyle),
+        yAxis = y,
+        legend = y,
+        pieSliceLabel = y,
+        yAxisSecondaryTick = y,
+    )
 }
 
 @Composable
