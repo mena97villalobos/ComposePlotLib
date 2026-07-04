@@ -4,6 +4,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan
 import com.mena97villalobos.composeplotlib.core.layout.DrawCommand
+import com.mena97villalobos.composeplotlib.core.layout.draw.FillPattern
 import com.mena97villalobos.composeplotlib.core.layout.draw.FillRule
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
@@ -176,6 +177,14 @@ private fun appendPath(
             defs.append("</radialGradient>")
             body.append("<path d=\"$d\" fill=\"url(#$id)\" ").append(fillRuleAttr(style.fillRule)).append("/>")
         }
+        is PathDrawStyle.PatternFill -> {
+            val id = ids.next("pattern")
+            defs.append("<pattern id=\"$id\" patternUnits=\"userSpaceOnUse\" ")
+            defs.append("width=\"${svgNum(style.spacingPx)}\" height=\"${svgNum(style.spacingPx)}\">")
+            style.backgroundColor?.let { defs.append("<rect width=\"${svgNum(style.spacingPx)}\" height=\"${svgNum(style.spacingPx)}\" ${fillAttrs(it)}/>") }
+            defs.append(patternTile(style)).append("</pattern>")
+            body.append("<path d=\"$d\" fill=\"url(#$id)\" ").append(fillRuleAttr(style.fillRule)).append("/>")
+        }
     }
 }
 
@@ -250,6 +259,23 @@ private fun pathData(segments: List<PathSegment>): String {
         }
     }
     return builder.toString()
+}
+
+private fun patternTile(style: PathDrawStyle.PatternFill): String {
+    val size = svgNum(style.spacingPx)
+    val ink = style.color.svgHex()
+    val opacity = svgNum(style.color.alpha / 255.0)
+    val width = svgNum(style.strokeWidthPx)
+    val strokeAttrs = "stroke=\"$ink\" stroke-opacity=\"$opacity\" stroke-width=\"$width\""
+    return when (style.pattern) {
+        FillPattern.HorizontalStripes -> "<line x1=\"0\" y1=\"0\" x2=\"$size\" y2=\"0\" $strokeAttrs/>"
+        FillPattern.VerticalStripes -> "<line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"$size\" $strokeAttrs/>"
+        FillPattern.DiagonalStripes -> "<line x1=\"0\" y1=\"$size\" x2=\"$size\" y2=\"0\" $strokeAttrs/>"
+        FillPattern.Dots ->
+            "<circle cx=\"${svgNum(style.spacingPx / 2.0)}\" cy=\"${svgNum(style.spacingPx / 2.0)}\" r=\"$width\" fill=\"$ink\" fill-opacity=\"$opacity\"/>"
+        FillPattern.Grid ->
+            "<line x1=\"0\" y1=\"0\" x2=\"$size\" y2=\"0\" $strokeAttrs/><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"$size\" $strokeAttrs/>"
+    }
 }
 
 private fun gradientStops(

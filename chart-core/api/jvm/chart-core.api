@@ -1239,6 +1239,17 @@ public final class com/mena97villalobos/composeplotlib/core/layout/WaterfallChar
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/layout/draw/FillPattern : java/lang/Enum {
+	public static final field DiagonalStripes Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+	public static final field Dots Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+	public static final field Grid Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+	public static final field HorizontalStripes Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+	public static final field VerticalStripes Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/layout/draw/FillRule : java/lang/Enum {
 	public static final field EvenOdd Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
 	public static final field NonZero Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
@@ -1297,6 +1308,28 @@ public final class com/mena97villalobos/composeplotlib/core/layout/draw/PathDraw
 	public final fun getStartColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun getStartX ()D
 	public final fun getStartY ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$PatternFill : com/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;)V
+	public synthetic fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+	public final fun component2 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component4 ()D
+	public final fun component5 ()D
+	public final fun component6 ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;)Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$PatternFill;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$PatternFill;Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;DDLcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/draw/PathDrawStyle$PatternFill;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackgroundColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getFillRule ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillRule;
+	public final fun getPattern ()Lcom/mena97villalobos/composeplotlib/core/layout/draw/FillPattern;
+	public final fun getSpacingPx ()D
+	public final fun getStrokeWidthPx ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

@@ -54,4 +54,20 @@ sealed interface PathDrawStyle {
         val radius: Double,
         val fillRule: FillRule = FillRule.NonZero,
     ) : PathDrawStyle
+
+    /**
+     * **Pattern / decal** fill: a repeating [pattern] in [color] over an optional [backgroundColor], clipped to the
+     * path. Print- and colorblind-friendly (encodes categories by texture, not just hue).
+     *
+     * @property spacingPx tile pitch in pixels (line spacing / dot grid step).
+     * @property strokeWidthPx line/dot weight in pixels.
+     */
+    data class PatternFill(
+        val pattern: FillPattern,
+        val color: ChartColor,
+        val backgroundColor: ChartColor? = null,
+        val spacingPx: Double = 6.0,
+        val strokeWidthPx: Double = 1.5,
+        val fillRule: FillRule = FillRule.NonZero,
+    ) : PathDrawStyle
 }

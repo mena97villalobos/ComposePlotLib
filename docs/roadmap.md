@@ -183,7 +183,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Named light/dark theme presets + auto dark-mode adaptation~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `ChartChromeTheme.Light` / `.Dark` presets + `chartChromeThemeAuto(darkTheme = isSystemInDarkTheme())`. |
 | ~~Dark-mode-aware **data** palettes (planner does not auto-shift series colors today)~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `ChartColor.lighten` / `.darken` + `ChartPalettes.forDarkBackground(palette, amount)` (tint categorical colors for dark surfaces). |
 | ~~Expanded gradient fills (radial, multi-stop, per-series brushes) across families~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `PathDrawStyle.RadialGradientFill` + `GradientColorStop` multi-stop primitives (renderer + SVG export); per-series gradient brushes already ship (line area fills, sankey ribbons). |
-| Pattern / texture (decal) fills (colorblind-safe, print) | P3 | M | moderate | Pattern DrawCommand + shader tiling; doubles as a11y. |
+| ~~Pattern / texture (decal) fills (colorblind-safe, print)~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `PathDrawStyle.PatternFill` + `FillPattern` (`HorizontalStripes` / `VerticalStripes` / `DiagonalStripes` / `Dots` / `Grid`) — tiled decal fill (renderer clips + tiles; SVG `<pattern>`). Encodes categories by texture (print / colorblind aid). |
 
 ### 4.8 Accessibility beyond markers
 

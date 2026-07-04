@@ -183,6 +183,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   pixel space) with a `GradientColorStop` list (any number of stops); rendered by the Compose canvas adapter and
   serialized by SVG export (`<radialGradient>`). Per-series gradient brushes already ship (line area fills, sankey
   ribbons).
+- **Pattern / texture (decal) fills** — new draw primitive `PathDrawStyle.PatternFill` + `FillPattern`
+  (`HorizontalStripes` / `VerticalStripes` / `DiagonalStripes` / `Dots` / `Grid`): a tiled decal fill over an optional
+  background, clipped to the path. Rendered by the Compose canvas adapter and serialized by SVG export
+  (`<pattern>`). Encodes categories by texture — a print- and colorblind-friendly alternative to hue alone.
 
 ### Changed
 

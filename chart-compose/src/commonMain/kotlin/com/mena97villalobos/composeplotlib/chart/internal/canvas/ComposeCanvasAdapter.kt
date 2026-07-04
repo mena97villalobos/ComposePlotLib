@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.rotate
@@ -24,6 +25,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan
 import com.mena97villalobos.composeplotlib.core.layout.DrawCommand
+import com.mena97villalobos.composeplotlib.core.layout.draw.FillPattern
 import com.mena97villalobos.composeplotlib.core.layout.draw.FillRule
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
@@ -386,6 +388,20 @@ private fun DrawScope.drawDrawCommands(
                             style = Fill,
                         )
                     }
+                    is PathDrawStyle.PatternFill -> {
+                        path.fillType =
+                            when (style.fillRule) {
+                                FillRule.NonZero -> PathFillType.NonZero
+                                FillRule.EvenOdd -> PathFillType.EvenOdd
+                            }
+                        style.backgroundColor?.let { background ->
+                            drawPath(path = path, color = background.multiplyAlpha(cf).toComposeColor(), style = Fill)
+                        }
+                        val ink = style.color.multiplyAlpha(cf).toComposeColor()
+                        clipPath(path) {
+                            drawFillPattern(path.getBounds(), style, ink)
+                        }
+                    }
                 }
             }
 
@@ -664,6 +680,62 @@ internal fun RectD.toComposeRect(): Rect =
     )
 
 internal fun ChartColor.toComposeColor(): Color = Color(argb)
+
+/** Tiles the [style] pattern across [bounds] with the given [ink] color; call inside a `clipPath(path) { … }`. */
+private fun DrawScope.drawFillPattern(
+    bounds: Rect,
+    style: PathDrawStyle.PatternFill,
+    ink: Color,
+) {
+    val spacing = style.spacingPx.toFloat().coerceAtLeast(1f)
+    val stroke = style.strokeWidthPx.toFloat().coerceAtLeast(0.5f)
+    when (style.pattern) {
+        FillPattern.HorizontalStripes -> {
+            var y = bounds.top
+            while (y <= bounds.bottom) {
+                drawLine(ink, Offset(bounds.left, y), Offset(bounds.right, y), strokeWidth = stroke)
+                y += spacing
+            }
+        }
+        FillPattern.VerticalStripes -> {
+            var x = bounds.left
+            while (x <= bounds.right) {
+                drawLine(ink, Offset(x, bounds.top), Offset(x, bounds.bottom), strokeWidth = stroke)
+                x += spacing
+            }
+        }
+        FillPattern.DiagonalStripes -> {
+            var start = bounds.left - bounds.height
+            while (start <= bounds.right) {
+                drawLine(ink, Offset(start, bounds.bottom), Offset(start + bounds.height, bounds.top), strokeWidth = stroke)
+                start += spacing
+            }
+        }
+        FillPattern.Dots -> {
+            var y = bounds.top + spacing / 2f
+            while (y <= bounds.bottom) {
+                var x = bounds.left + spacing / 2f
+                while (x <= bounds.right) {
+                    drawCircle(ink, radius = stroke, center = Offset(x, y))
+                    x += spacing
+                }
+                y += spacing
+            }
+        }
+        FillPattern.Grid -> {
+            var y = bounds.top
+            while (y <= bounds.bottom) {
+                drawLine(ink, Offset(bounds.left, y), Offset(bounds.right, y), strokeWidth = stroke)
+                y += spacing
+            }
+            var x = bounds.left
+            while (x <= bounds.right) {
+                drawLine(ink, Offset(x, bounds.top), Offset(x, bounds.bottom), strokeWidth = stroke)
+                x += spacing
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalTextApi::class)
 private fun baselineAlignedTopLeft(

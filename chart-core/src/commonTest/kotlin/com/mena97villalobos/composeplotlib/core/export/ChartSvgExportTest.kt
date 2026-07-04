@@ -6,6 +6,7 @@ import com.mena97villalobos.composeplotlib.core.geometry.RectD
 import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan
 import com.mena97villalobos.composeplotlib.core.layout.ChartReservedRegions
 import com.mena97villalobos.composeplotlib.core.layout.DrawCommand
+import com.mena97villalobos.composeplotlib.core.layout.draw.FillPattern
 import com.mena97villalobos.composeplotlib.core.layout.draw.GradientColorStop
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathDrawStyle
 import com.mena97villalobos.composeplotlib.core.layout.draw.PathSegment
@@ -119,6 +120,33 @@ class ChartSvgExportTest {
         assertTrue(svg.contains("offset=\"0.5\""))
         assertTrue(svg.contains("offset=\"1\""))
         assertTrue(svg.contains("fill=\"url(#grad0)\""))
+    }
+
+    @Test
+    fun serializesPatternFillIntoDefs() {
+        val path =
+            DrawCommand.Path(
+                segments =
+                    listOf(
+                        PathSegment.MoveTo(OffsetD(0.0, 0.0)),
+                        PathSegment.LineTo(OffsetD(20.0, 0.0)),
+                        PathSegment.LineTo(OffsetD(20.0, 20.0)),
+                        PathSegment.Close,
+                    ),
+                style =
+                    PathDrawStyle.PatternFill(
+                        pattern = FillPattern.DiagonalStripes,
+                        color = ChartColor(0xFF4E79A7),
+                        backgroundColor = ChartColor(0xFFEFEFEF),
+                        spacingPx = 8.0,
+                    ),
+            )
+        val svg = chartLayoutPlanToSvg(planOf(listOf(path)))
+        assertTrue(svg.contains("<pattern id=\"pattern0\""))
+        assertTrue(svg.contains("width=\"8\" height=\"8\""))
+        assertTrue(svg.contains("fill=\"url(#pattern0)\""))
+        // Diagonal stripe line in the tile.
+        assertTrue(svg.contains("<line x1=\"0\" y1=\"8\" x2=\"8\" y2=\"0\""))
     }
 
     @Test
