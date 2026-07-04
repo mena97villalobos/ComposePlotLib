@@ -17,7 +17,7 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ---
 
-## 1. Current state (as of 2026-07, `1.2.0` unreleased)
+## 1. Current state (as of 2026-07, `1.2.0` released)
 
 **Chart families (26):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,

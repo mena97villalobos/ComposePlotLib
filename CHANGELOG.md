@@ -5,7 +5,7 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
-## 1.2.0 — unreleased
+## 1.2.0 — 2026-07-04
 
 Sankey chart rework: orientation support, professional visual defaults, and layout correctness
 fixes. **Source-compatible; the default Sankey look intentionally changes** (see *Changed* below);
