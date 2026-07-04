@@ -12,7 +12,8 @@ Plot, Plotly, Highcharts, Nivo).
 - **Contributor rules & build commands**: [`../AGENTS.md`](../AGENTS.md).
 
 Priorities use **P0** (do first) … **P3** (opportunistic). Effort is a rough **S / M / L / XL**. "Fit" is how
-cleanly a feature sits in this library's architecture (strong / moderate / weak).
+cleanly a feature sits in this library's architecture (strong / moderate / weak). A ✅ row is shipped; a
+**⏸️** row is an explicit **deferred / won't-do** decision (rationale in its note) rather than open work.
 
 ---
 
@@ -115,7 +116,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | More than two Y axes / N stacked axes with per-axis layer binding | P3 | M | moderate | Generalizes the combined secondary-Y seam. |
 | Independent secondary-Y pan/zoom channel | P3 | M | moderate | Needs an extra viewport channel + gesture routing. |
 | Broken axis (skip empty ranges) | P3 | M | moderate | Piecewise transform + break glyphs. |
-| IANA / DST-aware time-zone axis | P3 | L | weak | Needs a KMP tz database; DST-correct ticks are intricate. UTC/fixed-offset only today. |
+| ~~IANA / DST-aware time-zone axis~~ ⏸️ | ~~P3~~ | L | weak | **Deferred beyond 1.2.0:** needs a bundled KMP time-zone database + DST-correct tick generation — heavy for the payoff. UTC / fixed-offset time remains supported. |
 
 ### 4.2 Statistical & financial families
 
@@ -191,7 +192,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Data-table alternative / "view data" surface (screen-reader-navigable value list)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `ChartDataTable` model + `lineChartDataTable` / `scatterChartDataTable` / `barChartDataTable` builders (`chart-core`) + `ChartDataTable(...)` composable with row-level semantics. |
 | ~~Keyboard selection-roam for Heatmap & Gauge (parity with the rest)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `KeyboardSelectionRoam.heatmapRoam` (Shift+arrows across the grid). Gauge is a single non-interactive value with no selectable elements, so roam is N/A. |
 | ~~Whole-chart auto-generated screen-reader summary (trend, min/max, series count)~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `lineChartNarrative` / `scatterChartNarrative` / `barChartNarrative` in `chart-core`, opt-in via `ChartAccessibilitySpec.includeDataNarrative`. |
-| Sonification (data-to-audio) | P3 | XL | weak | Platform audio via `expect`/`actual`; niche, defer. |
+| ~~Sonification (data-to-audio)~~ ⏸️ | ~~P3~~ | XL | weak | **Deferred beyond 1.2.0:** XL platform-audio `expect`/`actual` work for a niche audience; the data-table + narrative surfaces already cover non-visual access. |
 
 ### 4.9 Export & interop
 
@@ -200,7 +201,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Raster (PNG/bitmap) snapshot/export~~ ✅ | ~~P2~~ | M | moderate | **Shipped:** `rememberChartCaptureController()` + `Modifier.chartCaptureTarget(...)` record the chart into a `GraphicsLayer`; `capturePng()` / `captureImageBitmap()` snapshot it, with an `expect`/`actual` `ImageBitmap.encodeToChartPng()` (Android `Bitmap.compress` / iOS Skia). |
 | ~~Underlying-data export (CSV / JSON)~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `ChartDataTable.toCsv()` / `.toJson()` over the `lineChartDataTable` / `scatterChartDataTable` / `barChartDataTable` builders (RFC 4180 CSV, self-describing JSON). |
 | ~~`DrawCommand` → SVG / vector export~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `chartLayoutPlanToSvg(plan)` serializes any planned `ChartLayoutPlan` (shapes, paths, gradients, arcs, clips) to a standalone SVG — no DOM; `lineChartToSvg(spec, w, h)` is a one-call convenience. |
-| PDF export / direct print | P3 | L | weak | Platform document/print stacks; low ROI vs PNG/SVG. |
+| ~~PDF export / direct print~~ ⏸️ | ~~P3~~ | L | weak | **Deferred beyond 1.2.0:** low ROI now that raster (PNG) and vector (SVG) export ship — SVG prints/embeds losslessly. Revisit if demand appears. |
 
 ### 4.10 Non-cartesian coordinate systems
 
@@ -215,13 +216,13 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 |---|---|---|---|---|
 | ~~LTTB decimation option (see 4.6)~~ ✅ | ~~P2~~ | S | strong | **Shipped:** `LineDecimationStrategy.Lttb`. |
 | Progressive / frame-chunked rendering for very large sets | P3 | L | moderate | Helps million-point cases; interacts with the animation/gesture loop. |
-| GPU/batch boost renderer | P3 | XL | weak | Compose Canvas has no cross-platform GPU batch path; decimation is the pragmatic substitute. |
+| ~~GPU/batch boost renderer~~ ⏸️ | ~~P3~~ | XL | weak | **Won't do:** Compose Canvas has no cross-platform GPU batch path; decimation (`Uniform` / `MinMaxY` / `Lttb`) + the plot-width pixel budget are the pragmatic substitute. |
 
 ### 4.12 Platform-specific
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Android Glance / home-screen widget rendering | P3 | M | weak | Android-only static-image path in `androidMain`; breaks multiplatform symmetry (Vico offers it). |
+| ~~Android Glance / home-screen widget rendering~~ ⏸️ | ~~P3~~ | M | weak | **Deferred beyond 1.2.0:** Android-only static-image path breaks the KMP symmetry the library is built around; the PNG/SVG export path covers static embedding cross-platform. |
 
 ---
 
