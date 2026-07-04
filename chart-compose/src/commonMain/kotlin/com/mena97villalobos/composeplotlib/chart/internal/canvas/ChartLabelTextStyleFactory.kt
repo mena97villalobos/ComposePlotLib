@@ -11,6 +11,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CirclePackChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.FunnelChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
@@ -138,6 +139,16 @@ internal fun chartLabelTextStyles(
     @Suppress("UNUSED_PARAMETER") spec: SunburstChartSpec,
 ): ChartLabelTextStyles {
     // Sunburst draws no text in v1.
+    val y = MaterialTheme.typography.labelSmall
+    return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(
+    @Suppress("UNUSED_PARAMETER") spec: CirclePackChartSpec,
+): ChartLabelTextStyles {
+    // Circle-packing draws circle labels via the axis text slot.
     val y = MaterialTheme.typography.labelSmall
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
 }

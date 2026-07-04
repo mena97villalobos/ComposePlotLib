@@ -31,6 +31,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.BulletChartSh
 import com.mena97villalobos.composeplotlib.samples.android.screens.CalendarHeatmapShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickVariantsShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.CirclePackChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartShowcaseScreen
@@ -176,6 +177,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Sunburst ->
                     Column(detailModifier) {
                         SunburstChartShowcaseScreen()
+                    }
+                ShowcaseDestination.CirclePack ->
+                    Column(detailModifier) {
+                        CirclePackChartShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -350,6 +355,12 @@ private fun ShowcaseHomeScreen(
             Text("Sunburst")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.CirclePack) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Circle packing")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -413,6 +424,7 @@ private enum class ShowcaseDestination(
     CandlestickVariants("Candlestick variants"),
     Treemap("Treemap"),
     Sunburst("Sunburst"),
+    CirclePack("Circle packing"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

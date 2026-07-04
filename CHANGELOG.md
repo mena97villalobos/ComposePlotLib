@@ -164,6 +164,9 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   as concentric rings (one per depth), each node's angular span proportional to its value within its parent
   (`sunburstLayout` in `chart-core`). Optional center-disk root; top-level branches take palette colors and
   descendants inherit a lighter shade. Read-only.
+- **Circle-packing / bubble-pack family** — `CirclePackChart` composable + `CirclePackChartSpec` / `CirclePackNode`:
+  non-overlapping circles whose area encodes value, placed by a greedy tangent packing and fit to the plot
+  (`circlePackLayout` / `fitPackedCircles` in `chart-core`). Single-level (flat), read-only.
 
 ### Changed
 

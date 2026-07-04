@@ -45,6 +45,7 @@ import com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickVariant
 import com.mena97villalobos.composeplotlib.core.spec.ChartPalettes
+import com.mena97villalobos.composeplotlib.core.spec.CirclePackChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
@@ -940,6 +941,49 @@ object ChartPlanner {
                     legendEntries = emptyList(),
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = emptyList(),
+                ),
+        )
+    }
+
+    /**
+     * Circle-packing / bubble-pack: packs [CirclePackChartSpec.nodes] as non-overlapping circles (area ∝ value) via
+     * [circlePackLayout], fits them to the plot ([fitPackedCircles]), and emits a filled circle per node (plus a
+     * label when it fits). Read-only (no selection).
+     */
+    fun planCirclePackChart(
+        input: ChartLayoutInput,
+        spec: CirclePackChartSpec,
+    ): CirclePackChartPlan {
+        val bounds = input.toPlanningBounds()
+        val plotBounds = bounds.canvasBounds.inset(spec.contentPadding)
+        val packed = fitPackedCircles(circlePackLayout(circlePackRadii(spec.nodes.map { it.value })), plotBounds)
+        val plotCommands = mutableListOf<DrawCommand>()
+        val overlayCommands = mutableListOf<DrawCommand>()
+        spec.nodes.forEachIndexed { index, node ->
+            val circle = packed.getOrNull(index) ?: return@forEachIndexed
+            if (circle.radius <= 0.0) return@forEachIndexed
+            plotCommands += DrawCommand.Circle(center = OffsetD(circle.centerX, circle.centerY), radius = circle.radius, color = node.color)
+            if (spec.showLabels && node.label.isNotEmpty() && circle.radius > 18.0) {
+                val estimatedHalfWidth = node.label.length * 3.5
+                overlayCommands +=
+                    DrawCommand.Text(
+                        text = node.label,
+                        position = OffsetD(circle.centerX - estimatedHalfWidth, circle.centerY - 7.0),
+                        color = spec.labelColor,
+                    )
+            }
+        }
+        return CirclePackChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = ChartReservedRegions(spec.contentPadding, null, null, null),
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = overlayCommands,
                 ),
         )
     }

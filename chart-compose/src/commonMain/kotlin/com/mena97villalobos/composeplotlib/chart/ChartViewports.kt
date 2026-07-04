@@ -13,6 +13,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BubbleChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CirclePackChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
@@ -86,6 +87,11 @@ fun defaultViewport(
 /** Trivial unit [ChartViewport] for a sunburst (radial — the plan ignores the viewport). */
 fun defaultViewport(
     @Suppress("UNUSED_PARAMETER") spec: SunburstChartSpec,
+): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
+
+/** Trivial unit [ChartViewport] for a circle-packing chart (packed layout — the plan ignores the viewport). */
+fun defaultViewport(
+    @Suppress("UNUSED_PARAMETER") spec: CirclePackChartSpec,
 ): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
 
 /** [ChartViewport] for a stacked-area chart: X across [xValues]; Y across the stacked total per its offset. */
