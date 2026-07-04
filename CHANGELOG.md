@@ -160,6 +160,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Treemap chart family** — `TreemapChart` composable + `TreemapChartSpec` / `TreemapNode`: area-proportional
   tiles laid out by a squarified algorithm (`squarifiedTreemap` in `chart-core`, aspect ratios kept near 1) with
   per-tile fill color and label fitting. Single-level (flat), read-only.
+- **Sunburst chart family** — `SunburstChart` composable + `SunburstChartSpec` / `SunburstNode`: a hierarchy drawn
+  as concentric rings (one per depth), each node's angular span proportional to its value within its parent
+  (`sunburstLayout` in `chart-core`). Optional center-disk root; top-level branches take palette colors and
+  descendants inherit a lighter shade. Read-only.
 
 ### Changed
 

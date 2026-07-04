@@ -48,6 +48,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.RangeSelector
 import com.mena97villalobos.composeplotlib.samples.android.screens.SankeyChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.StackedAreaChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.SunburstChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.TreemapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChartShowcaseScreen
 
@@ -171,6 +172,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Treemap ->
                     Column(detailModifier) {
                         TreemapChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Sunburst ->
+                    Column(detailModifier) {
+                        SunburstChartShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -339,6 +344,12 @@ private fun ShowcaseHomeScreen(
             Text("Treemap")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Sunburst) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Sunburst")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -401,6 +412,7 @@ private enum class ShowcaseDestination(
     Indicators("Technical indicators"),
     CandlestickVariants("Candlestick variants"),
     Treemap("Treemap"),
+    Sunburst("Sunburst"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

@@ -76,6 +76,7 @@ import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.SunburstChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
@@ -875,6 +876,70 @@ object ChartPlanner {
                     legendEntries = emptyList(),
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = overlayCommands,
+                ),
+        )
+    }
+
+    /**
+     * Sunburst (hierarchical radial): draws each [sunburstLayout] slice as an annulus sector (or a center disk for
+     * the root) in its ring band, angular span proportional to value within its parent. Read-only (no selection).
+     */
+    fun planSunburstChart(
+        input: ChartLayoutInput,
+        spec: SunburstChartSpec,
+    ): SunburstChartPlan {
+        val bounds = input.toPlanningBounds()
+        val plotBounds = bounds.canvasBounds.inset(spec.contentPadding)
+        val radial = PieChartLayoutMath.layout(plotBounds, holeRadiusRatio = null)
+        val slices = sunburstLayout(spec)
+        val maxDepth = slices.maxOfOrNull { it.depth } ?: 0
+        val ringCount = maxDepth + 1
+        val bandWidth = if (ringCount > 0) radial.outerRadius / ringCount else 0.0
+        val gap = spec.ringGapPx.coerceAtLeast(0.0)
+
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (radial.outerRadius > 0.0 && bandWidth > 0.0) {
+            for (slice in slices) {
+                if (slice.sweepAngleDegrees == 0.0) continue
+                val outer = ((slice.depth + 1) * bandWidth - gap / 2.0).coerceAtLeast(0.0)
+                if (slice.depth == 0) {
+                    plotCommands +=
+                        DrawCommand.Arc(
+                            center = radial.center,
+                            radius = outer,
+                            startAngleDegrees = slice.startAngleDegrees,
+                            sweepAngleDegrees = slice.sweepAngleDegrees,
+                            useCenter = true,
+                            style = ShapeDrawStyle.Fill(slice.color),
+                            innerRadius = null,
+                        )
+                } else {
+                    val inner = (slice.depth * bandWidth + gap / 2.0).coerceIn(0.0, outer)
+                    plotCommands +=
+                        DrawCommand.Arc(
+                            center = radial.center,
+                            radius = outer,
+                            startAngleDegrees = slice.startAngleDegrees,
+                            sweepAngleDegrees = slice.sweepAngleDegrees,
+                            useCenter = false,
+                            style = ShapeDrawStyle.Fill(slice.color),
+                            innerRadius = inner,
+                        )
+                }
+            }
+        }
+
+        return SunburstChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = ChartReservedRegions(spec.contentPadding, null, null, null),
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = emptyList(),
                 ),
         )
     }

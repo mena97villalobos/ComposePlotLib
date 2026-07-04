@@ -64,6 +64,10 @@ Cartesian composition chart: **`StackedAreaChartSpec`** holds shared **`xValues`
 
 Non-cartesian stage chart: **`FunnelChartSpec`** holds ordered **`FunnelStage`**s (`label`, `value`, optional `color`), drawn as stacked, centered trapezoids tapering from each stage's width (∝ value, widest = full plot) to the next — the classic conversion funnel. Palette-colored with optional centered labels. **Read-only** (no axes/selection/pan-zoom, like Gauge/Bullet). Compose entry: `FunnelChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
+## Sunburst
+
+Read-only hierarchical radial chart: **`SunburstChartSpec`** holds a **`SunburstNode`** tree drawn as concentric rings (one per depth), where each node's angular span is proportional to its value within its parent (`sunburstLayout` in `chart-core`). The root is an optional center disk (`showRoot`); top-level branches take Tableau palette colors and descendants inherit a lighter shade. **Non-interactive**. Compose entry: `SunburstChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Treemap
 
 Read-only area-proportional tiling: **`TreemapChartSpec`** holds **`TreemapNode`** leaves (`label`, `value`, `color`), laid out by a **squarified** algorithm (`squarifiedTreemap` in `chart-core`) that keeps tile aspect ratios close to 1; tiles are filled with the node color and labeled when large enough. Single-level (flat). **Non-interactive**. Compose entry: `TreemapChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*

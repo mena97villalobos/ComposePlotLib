@@ -19,11 +19,11 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ## 1. Current state (as of 2026-07, `1.2.0` unreleased)
 
-**Chart families (21):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+**Chart families (22):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
 `RadarChart`, `SankeyChart` (orientation, Tableau-10 palette, gradient ribbons — reworked for 1.2.0),
 `HeatmapChart`, `GaugeChart`, `CandlestickChart`, `BoxPlotChart` (Tukey five-number summaries), `WaterfallChart`
-(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), `CalendarHeatmapChart` (year/contribution grid), `TreemapChart` (squarified area tiles), plus the axis-less
+(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), `CalendarHeatmapChart` (year/contribution grid), `TreemapChart` (squarified area tiles), `SunburstChart` (hierarchical radial), plus the axis-less
 `Sparkline` wrapper.
 
 **Cartesian depth:** area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`), reference/threshold
@@ -139,7 +139,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Funnel family~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `FunnelChart` / `FunnelChartSpec` / `FunnelStage` — stacked centered trapezoids (read-only, gauge-style). |
 | ~~Radial bar / circular progress-bar~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `RadialBarChart` / `RadialBarChartSpec` / `RadialBarTrack` — concentric progress rings (track + value arc per ring), read-only with a legend. |
 | ~~Treemap~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `TreemapChart` / `TreemapChartSpec` / `TreemapNode` — squarified area-proportional tiles (aspect ratios near 1) with label fitting. Single-level (flat); hierarchy is a future extension. |
-| Sunburst / hierarchical radial | P3 | L | moderate | Multi-ring arcs + tree model + drilldown. |
+| ~~Sunburst / hierarchical radial~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `SunburstChart` / `SunburstChartSpec` / `SunburstNode` — concentric rings by depth, angular span ∝ value within each parent (`sunburstLayout` in `chart-core`); auto branch palette + lightened descendants. |
 | Circle-packing / bubble-pack | P3 | L | moderate | Enclosure layout over hierarchical data. |
 | Parallel coordinates | P3 | L | moderate | Multi-axis weaving; per-axis brushing is the hard part. |
 | ~~Calendar / year heatmap~~ ✅ | ~~P3~~ | M | strong | **Shipped:** `CalendarHeatmapChart` / `CalendarHeatmapSpec` / `CalendarHeatmapDay` — GitHub-style week×weekday grid, colored via `HeatmapColorScale`; caller supplies 0-based day offsets (KMP-safe, no date lib). |
