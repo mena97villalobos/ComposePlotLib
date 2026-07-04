@@ -30,6 +30,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.BubbleChartSh
 import com.mena97villalobos.composeplotlib.samples.android.screens.BulletChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CalendarHeatmapShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickVariantsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartShowcaseScreen
@@ -161,6 +162,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Indicators ->
                     Column(detailModifier) {
                         IndicatorsShowcaseScreen()
+                    }
+                ShowcaseDestination.CandlestickVariants ->
+                    Column(detailModifier) {
+                        CandlestickVariantsShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -317,6 +322,12 @@ private fun ShowcaseHomeScreen(
             Text("Technical indicators")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.CandlestickVariants) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Candlestick variants")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -377,6 +388,7 @@ private enum class ShowcaseDestination(
     RadialBar("Radial bar chart"),
     CalendarHeatmap("Calendar heatmap"),
     Indicators("Technical indicators"),
+    CandlestickVariants("Candlestick variants"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

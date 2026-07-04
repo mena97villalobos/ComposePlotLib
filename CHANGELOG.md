@@ -153,6 +153,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Financial technical indicators** — `TechnicalIndicators` in `chart-core`: `sma` / `ema` / `rsi` / `macd`
   (`MacdSeries`) / `bollingerBands` (`BollingerBands`) over a value series, index-aligned (`null` until defined)
   and KMP-safe. Map any result to a `LineSeries` to overlay it on a line or candlestick chart.
+- **Candlestick variants** — `CandlestickChartSpec.variant` (`CandlestickVariant.Candles` (default) /
+  `HollowCandles` (bullish bodies outlined) / `OhlcBars` (open-tick-left, close-tick-right) / `HeikinAshi`
+  (smoothed)); the `heikinAshi(points)` OHLC transform is public. `CandlestickChartSpec` gained a trailing
+  `variant` parameter (recompile precompiled positional callers).
 
 ### Changed
 

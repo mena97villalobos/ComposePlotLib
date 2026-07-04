@@ -22,6 +22,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.BubbleChartSh
 import com.mena97villalobos.composeplotlib.samples.android.screens.BulletChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CalendarHeatmapShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickVariantsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartShowcaseScreen
@@ -433,6 +434,18 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     RangeSelectorShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun candlestickVariantsShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    CandlestickVariantsShowcaseScreen()
                 }
             }
         }

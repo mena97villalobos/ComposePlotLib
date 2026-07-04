@@ -30,8 +30,24 @@ data class CandlestickChartSpec(
     val legend: LegendSpec = LegendSpec(),
     val selectionStyle: SelectionStyle = SelectionStyle(),
     val contentPadding: InsetsD = InsetsD(left = 56.0, top = 48.0, right = 24.0, bottom = 40.0),
+    val variant: CandlestickVariant = CandlestickVariant.Candles,
 ) {
     init {
         requireUniqueIds(series.map { it.id }, "CandlestickChartSpec.series ids")
     }
+}
+
+/** Rendering variant for a [CandlestickChartSpec]. */
+enum class CandlestickVariant {
+    /** Filled bull/bear bodies with high–low wicks (default). */
+    Candles,
+
+    /** Bullish bodies are drawn as hollow outlines; bearish bodies stay filled. */
+    HollowCandles,
+
+    /** OHLC bar chart: a high–low bar with a left open tick and a right close tick (no body). */
+    OhlcBars,
+
+    /** Heikin-Ashi smoothed candles (averaged OHLC); reduces noise and emphasizes trend. */
+    HeikinAshi,
 }

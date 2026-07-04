@@ -25,6 +25,7 @@ import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.LineSeries
 import com.mena97villalobos.composeplotlib.core.model.OHLCPoint
 import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
+import com.mena97villalobos.composeplotlib.core.model.heikinAshi
 import com.mena97villalobos.composeplotlib.core.model.toCloseXyPoints
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
@@ -42,6 +43,7 @@ import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BulletChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapSpec
 import com.mena97villalobos.composeplotlib.core.spec.CandlestickChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.CandlestickVariant
 import com.mena97villalobos.composeplotlib.core.spec.ChartPalettes
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
@@ -2309,9 +2311,15 @@ object ChartPlanner {
                     lineStyle = spec.grid.lineStyle,
                 )
         }
+        val candleSpec =
+            if (spec.variant == CandlestickVariant.HeikinAshi) {
+                spec.copy(series = spec.series.map { it.copy(points = heikinAshi(it.points)) })
+            } else {
+                spec
+            }
         val candles =
             computePlannedCandles(
-                spec = spec,
+                spec = candleSpec,
                 viewport = frame.viewport,
                 transform = frame.transform,
                 plotBounds = frame.plotBounds,
@@ -2321,6 +2329,7 @@ object ChartPlanner {
                 candles = candles,
                 selection = selection,
                 selectionStyle = spec.selectionStyle,
+                variant = spec.variant,
             )
 
         val overlayCommands =
@@ -2459,17 +2468,16 @@ object ChartPlanner {
         candles: List<PlannedCandle>,
         selection: ChartSelection?,
         selectionStyle: SelectionStyle,
+        variant: CandlestickVariant,
     ): List<DrawCommand> =
         candles.flatMap { candle ->
-            // Wick first so the body paints over it where they overlap (z-order is bottom -> top).
-            val wick =
-                DrawCommand.Line(
-                    start = candle.wickTop,
-                    end = candle.wickBottom,
-                    color = candle.wickColor,
-                    strokeWidth = candle.wickWidth,
-                )
-            val body = DrawCommand.Rect(bounds = candle.bodyBounds, color = candle.bodyColor)
+            val glyph =
+                when (variant) {
+                    CandlestickVariant.OhlcBars -> ohlcBarCommands(candle)
+                    CandlestickVariant.HollowCandles -> hollowCandleCommands(candle)
+                    // Heikin-Ashi candles are drawn like normal candles (the OHLC was already smoothed).
+                    CandlestickVariant.Candles, CandlestickVariant.HeikinAshi -> filledCandleCommands(candle)
+                }
             if (selection != null && selectionMatchesCandle(selection, candle)) {
                 val accent =
                     DrawCommand.RoundRect(
@@ -2481,11 +2489,44 @@ object ChartPlanner {
                                 strokeWidth = selectionStyle.lineStrokeWidth * 2.0,
                             ),
                     )
-                listOf(wick, body, accent)
+                glyph + accent
             } else {
-                listOf(wick, body)
+                glyph
             }
         }
+
+    // Wick first so the body paints over it where they overlap (z-order is bottom -> top).
+    private fun candleWick(candle: PlannedCandle): DrawCommand.Line = DrawCommand.Line(start = candle.wickTop, end = candle.wickBottom, color = candle.wickColor, strokeWidth = candle.wickWidth)
+
+    private fun filledCandleCommands(candle: PlannedCandle): List<DrawCommand> = listOf(candleWick(candle), DrawCommand.Rect(bounds = candle.bodyBounds, color = candle.bodyColor))
+
+    private fun hollowCandleCommands(candle: PlannedCandle): List<DrawCommand> {
+        val body: DrawCommand =
+            if (candle.isBull) {
+                DrawCommand.RoundRect(
+                    bounds = candle.bodyBounds,
+                    cornerRadius = 0.0,
+                    style = ShapeDrawStyle.Stroke(color = candle.bodyColor, strokeWidth = candle.wickWidth),
+                )
+            } else {
+                DrawCommand.Rect(bounds = candle.bodyBounds, color = candle.bodyColor)
+            }
+        return listOf(candleWick(candle), body)
+    }
+
+    private fun ohlcBarCommands(candle: PlannedCandle): List<DrawCommand> {
+        val bounds = candle.bodyBounds
+        val centerX = (bounds.left + bounds.right) / 2.0
+        val halfWidth = bounds.width / 2.0
+        // Higher price = smaller y. For a bull candle close sits at the top edge; for a bear candle open does.
+        val openY = if (candle.isBull) bounds.bottom else bounds.top
+        val closeY = if (candle.isBull) bounds.top else bounds.bottom
+        return listOf(
+            DrawCommand.Line(start = candle.wickTop, end = candle.wickBottom, color = candle.bodyColor, strokeWidth = candle.wickWidth),
+            DrawCommand.Line(start = OffsetD(centerX - halfWidth, openY), end = OffsetD(centerX, openY), color = candle.bodyColor, strokeWidth = candle.wickWidth),
+            DrawCommand.Line(start = OffsetD(centerX, closeY), end = OffsetD(centerX + halfWidth, closeY), color = candle.bodyColor, strokeWidth = candle.wickWidth),
+        )
+    }
 
     private fun selectionMatchesCandle(
         selection: ChartSelection,

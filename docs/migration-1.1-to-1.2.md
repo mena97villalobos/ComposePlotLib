@@ -45,7 +45,8 @@ needs a recompile.
 ### Sankey spec constructors gained trailing parameters
 
 `SankeyLayoutSpec` and `SankeyNodeLabelsSpec` gained the new orientation / palette / label options as
-trailing defaulted parameters. Same rule: source-compatible, recompile precompiled callers.
+trailing defaulted parameters, and `CandlestickChartSpec` gained a trailing `variant`. Same rule:
+source-compatible, recompile precompiled callers.
 
 `PlannedSankeyLink` gained a **required** `pathSegments` property — but plan output types are planner
 results you read, not values you construct, so this only affects code that hand-built plan objects

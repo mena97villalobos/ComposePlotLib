@@ -124,7 +124,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Error bars / uncertainty whiskers (line/bar/scatter)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `ChartPoint.yLow`/`yHigh` + `BarEntry.yLow`/`yHigh` (vertical bars) + `ErrorBarsSpec`; whiskers are planner output. |
 | ~~Box-and-whisker (boxplot) family~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `BoxPlotChart` / `BoxPlotChartSpec` + `BoxPlotEntry.fromSamples` (Tukey quartiles/whiskers/outliers). |
 | ~~Waterfall family (running-total bars + connectors)~~ ✅ | ~~P1~~ | M | strong | **Shipped:** `WaterfallChart` / `WaterfallChartSpec` (floating bars, sign coloring, total markers, connectors). |
-| OHLC/candlestick variants (HLC bar, Heikin-Ashi, hollow) | P3 | S | strong | Transform + body-style tweaks on the shipped candlestick. |
+| ~~OHLC/candlestick variants (HLC bar, Heikin-Ashi, hollow)~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `CandlestickChartSpec.variant` (`CandlestickVariant.Candles` / `HollowCandles` / `OhlcBars` / `HeikinAshi`); `heikinAshi(points)` transform is public. |
 | Histogram / density / violin | P3 | M | moderate | Binning/KDE transforms; bins render as bars. |
 | ~~Financial extras: range-selector strip, data grouping, indicators (SMA/EMA/RSI/MACD/Bollinger)~~ ✅ | ~~P3~~ | XL | moderate | **Shipped:** `TechnicalIndicators` (SMA / EMA / RSI / MACD / Bollinger, index-aligned, KMP-safe) + the range-selector strip (`ChartRangeSelector`, P2). Overlay any indicator as a `LineSeries`. (Period data-grouping stays caller-side.) |
 
