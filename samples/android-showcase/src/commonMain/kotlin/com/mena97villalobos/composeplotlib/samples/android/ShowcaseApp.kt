@@ -34,6 +34,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickVa
 import com.mena97villalobos.composeplotlib.samples.android.screens.CirclePackChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.FacetGridShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.GaugeChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.HeatmapChartShowcaseScreen
@@ -191,6 +192,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Polar ->
                     Column(detailModifier) {
                         PolarChartShowcaseScreen()
+                    }
+                ShowcaseDestination.Faceting ->
+                    Column(detailModifier) {
+                        FacetGridShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -383,6 +388,12 @@ private fun ShowcaseHomeScreen(
             Text("Polar / wind-rose")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Faceting) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Faceting / small multiples")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -449,6 +460,7 @@ private enum class ShowcaseDestination(
     CirclePack("Circle packing"),
     ParallelCoordinates("Parallel coordinates"),
     Polar("Polar / wind-rose"),
+    Faceting("Faceting"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

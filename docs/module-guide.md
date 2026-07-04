@@ -65,6 +65,7 @@ Path: `chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/c
 - `export/ChartImageExport.kt` (+ `.android.kt` / `.ios.kt`) — raster PNG export (`rememberChartCaptureController`, `Modifier.chartCaptureTarget`, `ImageBitmap.encodeToChartPng`)
 - `ChartRangeBrush.kt` + `internal/gesture/ChartRangeBrushHandler.kt` — drag-rectangle range brush / box selection (`LineChart(rangeBrush = ...)`); the domain-rect model is `chart-core` `selection/ChartRangeSelection.kt`
 - `ChartRangeSelector.kt` — range selector / minimap / brush navigator bound to a shared `ChartViewportState`
+- `ChartFacetGrid.kt` — faceting / small-multiples grid-of-charts composition helper
 
 ### Platform source sets (expect/actual)
 - `androidMain`, `iosMain` — e.g. reduced-motion probe for `ChartAnimationPolicy` (see `internal/accessibility/ChartReducedMotion.kt`, `ChartReducedMotionPreference.kt`, `ChartMarkerFocusHandoff.kt`)

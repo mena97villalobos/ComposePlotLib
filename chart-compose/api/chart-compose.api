@@ -83,6 +83,10 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartDataTableKt {
 	public static final fun ChartDataTable-6a0pyJM (Lcom/mena97villalobos/composeplotlib/core/table/ChartDataTable;Landroidx/compose/ui/Modifier;FLandroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/ChartFacetGridKt {
+	public static final fun ChartFacetGrid-YlGCr2M (Ljava/util/List;Landroidx/compose/ui/Modifier;IFFLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/ChartFlingGesturePolicy {
 	public static final field $stable I
 	public fun <init> ()V

@@ -208,7 +208,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
 | ~~Polar / wind-rose coordinate system (polar bars, scatterpolar)~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `PolarChart` / `PolarChartSpec` / `PolarSector` — equal angular wedges with radius ∝ value over concentric grid rings (polar bar / wind rose). |
-| Faceting / small multiples (shared or per-facet scales) | P3 | L | moderate | Grid-of-plots composition layer in `chart-compose`. |
+| ~~Faceting / small multiples (shared or per-facet scales)~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `ChartFacetGrid(items, columns, facetTitle) { facet }` — responsive grid-of-charts composition layer; shared vs per-facet scales is caller-controlled (shared domain / `ChartViewportState`). |
 
 ### 4.11 Performance (large data)
 

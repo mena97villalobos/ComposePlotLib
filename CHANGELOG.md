@@ -172,6 +172,9 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
   connecting its value on every axis. Optional series legend. Read-only.
 - **Polar bar / wind-rose chart family** — `PolarChart` composable + `PolarChartSpec` / `PolarSector`: equal angular
   wedges whose radius encodes value (`value / maxValue`), drawn over optional concentric grid rings. Read-only.
+- **Faceting / small multiples** — `ChartFacetGrid(items, columns, facetTitle) { facet }`: a responsive grid-of-charts
+  composition layer with optional per-facet titles. Shared vs per-facet scales is caller-controlled (share a common
+  domain / `ChartViewportState` for comparable, linkable facets).
 
 ### Changed
 
