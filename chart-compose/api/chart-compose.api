@@ -506,6 +506,21 @@ public final class com/mena97villalobos/composeplotlib/chart/internal/accessibil
 	public static final fun chartReducedMotionPreferred (Landroidx/compose/runtime/Composer;I)Z
 }
 
+public final class com/mena97villalobos/composeplotlib/chart/state/ChartDrillState {
+	public static final field $stable I
+	public final fun drillDown (Ljava/lang/Object;)V
+	public final fun drillUp ()V
+	public final fun getCanDrillUp ()Z
+	public final fun getCurrent ()Ljava/lang/Object;
+	public final fun getDepth ()I
+	public final fun getPath ()Ljava/util/List;
+	public final fun reset ()V
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/state/ChartDrillStateKt {
+	public static final fun rememberChartDrillState (Ljava/lang/Object;Landroidx/compose/runtime/Composer;I)Lcom/mena97villalobos/composeplotlib/chart/state/ChartDrillState;
+}
+
 public final class com/mena97villalobos/composeplotlib/chart/state/ChartSelectionState {
 	public static final field $stable I
 	public fun <init> ()V

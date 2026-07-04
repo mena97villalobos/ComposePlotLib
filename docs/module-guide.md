@@ -61,7 +61,7 @@ Path: `chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/c
 - `theme/ChartChromeTheme.kt` (`chartChromeTheme()`, `ChartChromeTheme.Default`); `theme/MaterialChartPalette.kt` (`materialChartPalette()`, `Color.toChartColor()`); `theme/MaterialChartSpecTheme.kt` (`seriesAccentColors`, `withMaterialSeriesColors`, …)
 - `ChartGestureConfig.kt`, `ChartMarker.kt`, `ChartNoData.kt`, `ChartAnimationPolicy.kt`, `ChartCustomAccessibilityAction.kt`
 - `ChartViewports.kt` (e.g. `defaultViewport`)
-- `state/ChartViewportState.kt`, `state/ChartSelectionState.kt`, `state/RememberChartStates.kt`, `state/ChartViewportSync.kt` (`SyncChartViewports` — cross-chart linked pan/zoom)
+- `state/ChartViewportState.kt`, `state/ChartSelectionState.kt`, `state/RememberChartStates.kt`, `state/ChartViewportSync.kt` (`SyncChartViewports` — cross-chart linked pan/zoom), `state/ChartDrillState.kt` (`rememberChartDrillState` — drill-down back-stack)
 - `export/ChartImageExport.kt` (+ `.android.kt` / `.ios.kt`) — raster PNG export (`rememberChartCaptureController`, `Modifier.chartCaptureTarget`, `ImageBitmap.encodeToChartPng`)
 - `ChartRangeBrush.kt` + `internal/gesture/ChartRangeBrushHandler.kt` — drag-rectangle range brush / box selection (`LineChart(rangeBrush = ...)`); the domain-rect model is `chart-core` `selection/ChartRangeSelection.kt`
 - `ChartRangeSelector.kt` — range selector / minimap / brush navigator bound to a shared `ChartViewportState`

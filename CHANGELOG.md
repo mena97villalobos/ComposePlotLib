@@ -190,6 +190,10 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Hover interaction** — `LineChart(hoverEnabled = true)`: a mouse/stylus hover over the plot selects (highlights)
   the nearest point without a tap and clears on exit, reusing the tap hit-resolver (no-op on touch-only devices).
   Pairs with a `marker` for a hover tooltip. `LineChart` gained a trailing `hoverEnabled` parameter.
+- **Drill-down state** — `rememberChartDrillState(root)` / `ChartDrillState<T>`: a drill back-stack
+  (`drillDown` / `drillUp` / `reset`; `current` / `path` / `depth` / `canDrillUp`). Wire a chart's selection to
+  `drillDown` and rebuild each level's spec from `current`; pairs with `ChartViewportState.zoomTo` +
+  `ChartAnimationPolicy` for animated drills.
 
 ### Changed
 

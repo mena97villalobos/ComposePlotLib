@@ -34,6 +34,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickVa
 import com.mena97villalobos.composeplotlib.samples.android.screens.CirclePackChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.DrillDownShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.FacetGridShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.GaugeChartShowcaseScreen
@@ -201,6 +202,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Violin ->
                     Column(detailModifier) {
                         ViolinChartShowcaseScreen()
+                    }
+                ShowcaseDestination.DrillDown ->
+                    Column(detailModifier) {
+                        DrillDownShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -405,6 +410,12 @@ private fun ShowcaseHomeScreen(
             Text("Violin")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.DrillDown) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Drill-down")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -473,6 +484,7 @@ private enum class ShowcaseDestination(
     Polar("Polar / wind-rose"),
     Faceting("Faceting"),
     Violin("Violin"),
+    DrillDown("Drill-down"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),

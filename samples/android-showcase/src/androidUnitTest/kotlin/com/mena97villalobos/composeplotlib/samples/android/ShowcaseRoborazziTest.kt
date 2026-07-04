@@ -26,6 +26,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.CandlestickVa
 import com.mena97villalobos.composeplotlib.samples.android.screens.CirclePackChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.CombinedChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.DomainAxesShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.DrillDownShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.FacetGridShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.FunnelChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.GaugeChartShowcaseScreen
@@ -441,6 +442,18 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     RangeSelectorShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun drillDownShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    DrillDownShowcaseScreen()
                 }
             }
         }

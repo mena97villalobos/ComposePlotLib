@@ -163,7 +163,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~Range selector / minimap / brush navigator~~ ✅ | ~~P2~~ | L | moderate | **Shipped:** `ChartRangeSelector(spec, viewportState)` — a full-width overview over the pan/zoom domain with a draggable window bound to the shared `ChartViewportState` (drag body to pan, edges to zoom, outside to jump). |
 | ~~Cross-chart sync (linked selection & tooltip, `syncId`-style)~~ ✅ | ~~P2~~ | M | moderate | **Shipped:** `SyncChartViewports(...)` links a group of `ChartViewportState`s so pan/zoom on one mirrors the shared axis onto the others (`ChartSyncAxis.X` / `Y` / `Both`); linked selection/tooltips by sharing one `ChartSelectionState`. |
 | ~~Distinct hover interaction (pointer-move highlight vs tap)~~ ✅ | ~~P3~~ | M | moderate | **Shipped:** `LineChart(hoverEnabled = true)` — mouse/stylus hover selects the nearest point (clears on exit; no-op on touch), reusing the tap hit-resolver; pairs with a `marker` for a hover tooltip. |
-| Drill-down (click a mark to expand detail) | P3 | M | weak | Mostly app-level; library exposes callbacks + transitions. |
+| ~~Drill-down (click a mark to expand detail)~~ ✅ | ~~P3~~ | M | weak | **Shipped:** `rememberChartDrillState(root)` / `ChartDrillState` — a drill back-stack (`drillDown` / `drillUp` / `path` / `canDrillUp`); wire selection → `drillDown`, build each level's spec from `current`. |
 
 ### 4.6 Realtime & data lifecycle
 
