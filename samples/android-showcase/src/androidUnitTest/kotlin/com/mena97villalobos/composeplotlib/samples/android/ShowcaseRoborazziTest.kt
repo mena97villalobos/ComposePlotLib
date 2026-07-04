@@ -35,6 +35,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShow
 import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ParallelCoordinatesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.PolarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadialBarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RangeBrushShowcaseScreen
@@ -438,6 +439,18 @@ class ShowcaseRoborazziTest {
             MaterialTheme {
                 Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
                     RangeSelectorShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
+
+    @Test
+    fun polarChartShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 720.dp)) {
+                    PolarChartShowcaseScreen()
                 }
             }
         }

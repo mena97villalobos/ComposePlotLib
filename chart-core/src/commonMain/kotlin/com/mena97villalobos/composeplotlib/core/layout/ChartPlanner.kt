@@ -62,6 +62,7 @@ import com.mena97villalobos.composeplotlib.core.spec.MarkerShape
 import com.mena97villalobos.composeplotlib.core.spec.ParallelAxis
 import com.mena97villalobos.composeplotlib.core.spec.ParallelCoordinatesChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.PolarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ReferenceLine
@@ -1027,6 +1028,73 @@ object ChartPlanner {
                     legendEntries = legendEntries,
                     plotDrawCommands = plotCommands,
                     overlayDrawCommands = overlayCommands,
+                ),
+        )
+    }
+
+    /**
+     * Polar bar / wind-rose: [PolarChartSpec.sectors] divide the circle into equal angular wedges, each drawn from
+     * the center with radius proportional to its value (`value / maxValue`). Optional concentric grid rings.
+     * Read-only (no selection).
+     */
+    fun planPolarChart(
+        input: ChartLayoutInput,
+        spec: PolarChartSpec,
+    ): PolarChartPlan {
+        val bounds = input.toPlanningBounds()
+        val plotBounds = bounds.canvasBounds.inset(spec.contentPadding)
+        val radial = PieChartLayoutMath.layout(plotBounds, holeRadiusRatio = null)
+        val outer = radial.outerRadius
+        val count = spec.sectors.size
+        val maxValue = spec.resolvedMaxValue()
+        val plotCommands = mutableListOf<DrawCommand>()
+        if (outer > 0.0 && count >= 1) {
+            if (spec.showRings && spec.ringCount > 0) {
+                for (ring in 1..spec.ringCount) {
+                    val r = outer * ring / spec.ringCount
+                    plotCommands +=
+                        DrawCommand.Arc(
+                            center = radial.center,
+                            radius = r,
+                            startAngleDegrees = 0.0,
+                            sweepAngleDegrees = 360.0,
+                            useCenter = false,
+                            style = ShapeDrawStyle.Stroke(spec.ringColor, 1.0),
+                            innerRadius = null,
+                        )
+                }
+            }
+            val sliceSweep = ((360.0 - spec.gapDegrees * count) / count).coerceAtLeast(0.0)
+            var angle = spec.startAngleDegrees + spec.gapDegrees / 2.0
+            for (sector in spec.sectors) {
+                val fraction = (sector.value / maxValue).coerceIn(0.0, 1.0)
+                val r = outer * fraction
+                if (r > 0.0 && sliceSweep > 0.0) {
+                    plotCommands +=
+                        DrawCommand.Arc(
+                            center = radial.center,
+                            radius = r,
+                            startAngleDegrees = angle,
+                            sweepAngleDegrees = sliceSweep,
+                            useCenter = true,
+                            style = ShapeDrawStyle.Fill(sector.color),
+                            innerRadius = null,
+                        )
+                }
+                angle += sliceSweep + spec.gapDegrees
+            }
+        }
+        return PolarChartPlan(
+            layout =
+                ChartLayoutPlan(
+                    canvasBounds = bounds.canvasBounds,
+                    plotBounds = plotBounds,
+                    reservedRegions = ChartReservedRegions(spec.contentPadding, null, null, null),
+                    xTicks = emptyList(),
+                    yTicks = emptyList(),
+                    legendEntries = emptyList(),
+                    plotDrawCommands = plotCommands,
+                    overlayDrawCommands = emptyList(),
                 ),
         )
     }

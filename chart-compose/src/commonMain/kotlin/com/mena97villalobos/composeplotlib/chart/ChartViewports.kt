@@ -23,6 +23,7 @@ import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ParallelCoordinatesChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.PieChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.PolarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
@@ -98,6 +99,11 @@ fun defaultViewport(
 /** Trivial unit [ChartViewport] for a parallel-coordinates chart (multi-axis — the plan ignores the viewport). */
 fun defaultViewport(
     @Suppress("UNUSED_PARAMETER") spec: ParallelCoordinatesChartSpec,
+): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
+
+/** Trivial unit [ChartViewport] for a polar / wind-rose chart (radial — the plan ignores the viewport). */
+fun defaultViewport(
+    @Suppress("UNUSED_PARAMETER") spec: PolarChartSpec,
 ): ChartViewport = ChartViewport(xRange = ClosedRangeD(0.0, 1.0), yRange = ClosedRangeD(0.0, 1.0))
 
 /** [ChartViewport] for a stacked-area chart: X across [xValues]; Y across the stacked total per its offset. */

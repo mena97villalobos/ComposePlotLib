@@ -64,6 +64,10 @@ Cartesian composition chart: **`StackedAreaChartSpec`** holds shared **`xValues`
 
 Non-cartesian stage chart: **`FunnelChartSpec`** holds ordered **`FunnelStage`**s (`label`, `value`, optional `color`), drawn as stacked, centered trapezoids tapering from each stage's width (∝ value, widest = full plot) to the next — the classic conversion funnel. Palette-colored with optional centered labels. **Read-only** (no axes/selection/pan-zoom, like Gauge/Bullet). Compose entry: `FunnelChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
+## Polar / wind-rose
+
+Read-only radial bar chart: **`PolarChartSpec`** holds **`PolarSector`** entries (`label`, `value`, `color`) that divide the circle into equal angular wedges, each drawn from the center with radius proportional to its value (`value / maxValue`), over optional concentric grid rings. The classic wind-rose form. **Non-interactive**. Compose entry: `PolarChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+
 ## Parallel coordinates
 
 Multi-dimensional chart: **`ParallelCoordinatesChartSpec`** holds several **`ParallelAxis`** (each `label` + own `min`/`max`) and a set of **`ParallelSeries`** (one `values` list per record), drawn as vertical axes with one polyline per record crossing each axis at its value. Crossing vs. parallel lines reveal correlations/clusters across dimensions; an optional legend labels the records. **Non-interactive** (per-axis brushing is a future extension). Compose entry: `ParallelCoordinatesChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*

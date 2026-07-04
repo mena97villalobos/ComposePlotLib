@@ -387,6 +387,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartViewportsKt {
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/LineChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/ParallelCoordinatesChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
+	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/PolarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/RadarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/RadialBarChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
 	public static final fun defaultViewport (Lcom/mena97villalobos/composeplotlib/core/spec/ScatterChartSpec;)Lcom/mena97villalobos/composeplotlib/core/viewport/ChartViewport;
@@ -431,6 +432,10 @@ public final class com/mena97villalobos/composeplotlib/chart/ParallelCoordinates
 
 public final class com/mena97villalobos/composeplotlib/chart/PieChartKt {
 	public static final fun PieChart (Lcom/mena97villalobos/composeplotlib/core/spec/PieChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/state/ChartViewportState;Lcom/mena97villalobos/composeplotlib/chart/state/ChartSelectionState;Lcom/mena97villalobos/composeplotlib/chart/ChartGestureConfig;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function4;Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement;Lkotlin/jvm/functions/Function3;Lcom/mena97villalobos/composeplotlib/chart/ChartNoDataUi;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;III)V
+}
+
+public final class com/mena97villalobos/composeplotlib/chart/PolarChartKt {
+	public static final fun PolarChart (Lcom/mena97villalobos/composeplotlib/core/spec/PolarChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/RadarChartKt {

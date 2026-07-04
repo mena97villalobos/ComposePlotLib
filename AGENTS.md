@@ -21,7 +21,7 @@ Current priorities:
 - `chart-compose`
   Owns public Compose APIs (`LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
   `CombinedCartesianChart`, `PieChart`, `RadarChart`, `SankeyChart`, `HeatmapChart`,
-  `CandlestickChart`, `BoxPlotChart`, `WaterfallChart`, `BubbleChart`, `BulletChart`, `FunnelChart`, `StackedAreaChart`, `RadialBarChart`, `CalendarHeatmapChart`, `TreemapChart`, `SunburstChart`, `CirclePackChart`, `ParallelCoordinatesChart`, `GaugeChart`, `Sparkline`),
+  `CandlestickChart`, `BoxPlotChart`, `WaterfallChart`, `BubbleChart`, `BulletChart`, `FunnelChart`, `StackedAreaChart`, `RadialBarChart`, `CalendarHeatmapChart`, `TreemapChart`, `SunburstChart`, `CirclePackChart`, `ParallelCoordinatesChart`, `PolarChart`, `GaugeChart`, `Sparkline`),
   Compose-managed interaction state, gesture adapters, and Compose canvas rendering. Also compiles
   for iOS so the library can be consumed from Compose Multiplatform apps.
 - `samples/android-showcase`

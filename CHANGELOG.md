@@ -170,6 +170,8 @@ precompiled callers of the `SankeyLayoutSpec` / `SankeyNodeLabelsSpec` data-clas
 - **Parallel coordinates chart family** — `ParallelCoordinatesChart` composable + `ParallelCoordinatesChartSpec` /
   `ParallelAxis` / `ParallelSeries`: several vertical axes (each with its own range) and one polyline per record
   connecting its value on every axis. Optional series legend. Read-only.
+- **Polar bar / wind-rose chart family** — `PolarChart` composable + `PolarChartSpec` / `PolarSector`: equal angular
+  wedges whose radius encodes value (`value / maxValue`), drawn over optional concentric grid rings. Read-only.
 
 ### Changed
 

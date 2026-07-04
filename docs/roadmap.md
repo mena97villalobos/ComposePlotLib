@@ -19,11 +19,11 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ## 1. Current state (as of 2026-07, `1.2.0` unreleased)
 
-**Chart families (24):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
+**Chart families (25):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
 `RadarChart`, `SankeyChart` (orientation, Tableau-10 palette, gradient ribbons — reworked for 1.2.0),
 `HeatmapChart`, `GaugeChart`, `CandlestickChart`, `BoxPlotChart` (Tukey five-number summaries), `WaterfallChart`
-(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), `CalendarHeatmapChart` (year/contribution grid), `TreemapChart` (squarified area tiles), `SunburstChart` (hierarchical radial), `CirclePackChart` (bubble-pack), `ParallelCoordinatesChart` (multi-axis), plus the axis-less
+(running-total bars), `BubbleChart` (area-proportional sizing), `BulletChart` (linear KPI), `FunnelChart` (conversion funnel), `StackedAreaChart` (absolute/percent/streamgraph), `RadialBarChart` (concentric progress rings), `CalendarHeatmapChart` (year/contribution grid), `TreemapChart` (squarified area tiles), `SunburstChart` (hierarchical radial), `CirclePackChart` (bubble-pack), `ParallelCoordinatesChart` (multi-axis), `PolarChart` (polar bar / wind rose), plus the axis-less
 `Sparkline` wrapper.
 
 **Cartesian depth:** area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`), reference/threshold
@@ -207,7 +207,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 
 | Feature | Pri | Size | Fit | Notes |
 |---|---|---|---|---|
-| Polar / wind-rose coordinate system (polar bars, scatterpolar) | P3 | L | moderate | Radar proves the polar grid; a general angle+radius mode is a new plotting system. |
+| ~~Polar / wind-rose coordinate system (polar bars, scatterpolar)~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `PolarChart` / `PolarChartSpec` / `PolarSector` — equal angular wedges with radius ∝ value over concentric grid rings (polar bar / wind rose). |
 | Faceting / small multiples (shared or per-facet scales) | P3 | L | moderate | Grid-of-plots composition layer in `chart-compose`. |
 
 ### 4.11 Performance (large data)

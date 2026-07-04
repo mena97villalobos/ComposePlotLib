@@ -43,6 +43,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShow
 import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ParallelCoordinatesShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.PieChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.PolarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RadialBarChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.RangeBrushShowcaseScreen
@@ -186,6 +187,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.ParallelCoordinates ->
                     Column(detailModifier) {
                         ParallelCoordinatesShowcaseScreen()
+                    }
+                ShowcaseDestination.Polar ->
+                    Column(detailModifier) {
+                        PolarChartShowcaseScreen()
                     }
                 ShowcaseDestination.StackedArea ->
                     Column(detailModifier) {
@@ -372,6 +377,12 @@ private fun ShowcaseHomeScreen(
             Text("Parallel coordinates")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.Polar) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Polar / wind-rose")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.StackedArea) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -437,6 +448,7 @@ private enum class ShowcaseDestination(
     Sunburst("Sunburst"),
     CirclePack("Circle packing"),
     ParallelCoordinates("Parallel coordinates"),
+    Polar("Polar / wind-rose"),
     StackedArea("Stacked area chart"),
     LinkedCharts("Linked charts"),
     ImageExport("Raster export"),
