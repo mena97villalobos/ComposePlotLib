@@ -1,49 +1,33 @@
 # ComposePlotLib
 
-`ComposePlotLib` is the Kotlin Multiplatform and Compose Multiplatform successor project being designed in this repository. The goal is to build a modern charting library inspired by MPAndroidChart, with support for Android and iOS and a declarative Compose-first API.
+**A charting library for Kotlin Multiplatform and Compose Multiplatform — 26 chart families, one
+declarative API, Android and iOS.** A modern successor to MPAndroidChart, built Compose-first around
+immutable specs and explicit state.
 
-The library ships cartesian **line**, **bar**, **stacked bar**, **scatter**, **candlestick**, and **combined** charts, radial **pie / donut**, **radar**, and **gauge** (progress-ring), plus a **sankey** flow diagram, **heatmap** grids, a thin axis-less **sparkline** wrapper, and **domain-axis** line demos (category + epoch-ms time). **Line** charts add **area / threshold-band fill** (`LineStyle.areaFill`); **reference lines** apply to line, bar, scatter, and combined charts; **marker shapes** (`PointStyle.shape`) style line and scatter vertices; and **scatter** charts additionally support **per-point styling** and **bubble** point sizing (`ChartPoint.markerShape` / `markerColor` / `markerRadius`). All of this uses immutable specs, a shared `chart-core` planner, `chart-compose` rendering, and the Android **showcase** sample app + **Roborazzi**. iOS is supported as a **library** target (`chart-core` / `chart-compose` compile for iOS). Documentation targets humans and AI agents.
+<p align="center">
+  <img src="docs/images/line-chart.png" alt="Line chart with selection marker and tooltip" width="30%">
+  <img src="docs/images/bar-chart.png" alt="Grouped bar chart" width="30%">
+  <img src="docs/images/pie-chart.png" alt="Pie chart with callout labels" width="30%">
+  <br>
+  <img src="docs/images/radar-chart.png" alt="Radar chart comparing two series" width="30%">
+  <img src="docs/images/treemap-chart.png" alt="Treemap with squarified layout" width="30%">
+  <img src="docs/images/sankey-chart.png" alt="Sankey flow diagram" width="30%">
+</p>
 
-## Start here
-1. **[`docs/roadmap.md`](./docs/roadmap.md)** — what “production ready” still needs; concrete next tasks  
-2. [`AGENTS.md`](./AGENTS.md) — contributor rules, **showcase** + docs obligations for new charts, `gradlew` commands, module boundaries  
-3. [`docs/README.md`](./docs/README.md) — index of all documentation  
-4. [`docs/architecture.md`](./docs/architecture.md) and [`docs/api-and-state.md`](./docs/api-and-state.md) — design and public API  
+## Quick start
 
-## Documentation
-| Topic | Doc |
-|------|-----|
-| Viewport constraints & axis lock | [`docs/viewport-configuration.md`](./docs/viewport-configuration.md) |
-| Module ownership | [`docs/module-guide.md`](./docs/module-guide.md) |
-| Android showcase & Roborazzi | [`docs/showcase-guide.md`](./docs/showcase-guide.md) |
-| iOS library usage | [`docs/ios-library-usage.md`](./docs/ios-library-usage.md) |
-| Long-range scope & showcase roadmap | [`docs/roadmap.md`](./docs/roadmap.md) |
-| Public API release gate | [`docs/api-checklist.md`](./docs/api-checklist.md) |
-
-## Module structure
-Current modules:
-
-- `:chart-core`
-- `:chart-compose`
-- `:samples:android-showcase`
-
-## Install (GitHub Packages)
-
-This repo publishes artifacts to **GitHub Packages** from the Release workflow (tags like `v1.2.3` publish version `1.2.3`).
-
-### 1) Add the repository
-
-In your consumer project’s `settings.gradle.kts`:
+Add the repository (GitHub Packages currently requires a token — see
+[Install](#install-github-packages)):
 
 ```kotlin
+// settings.gradle.kts
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
         maven {
-            url = uri("https://maven.pkg.github.com/OWNER/REPO")
+            url = uri("https://maven.pkg.github.com/mena97villalobos/ComposePlotLib")
             credentials {
-                // Use Gradle properties (recommended) or env vars.
                 username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_ACTOR")
                 password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
             }
@@ -52,59 +36,153 @@ dependencyResolutionManagement {
 }
 ```
 
-In `~/.gradle/gradle.properties` (or your project’s `gradle.properties`):
-
-```properties
-gpr.user=YOUR_GITHUB_USERNAME
-gpr.key=YOUR_TOKEN_WITH_read:packages
-```
-
-### 2) Add dependencies (Compose Multiplatform / KMP)
-
-Most apps only need `chart-compose` (it has an `api` dependency on `chart-core`):
+Add the dependency — most apps only need `chart-compose`, which re-exports `chart-core`:
 
 ```kotlin
+// build.gradle.kts
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.mena97villalobos.composeplotlib:chart-compose:VERSION")
+            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.2.0")
         }
     }
 }
 ```
 
-If you want planner-only usage (no Compose), depend on `chart-core`:
+Build an immutable spec, then render it. Pan/zoom and selection state are explicit and hoistable:
 
 ```kotlin
-implementation("com.mena97villalobos.composeplotlib:chart-core:VERSION")
+import androidx.compose.runtime.Composable
+import com.mena97villalobos.composeplotlib.chart.LineChart
+import com.mena97villalobos.composeplotlib.chart.defaultViewport
+import com.mena97villalobos.composeplotlib.chart.state.rememberChartSelectionState
+import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
+import com.mena97villalobos.composeplotlib.core.model.ChartPoint
+import com.mena97villalobos.composeplotlib.core.model.LineSeries
+import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
+
+@Composable
+fun BasicLineChart() {
+    val spec =
+        LineChartSpec(
+            series =
+                listOf(
+                    LineSeries(
+                        id = "downloads",
+                        label = "Downloads",
+                        points = listOf(ChartPoint(0.0, 1.0), ChartPoint(1.0, 3.0), ChartPoint(2.0, 2.0)),
+                    ),
+                ),
+        )
+    LineChart(
+        spec = spec,
+        viewportState = rememberChartViewportState(initialViewport = defaultViewport(spec)),
+        selectionState = rememberChartSelectionState(),
+    )
+}
 ```
 
-### Notes about iOS artifacts
+## Chart families
 
-Linux CI does not publish Kotlin/Native iOS klibs. If you need Apple artifacts in GitHub Packages, publish from a macOS job (or publish locally from a Mac).
+All 26 families ship today. See
+[`docs/chart-families-overview.md`](./docs/chart-families-overview.md) for the full reference.
 
-## Quick start (Compose)
+| Group | Families |
+|-------|----------|
+| Cartesian | `LineChart`, `BarChart`, `StackedBarChart`, `StackedAreaChart`, `ScatterChart`, `BubbleChart`, `CombinedCartesianChart`, `CandlestickChart`, `BoxPlotChart`, `ViolinChart`, `WaterfallChart`, `BulletChart`, `ParallelCoordinatesChart` |
+| Radial | `PieChart` (+ donut), `RadarChart`, `PolarChart`, `GaugeChart`, `RadialBarChart`, `SunburstChart` |
+| Hierarchical | `TreemapChart`, `CirclePackChart` |
+| Flow | `SankeyChart`, `FunnelChart` |
+| Matrix | `HeatmapChart`, `CalendarHeatmapChart` |
+| Minimal | `Sparkline` (axis-less wrapper) |
 
-1. Build an immutable spec (e.g. `LineChartSpec`)
-2. Render it with a chart composable (e.g. `LineChart`)
-3. Keep interaction state explicit (`ChartViewportState`, `ChartSelectionState`)
+Cross-cutting features include logarithmic axis scales, null/missing-data gap handling
+(`ChartPoint.gap`), per-point data labels (`DataLabelsSpec`), an interactive legend
+(`hiddenSeriesIds`), an annotations layer (`ChartAnnotation`), area and threshold-band fills
+(`LineStyle.areaFill`), reference lines, marker shapes with per-point styling, drill-down, range
+brushing, linked viewports, and PNG export.
 
-See the Dokka **Quick start** page for a copy-pasteable sample.
+## Compatibility
 
-## Current Project Layout
+| | |
+|---|---|
+| Kotlin | 2.4.0 |
+| Compose Multiplatform | 1.11.1 |
+| Android | `minSdk` 28, `compileSdk` 36 |
+| JVM target | 11 |
+| iOS | `iosArm64`, `iosSimulatorArm64` (no `iosX64` — Intel simulators are not supported) |
 
-- [`chart-core`](./chart-core/src) contains the non-UI chart engine and planner.
-- [`chart-compose`](./chart-compose/src) contains the public Compose chart API and rendering layer.
-- [`samples/android-showcase`](./samples/android-showcase/src) contains the curated Android showcase screens.
+## Install (GitHub Packages)
 
-## Next implementation steps
-See **[`docs/roadmap.md`](./docs/roadmap.md)** for the full backlog. In short, the near-term priorities are a **logarithmic axis scale**, **null / missing-data gap handling**, **per-point data labels**, an **interactive legend**, and an **annotations layer** — alongside ongoing **layout/text** and **iOS parity** hardening. All 12 chart families (line, bar, stacked bar, scatter, combined, pie/donut, radar, sankey, heatmap, gauge, candlestick, sparkline) are already shipped.
+Artifacts are published to **GitHub Packages** from the Release workflow (tag `v1.2.3` publishes
+version `1.2.3`). GitHub's Maven registry requires authentication **even for public packages**, so
+consumers must supply a token with `read:packages`:
 
-## Build and Run Android
+```properties
+# ~/.gradle/gradle.properties
+gpr.user=YOUR_GITHUB_USERNAME
+gpr.key=YOUR_TOKEN_WITH_read:packages
+```
+
+For planner-only usage with no Compose dependency:
+
+```kotlin
+implementation("com.mena97villalobos.composeplotlib:chart-core:1.2.0")
+```
+
+Android, iOS (`iosArm64`, `iosSimulatorArm64`) and Kotlin-Multiplatform-metadata artifacts are
+published for both modules; `chart-core` additionally publishes a JVM artifact. The release
+workflow publishes the Apple targets from a macOS job.
+
+## Documentation
+
+| Topic | Doc |
+|------|-----|
+| All chart families | [`docs/chart-families-overview.md`](./docs/chart-families-overview.md) |
+| Public API & state | [`docs/api-and-state.md`](./docs/api-and-state.md) |
+| Styling & theming | [`docs/style-and-theme.md`](./docs/style-and-theme.md) |
+| Axis cookbook (category / time) | [`docs/axis-category-time-cookbook.md`](./docs/axis-category-time-cookbook.md) |
+| Viewport constraints & axis lock | [`docs/viewport-configuration.md`](./docs/viewport-configuration.md) |
+| Marker & tooltip placement | [`docs/marker-tooltip-placement.md`](./docs/marker-tooltip-placement.md) |
+| iOS library usage | [`docs/ios-library-usage.md`](./docs/ios-library-usage.md) |
+| Architecture | [`docs/architecture.md`](./docs/architecture.md) |
+| Full documentation index | [`docs/README.md`](./docs/README.md) |
+
+API reference is published to GitHub Pages via Dokka on each release.
+
+## Platforms
+
+The library targets **Android** and **iOS**. `chart-core` and `chart-compose` both compile for iOS
+and are consumable from any Compose Multiplatform app — see
+[`docs/ios-library-usage.md`](./docs/ios-library-usage.md). The bundled runnable sample is
+Android-only.
 
 ```shell
 ./gradlew :samples:android-showcase:assembleDebug
 ```
 
-## iOS
-iOS is supported as a **library** target. `chart-core` and `chart-compose` compile for iOS; consume them from your own Compose Multiplatform app. See [`docs/ios-library-usage.md`](./docs/ios-library-usage.md).
+## Modules
+
+| Module | Role |
+|--------|------|
+| [`chart-core`](./chart-core/src) | Non-UI engine: math, geometry, specs, viewport, transforms, planner, draw commands |
+| [`chart-compose`](./chart-compose/src) | Public Compose API and rendering |
+| [`samples/android-showcase`](./samples/android-showcase/src) | Android showcase app with Roborazzi screenshot tests |
+
+## Contributing
+
+Contributions are welcome. Start with [`AGENTS.md`](./AGENTS.md) for module boundaries, the
+showcase/docs obligations for new chart families, and the required `gradlew` commands;
+[`docs/roadmap.md`](./docs/roadmap.md) tracks the open backlog.
+
+Before opening a PR, run what CI runs:
+
+```shell
+./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity \
+  :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest \
+  :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
+```
+
+## License
+
+Licensed under the [Apache License, Version 2.0](./LICENSE).

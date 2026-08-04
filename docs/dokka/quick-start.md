@@ -19,7 +19,7 @@ dependencyResolutionManagement {
         mavenCentral()
         google()
         maven {
-            url = uri("https://maven.pkg.github.com/OWNER/REPO")
+            url = uri("https://maven.pkg.github.com/mena97villalobos/ComposePlotLib")
             credentials {
                 username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_ACTOR")
                 password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
@@ -35,7 +35,7 @@ Add the dependency (common code usually depends on `chart-compose`, which re-exp
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.mena97villalobos.composeplotlib:chart-compose:VERSION")
+            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.2.0")
         }
     }
 }

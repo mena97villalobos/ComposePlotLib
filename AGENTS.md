@@ -70,9 +70,10 @@ When adding features, fit them into this flow instead of bypassing it.
 
 ## Testing Expectations
 - Add or update `chart-core` tests for new math, transform, tick-generation, or selection logic.
-- **CI** — PR and release workflows (`.github/workflows/pr.yml`, `.github/workflows/release.yml`) run on **Ubuntu** only: `ktlintCheck`, JVM + Android unit tests, Roborazzi, and `:samples:android-showcase:assembleDebug`. See **`docs/github-ci-packages-and-pages.md`** for GitHub Packages consumption and Pages setup.
-- Build at least:
-  `./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug`
+- **CI** — the PR workflow (`.github/workflows/pr.yml`) runs on **Ubuntu**: `ktlintCheck`, `apiCheck`, `:chart-core:verifyChartCorePurity`, JVM + Android unit tests, Roborazzi, and `:samples:android-showcase:assembleDebug`; a separate **macOS** job compiles both iOS targets. The release workflow (`.github/workflows/release.yml`) additionally publishes iOS + KMP metadata from macOS. See **`docs/github-ci-packages-and-pages.md`** for GitHub Packages consumption and Pages setup.
+- Build at least what PR CI gates — `apiCheck` and `verifyChartCorePurity` are easy to miss locally and will fail your PR:
+  `./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug`
+- If you changed the public API surface on purpose, refresh the dumps with `./gradlew apiDump` and review the `.api` diff — a changed constructor or `copy()` signature on a public spec type is a breaking change, not a routine refresh.
 - On **macOS**, when changing shared model or Compose code paths used on iOS, also run:
   `./gradlew :chart-compose:compileKotlinIosSimulatorArm64` (and `:chart-compose:compileKotlinIosArm64` if you need device slices).
 - After intentional UI changes to showcase charts, refresh screenshot baselines with:
@@ -159,13 +160,15 @@ Cartesian planning is split for clarity: tick/chrome (`ChartChromeLayout.kt`), f
 
 <!-- code-review-graph MCP tools -->
 
-## MCP Tools: code-review-graph
+## Optional local tooling: code-review-graph (maintainer)
 
-**IMPORTANT: This project has a knowledge graph. ALWAYS use the
-code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
-the codebase.** The graph is faster, cheaper (fewer tokens), and gives
-you structural context (callers, dependents, test coverage) that file
-scanning cannot.
+> **Not required to contribute.** This section describes an optional local MCP server the
+> maintainer runs; it is not published and there is nothing to install from this repo. Skip it
+> entirely and use Grep/Glob/Read — no PR requirement depends on it.
+
+If you *do* have the `code-review-graph` binary on your PATH (wired up via `.mcp.json`), prefer its
+tools over raw file scanning: the graph is faster, cheaper (fewer tokens), and gives structural
+context (callers, dependents, test coverage) that file scanning cannot.
 
 ### When to use graph tools FIRST
 

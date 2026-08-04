@@ -1,5 +1,6 @@
 import java.io.File
 import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
@@ -52,6 +53,42 @@ subprojects {
                                 username = System.getenv("GITHUB_ACTOR")
                                 password = System.getenv("GITHUB_TOKEN")
                             }
+                        }
+                    }
+                }
+
+                // Every published artifact must be self-describing: consumers' dependency
+                // scanners read the license/SCM metadata off the POM, not off the repo.
+                publications.withType<MavenPublication>().configureEach {
+                    pom {
+                        name.set("ComposePlotLib ${project.name}")
+                        description.set(
+                            "Kotlin Multiplatform + Compose Multiplatform charting library " +
+                                "for Android and iOS.",
+                        )
+                        url.set("https://github.com/mena97villalobos/ComposePlotLib")
+                        licenses {
+                            license {
+                                name.set("The Apache License, Version 2.0")
+                                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                                distribution.set("repo")
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set("mena97villalobos")
+                                name.set("Bryan Mena")
+                                url.set("https://github.com/mena97villalobos")
+                            }
+                        }
+                        scm {
+                            url.set("https://github.com/mena97villalobos/ComposePlotLib")
+                            connection.set(
+                                "scm:git:https://github.com/mena97villalobos/ComposePlotLib.git",
+                            )
+                            developerConnection.set(
+                                "scm:git:ssh://git@github.com/mena97villalobos/ComposePlotLib.git",
+                            )
                         }
                     }
                 }

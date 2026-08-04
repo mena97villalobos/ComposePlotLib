@@ -30,7 +30,7 @@ Add the Maven repository and authenticate with a token that has `read:packages` 
 dependencyResolutionManagement {
     repositories {
         maven {
-            url = uri("https://maven.pkg.github.com/OWNER/REPO")
+            url = uri("https://maven.pkg.github.com/mena97villalobos/ComposePlotLib")
             credentials {
                 username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
                 password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
@@ -43,8 +43,8 @@ dependencyResolutionManagement {
 Dependencies (example):
 
 ```kotlin
-implementation("com.mena97villalobos.composeplotlib:chart-core:VERSION")
-implementation("com.mena97villalobos.composeplotlib:chart-compose:VERSION")
+implementation("com.mena97villalobos.composeplotlib:chart-core:1.2.0")
+implementation("com.mena97villalobos.composeplotlib:chart-compose:1.2.0")
 ```
 
 Use the same **VERSION** string as published (e.g. `1.2.3` without `v`).

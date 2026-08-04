@@ -8,6 +8,9 @@ local.properties
 .idea
 .DS_Store
 captures
+*.hprof
+*.log
+.claude/settings.local.json
 .externalNativeBuild
 .cxx
 *.xcodeproj/*

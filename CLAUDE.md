@@ -128,9 +128,14 @@ code.
 
 ### Shipped Chart Families
 
-`LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `CombinedCartesianChart`, `PieChart`,
-`RadarChart`, `SankeyChart`, `HeatmapChart`, `GaugeChart`, `CandlestickChart`, plus the axis-less
-`Sparkline` wrapper.
+All 26 families ship. Cartesian: `LineChart`, `BarChart`, `StackedBarChart`, `StackedAreaChart`,
+`ScatterChart`, `BubbleChart`, `CombinedCartesianChart`, `CandlestickChart`, `BoxPlotChart`,
+`ViolinChart`, `WaterfallChart`, `BulletChart`, `ParallelCoordinatesChart`. Radial: `PieChart`,
+`RadarChart`, `PolarChart`, `GaugeChart`, `RadialBarChart`, `SunburstChart`. Hierarchical:
+`TreemapChart`, `CirclePackChart`. Flow: `SankeyChart`, `FunnelChart`. Matrix: `HeatmapChart`,
+`CalendarHeatmapChart`. Plus the axis-less `Sparkline` wrapper.
+
+`docs/chart-families-overview.md` is the source of truth — update it and this list together.
 
 Line/scatter charts also support area / threshold-band fill (`LineStyle.areaFill` + `AreaFillMode`),
 reference lines (`ReferenceLine`), marker shapes with per-point styling (`MarkerShape`, `ChartPoint`
@@ -159,47 +164,8 @@ marker overrides), and bubble point sizing.
 
 ## CI
 
-PRs run on Ubuntu: `ktlintCheck`, JVM + Android unit tests, Roborazzi verification,
-`:samples:android-showcase:assembleDebug`, plus a macOS iOS compile gate for `chart-core` /
-`chart-compose`. Releases trigger on semver tags (`v*.*.*`) and publish to GitHub Packages + GitHub
-Pages.
+PRs run on Ubuntu: `ktlintCheck`, `apiCheck`, `:chart-core:verifyChartCorePurity`, JVM + Android unit
+tests, Roborazzi verification, `:samples:android-showcase:assembleDebug`, plus a macOS iOS compile
+gate for `chart-core` / `chart-compose`. Releases trigger on semver tags (`v*.*.*`) and publish to
+GitHub Packages (Android/JVM from Ubuntu, iOS + KMP metadata from macOS) + GitHub Pages.
 
-<!-- code-review-graph MCP tools -->
-
-## MCP Tools: code-review-graph
-
-**IMPORTANT: This project has a knowledge graph. ALWAYS use the
-code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
-the codebase.** The graph is faster, cheaper (fewer tokens), and gives
-you structural context (callers, dependents, test coverage) that file
-scanning cannot.
-
-### When to use graph tools FIRST
-
-- **Exploring code**: `semantic_search_nodes` or `query_graph` instead of Grep
-- **Understanding impact**: `get_impact_radius` instead of manually tracing imports
-- **Code review**: `detect_changes` + `get_review_context` instead of reading entire files
-- **Finding relationships**: `query_graph` with callers_of/callees_of/imports_of/tests_for
-- **Architecture questions**: `get_architecture_overview` + `list_communities`
-
-Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
-
-### Key Tools
-
-| Tool                        | Use when                                               |
-|-----------------------------|--------------------------------------------------------|
-| `detect_changes`            | Reviewing code changes — gives risk-scored analysis    |
-| `get_review_context`        | Need source snippets for review — token-efficient      |
-| `get_impact_radius`         | Understanding blast radius of a change                 |
-| `get_affected_flows`        | Finding which execution paths are impacted             |
-| `query_graph`               | Tracing callers, callees, imports, tests, dependencies |
-| `semantic_search_nodes`     | Finding functions/classes by name or keyword           |
-| `get_architecture_overview` | Understanding high-level codebase structure            |
-| `refactor_tool`             | Planning renames, finding dead code                    |
-
-### Workflow
-
-1. The graph auto-updates on file changes (via hooks).
-2. Use `detect_changes` for code review.
-3. Use `get_affected_flows` to understand impact.
-4. Use `query_graph` pattern="tests_for" to check coverage.
