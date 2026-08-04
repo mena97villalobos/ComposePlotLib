@@ -18,7 +18,7 @@ kotlin = "2.4.0"
 # material3 (JetBrains CMP) is alpha-only on its 1.10+ line; 1.11.0-alpha07 is the build pinned by Compose Multiplatform 1.11.1.
 material3 = "1.11.0-alpha07"
 robolectric = "4.16.1"
-roborazzi = "1.64.0"
+roborazzi = "1.70.0"
 jmhGradlePlugin = "0.7.3"
 ktlint = "14.2.0"
 binaryCompatibilityValidator = "0.18.1"
