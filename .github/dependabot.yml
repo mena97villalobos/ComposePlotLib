@@ -1,30 +1,49 @@
 version: 2
+
+# Monthly, and batched into a single PR per ecosystem. Dependabot cannot combine ecosystems into
+# one PR, so the floor is two PRs per month: one for Gradle, one for GitHub Actions. Everything
+# within each ecosystem — direct and transitive, version and security updates, majors included —
+# lands in that one PR rather than one PR per dependency.
 updates:
   - package-ecosystem: gradle
     directory: "/"
     schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
+      interval: monthly
+    open-pull-requests-limit: 1
     labels:
       - dependencies
     groups:
-      # Kotlin, Compose Multiplatform and AGP are coupled — a lone bump usually fails to resolve.
-      kotlin-and-compose:
+      all-gradle-dependencies:
+        applies-to: version-updates
         patterns:
-          - "org.jetbrains.kotlin*"
-          - "org.jetbrains.compose*"
-          - "org.jetbrains.androidx.lifecycle*"
-          - "com.android.*"
-      test-tooling:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
+      all-gradle-security:
+        applies-to: security-updates
         patterns:
-          - "org.robolectric*"
-          - "io.github.takahirom.roborazzi*"
-          - "junit*"
+          - "*"
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
+    open-pull-requests-limit: 1
     labels:
       - dependencies
       - ci
+    groups:
+      all-github-actions:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
+      all-github-actions-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
