@@ -25,9 +25,12 @@ user-visible.
 
 - **`DataDomain.fromPoints` no longer throws on an empty list.** An empty series is a normal
   data-loading state, not a programming error; both axes now collapse to the degenerate `0.0..0.0`
-  already used for an axis with no finite values. This also makes the public `LineSeries.domain()`
-  and `ScatterSeries.domain()` safe to call mid-load, where they previously crashed the host app.
-  No signature change.
+  already used for an axis with no finite values. This makes the public `LineSeries.domain()` and
+  `ScatterSeries.domain()` safe to call while data is still loading. No signature change.
+
+  Scope: the chart composables never reached this path — neither `ChartPlanner` nor
+  `defaultViewport` calls `domain()`, and an all-empty spec already rendered the no-data overlay.
+  It only affected callers invoking `domain()` themselves, which is a supported public API.
 - **Compose dependencies are now `api` rather than `implementation`** in `chart-compose`
   (`compose.runtime`, `compose.foundation`, `compose.material3`, `compose.ui`). Their types appear in
   public signatures — `Modifier`, `Color`, `ImageBitmap`, `Composer`, `BoxScope`, and material3's

@@ -32,8 +32,8 @@ All of these live under `chart-core/.../spec/` and are **immutable** fields on t
 
 | Type | Role | Typical home |
 |------|------|----------------|
-| `LineStyle` | Polyline stroke (`color`, `strokeWidth`) | `LineSeries.lineStyle` |
-| `PointStyle` | Vertex circles (`visible`, `radius`, optional `color`) | `LineSeries.pointStyle`, `ScatterSeries.pointStyle` |
+| `LineStyle` | Polyline stroke (`color`, `strokeWidth`), area fill (`areaFill`, `areaFillEnd`, `areaFillMode`) and `interpolation` | `LineSeries.lineStyle` |
+| `PointStyle` | Vertex markers (`visible`, `radius`, optional `color`, `shape`) | `LineSeries.pointStyle`, `ScatterSeries.pointStyle` |
 | `BarStyle` | Bar fill and column width | `BarGroup.style` |
 | `SelectionStyle` | Crosshair / highlight stroke and selected point | `LineChartSpec.selectionStyle`, bar/scatter/combined/pie specs |
 | `AxisLabelStyle` | Tick label color | `AxisSpec.labelStyle` |

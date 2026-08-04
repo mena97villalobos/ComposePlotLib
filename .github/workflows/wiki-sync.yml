@@ -1,0 +1,70 @@
+name: Sync Wiki
+
+# Publishes wiki/ on main to the GitHub wiki (the separate <repo>.wiki.git repository), so the wiki
+# is version-controlled, reviewable in PRs, and cannot drift from the docs it links to.
+#
+# ONE-TIME SETUP: GitHub does not create the .wiki.git repository until the wiki has at least one
+# page. Before the first run, open the repository's Wiki tab and save any page (content does not
+# matter — this job overwrites it). Until then this job is skipped rather than failed.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "wiki/**"
+      - ".github/workflows/wiki-sync.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: wiki-sync-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check the wiki repository has been initialized
+        id: probe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git ls-remote "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git" >/dev/null 2>&1; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Wiki repository does not exist yet. Open the repo's Wiki tab and save any page once, then re-run this workflow."
+          fi
+
+      - name: Clone the wiki repository
+        if: steps.probe.outputs.ready == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git" wiki-repo
+
+      - name: Copy pages
+        if: steps.probe.outputs.ready == 'true'
+        run: |
+          # Replace all tracked wiki content, preserving .git, so deletions in wiki/ propagate.
+          find wiki-repo -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -R wiki/. wiki-repo/
+
+      - name: Commit and push
+        if: steps.probe.outputs.ready == 'true'
+        working-directory: wiki-repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet && git diff --staged --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "Wiki already up to date."
+            exit 0
+          fi
+          git add -A
+          git commit -m "docs(wiki): sync from ${GITHUB_SHA::7}"
+          git push
