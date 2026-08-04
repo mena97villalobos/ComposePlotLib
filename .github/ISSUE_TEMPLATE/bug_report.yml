@@ -1,0 +1,85 @@
+name: Bug report
+description: Something renders wrong, crashes, or behaves unexpectedly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. A minimal spec that reproduces the problem is by far the most useful
+        thing you can include — it usually turns into a regression test directly.
+
+  - type: dropdown
+    id: family
+    attributes:
+      label: Chart family
+      description: Which chart is affected?
+      options:
+        - LineChart
+        - BarChart
+        - StackedBarChart
+        - StackedAreaChart
+        - ScatterChart
+        - BubbleChart
+        - CombinedCartesianChart
+        - CandlestickChart
+        - BoxPlotChart
+        - ViolinChart
+        - WaterfallChart
+        - BulletChart
+        - ParallelCoordinatesChart
+        - PieChart
+        - RadarChart
+        - PolarChart
+        - GaugeChart
+        - RadialBarChart
+        - SunburstChart
+        - TreemapChart
+        - CirclePackChart
+        - SankeyChart
+        - FunnelChart
+        - HeatmapChart
+        - CalendarHeatmapChart
+        - Sparkline
+        - Not chart-specific / other
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect, and what did you get instead? Screenshots help a lot for rendering issues.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The smallest spec + composable that shows the problem.
+      render: kotlin
+      placeholder: |
+        val spec = LineChartSpec(
+            series = listOf(
+                LineSeries(id = "s1", label = "S1", points = listOf(ChartPoint(0.0, 1.0))),
+            ),
+        )
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: ComposePlotLib version
+      placeholder: "1.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      description: Android API level or iOS version, plus Kotlin and Compose Multiplatform versions.
+      placeholder: "Android API 34, Kotlin 2.4.0, CMP 1.11.1"
+    validations:
+      required: true

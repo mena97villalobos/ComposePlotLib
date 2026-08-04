@@ -45,6 +45,14 @@ data class SankeyChartSpec(
     }
 }
 
+/**
+ * One node in a Sankey diagram — a rectangle that flows connect to.
+ *
+ * @property id Unique key; [SankeyLink.sourceNodeId] and [SankeyLink.targetNodeId] refer to it.
+ * @property column Zero-based stage along the flow axis. Nodes sharing a column are drawn in the same band.
+ * @property label Display text; defaults to [id].
+ * @property color Node fill. `null` takes the next color from the chart palette.
+ */
 data class SankeyNode(
     val id: String,
     val column: Int,
@@ -52,6 +60,14 @@ data class SankeyNode(
     val color: ChartColor? = null,
 )
 
+/**
+ * A weighted flow between two [SankeyNode]s. Ribbon thickness is proportional to [value].
+ *
+ * @property sourceNodeId [SankeyNode.id] the flow leaves.
+ * @property targetNodeId [SankeyNode.id] the flow enters.
+ * @property value Flow magnitude; must be positive to be drawn.
+ * @property color Explicit ribbon color. `null` uses [SankeyLinkColorMode].
+ */
 data class SankeyLink(
     val sourceNodeId: String,
     val targetNodeId: String,
@@ -59,12 +75,21 @@ data class SankeyLink(
     val color: ChartColor? = null,
 )
 
+/** How nodes are ordered within a column. */
 enum class SankeyNodeOrder {
     /** Preserve the order as provided in [SankeyChartSpec.nodes]. */
     Input,
+
+    /** Largest total flow first. */
     ValueDesc,
+
+    /** Largest incoming flow first. */
     IncomingDesc,
+
+    /** Largest outgoing flow first. */
     OutgoingDesc,
+
+    /** Alphabetical by [SankeyNode.label]. */
     LabelAsc,
 }
 
@@ -152,6 +177,10 @@ enum class SankeyLinkColorMode {
     SourceToTargetGradient,
 }
 
+/**
+ * Node label rendering. Use the [Companion] presets ([DefaultAdjacent], [DefaultInside], [Disabled])
+ * unless you need per-field control.
+ */
 data class SankeyNodeLabelsSpec(
     /**
      * When false, no node label [com.mena97villalobos.composeplotlib.core.layout.DrawCommand.Text] is emitted.
@@ -183,6 +212,10 @@ data class SankeyNodeLabelsSpec(
     }
 }
 
+/**
+ * Link label rendering. Labels are drawn on the ribbon, so they are usually only legible on thick
+ * flows — disable them (or raise the chart size) for dense diagrams.
+ */
 data class SankeyLinkLabelsSpec(
     /**
      * When false, no link label [com.mena97villalobos.composeplotlib.core.layout.DrawCommand.Text] is emitted.

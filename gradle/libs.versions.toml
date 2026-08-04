@@ -22,6 +22,10 @@ roborazzi = "1.64.0"
 jmhGradlePlugin = "0.7.3"
 ktlint = "14.2.0"
 binaryCompatibilityValidator = "0.18.1"
+# Vanniktech Maven Publish owns the fiddly parts of KMP publishing (sources/javadoc jars on every
+# target publication including the Kotlin metadata one), GPG signing, and the Central Portal bundle
+# upload. Config is written against the 0.34.0 API - re-check publishToMavenCentral() when bumping.
+mavenPublish = "0.34.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -58,3 +62,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 jmh = { id = "me.champeau.jmh", version.ref = "jmhGradlePlugin" }
 binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }

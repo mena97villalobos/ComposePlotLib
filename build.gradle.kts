@@ -1,3 +1,6 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import java.io.File
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -14,6 +17,7 @@ plugins {
     alias(libs.plugins.roborazzi) apply false
     alias(libs.plugins.jmh) apply false
     alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.mavenPublish) apply false
     alias(libs.plugins.dokka)
     alias(libs.plugins.binaryCompatibilityValidator)
 }
@@ -92,6 +96,36 @@ subprojects {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+// Maven Central (Central Portal) publishing. Only the two library modules apply the plugin. It
+// reuses the publications maven-publish already creates and adds the sources jar, javadoc jar, GPG
+// signatures, and the Portal bundle upload that Central requires. The GitHubPackages repository and
+// POM block above are untouched, so GitHub Packages publishing keeps working exactly as before.
+subprojects {
+    pluginManager.withPlugin("com.vanniktech.maven.publish") {
+        extensions.configure<MavenPublishBaseExtension> {
+            // KMP layout is the plugin's job: it attaches javadoc + sources jars to EVERY target
+            // publication including the Kotlin metadata one. Central rejects any module missing a
+            // javadoc jar, and hand-rolled maven-publish config routinely misses the metadata one.
+            configure(
+                KotlinMultiplatform(
+                    javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
+                    sourcesJar = true,
+                ),
+            )
+
+            // Deployments land VALIDATED; a human presses Publish in the Portal UI. Deliberately
+            // not auto-released.
+            publishToMavenCentral()
+
+            // Signing stays conditional so PR builds, publishToMavenLocal, and the existing GitHub
+            // Packages release steps keep working without a GPG key present.
+            if (providers.gradleProperty("signingInMemoryKey").isPresent) {
+                signAllPublications()
             }
         }
     }

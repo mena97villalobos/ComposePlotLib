@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
  * Reads [Settings.Global] each composition so changes are picked up on recomposition.
  */
 @Composable
-actual fun chartReducedMotionPreferred(): Boolean {
+internal actual fun chartReducedMotionPreferred(): Boolean {
     val context = LocalContext.current
 
     fun scale(key: String): Float = Settings.Global.getFloat(context.contentResolver, key, 1f)

@@ -8,4 +8,4 @@ import androidx.compose.runtime.Composable
  * `UIAccessibilityIsReduceMotionEnabled`.
  */
 @Composable
-expect fun chartReducedMotionPreferred(): Boolean
+internal expect fun chartReducedMotionPreferred(): Boolean

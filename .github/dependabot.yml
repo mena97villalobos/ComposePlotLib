@@ -1,0 +1,30 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    groups:
+      # Kotlin, Compose Multiplatform and AGP are coupled — a lone bump usually fails to resolve.
+      kotlin-and-compose:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "org.jetbrains.compose*"
+          - "org.jetbrains.androidx.lifecycle*"
+          - "com.android.*"
+      test-tooling:
+        patterns:
+          - "org.robolectric*"
+          - "io.github.takahirom.roborazzi*"
+          - "junit*"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - ci

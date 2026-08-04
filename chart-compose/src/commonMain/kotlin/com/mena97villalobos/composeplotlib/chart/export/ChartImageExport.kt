@@ -15,6 +15,9 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
  * (`android.graphics.Bitmap.compress` on Android, Skia `Image.encodeToData` on iOS).
  *
  * @return a self-contained PNG byte array (write it to a file, share sheet, upload, ...).
+ * @throws IllegalStateException if the platform encoder fails to produce PNG data — in practice a
+ * zero-sized bitmap or an out-of-memory condition on a very large capture. Callers exporting
+ * user-triggered images should guard accordingly.
  */
 expect fun ImageBitmap.encodeToChartPng(): ByteArray
 
@@ -42,7 +45,11 @@ class ChartCaptureController internal constructor(
     /** Captures the attached content into an [ImageBitmap]. Call after the chart has composed and drawn. */
     suspend fun captureImageBitmap(): ImageBitmap = graphicsLayer.toImageBitmap()
 
-    /** Captures the attached content and encodes it to PNG bytes via [encodeToChartPng]. */
+    /**
+     * Captures the attached content and encodes it to PNG bytes via [encodeToChartPng].
+     *
+     * @throws IllegalStateException if PNG encoding fails; see [encodeToChartPng].
+     */
     suspend fun capturePng(): ByteArray = captureImageBitmap().encodeToChartPng()
 }
 

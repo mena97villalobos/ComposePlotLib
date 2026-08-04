@@ -22,7 +22,12 @@ data class ScatterSeries(
     /** Projects [points] to bare [XyPoint]s for shared geometry helpers (marker fields are dropped). */
     fun toXyPoints(): List<XyPoint> = points.map { XyPoint(it.x, it.y) }
 
-    /** Computes the axis-aligned data bounds of this series via [DataDomain.fromPoints]. */
+    /**
+     * Computes the axis-aligned data bounds of this series via [DataDomain.fromPoints].
+     *
+     * Safe to call on a series with no [points]: the result is the degenerate domain `0.0..0.0` on both
+     * axes rather than an exception, so hosts may call this while data is still loading.
+     */
     fun domain(): DataDomain = DataDomain.fromPoints(toXyPoints())
 
     /** Color for legend swatches when [PointStyle.color] is null. */

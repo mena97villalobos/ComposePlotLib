@@ -1,0 +1,48 @@
+name: Feature request
+description: Propose a new chart family, option, or capability
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check [`docs/roadmap.md`](../../docs/roadmap.md) first — it may already be planned or
+        deliberately deferred with a rationale.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the use case, not just the feature. What are you trying to visualize?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description: If you have a shape in mind, sketch it. Specs are immutable — new capability usually means a new spec/model type rather than a new mutable setter.
+      render: kotlin
+    validations:
+      required: false
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of change
+      options:
+        - New chart family
+        - New option on an existing chart
+        - Interaction / gesture behavior
+        - Styling / theming
+        - Performance
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Can this be done today by composing existing pieces? If you tried and it did not work, say what broke.
+    validations:
+      required: false

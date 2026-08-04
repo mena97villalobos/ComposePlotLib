@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.dokka)
     `maven-publish`
+    alias(libs.plugins.mavenPublish)
 }
 
 dokka {
@@ -47,6 +48,11 @@ kotlin {
         }
     }
 
+    // No iosX64: Compose Multiplatform 1.11.1 publishes no ios_x64 klib variants (verified —
+    // compose.runtime / foundation / material3 / ui all fail variant resolution for that target),
+    // so Intel-simulator support is blocked upstream rather than by choice. chart-core alone would
+    // compile for it, but shipping the target for only half the library would be worse than not
+    // shipping it. Revisit when Compose Multiplatform restores ios_x64.
     if (isMacOsHost) {
         iosArm64()
         iosSimulatorArm64()
@@ -58,10 +64,13 @@ kotlin {
         }
         commonMain.dependencies {
             api(project(":chart-core"))
-            implementation(libs.compose.runtime)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
-            implementation(libs.compose.ui)
+            // `api`, not `implementation`: these artifacts appear in chart-compose's own public
+            // signatures (Composer, Modifier, Color, ImageBitmap, BoxScope, material3 ColorScheme),
+            // so consumers need them on their compile classpath, not only at runtime.
+            api(libs.compose.runtime)
+            api(libs.compose.foundation)
+            api(libs.compose.material3)
+            api(libs.compose.ui)
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)

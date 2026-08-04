@@ -110,7 +110,7 @@ brushing, linked viewports, and PNG export.
 | Compose Multiplatform | 1.11.1 |
 | Android | `minSdk` 28, `compileSdk` 36 |
 | JVM target | 11 |
-| iOS | `iosArm64`, `iosSimulatorArm64` (no `iosX64` — Intel simulators are not supported) |
+| iOS | `iosArm64`, `iosSimulatorArm64` — **no `iosX64`**, because Compose Multiplatform 1.11.1 ships no `ios_x64` artifacts. Intel-Mac simulators are blocked upstream, not by choice. |
 
 ## Install (GitHub Packages)
 

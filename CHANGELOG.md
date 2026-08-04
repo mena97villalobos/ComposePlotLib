@@ -5,6 +5,60 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
+## Unreleased
+
+Open-source release preparation. No chart behavior changes; two robustness/packaging fixes are
+user-visible.
+
+### Added
+
+- **Apache-2.0 `LICENSE`**, plus POM metadata (name, description, url, licenses, developers, scm) on
+  every published artifact, so dependency scanners can identify the library.
+- **Maven Central publishing** via the vanniktech maven-publish plugin — sources jars, Dokka javadoc
+  jars, and GPG signing across all KMP publications. Gated on the `PUBLISH_TO_MAVEN_CENTRAL`
+  repository variable; see `docs/github-ci-packages-and-pages.md` for one-time setup. GitHub Packages
+  publishing is unchanged.
+- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue/PR templates, Dependabot, and a
+  CodeQL workflow.
+
+### Changed
+
+- **`DataDomain.fromPoints` no longer throws on an empty list.** An empty series is a normal
+  data-loading state, not a programming error; both axes now collapse to the degenerate `0.0..0.0`
+  already used for an axis with no finite values. This also makes the public `LineSeries.domain()`
+  and `ScatterSeries.domain()` safe to call mid-load, where they previously crashed the host app.
+  No signature change.
+- **Compose dependencies are now `api` rather than `implementation`** in `chart-compose`
+  (`compose.runtime`, `compose.foundation`, `compose.material3`, `compose.ui`). Their types appear in
+  public signatures — `Modifier`, `Color`, `ImageBitmap`, `Composer`, `BoxScope`, and material3's
+  `ColorScheme` via `toMaterialChartPalette` — so consumers could not previously name them without
+  declaring the dependencies themselves. Note this puts material3 `1.11.0-alpha07` on the consumer
+  compile classpath.
+- The release workflow now runs `apiCheck` and `verifyChartCorePurity` before publishing, and
+  compiles the iOS targets before the iOS publish job, so publishing cannot pass gates a PR would
+  have failed.
+
+### Removed
+
+- **`chartReducedMotionPreferred` is no longer part of the published ABI.** It lives in an
+  `internal/` package and was public only because the `expect`/`actual` declarations lacked an
+  `internal` modifier. Binary-incompatible for anyone who called it against the package naming.
+
+### Fixed
+
+- Documentation accuracy: the README advertised 12 chart families when 26 ship, listed five
+  already-shipped features as upcoming, and incorrectly stated that CI does not publish iOS klibs.
+  Install snippets contained unresolved `OWNER/REPO` and `VERSION` placeholders.
+- KDoc added for `SankeyNode`, `SankeyLink`, `SankeyNodeOrder`, `SankeyNodeLabelsSpec` and
+  `SankeyLinkLabelsSpec`; `encodeToChartPng` / `capturePng` now document that they throw on encoder
+  failure.
+
+### Known limitations
+
+- **No `iosX64` target.** Compose Multiplatform 1.11.1 publishes no `ios_x64` artifacts, so Intel-Mac
+  simulator support is blocked upstream. `chart-core` alone would compile for it; shipping the target
+  for only half the library would be worse than omitting it.
+
 ## 1.2.0 — 2026-07-04
 
 Sankey chart rework: orientation support, professional visual defaults, and layout correctness

@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 import platform.UIKit.UIAccessibilityIsReduceMotionEnabled
 
 @Composable
-actual fun chartReducedMotionPreferred(): Boolean = UIAccessibilityIsReduceMotionEnabled()
+internal actual fun chartReducedMotionPreferred(): Boolean = UIAccessibilityIsReduceMotionEnabled()

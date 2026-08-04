@@ -18,11 +18,12 @@ data class DataDomain(
          * [ChartPoint.gap][com.mena97villalobos.composeplotlib.core.model.ChartPoint.gap]) do not corrupt the extent.
          * An axis with no finite values collapses to `0.0..0.0`.
          *
-         * @throws IllegalArgumentException if [points] is empty.
+         * An empty [points] list is a benign state — a series whose data has not loaded yet — so it is **not**
+         * an error: both axes collapse to the same degenerate `0.0..0.0` used for an axis with no finite
+         * values. Callers needing a drawable extent widen it themselves; the planner and `defaultViewport`
+         * already substitute their own fallback span for empty input.
          */
         fun fromPoints(points: List<XyPoint>): DataDomain {
-            require(points.isNotEmpty()) { "Cannot create a data domain from an empty list." }
-
             var minX = Double.POSITIVE_INFINITY
             var maxX = Double.NEGATIVE_INFINITY
             var minY = Double.POSITIVE_INFINITY

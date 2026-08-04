@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.dokka)
     `maven-publish`
+    alias(libs.plugins.mavenPublish)
 }
 
 dokka {

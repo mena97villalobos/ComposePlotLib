@@ -12,7 +12,7 @@ Use this before tagging a release or publishing artifacts. Canonical API narrati
 
 Treat these as the **supported** app-facing API (names may grow; update this list when you add types):
 
-- **Charts:** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`, `PieChart`, `RadarChart`, `CombinedCartesianChart`, `SankeyChart`, `HeatmapChart`, `CandlestickChart`, `GaugeChart`, `Sparkline`
+- **Charts (26):** `LineChart`, `BarChart`, `StackedBarChart`, `StackedAreaChart`, `ScatterChart`, `BubbleChart`, `CombinedCartesianChart`, `CandlestickChart`, `BoxPlotChart`, `ViolinChart`, `WaterfallChart`, `BulletChart`, `ParallelCoordinatesChart`, `PieChart`, `RadarChart`, `PolarChart`, `GaugeChart`, `RadialBarChart`, `SunburstChart`, `TreemapChart`, `CirclePackChart`, `SankeyChart`, `FunnelChart`, `HeatmapChart`, `CalendarHeatmapChart`, `Sparkline` — keep in sync with `chart-families-overview.md` and the `README.md` table
 - **State:** `ChartViewportState`, `ChartSelectionState`, `rememberChartViewportState`, `rememberChartSelectionState`, `ViewportChangeOrigin`
 - **Viewport helpers:** `defaultViewport(...)` overloads (`chart/ChartViewports.kt`)
 - **Gestures:** `ChartGestureConfig`, presets on its companion (`cartesianInteractive`, `cartesianInteractiveFullExploration`, …)
