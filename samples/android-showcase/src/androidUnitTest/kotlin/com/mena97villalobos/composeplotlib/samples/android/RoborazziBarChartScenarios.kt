@@ -25,7 +25,16 @@ import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyBarChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleBarChartSpec
 
-private val roborazziBarCanvasSize = SizeD(400.0, 320.0)
+/**
+ * The canvas the bar scenario actually composes into, measured under Robolectric: the default screen is
+ * 320x470 at density 1, and `Modifier.size(400.dp, 720.dp)` on the wrapping Surface is coerced into it.
+ *
+ * Unlike line/scatter, a bar selection is bar-*rectangle* geometry (`markerAnchor`, `hitBounds`) that has
+ * no domain-point equivalent, so it must be planned. Planning against the wrong size produced `hitBounds`
+ * that missed the real plot rect, and BarChart's selection-revalidation effect then silently cleared the
+ * selection — which is why this golden used to render neither an accent nor a marker.
+ */
+private val roborazziBarCanvasSize = SizeD(320.0, 470.0)
 
 internal fun roborazziBarSelectionHighlight(spec: BarChartSpec): ChartSelection {
     val vp = defaultViewport(spec)

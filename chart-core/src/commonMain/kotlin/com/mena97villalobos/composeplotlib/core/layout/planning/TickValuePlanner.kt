@@ -276,6 +276,34 @@ private fun categoryIndicesInViewport(
     return (i0..i1).map { it.toDouble() }
 }
 
+/**
+ * Fraction of a step within which an interior tick counts as colliding with a clamped domain
+ * endpoint.
+ */
+private const val ENDPOINT_COLLISION_FRACTION = 0.5
+
+/**
+ * Clamps generated nice ticks into `[lo, hi]`, which always reports both endpoints so an axis
+ * states its true extremes.
+ *
+ * The outermost nice ticks normally fall outside the domain, so they have to be pulled back in.
+ * Clamping alone is not enough: when [hi] sits just past an interior tick, the clamped endpoint
+ * lands a fraction of a [step] away from it and the two render as a crowded pair — and under a
+ * bucketing formatter (quarter, day, month) as the *same label twice*. The endpoint carries the
+ * real extreme, so it wins and the crowded neighbour is dropped.
+ */
+private fun clampTicksIntoDomain(
+    values: List<Double>,
+    lo: Double,
+    hi: Double,
+    step: Double,
+): List<Double> {
+    val guard = step * ENDPOINT_COLLISION_FRACTION
+    val interior =
+        values.filter { v -> v > lo && v < hi && (v - lo) >= guard && (hi - v) >= guard }
+    return (listOf(lo) + interior + listOf(hi)).distinct().sorted()
+}
+
 internal fun generateNiceNumericTicks(
     minRaw: Double,
     maxRaw: Double,
@@ -315,11 +343,7 @@ internal fun generateNiceNumericTicks(
         current += step
         guard++
     }
-    val trimmed =
-        values
-            .map { v -> v.coerceIn(lo, hi) }
-            .distinct()
-            .sorted()
+    val trimmed = clampTicksIntoDomain(values, lo, hi, step)
     return when {
         trimmed.isEmpty() -> listOf(lo, hi)
         trimmed.size == 1 -> listOf(lo, hi).distinct().sorted()
@@ -464,11 +488,7 @@ internal fun generateNiceEpochMillisTicks(
         current += step
         guard++
     }
-    val trimmed =
-        values
-            .map { v -> v.coerceIn(lo, hi) }
-            .distinct()
-            .sorted()
+    val trimmed = clampTicksIntoDomain(values, lo, hi, step)
     return when {
         trimmed.isEmpty() -> listOf(lo, hi)
         trimmed.size == 1 -> listOf(lo, hi).distinct().sorted()

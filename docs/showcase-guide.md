@@ -52,7 +52,7 @@ The showcase currently proves:
 - chart composables can be used from app code
 - viewport state can be created and reset externally (`ChartViewportState`; optional constraints/axis policy — see `viewport-configuration.md`)
 - selection state is observable to the host
-- line, bar, scatter, pie, radar, combined, sankey, heatmap, gauge, candlestick, and domain-axis screens render through the shared planning pipeline (cartesian families share tick/plot framing; pie/radar/gauge are radial)
+- all 26 shipped chart families render through the shared planning pipeline (cartesian families share tick/plot framing; radial, hierarchical, flow and matrix families reuse the same plan/draw-command flow) — see [`chart-families-overview.md`](chart-families-overview.md)
 - **no-data** (`noDataUi` / `ChartNoDataDefaults`) and **accessibility** (descriptions, focus opt-in on styled specs, custom “Reset viewport” actions)
 - **Roborazzi** JVM screenshot tests (`recordRoborazziDebug` / `verifyRoborazziDebug`) against goldens under `src/androidUnitTest/resources/roborazzi/`. Small pixel drift from platform font/renderer updates is expected; if verification fails with minor text/layout diffs, re-record (`recordRoborazziDebug`) after confirming the change is intentional.
 
@@ -97,4 +97,4 @@ Future screens should include:
 - styling / theme stress (light, dark, font scale)
 - large dataset / performance screen
 - dedicated **viewport** demo (constraints, axis lock — partially covered by reset/zoom buttons today)
-- additional demos for any new chart families (see **`roadmap.md`**); the current shipped families (line, bar, scatter, pie/donut, radar, combined, sankey, heatmap, gauge, candlestick, domain axes) already have screens — expand their coverage as needed
+- additional demos for any new chart families (see **`roadmap.md`**); all 26 shipped families already have screens — expand their coverage as needed

@@ -74,7 +74,15 @@ object KeyboardSelectionRoam {
         }
 
         val point = points[pIdx]
-        val transform = ChartTransform.forPlotBounds(viewport.normalizedNonDegenerate(), plotBounds)
+        val transform =
+            ChartTransform.forPlotBounds(
+                viewport.normalizedNonDegenerate(),
+                plotBounds,
+                xScale = spec.xAxis.scale,
+                yScale = spec.yAxis.scale,
+                invertX = spec.xAxis.inverted,
+                invertY = spec.yAxis.inverted,
+            )
         val pixel = transform.toPixel(point)
         return ChartSelection(
             target =
@@ -128,7 +136,15 @@ object KeyboardSelectionRoam {
         }
 
         val point = points[pIdx]
-        val transform = ChartTransform.forPlotBounds(viewport.normalizedNonDegenerate(), plotBounds)
+        val transform =
+            ChartTransform.forPlotBounds(
+                viewport.normalizedNonDegenerate(),
+                plotBounds,
+                xScale = spec.xAxis.scale,
+                yScale = spec.yAxis.scale,
+                invertX = spec.xAxis.inverted,
+                invertY = spec.yAxis.inverted,
+            )
         val pixel = transform.toPixel(point)
         return ChartSelection(
             target =
@@ -424,12 +440,18 @@ object KeyboardSelectionRoam {
         val vpPrimary = primaryViewport.normalizedNonDegenerate()
         val vpSecondary = plan.secondaryViewport?.normalizedNonDegenerate()
 
-        fun transformFor(binding: CombinedCartesianYAxisBinding): ChartTransform =
-            when (binding) {
-                CombinedCartesianYAxisBinding.SharedY -> ChartTransform.forPlotBounds(vpPrimary, plotBounds)
-                CombinedCartesianYAxisBinding.SecondaryY ->
-                    ChartTransform.forPlotBounds(vpSecondary ?: vpPrimary, plotBounds)
-            }
+        fun transformFor(binding: CombinedCartesianYAxisBinding): ChartTransform {
+            val secondary = binding == CombinedCartesianYAxisBinding.SecondaryY
+            val yAxis = if (secondary) spec.yAxisSecondary ?: spec.yAxis else spec.yAxis
+            return ChartTransform.forPlotBounds(
+                if (secondary) vpSecondary ?: vpPrimary else vpPrimary,
+                plotBounds,
+                xScale = spec.xAxis.scale,
+                yScale = yAxis.scale,
+                invertX = spec.xAxis.inverted,
+                invertY = yAxis.inverted,
+            )
+        }
         val hitById = plan.hitTestLayers.associateBy { it.layerId }
         val out = ArrayList<ChartSelection>()
 

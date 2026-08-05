@@ -315,7 +315,11 @@ object ChartPlanner {
                         lineHeightPx = chH,
                     )
                 } else {
-                    buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
+                    buildLineStyleSelectionOverlay(
+                        frame.plotBounds,
+                        frame.transform.toPixel(selection.target.point),
+                        spec.selectionStyle,
+                    )
                 }
         }
 
@@ -452,7 +456,11 @@ object ChartPlanner {
                         lineHeightPx = chH,
                     )
                 } else {
-                    buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
+                    buildLineStyleSelectionOverlay(
+                        frame.plotBounds,
+                        frame.transform.toPixel(selection.target.point),
+                        spec.selectionStyle,
+                    )
                 }
         }
 
@@ -4547,23 +4555,28 @@ object ChartPlanner {
         if (allBarSegments.any { selectionMatchesSegment(selection, it) }) {
             return emptyList()
         }
-        return buildLineStyleSelectionOverlay(plotBounds, selection, spec.selectionStyle)
+        return buildLineStyleSelectionOverlay(plotBounds, selection.pixelOffset, spec.selectionStyle)
     }
 
+    /**
+     * Vertical guideline + knot at [anchor]. Callers that own a [ChartTransform] pass the projection of
+     * `selection.target.point` so the overlay tracks the data rather than a possibly stale caller-supplied
+     * pixel; callers without one (combined bar segments) pass the selection's own planned pixel.
+     */
     private fun buildLineStyleSelectionOverlay(
         plotBounds: RectD,
-        selection: ChartSelection,
+        anchor: OffsetD,
         selectionStyle: SelectionStyle,
     ): List<DrawCommand> =
         listOf(
             DrawCommand.Line(
-                start = OffsetD(selection.pixelOffset.x, plotBounds.top),
-                end = OffsetD(selection.pixelOffset.x, plotBounds.bottom),
+                start = OffsetD(anchor.x, plotBounds.top),
+                end = OffsetD(anchor.x, plotBounds.bottom),
                 color = selectionStyle.lineColor,
                 strokeWidth = selectionStyle.lineStrokeWidth,
             ),
             DrawCommand.Circle(
-                center = selection.pixelOffset,
+                center = anchor,
                 radius = selectionStyle.pointRadius,
                 color = selectionStyle.pointColor,
             ),

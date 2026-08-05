@@ -7,8 +7,27 @@ Versions are published to GitHub Packages from the Release workflow: pushing a s
 
 ## Unreleased
 
-Open-source release preparation. No chart behavior changes; two robustness/packaging fixes are
-user-visible.
+Open-source release preparation, plus a set of selection/axis correctness fixes found in review.
+
+### Fixed
+
+- **Programmatic selections now render in the right place.** `ChartSelectionState.select(...)` takes a
+  `ChartSelection` carrying pixel geometry, but a caller cannot know the composed canvas size. Line and
+  scatter charts now re-derive the crosshair, knot and marker anchor by projecting
+  `selection.target.point` through their own render transform instead of trusting the supplied
+  `pixelOffset`. Tap, hover and keyboard roam already agreed with that projection, so interactive
+  behavior is unchanged; only selections built by hand (external "select the max", linked-chart sync,
+  screenshot harnesses) move — from wherever the stale pixel pointed, to the data point.
+- **Keyboard selection roam no longer assumes a linear, non-inverted axis.**
+  `KeyboardSelectionRoam.lineChartRoam` / `scatterChartRoam` and the combined-cartesian roam and tap
+  resolvers called `ChartTransform.forPlotBounds` without passing the spec's scale/inversion, so they
+  fell back to `AxisScale.Linear` and `inverted = false`. On a log axis a midpoint landed at ~9% of the
+  plot width instead of 50%; on an inverted axis the pixel was mirrored.
+- **Axis ticks no longer emit a duplicate label next to a clamped domain endpoint.** Both nice-tick
+  generators (`generateNiceNumericTicks` and `generateNiceEpochMillisTicks`) clamped the outermost
+  tick into the domain, which could drop it a fraction of a step from its neighbour — rendering as a
+  crowded pair, and under a bucketing formatter as the same text twice. The showcase bar chart's x
+  axis read `Q1 Q3 Q5 Q5`; it now reads `Q1 Q3 Q5`. Both endpoints are still always reported.
 
 ### Added
 

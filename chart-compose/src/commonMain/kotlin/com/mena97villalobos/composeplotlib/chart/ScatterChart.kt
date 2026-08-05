@@ -379,7 +379,19 @@ fun ScatterChart(
         val layoutForMarker = plan?.layout
         if (marker != null && markerAppearance.contentData != null && layoutForMarker != null) {
             val overlayData = markerAppearance.contentData
-            val anchor = overlayData.selection.markerPosition()
+            // Prefer the selection's own anchor, but otherwise project its domain point with the render
+            // transform instead of trusting `pixelOffset` — see buildCrosshairCommands.
+            val anchor =
+                overlayData.selection.markerAnchor
+                    ?: ChartTransform
+                        .forPlotBounds(
+                            viewport = renderViewport,
+                            plotBounds = layoutForMarker.plotBounds,
+                            xScale = spec.xAxis.scale,
+                            yScale = spec.yAxis.scale,
+                            invertX = spec.xAxis.inverted,
+                            invertY = spec.yAxis.inverted,
+                        ).toPixel(overlayData.selection.target.point)
             ChartMarkerOverlay(
                 anchorX = anchor.x,
                 anchorY = anchor.y,

@@ -8,10 +8,15 @@ import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.model.ChartPoint
 import com.mena97villalobos.composeplotlib.core.model.LineSeries
 import com.mena97villalobos.composeplotlib.core.model.OHLCPoint
+import com.mena97villalobos.composeplotlib.core.model.ScatterSeries
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
+import com.mena97villalobos.composeplotlib.core.spec.AxisScale
 import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
+import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
+import com.mena97villalobos.composeplotlib.core.viewport.normalizedNonDegenerate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -189,5 +194,103 @@ class KeyboardSelectionRoamTest {
         // index 1 is gone -> indexOfFirst == -1 -> right falls back to the first visible candle (index 0).
         val recovered = KeyboardSelectionRoam.candlestickChartRoam(decimated, onIndex1, deltaPoint = 1, deltaSeries = 0)!!
         assertEquals(0, recovered.target.pointIndex)
+    }
+
+    // --- Roam must project through the spec's own axis scale / inversion, not the linear default. ---
+
+    private fun singlePointSpec(
+        xAxis: AxisSpec,
+        yAxis: AxisSpec,
+    ) = LineChartSpec(
+        series = listOf(LineSeries(id = "a", label = "A", points = listOf(ChartPoint(10.0, 10.0)))),
+        xAxis = xAxis,
+        yAxis = yAxis,
+    )
+
+    private fun scatterSinglePointSpec(
+        xAxis: AxisSpec,
+        yAxis: AxisSpec,
+    ) = ScatterChartSpec(
+        series = listOf(ScatterSeries(id = "a", label = "A", points = listOf(ChartPoint(10.0, 10.0)))),
+        xAxis = xAxis,
+        yAxis = yAxis,
+    )
+
+    /** Decade viewport so a log axis and a linear axis disagree unmistakably. */
+    private val decadeViewport =
+        ChartViewport(
+            xRange = ClosedRangeD(1.0, 100.0),
+            yRange = ClosedRangeD(1.0, 100.0),
+        )
+
+    private fun expectedPixel(
+        spec: LineChartSpec,
+        point: XyPoint,
+    ): OffsetD =
+        ChartTransform
+            .forPlotBounds(
+                decadeViewport.normalizedNonDegenerate(),
+                plotBounds,
+                xScale = spec.xAxis.scale,
+                yScale = spec.yAxis.scale,
+                invertX = spec.xAxis.inverted,
+                invertY = spec.yAxis.inverted,
+            ).toPixel(point)
+
+    @Test
+    fun lineChartRoam_logAxesProjectThroughScaleNotLinearDefault() {
+        val spec = singlePointSpec(AxisSpec(scale = AxisScale.Log()), AxisSpec(scale = AxisScale.Log()))
+        val sel =
+            KeyboardSelectionRoam.lineChartRoam(
+                spec = spec,
+                viewport = decadeViewport,
+                plotBounds = plotBounds,
+                current = null,
+                deltaPoint = 1,
+                deltaSeries = 0,
+            )
+        assertNotNull(sel)
+        // x=10 is the midpoint of decades 1..100, so a log axis puts it at the plot centre (50),
+        // while the linear default lands it near the left/bottom edge (~9).
+        val expected = expectedPixel(spec, XyPoint(10.0, 10.0))
+        assertEquals(expected.x, sel.pixelOffset.x, 1e-6)
+        assertEquals(expected.y, sel.pixelOffset.y, 1e-6)
+    }
+
+    @Test
+    fun lineChartRoam_invertedAxesProjectThroughInversion() {
+        val spec = singlePointSpec(AxisSpec(inverted = true), AxisSpec(inverted = true))
+        val sel =
+            KeyboardSelectionRoam.lineChartRoam(
+                spec = spec,
+                viewport = decadeViewport,
+                plotBounds = plotBounds,
+                current = null,
+                deltaPoint = 1,
+                deltaSeries = 0,
+            )
+        assertNotNull(sel)
+        val expected = expectedPixel(spec, XyPoint(10.0, 10.0))
+        assertEquals(expected.x, sel.pixelOffset.x, 1e-6)
+        assertEquals(expected.y, sel.pixelOffset.y, 1e-6)
+    }
+
+    @Test
+    fun scatterChartRoam_logAxesProjectThroughScaleNotLinearDefault() {
+        val spec = scatterSinglePointSpec(AxisSpec(scale = AxisScale.Log()), AxisSpec(scale = AxisScale.Log()))
+        val sel =
+            KeyboardSelectionRoam.scatterChartRoam(
+                spec = spec,
+                viewport = decadeViewport,
+                plotBounds = plotBounds,
+                current = null,
+                deltaPoint = 1,
+                deltaSeries = 0,
+            )
+        assertNotNull(sel)
+        val expected =
+            expectedPixel(singlePointSpec(spec.xAxis, spec.yAxis), XyPoint(10.0, 10.0))
+        assertEquals(expected.x, sel.pixelOffset.x, 1e-6)
+        assertEquals(expected.y, sel.pixelOffset.y, 1e-6)
     }
 }

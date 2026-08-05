@@ -202,6 +202,56 @@ class TickValuePlannerTest {
     }
 
     @Test
+    fun generateNiceNumericTicks_clampedEndpointReplacesCollidingNeighbour() {
+        // Showcase bar chart domain: Sales spans x 0..4, Returns 0.5..4.5, so the axis runs 0..4.5.
+        // Nice ticks for four slots are 0/2/4/6; clamping 6 to the domain max used to leave 4.0 and
+        // 4.5 half a unit apart, which a quarter-style formatter renders as "Q5" twice.
+        assertEquals(listOf(0.0, 2.0, 4.5), generateNiceNumericTicks(0.0, 4.5, 4))
+    }
+
+    @Test
+    fun generateNiceNumericTicks_clampedEndpointsKeptWhenClearOfNeighbours() {
+        // Endpoints must still survive: 6k/24k sit 0.8 of a step from their neighbours, so the axis
+        // keeps reporting its true extremes (this is the showcase line chart's y axis).
+        assertEquals(
+            listOf(6000.0, 10000.0, 15000.0, 20000.0, 24000.0),
+            generateNiceNumericTicks(6000.0, 24000.0, 5),
+        )
+    }
+
+    @Test
+    fun generateNiceNumericTicks_neverEmitsDuplicateOrOutOfOrderTicks() {
+        // Sweep domains whose max lands just past a nice step — the collision case.
+        for (i in 1..40) {
+            val hi = i * 0.25
+            for (count in 2..8) {
+                val ticks = generateNiceNumericTicks(0.0, hi, count)
+                assertEquals(ticks.distinct(), ticks, "duplicate tick for hi=$hi count=$count")
+                assertEquals(ticks.sorted(), ticks, "unordered ticks for hi=$hi count=$count")
+                assertTrue(
+                    ticks.all { it in 0.0..hi },
+                    "tick outside domain for hi=$hi count=$count: $ticks",
+                )
+            }
+        }
+    }
+
+    @Test
+    fun generateNiceEpochMillisTicks_clampedEndpointReplacesCollidingNeighbour() {
+        // Same clamp pattern as the numeric generator: a domain ending a quarter-day past the last
+        // whole day used to emit both the day tick and the clamped max, which format identically
+        // under a day-granularity label formatter.
+        val day = 86_400_000.0
+        val ticks = generateNiceEpochMillisTicks(0.0, 2.25 * day, 3)
+        assertEquals(ticks.distinct(), ticks)
+        assertEquals(ticks.sorted(), ticks)
+        assertTrue(
+            ticks.zipWithNext().all { (u, v) -> v - u > day * 0.5 },
+            "clamped endpoint left a crowded neighbour: $ticks",
+        )
+    }
+
+    @Test
     fun axisTickSearchRange_nonOverlappingHintFallsBackToViewport() {
         val viewport = ClosedRangeD(50.0, 100.0)
         val axis = AxisSpec(tickMin = 0.0, tickMax = 10.0, tickCount = 4)

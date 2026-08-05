@@ -31,6 +31,7 @@ import com.mena97villalobos.composeplotlib.core.spec.PointStyle
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.ScatterRenderSpec
 import com.mena97villalobos.composeplotlib.core.spec.XTickLabelOverlapStrategy
+import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.math.abs
 import kotlin.math.sin
@@ -963,6 +964,9 @@ class ChartPlannerTest {
                 xAxis = AxisSpec(showGridLines = false),
                 yAxis = AxisSpec(showGridLines = false),
             )
+        // pixelOffset is deliberately stale/inconsistent with the domain point: a programmatic
+        // ChartSelectionState.select(...) cannot know the canvas size. The planner must ignore it and
+        // project target.point itself.
         val selection =
             ChartSelection(
                 target = HighlightTarget(seriesId = "series", pointIndex = 1, point = XyPoint(3.0, 8.0)),
@@ -986,11 +990,20 @@ class ChartPlannerTest {
 
         val lines = plan.layout.plotDrawCommands.filterIsInstance<DrawCommand.Line>()
         val circles = plan.layout.plotDrawCommands.filterIsInstance<DrawCommand.Circle>()
+        val expected =
+            ChartTransform
+                .forPlotBounds(
+                    ChartViewport(xRange = ClosedRangeD(0.0, 9.0), yRange = ClosedRangeD(0.0, 23.0)),
+                    plan.layout.plotBounds,
+                ).toPixel(XyPoint(3.0, 8.0))
         assertEquals(1, lines.size)
         assertEquals(1, circles.size)
-        assertEquals(180.0, lines.single().start.x, 1e-9)
-        assertEquals(180.0, lines.single().end.x, 1e-9)
-        assertEquals(OffsetD(180.0, 95.0), circles.single().center)
+        assertEquals(expected.x, lines.single().start.x, 1e-9)
+        assertEquals(expected.x, lines.single().end.x, 1e-9)
+        assertEquals(expected.x, circles.single().center.x, 1e-9)
+        assertEquals(expected.y, circles.single().center.y, 1e-9)
+        // ...and the stale pixel is genuinely not what was drawn.
+        assertTrue(kotlin.math.abs(circles.single().center.x - 180.0) > 1e-6)
     }
 
     @Test

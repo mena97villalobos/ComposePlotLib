@@ -32,7 +32,11 @@ internal fun buildCrosshairCommands(
     charWidthPx: Double,
     lineHeightPx: Double,
 ): List<DrawCommand> {
-    val px = selection.pixelOffset
+    // Re-derive the anchor from the selection's *domain* point rather than trusting the pixel the
+    // caller supplied. Tap/hover/roam already agree with this projection, but a programmatic
+    // ChartSelectionState.select(...) cannot know the canvas size, and a stale pixel would otherwise
+    // float the crosshair and knot off the series.
+    val px = transform.toPixel(selection.target.point)
     if (!px.x.isFinite() || !px.y.isFinite()) return emptyList()
     val out = ArrayList<DrawCommand>()
     val stroke = crosshair.dashIntervals?.takeIf { it.isNotEmpty() }?.let { StrokeStyle(dashIntervals = it) }
@@ -60,7 +64,7 @@ internal fun buildCrosshairCommands(
             )
     }
     if (crosshair.showAxisLabels) {
-        val domain = transform.toDomain(px)
+        val domain = selection.target.point
         val charW = charWidthPx.coerceAtLeast(1.0)
         val lineH = lineHeightPx.coerceAtLeast(1.0)
         if (xInside) {

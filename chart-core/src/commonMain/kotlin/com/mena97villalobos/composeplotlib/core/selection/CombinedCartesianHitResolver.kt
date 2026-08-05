@@ -6,6 +6,7 @@ import com.mena97villalobos.composeplotlib.core.layout.CombinedCartesianChartPla
 import com.mena97villalobos.composeplotlib.core.layout.CombinedHitTestLayer
 import com.mena97villalobos.composeplotlib.core.layout.forHitTestFromDrawOrder
 import com.mena97villalobos.composeplotlib.core.model.toXyPoints
+import com.mena97villalobos.composeplotlib.core.spec.AxisSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianLayer
 import com.mena97villalobos.composeplotlib.core.spec.CombinedCartesianYAxisBinding
@@ -33,9 +34,25 @@ object CombinedCartesianHitResolver {
     ): ChartSelection? {
         if (!touchPx.x.isFinite() || !touchPx.y.isFinite()) return null
         val vpPrimary = primaryViewport.normalizedNonDegenerate()
-        val transformPrimary = ChartTransform.forPlotBounds(vpPrimary, plotBounds)
         val vpSecondary = plan.secondaryViewport?.normalizedNonDegenerate()
-        val transformSecondary = vpSecondary?.let { ChartTransform.forPlotBounds(it, plotBounds) }
+
+        // Mirror the render transform (CartesianLayoutPlanner) — the linear/non-inverted defaults would
+        // mis-hit every log, symlog, broken or inverted axis.
+        fun transformOn(
+            vp: ChartViewport,
+            yAxis: AxisSpec,
+        ): ChartTransform =
+            ChartTransform.forPlotBounds(
+                vp,
+                plotBounds,
+                xScale = spec.xAxis.scale,
+                yScale = yAxis.scale,
+                invertX = spec.xAxis.inverted,
+                invertY = yAxis.inverted,
+            )
+
+        val transformPrimary = transformOn(vpPrimary, spec.yAxis)
+        val transformSecondary = vpSecondary?.let { transformOn(it, spec.yAxisSecondary ?: spec.yAxis) }
 
         fun transformFor(binding: CombinedCartesianYAxisBinding): ChartTransform =
             when (binding) {

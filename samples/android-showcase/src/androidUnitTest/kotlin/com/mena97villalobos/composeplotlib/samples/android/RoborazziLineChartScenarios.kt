@@ -17,51 +17,32 @@ import com.mena97villalobos.composeplotlib.chart.defaultViewport
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.domain.XyPoint
-import com.mena97villalobos.composeplotlib.core.geometry.SizeD
-import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput
-import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner
+import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.selection.HighlightTarget
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
-import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleLineChartSpec
 
 /**
- * Matches the approximate canvas size used in Roborazzi line scenarios (full-width chart, 320 dp height).
- * Single-pass planner layout is close enough for a stable selection highlight golden.
+ * Selects a point by identity only. The chart projects `target.point` with its own render transform,
+ * so this deliberately carries no pixel geometry — a harness cannot know the composed canvas size, and
+ * guessing one used to float the crosshair and marker off the series.
  */
-private val roborazziLineCanvasSize = SizeD(400.0, 320.0)
-
 internal fun roborazziLineSelectionHighlight(
     spec: LineChartSpec,
     pointIndex: Int = 3,
 ): ChartSelection {
-    val vp = defaultViewport(spec)
     val series = spec.series.first { it.points.isNotEmpty() }
     val chartPoint = series.points[pointIndex]
-    val xy = XyPoint(chartPoint.x, chartPoint.y)
-    val plan =
-        ChartPlanner.planLineChart(
-            input =
-                ChartLayoutInput(
-                    canvasSize = roborazziLineCanvasSize,
-                    viewport = vp,
-                    labelLayoutScale = 1.0,
-                ),
-            spec = spec,
-            selection = null,
-        )
-    val transform = ChartTransform.forPlotBounds(vp, plan.layout.plotBounds)
-    val pixel = transform.toPixel(xy)
     return ChartSelection(
         target =
             HighlightTarget(
                 seriesId = series.id,
                 pointIndex = pointIndex,
-                point = xy,
+                point = XyPoint(chartPoint.x, chartPoint.y),
             ),
-        pixelOffset = pixel,
+        pixelOffset = OffsetD(0.0, 0.0),
     )
 }
 

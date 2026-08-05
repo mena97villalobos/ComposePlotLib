@@ -217,7 +217,7 @@ fun LineChart(
     var brushStart by remember { mutableStateOf<Offset?>(null) }
     var brushCurrent by remember { mutableStateOf<Offset?>(null) }
 
-    fun brushTransform(plotBounds: RectD): ChartTransform =
+    fun renderTransform(plotBounds: RectD): ChartTransform =
         ChartTransform.forPlotBounds(
             viewport = renderViewport,
             plotBounds = plotBounds,
@@ -231,7 +231,7 @@ fun LineChart(
     fun resolveNearestSelection(offset: Offset): ChartSelection? {
         val currentPlan = plan ?: return null
         if (effectiveSpec.series.all { it.points.isEmpty() }) return null
-        val transform = brushTransform(currentPlan.layout.plotBounds)
+        val transform = renderTransform(currentPlan.layout.plotBounds)
         val touch = OffsetD(offset.x.toDouble(), offset.y.toDouble())
         val specForHit = effectiveSpec.withPlanningLineRenderBudget(canvasSize, currentPlan.layout.plotBounds.width)
         return specForHit.series
@@ -304,7 +304,7 @@ fun LineChart(
                                     startPx = start,
                                     endPx = end,
                                     plotBounds = currentPlan.layout.plotBounds,
-                                    transform = brushTransform(currentPlan.layout.plotBounds),
+                                    transform = renderTransform(currentPlan.layout.plotBounds),
                                     viewport = renderViewport,
                                     brush = rangeBrush,
                                 )
@@ -462,7 +462,11 @@ fun LineChart(
         val layoutForMarker = plan?.layout
         if (marker != null && markerAppearance.contentData != null && layoutForMarker != null) {
             val overlayData = markerAppearance.contentData
-            val anchor = overlayData.selection.markerPosition()
+            // Prefer the selection's own anchor, but otherwise project its domain point with the render
+            // transform instead of trusting `pixelOffset` — see buildCrosshairCommands.
+            val anchor =
+                overlayData.selection.markerAnchor
+                    ?: renderTransform(layoutForMarker.plotBounds).toPixel(overlayData.selection.target.point)
             ChartMarkerOverlay(
                 anchorX = anchor.x,
                 anchorY = anchor.y,
