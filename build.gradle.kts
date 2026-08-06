@@ -51,9 +51,22 @@ subprojects {
                         providers.environmentVariable("GITHUB_REPOSITORY").orNull?.takeIf { it.isNotBlank() }
                             ?: (findProperty("composeplotlib.github.repository") as? String)?.takeIf { it.isNotBlank() }
                     if (!githubRepo.isNullOrBlank()) {
+                        // Built as a variable rather than inline in uri("..."): Dependabot statically
+                        // parses build files and cannot evaluate Kotlin, so passing the interpolated
+                        // string directly to uri(...) made it register a literal *dependency*
+                        // repository with the githubRepo placeholder unexpanded. Every androidx.* and
+                        // com.android.* lookup was then attempted against that bogus host and failed
+                        // with private_source_authentication_failure, silently disabling version and
+                        // security updates for those dependencies. Keeping the URL out of a string
+                        // literal leaves the parser nothing to misread. This is a publish target, not
+                        // a resolution repository — resolution is configured in settings.gradle.kts.
+                        val packagesUrl = buildString {
+                            append("https://maven.pkg.github.com/")
+                            append(githubRepo)
+                        }
                         maven {
                             name = "GitHubPackages"
-                            url = uri("https://maven.pkg.github.com/$githubRepo")
+                            url = uri(packagesUrl)
                             credentials {
                                 username = System.getenv("GITHUB_ACTOR")
                                 password = System.getenv("GITHUB_TOKEN")
