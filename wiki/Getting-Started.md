@@ -21,7 +21,7 @@ packages**. Once the repository is configured:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.2.0")
+            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.3.0")
         }
     }
 }

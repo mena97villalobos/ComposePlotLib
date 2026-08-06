@@ -1,6 +1,6 @@
 # Core Concepts
 
-ComposePlotLib (1.2.0) ships 26 chart families, but they all share one mental model. If you
+ComposePlotLib (1.3.0) ships 26 chart families, but they all share one mental model. If you
 understand the four ideas on this page — the planning pipeline, immutable specs, the two-module
 split, and hoisted state — every chart family in the library will behave the way you expect.
 

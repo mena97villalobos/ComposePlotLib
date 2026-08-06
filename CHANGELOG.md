@@ -5,9 +5,14 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
-## Unreleased
+## 1.3.0 — 2026-08-05
 
 Open-source release preparation, plus a set of selection/axis correctness fixes found in review.
+
+Shipped as a minor bump although one entry under **Removed** is binary-incompatible:
+`chartReducedMotionPreferred` was public only by accident (an `expect`/`actual` pair in an
+`internal/` package missing the `internal` modifier), so it was never a supported entry point.
+Rebuild against 1.3.0 rather than swapping the jar if you somehow referenced it.
 
 ### Fixed
 

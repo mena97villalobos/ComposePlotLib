@@ -1,6 +1,6 @@
 # Chart Gallery
 
-Visual index of the 26 chart families shipped in ComposePlotLib 1.2.0. Every family follows the same
+Visual index of the 26 chart families shipped in ComposePlotLib 1.3.0. Every family follows the same
 shape: build an immutable spec type in `chart-core`, hand it to a composable in `chart-compose`.
 
 ```kotlin

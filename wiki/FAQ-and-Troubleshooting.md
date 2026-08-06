@@ -2,7 +2,7 @@
 
 Answers to the things that actually bite people, grouped by when they bite: getting the dependency,
 compiling against it, running it, and contributing to it. Everything here is verified against
-`1.2.0` and the current `main`; where the two differ, it says so.
+`1.3.0` and the current `main`; where the two differ, it says so.
 
 ## Dependency resolution
 
@@ -40,9 +40,9 @@ that appear in its public signatures — `Modifier`, `Color`, `ImageBitmap`, `Bo
 `compose.runtime` / `compose.foundation` / `compose.ui` / `compose.material3` yourself. Any Compose
 Multiplatform app already does, which is why this mostly hits minimal or non-Compose-first modules.
 
-This is fixed on `main` (those four are now `api`) but **is not in 1.2.0**. Until the next release,
-declare the Compose dependencies in the module that calls the chart API. Note that when the fix does
-ship it puts material3 `1.11.0-alpha07` on the consumer compile classpath.
+This is fixed in **1.3.0** (those four are now `api`). On 1.2.0, declare the Compose dependencies in
+the module that calls the chart API. Note that the fix puts material3 `1.11.0-alpha07` on the
+consumer compile classpath.
 
 ### My custom formatter compiles for Android but not for iOS
 
@@ -73,8 +73,8 @@ clamps to `domain`, so an `initialViewport` outside your data shows blank plot a
 
 In **1.2.0**, `DataDomain.fromPoints` threw `IllegalArgumentException` on an empty list, and the public
 `LineSeries.domain()` / `ScatterSeries.domain()` inherit that — so calling them mid-load crashed the
-host app. On `main` an empty list is treated as the benign state it is: both axes collapse to the
-degenerate `0.0..0.0` already used for an axis with no finite values. No signature changed.
+host app. Since **1.3.0** an empty list is treated as the benign state it is: both axes collapse to
+the degenerate `0.0..0.0` already used for an axis with no finite values. No signature changed.
 
 This only affects code that calls `domain()` / `fromPoints` directly. The planner and `defaultViewport`
 never did, and have always had their own fallback for empty input.

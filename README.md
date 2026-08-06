@@ -43,7 +43,7 @@ Add the dependency — most apps only need `chart-compose`, which re-exports `ch
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.2.0")
+            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.3.0")
         }
     }
 }
@@ -127,7 +127,7 @@ gpr.key=YOUR_TOKEN_WITH_read:packages
 For planner-only usage with no Compose dependency:
 
 ```kotlin
-implementation("com.mena97villalobos.composeplotlib:chart-core:1.2.0")
+implementation("com.mena97villalobos.composeplotlib:chart-core:1.3.0")
 ```
 
 Android, iOS (`iosArm64`, `iosSimulatorArm64`) and Kotlin-Multiplatform-metadata artifacts are
