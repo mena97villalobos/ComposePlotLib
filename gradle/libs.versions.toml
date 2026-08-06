@@ -25,7 +25,7 @@ kotlin = "2.4.10"
 # material3 (JetBrains CMP) is alpha-only on its 1.10+ line; 1.11.0-alpha07 is the build pinned by Compose Multiplatform 1.11.1.
 # Held here: 1.12.0-alpha03 pulls androidx.compose 1.12.0-beta01 transitives that require AGP 9.1.0+.
 # Bump together with AGP and Compose Multiplatform as one migration.
-material3 = "1.11.0-alpha07"
+material3 = "1.12.0-alpha02"
 robolectric = "4.16.1"
 roborazzi = "1.70.0"
 jmhGradlePlugin = "0.7.3"
