@@ -50,9 +50,17 @@ jobs:
           languages: java-kotlin
           build-mode: manual
 
-      # CodeQL needs to observe a real compilation of the Kotlin sources.
+      # CodeQL needs to observe a real compilation of the Kotlin sources, and `build-mode: manual`
+      # means an empty build is a failed analysis, not a fast one. On any PR that does not touch
+      # Kotlin the build cache serves both compile tasks FROM-CACHE, so the build "succeeds" having
+      # compiled nothing and CodeQL aborts with "could not process any code written in Java/Kotlin".
+      # --no-build-cache stops the remote cache answering; --rerun-tasks stops the restored local
+      # state marking the tasks UP-TO-DATE. The task graph here is ~19 tasks, so this is cheap.
       - name: Build
-        run: ./gradlew :chart-core:compileDebugKotlinAndroid :chart-compose:compileDebugKotlinAndroid
+        run: >
+          ./gradlew --no-build-cache --rerun-tasks
+          :chart-core:compileDebugKotlinAndroid
+          :chart-compose:compileDebugKotlinAndroid
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v3
