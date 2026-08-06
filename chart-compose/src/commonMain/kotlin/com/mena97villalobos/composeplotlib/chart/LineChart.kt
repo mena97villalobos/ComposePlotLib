@@ -42,6 +42,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.layout.chartLayoutBase
 import com.mena97villalobos.composeplotlib.chart.internal.layout.measuredLayoutInput
 import com.mena97villalobos.composeplotlib.chart.internal.marker.ChartMarkerOverlay
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildLineMarkerData
+import com.mena97villalobos.composeplotlib.chart.internal.marker.markerAnchorFrom
 import com.mena97villalobos.composeplotlib.chart.internal.render.LineChartRenderer
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.ChartViewportState
@@ -462,7 +463,17 @@ fun LineChart(
         val layoutForMarker = plan?.layout
         if (marker != null && markerAppearance.contentData != null && layoutForMarker != null) {
             val overlayData = markerAppearance.contentData
-            val anchor = overlayData.selection.markerPosition()
+            val anchor =
+                overlayData.selection.markerAnchorFrom(
+                    ChartTransform.forPlotBounds(
+                        viewport = renderViewport,
+                        plotBounds = layoutForMarker.plotBounds,
+                        xScale = effectiveSpec.xAxis.scale,
+                        yScale = effectiveSpec.yAxis.scale,
+                        invertX = effectiveSpec.xAxis.inverted,
+                        invertY = effectiveSpec.yAxis.inverted,
+                    ),
+                )
             ChartMarkerOverlay(
                 anchorX = anchor.x,
                 anchorY = anchor.y,

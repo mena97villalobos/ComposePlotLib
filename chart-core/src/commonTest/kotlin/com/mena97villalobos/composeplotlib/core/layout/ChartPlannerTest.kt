@@ -963,6 +963,10 @@ class ChartPlannerTest {
                 xAxis = AxisSpec(showGridLines = false),
                 yAxis = AxisSpec(showGridLines = false),
             )
+        // Deliberately stale: `pixelOffset` is not the pixel this datum lands at under this
+        // canvas and viewport. That is the state an animated viewport, a resize or a rotation
+        // leaves behind, since nothing recomputes the stored selection. The overlay must follow
+        // the datum.
         val selection =
             ChartSelection(
                 target = HighlightTarget(seriesId = "series", pointIndex = 1, point = XyPoint(3.0, 8.0)),
@@ -988,9 +992,20 @@ class ChartPlannerTest {
         val circles = plan.layout.plotDrawCommands.filterIsInstance<DrawCommand.Circle>()
         assertEquals(1, lines.size)
         assertEquals(1, circles.size)
-        assertEquals(180.0, lines.single().start.x, 1e-9)
-        assertEquals(180.0, lines.single().end.x, 1e-9)
-        assertEquals(OffsetD(180.0, 95.0), circles.single().center)
+
+        // Where the chart itself drew point index 1 of that series. Asserting against the polyline
+        // rather than against a literal is the whole point: the knot and the line have to agree
+        // with the geometry the same plan produced, not with a number copied out of a past run.
+        val polyline =
+            plan.layout.plotDrawCommands
+                .filterIsInstance<DrawCommand.Polyline>()
+                .single()
+        val datum = polyline.points[1]
+
+        assertEquals(datum.x, lines.single().start.x, 1e-9)
+        assertEquals(datum.x, lines.single().end.x, 1e-9)
+        assertEquals(datum.x, circles.single().center.x, 1e-9)
+        assertEquals(datum.y, circles.single().center.y, 1e-9)
     }
 
     @Test

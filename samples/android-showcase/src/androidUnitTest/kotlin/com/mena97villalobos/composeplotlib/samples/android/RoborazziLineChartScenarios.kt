@@ -17,51 +17,41 @@ import com.mena97villalobos.composeplotlib.chart.defaultViewport
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.domain.XyPoint
-import com.mena97villalobos.composeplotlib.core.geometry.SizeD
-import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput
-import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner
+import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.selection.HighlightTarget
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
-import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyLineChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleLineChartSpec
 
 /**
- * Matches the approximate canvas size used in Roborazzi line scenarios (full-width chart, 320 dp height).
- * Single-pass planner layout is close enough for a stable selection highlight golden.
+ * A selection naming a datum, with no pixel behind it.
+ *
+ * This used to plan a whole layout at a hardcoded `SizeD(400.0, 320.0)` purely to produce a
+ * [ChartSelection.pixelOffset]. That is a size the scenario has no way to know — it happened to be
+ * wrong, the chart laid out at 320 wide, and the golden shipped a crosshair 40px from the point its
+ * own tooltip named.
+ *
+ * The chart places both the knot and the marker from `target.point` now, so there is nothing here
+ * to get wrong. [UNPLACED] is deliberately a corner of the canvas rather than a plausible value: if
+ * it ever appears in a golden, something went back to drawing the stored pixel.
  */
-private val roborazziLineCanvasSize = SizeD(400.0, 320.0)
+private val UNPLACED = OffsetD(0.0, 0.0)
 
 internal fun roborazziLineSelectionHighlight(
     spec: LineChartSpec,
     pointIndex: Int = 3,
 ): ChartSelection {
-    val vp = defaultViewport(spec)
     val series = spec.series.first { it.points.isNotEmpty() }
     val chartPoint = series.points[pointIndex]
-    val xy = XyPoint(chartPoint.x, chartPoint.y)
-    val plan =
-        ChartPlanner.planLineChart(
-            input =
-                ChartLayoutInput(
-                    canvasSize = roborazziLineCanvasSize,
-                    viewport = vp,
-                    labelLayoutScale = 1.0,
-                ),
-            spec = spec,
-            selection = null,
-        )
-    val transform = ChartTransform.forPlotBounds(vp, plan.layout.plotBounds)
-    val pixel = transform.toPixel(xy)
     return ChartSelection(
         target =
             HighlightTarget(
                 seriesId = series.id,
                 pointIndex = pointIndex,
-                point = xy,
+                point = XyPoint(chartPoint.x, chartPoint.y),
             ),
-        pixelOffset = pixel,
+        pixelOffset = UNPLACED,
     )
 }
 

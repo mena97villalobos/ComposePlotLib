@@ -8,7 +8,11 @@ Continuous series with optional point markers. Strong **`LineRenderSpec`** contr
 
 ## Bar
 
-Grouped or stacked columns or rows; **`BarChartOrientation`** selects vertical columns vs horizontal bars. **`BarGroup`** + **`BarEntry`** (`x` = category position, `y` = value) with per-group **`BarStyle`**. **`BarLayoutMode`** chooses independent, clustered, or stacked placement. **`StackedBarChart`** / **`StackedBarChartSpec`** are thin presets over **`BarChart`** with stacking enabled when group sizes match. Hit-testing resolves bars in pixel space; selection overlay matches the tapped **`seriesId`** / entry.
+Grouped or stacked columns or rows; **`BarChartOrientation`** selects vertical columns vs horizontal bars. **`BarGroup`** + **`BarEntry`** (`x` = category position, `y` = value) with per-group **`BarStyle`**. **`BarLayoutMode`** chooses independent, clustered, or stacked placement. Hit-testing resolves bars in pixel space; selection overlay matches the tapped **`seriesId`** / entry. See **Stacked bar** for the preset.
+
+## Stacked bar
+
+**`StackedBarChart`** / **`StackedBarChartSpec`**: a thin preset over **`BarChart`** with `BarLayoutMode.Stacked`, applied when the groups have matching entry counts. **`BarStackMode`** picks absolute totals or 100% normalized. Everything else — axes, grid, legend, hit-testing, selection — is **`BarChart`**'s.
 
 ## Scatter
 

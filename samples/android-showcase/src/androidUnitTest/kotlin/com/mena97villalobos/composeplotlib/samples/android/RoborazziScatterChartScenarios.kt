@@ -16,45 +16,28 @@ import com.mena97villalobos.composeplotlib.chart.defaultViewport
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.rememberChartViewportState
 import com.mena97villalobos.composeplotlib.core.domain.XyPoint
-import com.mena97villalobos.composeplotlib.core.geometry.SizeD
-import com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput
-import com.mena97villalobos.composeplotlib.core.layout.ChartPlanner
+import com.mena97villalobos.composeplotlib.core.geometry.OffsetD
 import com.mena97villalobos.composeplotlib.core.selection.ChartSelection
 import com.mena97villalobos.composeplotlib.core.selection.HighlightTarget
 import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
-import com.mena97villalobos.composeplotlib.core.transform.ChartTransform
 import com.mena97villalobos.composeplotlib.samples.android.data.emptyScatterChartSpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleScatterChartSpec
 
-private val roborazziScatterCanvasSize = SizeD(400.0, 320.0)
+/** See the note on the line scenarios: naming the datum is the whole selection. */
+private val UNPLACED = OffsetD(0.0, 0.0)
 
 internal fun roborazziScatterSelectionHighlight(spec: ScatterChartSpec): ChartSelection {
-    val vp = defaultViewport(spec)
-    val plan =
-        ChartPlanner.planScatterChart(
-            input =
-                ChartLayoutInput(
-                    canvasSize = roborazziScatterCanvasSize,
-                    viewport = vp,
-                    labelLayoutScale = 1.0,
-                ),
-            spec = spec,
-            selection = null,
-        )
     val series = spec.series.first { it.points.isNotEmpty() }
     val pointIndex = 0
     val pt = series.points[pointIndex]
-    val xy = XyPoint(pt.x, pt.y)
-    val transform = ChartTransform.forPlotBounds(vp, plan.layout.plotBounds)
-    val pixel = transform.toPixel(xy)
     return ChartSelection(
         target =
             HighlightTarget(
                 seriesId = series.id,
                 pointIndex = pointIndex,
-                point = xy,
+                point = XyPoint(pt.x, pt.y),
             ),
-        pixelOffset = pixel,
+        pixelOffset = UNPLACED,
     )
 }
 

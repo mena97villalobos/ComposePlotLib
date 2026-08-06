@@ -37,6 +37,7 @@ import com.mena97villalobos.composeplotlib.chart.internal.layout.chartLayoutBase
 import com.mena97villalobos.composeplotlib.chart.internal.layout.measuredLayoutInput
 import com.mena97villalobos.composeplotlib.chart.internal.marker.ChartMarkerOverlay
 import com.mena97villalobos.composeplotlib.chart.internal.marker.buildScatterMarkerData
+import com.mena97villalobos.composeplotlib.chart.internal.marker.markerAnchorFrom
 import com.mena97villalobos.composeplotlib.chart.internal.render.ScatterChartRenderer
 import com.mena97villalobos.composeplotlib.chart.state.ChartSelectionState
 import com.mena97villalobos.composeplotlib.chart.state.ChartViewportState
@@ -379,7 +380,17 @@ fun ScatterChart(
         val layoutForMarker = plan?.layout
         if (marker != null && markerAppearance.contentData != null && layoutForMarker != null) {
             val overlayData = markerAppearance.contentData
-            val anchor = overlayData.selection.markerPosition()
+            val anchor =
+                overlayData.selection.markerAnchorFrom(
+                    ChartTransform.forPlotBounds(
+                        viewport = renderViewport,
+                        plotBounds = layoutForMarker.plotBounds,
+                        xScale = spec.xAxis.scale,
+                        yScale = spec.yAxis.scale,
+                        invertX = spec.xAxis.inverted,
+                        invertY = spec.yAxis.inverted,
+                    ),
+                )
             ChartMarkerOverlay(
                 anchorX = anchor.x,
                 anchorY = anchor.y,

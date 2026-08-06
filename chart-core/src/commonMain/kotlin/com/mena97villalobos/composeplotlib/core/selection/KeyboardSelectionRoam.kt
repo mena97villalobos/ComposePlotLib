@@ -74,7 +74,18 @@ object KeyboardSelectionRoam {
         }
 
         val point = points[pIdx]
-        val transform = ChartTransform.forPlotBounds(viewport.normalizedNonDegenerate(), plotBounds)
+        // The axis scales and inversions have to come along: `forPlotBounds` defaults them to
+        // Linear and false, so roaming a log or inverted axis with the arrow keys otherwise
+        // recorded a pixel from a straight-line mapping the chart is not using.
+        val transform =
+            ChartTransform.forPlotBounds(
+                viewport.normalizedNonDegenerate(),
+                plotBounds,
+                xScale = spec.xAxis.scale,
+                yScale = spec.yAxis.scale,
+                invertX = spec.xAxis.inverted,
+                invertY = spec.yAxis.inverted,
+            )
         val pixel = transform.toPixel(point)
         return ChartSelection(
             target =
@@ -128,7 +139,18 @@ object KeyboardSelectionRoam {
         }
 
         val point = points[pIdx]
-        val transform = ChartTransform.forPlotBounds(viewport.normalizedNonDegenerate(), plotBounds)
+        // The axis scales and inversions have to come along: `forPlotBounds` defaults them to
+        // Linear and false, so roaming a log or inverted axis with the arrow keys otherwise
+        // recorded a pixel from a straight-line mapping the chart is not using.
+        val transform =
+            ChartTransform.forPlotBounds(
+                viewport.normalizedNonDegenerate(),
+                plotBounds,
+                xScale = spec.xAxis.scale,
+                yScale = spec.yAxis.scale,
+                invertX = spec.xAxis.inverted,
+                invertY = spec.yAxis.inverted,
+            )
         val pixel = transform.toPixel(point)
         return ChartSelection(
             target =

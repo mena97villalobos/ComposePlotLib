@@ -75,9 +75,21 @@ private fun SemanticsNodeInteraction.captureShowcaseRoboImage() {
     captureRoboImage(roborazziOptions = showcaseRoborazziOptions)
 }
 
+/**
+ * The device has to be at least as large as the surfaces these tests ask for. Robolectric's default
+ * is 320x470dp, so every `Surface(width = 400.dp, height = 720.dp)` below was silently clamped and
+ * the captured images came out 320x470. Nothing failed, because a golden records whatever it is
+ * given — but the selection scenarios plan a layout at 400x320 to synthesize their highlight, and
+ * that layout was never the one being drawn into. The published `docs/images/line-chart.png` shows
+ * the result: a crosshair about 40px right of the point its own tooltip is describing.
+ *
+ * `w400dp-h720dp` makes the requested size real. It also gives `lineChartShowcaseScreen_compactWidth`
+ * something to mean: it asked for 320dp on a 320dp device, so it was capturing the same layout as
+ * the test it was meant to contrast with.
+ */
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = [34])
+@Config(sdk = [34], qualifiers = "w400dp-h720dp")
 class ShowcaseRoborazziTest {
     @get:Rule
     val composeRule = createComposeRule()

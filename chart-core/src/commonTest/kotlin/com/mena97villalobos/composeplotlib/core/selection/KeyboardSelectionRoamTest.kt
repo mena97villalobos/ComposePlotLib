@@ -59,6 +59,38 @@ class KeyboardSelectionRoamTest {
     }
 
     @Test
+    fun lineChartRoam_honoursAnInvertedAxis() {
+        // y runs 0..10 over a 100px plot. Non-inverted, y = 1.0 sits at pixel 90; inverted, at 10.
+        // Roam used to build its transform with the defaults, so arrow-key selection on an inverted
+        // axis recorded the pixel from the axis the chart is not drawing.
+        val spec =
+            LineChartSpec(
+                series =
+                    listOf(
+                        LineSeries(
+                            id = "a",
+                            label = "A",
+                            points = listOf(ChartPoint(0.0, 1.0), ChartPoint(1.0, 2.0)),
+                        ),
+                    ),
+                xAxis = AxisSpec(),
+                yAxis = AxisSpec(inverted = true),
+            )
+        val sel =
+            KeyboardSelectionRoam.lineChartRoam(
+                spec = spec,
+                viewport = viewport,
+                plotBounds = plotBounds,
+                current = null,
+                deltaPoint = 1,
+                deltaSeries = 0,
+            )
+
+        assertNotNull(sel)
+        assertEquals(10.0, sel.pixelOffset.y, 1e-9)
+    }
+
+    @Test
     fun lineChartRoam_stepsAlongPoints() {
         val spec =
             LineChartSpec(

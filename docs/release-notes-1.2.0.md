@@ -1,6 +1,6 @@
 # ComposePlotLib 1.2.0 — Release notes
 
-A large feature release: **13 new chart families** (13 → 26), first-class **interaction** (linked pan/zoom,
+A large feature release: **14 new chart families** (12 → 26), first-class **interaction** (linked pan/zoom,
 range brush, minimap), **export** (PNG / SVG / CSV / JSON), richer **cartesian depth**, **theming**, and
 **accessibility**, plus a full **Sankey rework**.
 
@@ -9,7 +9,7 @@ additive; the only behavior changes are in Sankey. Full detail lives in **[CHANG
 
 ---
 
-## New chart families (13 → 26)
+## New chart families (12 → 26)
 
 | Family | Entry point | Notes |
 |---|---|---|

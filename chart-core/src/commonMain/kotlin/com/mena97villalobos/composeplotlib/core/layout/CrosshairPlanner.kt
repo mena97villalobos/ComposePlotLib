@@ -32,7 +32,11 @@ internal fun buildCrosshairCommands(
     charWidthPx: Double,
     lineHeightPx: Double,
 ): List<DrawCommand> {
-    val px = selection.pixelOffset
+    // From the datum, not from `selection.pixelOffset`, which is the pixel the hit resolver
+    // recorded at tap time and which nothing recomputes when the viewport or the canvas changes.
+    // The axis chips below already read the domain back out of this pixel, so a stale one put the
+    // guidelines, the knot and both chips somewhere the marker text disagreed with.
+    val px = transform.toPixel(selection.target.point)
     if (!px.x.isFinite() || !px.y.isFinite()) return emptyList()
     val out = ArrayList<DrawCommand>()
     val stroke = crosshair.dashIntervals?.takeIf { it.isNotEmpty() }?.let { StrokeStyle(dashIntervals = it) }

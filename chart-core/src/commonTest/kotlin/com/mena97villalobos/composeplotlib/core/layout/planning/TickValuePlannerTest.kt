@@ -202,6 +202,57 @@ class TickValuePlannerTest {
     }
 
     @Test
+    fun generateNiceNumericTicks_dropsTheGridTickAPinnedEndpointWouldCrowd() {
+        // The showcase bar domain: five categories with the second group offset half a category,
+        // so the domain ends at 4.5. At the density the reducer settles on the grid steps by 2,
+        // and pinning 4.5 onto the axis used to leave 4.0 sitting a quarter step from it — the
+        // "Q1 Q3 Q5 Q5" the published bar screenshot shows.
+        assertEquals(listOf(0.0, 2.0, 4.5), generateNiceNumericTicks(0.0, 4.5, 3))
+    }
+
+    @Test
+    fun generateNiceNumericTicks_pinsWithoutThinningWhenTheGridIsAlreadyFine() {
+        // Same domain, denser grid: the step is 1.0, so 4.0 is a full half step from the pinned
+        // 4.5 and survives. The rule is about tick spacing, not about what a formatter does with
+        // the values — `barQuarterLabel` quantizing 4.0 and 4.5 to the same quarter is the sample
+        // data's problem, and is fixed there.
+        assertEquals(
+            listOf(0.0, 1.0, 2.0, 3.0, 4.0, 4.5),
+            generateNiceNumericTicks(0.0, 4.5, 5),
+        )
+    }
+
+    @Test
+    fun generateNiceNumericTicks_keepsATickExactlyHalfAStepFromAnEndpoint() {
+        // The threshold is inclusive. With a step of 20 the tick at 20.0 is exactly half a step
+        // from the pinned 30.0, and dropping it would thin every axis whose domain does not land
+        // on the grid.
+        assertEquals(listOf(-20.0, 0.0, 20.0, 30.0), generateNiceNumericTicks(-20.0, 30.0, 4))
+    }
+
+    @Test
+    fun generateNiceNumericTicks_leavesAGridThatLandsOnItsEndpointsAlone() {
+        assertEquals(
+            listOf(0.0, 20.0, 40.0, 60.0, 80.0, 100.0),
+            generateNiceNumericTicks(0.0, 100.0, 5),
+        )
+    }
+
+    @Test
+    fun generateNiceEpochMillisTicks_dropsTheGridTickAPinnedEndpointWouldCrowd() {
+        // The same pinning, and so the same crowding, on every time axis whose span is not a whole
+        // number of steps.
+        val day = 86_400_000.0
+        val ticks = generateNiceEpochMillisTicks(0.0, 3.1 * day, 4)
+
+        assertEquals(0.0, ticks.first())
+        assertEquals(3.1 * day, ticks.last())
+        val gaps = ticks.zipWithNext { earlier, later -> later - earlier }
+        val widest = gaps.max()
+        assertTrue(gaps.all { it >= widest / 2.0 }, "crowded tick in $ticks")
+    }
+
+    @Test
     fun axisTickSearchRange_nonOverlappingHintFallsBackToViewport() {
         val viewport = ClosedRangeD(50.0, 100.0)
         val axis = AxisSpec(tickMin = 0.0, tickMax = 10.0, tickCount = 4)

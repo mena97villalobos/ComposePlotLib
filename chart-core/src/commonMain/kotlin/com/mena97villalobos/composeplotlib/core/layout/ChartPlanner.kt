@@ -315,7 +315,12 @@ object ChartPlanner {
                         lineHeightPx = chH,
                     )
                 } else {
-                    buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
+                    buildLineStyleSelectionOverlay(
+                        frame.plotBounds,
+                        selection,
+                        spec.selectionStyle,
+                        frame.transform,
+                    )
                 }
         }
 
@@ -452,7 +457,12 @@ object ChartPlanner {
                         lineHeightPx = chH,
                     )
                 } else {
-                    buildLineStyleSelectionOverlay(frame.plotBounds, selection, spec.selectionStyle)
+                    buildLineStyleSelectionOverlay(
+                        frame.plotBounds,
+                        selection,
+                        spec.selectionStyle,
+                        frame.transform,
+                    )
                 }
         }
 
@@ -4500,6 +4510,14 @@ object ChartPlanner {
                 selection = selection,
                 spec = spec,
                 allBarSegments = allBarSegments,
+                // A selection on a SecondaryY layer maps through the secondary scale; resolving by
+                // layer id is what keeps the knot on the point the marker is describing.
+                transformForLayer = { layerId ->
+                    transformFor(
+                        spec.layers.firstOrNull { it.id == layerId }?.yAxisBinding
+                            ?: CombinedCartesianYAxisBinding.SharedY,
+                    )
+                },
             )
 
         val overlayPrimary =
@@ -4542,32 +4560,55 @@ object ChartPlanner {
         selection: ChartSelection?,
         spec: CombinedCartesianChartSpec,
         allBarSegments: List<PlannedBarSegment>,
+        transformForLayer: (String?) -> ChartTransform,
     ): List<DrawCommand> {
         if (selection == null) return emptyList()
         if (allBarSegments.any { selectionMatchesSegment(selection, it) }) {
             return emptyList()
         }
-        return buildLineStyleSelectionOverlay(plotBounds, selection, spec.selectionStyle)
+        return buildLineStyleSelectionOverlay(
+            plotBounds,
+            selection,
+            spec.selectionStyle,
+            transformForLayer(selection.target.layerId),
+        )
     }
 
+    /**
+     * The guideline and knot for a line-style selection, placed from the selected **datum** rather
+     * than from [ChartSelection.pixelOffset].
+     *
+     * `pixelOffset` is whatever pixel the hit resolver recorded at the moment of the tap, and
+     * nothing recomputes it afterwards: the only viewport-linked effect clears a selection that
+     * scrolls out of view. So an animated viewport, a canvas resize, a rotation or a programmatic
+     * zoom left the knot behind while the marker text — which reads the domain point every frame —
+     * stayed correct. Re-deriving here makes that state unrepresentable and matches what the bar
+     * and candlestick paths already do by matching on `target.pointIndex`.
+     *
+     * [transform] must be the one this selection's series maps through; combined charts bind
+     * layers to two different Y scales.
+     */
     private fun buildLineStyleSelectionOverlay(
         plotBounds: RectD,
         selection: ChartSelection,
         selectionStyle: SelectionStyle,
-    ): List<DrawCommand> =
-        listOf(
+        transform: ChartTransform,
+    ): List<DrawCommand> {
+        val knot = transform.toPixel(selection.target.point)
+        return listOf(
             DrawCommand.Line(
-                start = OffsetD(selection.pixelOffset.x, plotBounds.top),
-                end = OffsetD(selection.pixelOffset.x, plotBounds.bottom),
+                start = OffsetD(knot.x, plotBounds.top),
+                end = OffsetD(knot.x, plotBounds.bottom),
                 color = selectionStyle.lineColor,
                 strokeWidth = selectionStyle.lineStrokeWidth,
             ),
             DrawCommand.Circle(
-                center = selection.pixelOffset,
+                center = knot,
                 radius = selectionStyle.pointRadius,
                 color = selectionStyle.pointColor,
             ),
         )
+    }
 
     private fun combinedLegendLabels(spec: CombinedCartesianChartSpec): List<Pair<String, ChartColor>> {
         val out = ArrayList<Pair<String, ChartColor>>()

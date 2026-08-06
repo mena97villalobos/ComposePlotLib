@@ -49,6 +49,43 @@ user-visible.
 
 ### Fixed
 
+- **Line and scatter selection now follows the datum, not the pixel recorded when you tapped.**
+  `buildLineStyleSelectionOverlay`, `buildCrosshairCommands` and the marker anchor all read
+  `ChartSelection.pixelOffset`, which nothing recomputed when the layout changed — the only
+  viewport-linked effect *clears* a selection that scrolls out of view. An animated viewport, a
+  canvas resize, a rotation or a programmatic zoom therefore left the crosshair and the knot behind
+  while the marker text, re-derived from the domain point every frame, stayed correct. All three now
+  compute from `selection.target.point` through the current transform, the way bar and candlestick
+  already matched on `target.pointIndex`. Combined charts resolve the transform by layer, so a
+  selection bound to the secondary Y axis lands on its own scale. `pixelOffset` is now advisory:
+  hit-test bookkeeping, and the anchor for the charts that set `markerAnchor` explicitly.
+- **Nice ticks that overshoot the domain no longer crowd the endpoint they are pinned beside.**
+  Both `generateNiceNumericTicks` and `generateNiceEpochMillisTicks` coerced the overshooting first
+  and last grid values onto `lo`/`hi`, which is what guarantees a label at each end — but the
+  coerced endpoint could land a fraction of a step from the neighbour it did not replace. Two
+  gridlines that close read as one thick line, and a quantizing `AxisSpec.labelFormatter` printed
+  the same label twice; the published bar screenshot ended `Q5 Q5`. Endpoints still win, and any
+  interior tick within half a step of one is now dropped. A tick exactly half a step out survives,
+  so grids that already landed on their endpoints are unchanged.
+- **Keyboard roam honours log and inverted axes.** `KeyboardSelectionRoam.lineChartRoam` and
+  `scatterChartRoam` built their transform with `ChartTransform.forPlotBounds`'s defaults —
+  `AxisScale.Linear`, not inverted — so arrow-key selection on a log or inverted axis recorded a
+  pixel from a mapping the chart was not using. The spec's scales and inversions are passed through
+  now.
+- **The published screenshots in `docs/images/` show what the charts actually render.** The
+  Roborazzi tests asked for a 400x720dp surface on Robolectric's default 320x470dp device, so every
+  capture was silently clamped — while the selection scenarios synthesized their highlight by
+  planning a layout at 400x320. `docs/images/line-chart.png`, the README's lead image, shipped a
+  crosshair about 40px from the point its own tooltip named, and `bar-chart.png` rendered no tooltip
+  at all because the marker anchor fell outside the real canvas. The device now matches the surface,
+  and the line and scatter scenarios name a datum instead of fabricating a pixel.
+  `scripts/sync-docs-images.sh` copies the goldens into `docs/images/`, with `--check` for CI; that
+  copy was manual, which is how the two drifted.
+- `docs/chart-families-overview.md` documented 25 of the 26 families — `StackedBarChart` was folded
+  into `## Bar` while `Sparkline`, the thinner wrapper of the two, had its own section. It has a
+  `## Stacked bar` section now, so the heading count is checkable against the composable list.
+- The 1.2.0 release notes and the 1.1→1.2 migration guide said 13 families shipped in 1.1.0. It was
+  12, and 14 were added, which the release notes' own 14-row table already showed.
 - Documentation accuracy: the README advertised 12 chart families when 26 ship, listed five
   already-shipped features as upcoming, and incorrectly stated that CI does not publish iOS klibs.
   Install snippets contained unresolved `OWNER/REPO` and `VERSION` placeholders.
