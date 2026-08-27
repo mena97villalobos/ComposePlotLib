@@ -1,6 +1,11 @@
 [versions]
 dokka = "2.2.0"
-# AGP held on the 8.x line: latest stable 9.3.0 needs Gradle 9.1.0+ (separate major migration). 8.13.2 runs on the current Gradle 8.14.3 wrapper and supports compileSdk 36.
+# AGP held on the 8.x line: latest stable 9.3.0 needs Gradle 9.1.0+ (separate major migration). 8.13.2
+# supports compileSdk 36 and runs on the current Gradle 9.5.1 wrapper.
+# Gradle ceiling while AGP stays on 8.x: 9.5.1. Gradle 9.6.0 removed the internal API
+# `org.gradle.api.problems.internal.InternalProblems` that AGP 8.x still uses, so 9.6+ fails at
+# configuration time with "Failed to apply plugin 'com.android.internal.library'".
+# See https://docs.gradle.org/9.6.1/userguide/upgrading_version_9.html#agp_8x_incompatible
 agp = "8.13.2"
 android-compileSdk = "36"
 # Robolectric screenshot tests parse the merged unit-test APK; keep this <= newest android-all jar (API 35 in Robolectric 4.16.x).
@@ -20,7 +25,7 @@ kotlin = "2.4.10"
 # material3 (JetBrains CMP) is alpha-only on its 1.10+ line; 1.11.0-alpha07 is the build pinned by Compose Multiplatform 1.11.1.
 # Held here: 1.12.0-alpha03 pulls androidx.compose 1.12.0-beta01 transitives that require AGP 9.1.0+.
 # Bump together with AGP and Compose Multiplatform as one migration.
-material3 = "1.11.0-alpha07"
+material3 = "1.12.0-alpha02"
 robolectric = "4.16.1"
 roborazzi = "1.70.0"
 jmhGradlePlugin = "0.7.3"

@@ -12,6 +12,22 @@ updates:
     open-pull-requests-limit: 1
     labels:
       - dependencies
+    # Everything below is blocked on one migration: moving AGP off the 8.x line. Without these
+    # entries Dependabot re-proposes the same three bumps every month and the PR cannot pass CI,
+    # because each one needs AGP 9.1.0+ (or, for Gradle, drops an internal API AGP 8.x still calls).
+    # Drop these ignores as part of the AGP 9 migration, not before — see the notes in
+    # gradle/libs.versions.toml next to each held version.
+    ignore:
+      # Gradle 9.6.0 removed org.gradle.api.problems.internal.InternalProblems; AGP 8.x fails at
+      # configuration time on 9.6+. 9.5.1 is the ceiling.
+      - dependency-name: "gradle"
+        versions: [">=9.6.0"]
+      # lifecycle 2.11.0+ requires AGP 9.1.0+.
+      - dependency-name: "org.jetbrains.androidx.lifecycle:*"
+        versions: [">=2.11.0"]
+      # material3 1.12.0-alpha03+ pulls androidx.compose 1.12.0-beta01 transitives needing AGP 9.1.0+.
+      - dependency-name: "org.jetbrains.compose.material3:material3"
+        versions: [">=1.12.0-alpha03"]
     groups:
       all-gradle-dependencies:
         applies-to: version-updates
