@@ -34,13 +34,15 @@ plugins {
 // compilation) it silently stopped checking the Android ABI. The dump format and the `api/` layout are
 // the same. `apiCheck` / `apiDump` stay as the entry points CI and contributors use.
 //
-// KLib (iOS) dumps stay off, as before: the Linux CI host does not declare the iOS targets at all, so a
-// committed klib dump could never be checked there.
+// KGP also dumps the KLib (iOS) ABI to api/<module>.klib.api. It is checked wherever the iOS targets are
+// declared (macOS hosts); the Linux CI host does not declare them, so there only the JVM and Android dumps
+// are checked.
 val abiValidatedProjects = setOf("chart-core", "chart-compose")
 subprojects {
     if (name in abiValidatedProjects) {
         pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
             extensions.configure<KotlinMultiplatformExtension> {
+                // Calling the block is what enables validation; the defaults (api/ reference dumps) are kept.
                 @OptIn(ExperimentalAbiValidation::class)
                 abiValidation {
                 }
