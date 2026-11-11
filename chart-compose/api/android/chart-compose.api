@@ -479,7 +479,7 @@ public final class com/mena97villalobos/composeplotlib/chart/SunburstChartKt {
 
 public final class com/mena97villalobos/composeplotlib/chart/TreemapChartKt {
 	public static final fun TreemapChart (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
-	public static final fun TreemapChart (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+	public static final fun TreemapChart (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/chart/ChartAnimationPolicy;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/ViolinChartKt {
@@ -518,6 +518,7 @@ public final class com/mena97villalobos/composeplotlib/chart/state/ChartDrillSta
 
 public final class com/mena97villalobos/composeplotlib/chart/state/ChartDrillStateKt {
 	public static final fun rememberChartDrillState (Ljava/lang/Object;Landroidx/compose/runtime/Composer;I)Lcom/mena97villalobos/composeplotlib/chart/state/ChartDrillState;
+	public static final fun rememberSaveableChartDrillState (Ljava/lang/Object;Landroidx/compose/runtime/Composer;I)Lcom/mena97villalobos/composeplotlib/chart/state/ChartDrillState;
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/state/ChartProgressiveRevealKt {

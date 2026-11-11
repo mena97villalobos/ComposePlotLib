@@ -39,6 +39,7 @@ internal object TreemapHierarchyPlanner {
         input: ChartLayoutInput,
         spec: TreemapHierarchySpec,
         rootNodeId: String?,
+        highlightedNodeIds: Set<String>,
         measurer: TreemapLabelMeasurer,
     ): TreemapHierarchyPlan {
         val canvas = input.canvasBounds
@@ -76,6 +77,8 @@ internal object TreemapHierarchyPlanner {
                 }
             }
         }
+
+        run.applyHighlight(highlightedNodeIds)
 
         return TreemapHierarchyPlan(
             layout =
@@ -148,9 +151,43 @@ internal object TreemapHierarchyPlanner {
         val spec: TreemapHierarchySpec,
         val measurer: TreemapLabelMeasurer,
     ) {
+        /** One fill per tile, at the tile's index. */
         val fills = ArrayList<DrawCommand>()
         val labels = ArrayList<DrawCommand>()
+
+        /** Index of the tile each entry of [labels] belongs to. */
+        private val labelOwners = ArrayList<Int>()
         val tiles = ArrayList<PlannedTreemapTile>()
+
+        /**
+         * Outlines the highlighted tiles — a tile whose id is in [ids], or an aggregate containing one — and, with
+         * [com.mena97villalobos.composeplotlib.core.spec.HierarchyHighlightStyle.dimOthersAlpha], dims every tile
+         * that is neither highlighted nor inside a highlighted tile. Unknown or hidden ids draw nothing.
+         */
+        fun applyHighlight(ids: Set<String>) {
+            if (ids.isEmpty()) return
+            val highlighted = tiles.filter { it.nodeId in ids || (it.isAggregate && it.memberIds.any { id -> id in ids }) }
+            if (highlighted.isEmpty()) return
+            val style = spec.highlight
+            val dim = style.dimOthersAlpha?.takeIf { it.isFinite() }?.coerceIn(0.0, 1.0)
+            if (dim != null) {
+                val highlightedIds = highlighted.mapTo(HashSet()) { it.nodeId }
+                val dimmed = BooleanArray(tiles.size) { i -> tiles[i].path.none { it in highlightedIds } }
+                for (i in tiles.indices) if (dimmed[i]) fills[i] = DrawCommand.Group(dim, listOf(fills[i]))
+                for (j in labels.indices) if (dimmed[labelOwners[j]]) labels[j] = DrawCommand.Group(dim, listOf(labels[j]))
+            }
+            val width = style.outlineWidthPx.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
+            if (width <= 0.0) return
+            for (tile in highlighted) {
+                val b = tile.bounds
+                val half = minOf(width / 2.0, b.width / 2.0, b.height / 2.0)
+                val inset = RectD(b.left + half, b.top + half, b.right - half, b.bottom - half)
+                val color = style.outlineColor ?: tile.color.readableContentColor()
+                labels += DrawCommand.RoundRect(inset, spec.tileCornerRadiusPx, ShapeDrawStyle.Stroke(color, width))
+                labelOwners += tiles.indexOf(tile)
+            }
+        }
+
         private val gap = spec.tileGapPx.coerceAtLeast(0.0)
         private val minSide = spec.minTileSidePx.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
 
@@ -261,9 +298,9 @@ internal object TreemapHierarchyPlanner {
             }
             if (childrenDrawn > 0) {
                 tiles[tileIndex] = tiles[tileIndex].copy(hasDrawnChildren = true)
-                headerLabel(node.label, valueText, color, tileRect, headerHeight)
+                headerLabel(node.label, valueText, color, tileRect, headerHeight, owner = tileIndex)
             } else {
-                tileLabel(node.label, valueText, color, tileRect)
+                tileLabel(node.label, valueText, color, tileRect, owner = tileIndex)
             }
         }
 
@@ -302,7 +339,7 @@ internal object TreemapHierarchyPlanner {
                     isAggregate = true,
                     memberIds = aggregate.members.map { it.node.id },
                 )
-            tileLabel(label, valueText, color, tileRect)
+            tileLabel(label, valueText, color, tileRect, owner = tiles.size - 1)
         }
 
         /**
@@ -403,6 +440,7 @@ internal object TreemapHierarchyPlanner {
             valueText: String?,
             fill: ChartColor,
             tile: RectD,
+            owner: Int,
         ) {
             if (!spec.showLabels || name.isEmpty()) return
             val availableWidth = tile.width - 2 * LABEL_PADDING_PX
@@ -429,6 +467,7 @@ internal object TreemapHierarchyPlanner {
                 }
             }
             labels += DrawCommand.ClipRect(tile, children)
+            labelOwners += owner
         }
 
         private fun headerLabel(
@@ -437,6 +476,7 @@ internal object TreemapHierarchyPlanner {
             fill: ChartColor,
             tile: RectD,
             headerHeight: Double,
+            owner: Int,
         ) {
             if (!spec.showLabels || name.isEmpty()) return
             val band = RectD(tile.left, tile.top, tile.right, min(tile.bottom, tile.top + headerHeight))
@@ -463,6 +503,7 @@ internal object TreemapHierarchyPlanner {
                 children += DrawCommand.Text(text = shownName, position = OffsetD(band.left + LABEL_PADDING_PX, top), color = color, isPieSliceLabel = true)
             }
             labels += DrawCommand.ClipRect(band, children)
+            labelOwners += owner
         }
 
         /** [text] if it fits [maxWidth], else its longest prefix plus `…` that does, else `null`. */

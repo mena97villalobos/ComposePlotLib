@@ -15,8 +15,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mena97villalobos.composeplotlib.chart.TreemapChart
+import com.mena97villalobos.composeplotlib.core.spec.HierarchyHighlightStyle
 import com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchySpec
 import com.mena97villalobos.composeplotlib.samples.android.data.sampleStorageTreemapSpec
+import com.mena97villalobos.composeplotlib.samples.android.screens.InteractiveTreemapShowcaseScreen
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,6 +42,8 @@ class TreemapHierarchyRoborazziTest {
         height: Dp,
         fontScale: Float = 1f,
         dark: Boolean = false,
+        rootNodeId: String? = null,
+        highlighted: Set<String> = emptySet(),
         spec: () -> TreemapHierarchySpec = { sampleStorageTreemapSpec() },
     ) {
         composeRule.setContent {
@@ -47,7 +51,12 @@ class TreemapHierarchyRoborazziTest {
                 val base = LocalDensity.current
                 CompositionLocalProvider(LocalDensity provides Density(density = base.density, fontScale = fontScale)) {
                     Surface(modifier = Modifier.size(width = width, height = height)) {
-                        TreemapChart(spec = spec(), modifier = Modifier.fillMaxSize())
+                        TreemapChart(
+                            spec = spec(),
+                            modifier = Modifier.fillMaxSize(),
+                            rootNodeId = rootNodeId,
+                            highlightedNodeIds = highlighted,
+                        )
                     }
                 }
             }
@@ -78,4 +87,31 @@ class TreemapHierarchyRoborazziTest {
 
     @Test
     fun treemapHierarchy_singleLevel() = capture(400.dp, 300.dp) { sampleStorageTreemapSpec().copy(maxDepth = 1) }
+
+    @Test
+    fun treemapHierarchy_highlightedLeaf() = capture(400.dp, 400.dp, highlighted = setOf("movies/concert"))
+
+    @Test
+    fun treemapHierarchy_highlightedParent() = capture(400.dp, 400.dp, highlighted = setOf("dcim"))
+
+    @Test
+    fun treemapHierarchy_highlightedDimmed() =
+        capture(400.dp, 400.dp, highlighted = setOf("movies/concert")) {
+            sampleStorageTreemapSpec().copy(highlight = HierarchyHighlightStyle(dimOthersAlpha = 0.35))
+        }
+
+    @Test
+    fun treemapHierarchy_drilledIntoAFolder() = capture(400.dp, 400.dp, rootNodeId = "dcim")
+
+    @Test
+    fun treemapHierarchy_interactiveShowcaseScreen() {
+        composeRule.setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.size(width = 400.dp, height = 760.dp)) {
+                    InteractiveTreemapShowcaseScreen()
+                }
+            }
+        }
+        composeRule.onRoot().captureShowcaseRoboImage()
+    }
 }

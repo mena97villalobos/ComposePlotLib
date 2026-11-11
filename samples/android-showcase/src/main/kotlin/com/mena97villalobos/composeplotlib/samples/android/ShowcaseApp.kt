@@ -17,7 +17,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -42,6 +42,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.GaugeChartSho
 import com.mena97villalobos.composeplotlib.samples.android.screens.HeatmapChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ImageExportShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.IndicatorsShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.InteractiveTreemapShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LineChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.LinkedChartsShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ParallelCoordinatesShowcaseScreen
@@ -65,7 +66,7 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChar
 @Preview
 fun ShowcaseApp() {
     MaterialTheme {
-        var destination by remember { mutableStateOf(ShowcaseDestination.Home) }
+        var destination by rememberSaveable { mutableStateOf(ShowcaseDestination.Home) }
 
         Scaffold(
             topBar = {
@@ -180,6 +181,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.Treemap ->
                     Column(detailModifier) {
                         TreemapChartShowcaseScreen()
+                    }
+                ShowcaseDestination.InteractiveTreemap ->
+                    Column(detailModifier) {
+                        InteractiveTreemapShowcaseScreen()
                     }
                 ShowcaseDestination.Sunburst ->
                     Column(detailModifier) {
@@ -384,6 +389,12 @@ private fun ShowcaseHomeScreen(
             Text("Treemap")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.InteractiveTreemap) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Interactive treemap (drill-in)")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.Sunburst) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -500,6 +511,7 @@ private enum class ShowcaseDestination(
     Indicators("Technical indicators"),
     CandlestickVariants("Candlestick variants"),
     Treemap("Treemap"),
+    InteractiveTreemap("Interactive treemap"),
     Sunburst("Sunburst"),
     CirclePack("Circle packing"),
     ParallelCoordinates("Parallel coordinates"),

@@ -48,7 +48,7 @@ class TreemapHierarchyPlannerTest {
         root: String? = null,
         width: Double = 600.0,
         height: Double = 400.0,
-    ) = ChartPlanner.planTreemapHierarchy(input(width, height), spec, root, measurer)
+    ) = ChartPlanner.planTreemapHierarchy(input(width, height), spec, root, labelMeasurer = measurer)
 
     private fun RectD.area() = width * height
 
@@ -472,7 +472,7 @@ class TreemapHierarchyPlannerTest {
         for ((w, h) in listOf(600.0 to 400.0, 320.0 to 240.0, 200.0 to 900.0)) {
             for (scale in listOf(1.0, 1.4, 2.0)) {
                 val scaled = TreemapLabelMeasurer.estimate(charWidthPx = 7.0 * scale, lineHeightPx = 16.0 * scale)
-                val plan = ChartPlanner.planTreemapHierarchy(input(w, h), spec, null, scaled)
+                val plan = ChartPlanner.planTreemapHierarchy(input(w, h), spec, null, labelMeasurer = scaled)
                 plan.layout.overlayDrawCommands.forEach { command ->
                     val clip = command as DrawCommand.ClipRect
                     assertTrue(plan.tiles.any { it.bounds.containsRect(clip.bounds) }, "clip must lie in a tile")
@@ -524,7 +524,7 @@ class TreemapHierarchyPlannerTest {
     @Test
     fun labels_headerBandGrowsToFitLargeText() {
         val big = TreemapLabelMeasurer.estimate(charWidthPx = 10.0, lineHeightPx = 30.0)
-        val plan = ChartPlanner.planTreemapHierarchy(input(), TreemapHierarchySpec(nodes = twoLevel, headerHeightPx = 18.0), null, big)
+        val plan = ChartPlanner.planTreemapHierarchy(input(), TreemapHierarchySpec(nodes = twoLevel, headerHeightPx = 18.0), null, labelMeasurer = big)
         val a = plan.tiles.first { it.nodeId == "a" }
         val firstChildTop = plan.tiles.filter { it.path.dropLast(1) == a.path }.minOf { it.bounds.top }
         assertTrue(firstChildTop - a.bounds.top >= 32.0)

@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.hypot
 
 /**
- * Tap, optional double-tap, multi-touch transform, and optional fling scheduling (debounced after pan quiescence).
+ * Tap, optional double-tap and long-press, multi-touch transform, and optional fling scheduling (debounced after pan
+ * quiescence).
  *
  * The callbacks are captured through [rememberUpdatedState] and the underlying [pointerInput] blocks are keyed only
  * on stable values (whether each handler is present, and fling tuning). This is deliberate: chart callbacks close
@@ -35,26 +36,27 @@ internal fun Modifier.chartGestures(
     flingPolicy: ChartFlingGesturePolicy = ChartFlingGesturePolicy(),
     flingRuntime: ChartFlingRuntime? = null,
     onFlingVelocity: ((velocityPxPerSec: Offset) -> Unit)? = null,
+    onLongPress: ((Offset) -> Unit)? = null,
 ): Modifier {
     var modifier = this
 
     val tapEnabled = onTap != null
     val doubleTapEnabled = onDoubleTap != null
+    val longPressEnabled = onLongPress != null
     val currentOnTap by rememberUpdatedState(onTap)
     val currentOnDoubleTap by rememberUpdatedState(onDoubleTap)
+    val currentOnLongPress by rememberUpdatedState(onLongPress)
 
-    if (tapEnabled || doubleTapEnabled) {
+    if (tapEnabled || doubleTapEnabled || longPressEnabled) {
         modifier =
-            modifier.pointerInput(tapEnabled, doubleTapEnabled) {
-                when {
-                    tapEnabled && doubleTapEnabled ->
-                        detectTapGestures(
-                            onTap = { currentOnTap?.invoke(it) },
-                            onDoubleTap = { currentOnDoubleTap?.invoke(it) },
-                        )
-                    doubleTapEnabled -> detectTapGestures(onDoubleTap = { currentOnDoubleTap?.invoke(it) })
-                    else -> detectTapGestures(onTap = { currentOnTap?.invoke(it) })
-                }
+            modifier.pointerInput(tapEnabled, doubleTapEnabled, longPressEnabled) {
+                // Passing null for an absent handler keeps detectTapGestures from waiting on that gesture (a
+                // non-null onDoubleTap, for instance, delays every single tap by the double-tap timeout).
+                detectTapGestures(
+                    onTap = if (tapEnabled) ({ currentOnTap?.invoke(it) }) else null,
+                    onDoubleTap = if (doubleTapEnabled) ({ currentOnDoubleTap?.invoke(it) }) else null,
+                    onLongPress = if (longPressEnabled) ({ currentOnLongPress?.invoke(it) }) else null,
+                )
             }
     }
 
