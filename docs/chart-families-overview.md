@@ -82,7 +82,7 @@ Read-only enclosure chart: **`CirclePackChartSpec`** holds **`CirclePackNode`** 
 
 ## Sunburst
 
-Read-only hierarchical radial chart: **`SunburstChartSpec`** holds a **`SunburstNode`** tree drawn as concentric rings (one per depth), where each node's angular span is proportional to its value within its parent (`sunburstLayout` in `chart-core`). The root is an optional center disk (`showRoot`); top-level branches take Tableau palette colors and descendants inherit a lighter shade. **Non-interactive**. Compose entry: `SunburstChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
+Read-only hierarchical radial chart: **`SunburstChartSpec`** holds a **`SunburstNode`** tree drawn as concentric rings (one per depth), where each node's angular span is proportional to its value within its parent (`sunburstLayout` in `chart-core`). The root is an optional center disk (`showRoot`); top-level branches take Tableau palette colors and descendants inherit a lighter shade. **Tap / long-press / drill-in / highlight** with the same callback shape as the hierarchical treemap (unreleased: `onNodeClick`, `onNodeLongClick`, `rootNodeId`, `highlightedNodeIds`; nodes are identified by `SunburstNode.id`, falling back to the label). Compose entry: `SunburstChart`. *(Shipped in 1.2.0; screenshot-tested in the Android showcase.)*
 
 ## Treemap
 

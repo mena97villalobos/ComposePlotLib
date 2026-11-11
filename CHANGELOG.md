@@ -42,6 +42,14 @@ Versions are published to GitHub Packages from the Release workflow: pushing a s
 - **Treemap accessibility.** One semantics node per tile with label, value text, position, a click action and a
   long-press custom action (`longClickActionLabel`), nested under its parent; capped by `maxAccessibleTiles` with the
   overflow named in the chart summary (see `docs/accessibility-custom-actions.md`).
+- **Sunburst tap, long-press, drill-in and highlight.** `SunburstChart` gains `rootNodeId`, `highlightedNodeIds`,
+  `onNodeClick`, `onNodeLongClick` and `highlight`, with the same `HierarchyNodeHit` callbacks as the treemap
+  (`SunburstHitResolver`: ring by radius, segment by angle; ring gaps report nothing). `SunburstNode` gains an
+  optional `id` (nodes without one are identified by their label, `SunburstNode.nodeId`).
+  `ChartPlanner.planSunburstHierarchy` returns `PlannedSunburstSegment`s and draws exactly what `planSunburstChart`
+  draws when nothing is drilled into or highlighted. The 1.3 `SunburstNode` constructor and `copy`, and the 1.3
+  three-parameter `SunburstChart`, remain in the binary as hidden members, so code compiled against 1.3 still links;
+  Kotlin source is unaffected (Java source calling the old `SunburstNode` constructor must pass the new `id`).
 - An **interactive treemap** showcase screen: a storage-style folder tree with a breadcrumb, drill-in, long-press
   details and a list synced with the highlighted tile.
 

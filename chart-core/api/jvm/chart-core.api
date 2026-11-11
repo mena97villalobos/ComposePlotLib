@@ -385,6 +385,8 @@ public final class com/mena97villalobos/composeplotlib/core/layout/ChartPlanner 
 	public final fun planStackedAreaChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/StackedAreaChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/StackedAreaChartPlan;
 	public static synthetic fun planStackedAreaChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/StackedAreaChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/StackedAreaChartPlan;
 	public final fun planSunburstChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/SunburstChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/SunburstChartPlan;
+	public final fun planSunburstHierarchy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/SunburstChartSpec;Ljava/lang/String;Ljava/util/Set;Lcom/mena97villalobos/composeplotlib/core/spec/HierarchyHighlightStyle;)Lcom/mena97villalobos/composeplotlib/core/layout/SunburstHierarchyPlan;
+	public static synthetic fun planSunburstHierarchy$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/SunburstChartSpec;Ljava/lang/String;Ljava/util/Set;Lcom/mena97villalobos/composeplotlib/core/spec/HierarchyHighlightStyle;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/SunburstHierarchyPlan;
 	public final fun planTreemapChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/TreemapChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapChartPlan;
 	public final fun planTreemapHierarchy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Ljava/lang/String;Ljava/util/Set;Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan;
 	public static synthetic fun planTreemapHierarchy$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Ljava/lang/String;Ljava/util/Set;Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan;
@@ -1030,6 +1032,37 @@ public final class com/mena97villalobos/composeplotlib/core/layout/PlannedSankey
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/layout/PlannedSunburstSegment {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;IDDDDDLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Z)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component11 ()Z
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()I
+	public final fun component4 ()D
+	public final fun component5 ()D
+	public final fun component6 ()D
+	public final fun component7 ()D
+	public final fun component8 ()D
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;IDDDDDLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Z)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSunburstSegment;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSunburstSegment;Ljava/lang/String;Ljava/util/List;IDDDDDLjava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSunburstSegment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getDepth ()I
+	public final fun getHasChildren ()Z
+	public final fun getInnerRadius ()D
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getNodeId ()Ljava/lang/String;
+	public final fun getOuterRadius ()D
+	public final fun getPath ()Ljava/util/List;
+	public final fun getStartAngleDegrees ()D
+	public final fun getSweepAngleDegrees ()D
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/layout/PlannedTreemapTile {
 	public fun <init> (Ljava/lang/String;Ljava/util/List;ILcom/mena97villalobos/composeplotlib/core/geometry/RectD;DLjava/lang/String;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZZZLjava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILcom/mena97villalobos/composeplotlib/core/geometry/RectD;DLjava/lang/String;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZZZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -1184,6 +1217,25 @@ public final class com/mena97villalobos/composeplotlib/core/layout/SunburstChart
 	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/SunburstChartPlan;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/SunburstChartPlan;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/SunburstHierarchyPlan {
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/List;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Ljava/lang/String;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/layout/SunburstHierarchyPlan;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/SunburstHierarchyPlan;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Ljava/util/List;Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/SunburstHierarchyPlan;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCenter ()Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;
+	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun getRootNodeId ()Ljava/lang/String;
+	public final fun getRootPath ()Ljava/util/List;
+	public final fun getSegments ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -2236,6 +2288,12 @@ public final class com/mena97villalobos/composeplotlib/core/selection/SankeyHitR
 	public static final field LayerLink Ljava/lang/String;
 	public static final field LayerNode Ljava/lang/String;
 	public final fun resolve (Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/spec/SankeyChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/SankeyChartPlan;)Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/selection/SunburstHitResolver {
+	public static final field INSTANCE Lcom/mena97villalobos/composeplotlib/core/selection/SunburstHitResolver;
+	public final fun hitFor (Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSunburstSegment;Lcom/mena97villalobos/composeplotlib/core/layout/SunburstHierarchyPlan;)Lcom/mena97villalobos/composeplotlib/core/selection/HierarchyNodeHit;
+	public final fun resolve (Lcom/mena97villalobos/composeplotlib/core/geometry/OffsetD;Lcom/mena97villalobos/composeplotlib/core/layout/SunburstHierarchyPlan;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedSunburstSegment;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/selection/TreemapHitResolver {
@@ -4486,21 +4544,28 @@ public final class com/mena97villalobos/composeplotlib/core/spec/SunburstChartSp
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/SunburstChartSpecKt {
+	public static final fun getNodeId (Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;)Ljava/lang/String;
 	public static final fun totalValue (Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;)D
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/SunburstNode {
-	public fun <init> (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()D
 	public final fun component3 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun component4 ()Ljava/util/List;
-	public final fun copy (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;
+	public final fun component5 ()Ljava/lang/String;
+	public final synthetic fun copy (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;
+	public final fun copy (Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;
 	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/SunburstNode;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getChildren ()Ljava/util/List;
 	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getId ()Ljava/lang/String;
 	public final fun getLabel ()Ljava/lang/String;
 	public final fun getValue ()D
 	public fun hashCode ()I
