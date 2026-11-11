@@ -24,7 +24,7 @@ kotlin = "2.4.21"
 # `api` dependency and therefore lands in consumers' POMs: it must never be a pre-release.
 material3 = "1.9.0"
 robolectric = "4.17"
-roborazzi = "1.78.0"
+roborazzi = "1.77.0"
 jmhGradlePlugin = "0.7.3"
 ktlint = "14.2.0"
 # Vanniktech Maven Publish owns the fiddly parts of KMP publishing (sources/javadoc jars on every
