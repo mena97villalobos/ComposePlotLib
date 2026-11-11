@@ -386,6 +386,8 @@ public final class com/mena97villalobos/composeplotlib/core/layout/ChartPlanner 
 	public static synthetic fun planStackedAreaChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/StackedAreaChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/StackedAreaChartPlan;
 	public final fun planSunburstChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/SunburstChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/SunburstChartPlan;
 	public final fun planTreemapChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/TreemapChartSpec;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapChartPlan;
+	public final fun planTreemapHierarchy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan;
+	public static synthetic fun planTreemapHierarchy$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan;
 	public final fun planViolinChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/ViolinChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/ViolinChartPlan;
 	public static synthetic fun planViolinChart$default (Lcom/mena97villalobos/composeplotlib/core/layout/ChartPlanner;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/ViolinChartSpec;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/ViolinChartPlan;
 	public final fun planWaterfallChart (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutInput;Lcom/mena97villalobos/composeplotlib/core/spec/WaterfallChartSpec;Lcom/mena97villalobos/composeplotlib/core/selection/ChartSelection;Lcom/mena97villalobos/composeplotlib/core/layout/planning/TickValuePass;)Lcom/mena97villalobos/composeplotlib/core/layout/WaterfallChartPlan;
@@ -1028,6 +1030,40 @@ public final class com/mena97villalobos/composeplotlib/core/layout/PlannedSankey
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/mena97villalobos/composeplotlib/core/layout/PlannedTreemapTile {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;ILcom/mena97villalobos/composeplotlib/core/geometry/RectD;DLjava/lang/String;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZZZLjava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILcom/mena97villalobos/composeplotlib/core/geometry/RectD;DLjava/lang/String;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZZZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Z
+	public final fun component11 ()Z
+	public final fun component12 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()I
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
+	public final fun component5 ()D
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component9 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/util/List;ILcom/mena97villalobos/composeplotlib/core/geometry/RectD;DLjava/lang/String;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZZZLjava/util/List;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedTreemapTile;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/PlannedTreemapTile;Ljava/lang/String;Ljava/util/List;ILcom/mena97villalobos/composeplotlib/core/geometry/RectD;DLjava/lang/String;Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;ZZZLjava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/PlannedTreemapTile;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBounds ()Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;
+	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getDepth ()I
+	public final fun getHasChildren ()Z
+	public final fun getHasDrawnChildren ()Z
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getMemberIds ()Ljava/util/List;
+	public final fun getNodeId ()Ljava/lang/String;
+	public final fun getPath ()Ljava/util/List;
+	public final fun getValue ()D
+	public final fun getValueText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun isAggregate ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/mena97villalobos/composeplotlib/core/layout/PlannedWaterfallBar {
 	public fun <init> (ILcom/mena97villalobos/composeplotlib/core/model/WaterfallEntry;Lcom/mena97villalobos/composeplotlib/core/geometry/RectD;DDDZZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;)V
 	public final fun component1 ()I
@@ -1209,6 +1245,47 @@ public final class com/mena97villalobos/composeplotlib/core/layout/TreemapChartP
 	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan {
+	public static final field AGGREGATE_ID_SUFFIX Ljava/lang/String;
+	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan$Companion;
+	public fun <init> (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Ljava/util/List;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Ljava/util/List;Ljava/lang/String;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan;Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;Ljava/util/List;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLayout ()Lcom/mena97villalobos/composeplotlib/core/layout/ChartLayoutPlan;
+	public final fun getRootNodeId ()Ljava/lang/String;
+	public final fun getRootPath ()Ljava/util/List;
+	public final fun getTiles ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/TreemapHierarchyPlan$Companion {
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/TreemapLabelLine : java/lang/Enum {
+	public static final field Header Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelLine;
+	public static final field Name Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelLine;
+	public static final field Value Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelLine;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelLine;
+	public static fun values ()[Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelLine;
+}
+
+public abstract interface class com/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer {
+	public static final field Companion Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer$Companion;
+	public abstract fun measure (Ljava/lang/String;Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelLine;)Lcom/mena97villalobos/composeplotlib/core/geometry/SizeD;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer$Companion {
+	public final fun estimate (DD)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer;
+	public static synthetic fun estimate$default (Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer$Companion;DDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/layout/TreemapLabelMeasurer;
 }
 
 public final class com/mena97villalobos/composeplotlib/core/layout/ViolinChartPlan {
@@ -1772,6 +1849,12 @@ public final class com/mena97villalobos/composeplotlib/core/model/ChartColor$Com
 	public final fun hsl (DDDD)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public static synthetic fun hsl$default (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor$Companion;DDDDILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
 	public final fun rgb (III)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/model/ChartColorContrastKt {
+	public static final fun contrastRatio (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)D
+	public static final fun readableContentColor (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public static final fun relativeLuminance (Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;)D
 }
 
 public final class com/mena97villalobos/composeplotlib/core/model/ChartColorShadesKt {
@@ -4394,6 +4477,75 @@ public final class com/mena97villalobos/composeplotlib/core/spec/TreemapChartSpe
 	public final fun getShowLabels ()Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/TreemapHierarchyNode {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()D
+	public final fun component4 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component5 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;)Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchyNode;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchyNode;Ljava/lang/String;Ljava/lang/String;DLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Ljava/util/List;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchyNode;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChildren ()Ljava/util/List;
+	public final fun getColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec {
+	public fun <init> (Ljava/util/List;ILjava/lang/String;Ljava/util/List;DDDDZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lkotlin/jvm/functions/Function1;DLkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)V
+	public synthetic fun <init> (Ljava/util/List;ILjava/lang/String;Ljava/util/List;DDDDZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lkotlin/jvm/functions/Function1;DLkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component10 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component11 ()Lkotlin/jvm/functions/Function1;
+	public final fun component12 ()D
+	public final fun component13 ()Lkotlin/jvm/functions/Function1;
+	public final fun component14 ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun component15 ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun component16 ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun component2 ()I
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()D
+	public final fun component6 ()D
+	public final fun component7 ()D
+	public final fun component8 ()D
+	public final fun component9 ()Z
+	public final fun copy (Ljava/util/List;ILjava/lang/String;Ljava/util/List;DDDDZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lkotlin/jvm/functions/Function1;DLkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;)Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;
+	public static synthetic fun copy$default (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Ljava/util/List;ILjava/lang/String;Ljava/util/List;DDDDZLcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lkotlin/jvm/functions/Function1;DLkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;ILjava/lang/Object;)Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccessibility ()Lcom/mena97villalobos/composeplotlib/core/spec/ChartAccessibilitySpec;
+	public final fun getAggregateColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getAggregateLabel ()Lkotlin/jvm/functions/Function1;
+	public final fun getContentPadding ()Lcom/mena97villalobos/composeplotlib/core/geometry/InsetsD;
+	public final fun getHeaderHeightPx ()D
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLabelColor ()Lcom/mena97villalobos/composeplotlib/core/model/ChartColor;
+	public final fun getMaxDepth ()I
+	public final fun getMinTileSidePx ()D
+	public final fun getNodePaddingPx ()D
+	public final fun getNodes ()Ljava/util/List;
+	public final fun getPalette ()Ljava/util/List;
+	public final fun getShowLabels ()Z
+	public final fun getTileCornerRadiusPx ()D
+	public final fun getTileGapPx ()D
+	public final fun getValueFormatter ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpecKt {
+	public static final fun findNode (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Ljava/lang/String;)Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchyNode;
+	public static final fun findPath (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Ljava/lang/String;)Ljava/util/List;
+	public static final fun getDefaultTreemapAggregateLabel ()Lkotlin/jvm/functions/Function1;
+	public static final fun layoutSize (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchyNode;)D
 }
 
 public final class com/mena97villalobos/composeplotlib/core/spec/TreemapNode {

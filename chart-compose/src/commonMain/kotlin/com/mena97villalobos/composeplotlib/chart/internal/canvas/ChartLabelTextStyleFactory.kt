@@ -5,6 +5,7 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import com.mena97villalobos.composeplotlib.core.spec.AxisLabelStyle
 import com.mena97villalobos.composeplotlib.core.spec.BarChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.BoxPlotChartSpec
@@ -28,6 +29,7 @@ import com.mena97villalobos.composeplotlib.core.spec.ScatterChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SunburstChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchySpec
 import com.mena97villalobos.composeplotlib.core.spec.ViolinChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 
@@ -134,6 +136,24 @@ internal fun chartLabelTextStyles(
     // Treemap draws tile labels via the axis text slot.
     val y = MaterialTheme.typography.labelSmall
     return ChartLabelTextStyles(xAxis = y, yAxis = y, legend = y, pieSliceLabel = y, yAxisSecondaryTick = y)
+}
+
+@Composable
+@ReadOnlyComposable
+internal fun chartLabelTextStyles(
+    @Suppress("UNUSED_PARAMETER") spec: TreemapHierarchySpec,
+): ChartLabelTextStyles {
+    // Hierarchical treemap text slots: tile name -> xAxis, value line -> yAxis, parent header -> pieSliceLabel.
+    // Must match the styles behind the planner's TreemapLabelMeasurer (see TreemapHierarchyLabels).
+    val typo = MaterialTheme.typography
+    val value = typo.labelSmall
+    return ChartLabelTextStyles(
+        xAxis = typo.labelMedium,
+        yAxis = value,
+        legend = value,
+        pieSliceLabel = typo.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+        yAxisSecondaryTick = value,
+    )
 }
 
 @Composable

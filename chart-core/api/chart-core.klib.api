@@ -67,6 +67,18 @@ final enum class com.mena97villalobos.composeplotlib.core.layout.draw/StrokeJoin
     final fun values(): kotlin/Array<com.mena97villalobos.composeplotlib.core.layout.draw/StrokeJoin> // com.mena97villalobos.composeplotlib.core.layout.draw/StrokeJoin.values|values#static(){}[0]
 }
 
+final enum class com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine : kotlin/Enum<com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine> { // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine|null[0]
+    enum entry Header // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine.Header|null[0]
+    enum entry Name // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine.Name|null[0]
+    enum entry Value // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine.Value|null[0]
+
+    final val entries // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine> // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine> // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine.values|values#static(){}[0]
+}
+
 final enum class com.mena97villalobos.composeplotlib.core.selection/ChartBrushAxis : kotlin/Enum<com.mena97villalobos.composeplotlib.core.selection/ChartBrushAxis> { // com.mena97villalobos.composeplotlib.core.selection/ChartBrushAxis|null[0]
     enum entry Both // com.mena97villalobos.composeplotlib.core.selection/ChartBrushAxis.Both|null[0]
     enum entry Horizontal // com.mena97villalobos.composeplotlib.core.selection/ChartBrushAxis.Horizontal|null[0]
@@ -350,6 +362,14 @@ final enum class com.mena97villalobos.composeplotlib.core.spec/XTickLabelOverlap
 
     final fun valueOf(kotlin/String): com.mena97villalobos.composeplotlib.core.spec/XTickLabelOverlapStrategy // com.mena97villalobos.composeplotlib.core.spec/XTickLabelOverlapStrategy.valueOf|valueOf#static(kotlin.String){}[0]
     final fun values(): kotlin/Array<com.mena97villalobos.composeplotlib.core.spec/XTickLabelOverlapStrategy> // com.mena97villalobos.composeplotlib.core.spec/XTickLabelOverlapStrategy.values|values#static(){}[0]
+}
+
+abstract fun interface com.mena97villalobos.composeplotlib.core.layout/TreemapLabelMeasurer { // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelMeasurer|null[0]
+    abstract fun measure(kotlin/String, com.mena97villalobos.composeplotlib.core.layout/TreemapLabelLine): com.mena97villalobos.composeplotlib.core.geometry/SizeD // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelMeasurer.measure|measure(kotlin.String;com.mena97villalobos.composeplotlib.core.layout.TreemapLabelLine){}[0]
+
+    final object Companion { // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelMeasurer.Companion|null[0]
+        final fun estimate(kotlin/Double = ..., kotlin/Double = ...): com.mena97villalobos.composeplotlib.core.layout/TreemapLabelMeasurer // com.mena97villalobos.composeplotlib.core.layout/TreemapLabelMeasurer.Companion.estimate|estimate(kotlin.Double;kotlin.Double){}[0]
+    }
 }
 
 sealed interface com.mena97villalobos.composeplotlib.core.layout.draw/PathDrawStyle { // com.mena97villalobos.composeplotlib.core.layout.draw/PathDrawStyle|null[0]
@@ -2154,6 +2174,52 @@ final class com.mena97villalobos.composeplotlib.core.layout/PlannedSankeyNode { 
     final fun toString(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/PlannedSankeyNode.toString|toString(){}[0]
 }
 
+final class com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile { // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile|null[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String>, kotlin/Int, com.mena97villalobos.composeplotlib.core.geometry/RectD, kotlin/Double, kotlin/String, kotlin/String?, com.mena97villalobos.composeplotlib.core.model/ChartColor, kotlin/Boolean, kotlin/Boolean, kotlin/Boolean = ..., kotlin.collections/List<kotlin/String> = ...) // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>;kotlin.Int;com.mena97villalobos.composeplotlib.core.geometry.RectD;kotlin.Double;kotlin.String;kotlin.String?;com.mena97villalobos.composeplotlib.core.model.ChartColor;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.collections.List<kotlin.String>){}[0]
+
+    final val bounds // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.bounds|{}bounds[0]
+        final fun <get-bounds>(): com.mena97villalobos.composeplotlib.core.geometry/RectD // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.bounds.<get-bounds>|<get-bounds>(){}[0]
+    final val color // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.color|{}color[0]
+        final fun <get-color>(): com.mena97villalobos.composeplotlib.core.model/ChartColor // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.color.<get-color>|<get-color>(){}[0]
+    final val depth // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.depth|{}depth[0]
+        final fun <get-depth>(): kotlin/Int // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.depth.<get-depth>|<get-depth>(){}[0]
+    final val hasChildren // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.hasChildren|{}hasChildren[0]
+        final fun <get-hasChildren>(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.hasChildren.<get-hasChildren>|<get-hasChildren>(){}[0]
+    final val hasDrawnChildren // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.hasDrawnChildren|{}hasDrawnChildren[0]
+        final fun <get-hasDrawnChildren>(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.hasDrawnChildren.<get-hasDrawnChildren>|<get-hasDrawnChildren>(){}[0]
+    final val isAggregate // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.isAggregate|{}isAggregate[0]
+        final fun <get-isAggregate>(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.isAggregate.<get-isAggregate>|<get-isAggregate>(){}[0]
+    final val label // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.label|{}label[0]
+        final fun <get-label>(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.label.<get-label>|<get-label>(){}[0]
+    final val memberIds // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.memberIds|{}memberIds[0]
+        final fun <get-memberIds>(): kotlin.collections/List<kotlin/String> // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.memberIds.<get-memberIds>|<get-memberIds>(){}[0]
+    final val nodeId // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.nodeId|{}nodeId[0]
+        final fun <get-nodeId>(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.nodeId.<get-nodeId>|<get-nodeId>(){}[0]
+    final val path // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.path|{}path[0]
+        final fun <get-path>(): kotlin.collections/List<kotlin/String> // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.path.<get-path>|<get-path>(){}[0]
+    final val value // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.value|{}value[0]
+        final fun <get-value>(): kotlin/Double // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.value.<get-value>|<get-value>(){}[0]
+    final val valueText // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.valueText|{}valueText[0]
+        final fun <get-valueText>(): kotlin/String? // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.valueText.<get-valueText>|<get-valueText>(){}[0]
+
+    final fun component1(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component1|component1(){}[0]
+    final fun component10(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component10|component10(){}[0]
+    final fun component11(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component11|component11(){}[0]
+    final fun component12(): kotlin.collections/List<kotlin/String> // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component12|component12(){}[0]
+    final fun component2(): kotlin.collections/List<kotlin/String> // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component2|component2(){}[0]
+    final fun component3(): kotlin/Int // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component3|component3(){}[0]
+    final fun component4(): com.mena97villalobos.composeplotlib.core.geometry/RectD // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component4|component4(){}[0]
+    final fun component5(): kotlin/Double // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component5|component5(){}[0]
+    final fun component6(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component6|component6(){}[0]
+    final fun component7(): kotlin/String? // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component7|component7(){}[0]
+    final fun component8(): com.mena97villalobos.composeplotlib.core.model/ChartColor // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component8|component8(){}[0]
+    final fun component9(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.component9|component9(){}[0]
+    final fun copy(kotlin/String = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/Int = ..., com.mena97villalobos.composeplotlib.core.geometry/RectD = ..., kotlin/Double = ..., kotlin/String = ..., kotlin/String? = ..., com.mena97villalobos.composeplotlib.core.model/ChartColor = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin.collections/List<kotlin/String> = ...): com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.copy|copy(kotlin.String;kotlin.collections.List<kotlin.String>;kotlin.Int;com.mena97villalobos.composeplotlib.core.geometry.RectD;kotlin.Double;kotlin.String;kotlin.String?;com.mena97villalobos.composeplotlib.core.model.ChartColor;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.collections.List<kotlin.String>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile.toString|toString(){}[0]
+}
+
 final class com.mena97villalobos.composeplotlib.core.layout/PlannedWaterfallBar { // com.mena97villalobos.composeplotlib.core.layout/PlannedWaterfallBar|null[0]
     constructor <init>(kotlin/Int, com.mena97villalobos.composeplotlib.core.model/WaterfallEntry, com.mena97villalobos.composeplotlib.core.geometry/RectD, kotlin/Double, kotlin/Double, kotlin/Double, kotlin/Boolean, kotlin/Boolean, com.mena97villalobos.composeplotlib.core.model/ChartColor) // com.mena97villalobos.composeplotlib.core.layout/PlannedWaterfallBar.<init>|<init>(kotlin.Int;com.mena97villalobos.composeplotlib.core.model.WaterfallEntry;com.mena97villalobos.composeplotlib.core.geometry.RectD;kotlin.Double;kotlin.Double;kotlin.Double;kotlin.Boolean;kotlin.Boolean;com.mena97villalobos.composeplotlib.core.model.ChartColor){}[0]
 
@@ -2362,6 +2428,33 @@ final class com.mena97villalobos.composeplotlib.core.layout/TreemapChartPlan { /
     final fun equals(kotlin/Any?): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/TreemapChartPlan.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.mena97villalobos.composeplotlib.core.layout/TreemapChartPlan.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/TreemapChartPlan.toString|toString(){}[0]
+}
+
+final class com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan { // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan|null[0]
+    constructor <init>(com.mena97villalobos.composeplotlib.core.layout/ChartLayoutPlan, kotlin.collections/List<com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile>, kotlin/String?, kotlin.collections/List<kotlin/String>) // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.<init>|<init>(com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan;kotlin.collections.List<com.mena97villalobos.composeplotlib.core.layout.PlannedTreemapTile>;kotlin.String?;kotlin.collections.List<kotlin.String>){}[0]
+
+    final val layout // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.layout|{}layout[0]
+        final fun <get-layout>(): com.mena97villalobos.composeplotlib.core.layout/ChartLayoutPlan // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.layout.<get-layout>|<get-layout>(){}[0]
+    final val rootNodeId // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.rootNodeId|{}rootNodeId[0]
+        final fun <get-rootNodeId>(): kotlin/String? // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.rootNodeId.<get-rootNodeId>|<get-rootNodeId>(){}[0]
+    final val rootPath // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.rootPath|{}rootPath[0]
+        final fun <get-rootPath>(): kotlin.collections/List<kotlin/String> // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.rootPath.<get-rootPath>|<get-rootPath>(){}[0]
+    final val tiles // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.tiles|{}tiles[0]
+        final fun <get-tiles>(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile> // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.tiles.<get-tiles>|<get-tiles>(){}[0]
+
+    final fun component1(): com.mena97villalobos.composeplotlib.core.layout/ChartLayoutPlan // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile> // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<kotlin/String> // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.component4|component4(){}[0]
+    final fun copy(com.mena97villalobos.composeplotlib.core.layout/ChartLayoutPlan = ..., kotlin.collections/List<com.mena97villalobos.composeplotlib.core.layout/PlannedTreemapTile> = ..., kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ...): com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.copy|copy(com.mena97villalobos.composeplotlib.core.layout.ChartLayoutPlan;kotlin.collections.List<com.mena97villalobos.composeplotlib.core.layout.PlannedTreemapTile>;kotlin.String?;kotlin.collections.List<kotlin.String>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.toString|toString(){}[0]
+
+    final object Companion { // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.Companion|null[0]
+        final const val AGGREGATE_ID_SUFFIX // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.Companion.AGGREGATE_ID_SUFFIX|{}AGGREGATE_ID_SUFFIX[0]
+            final fun <get-AGGREGATE_ID_SUFFIX>(): kotlin/String // com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan.Companion.AGGREGATE_ID_SUFFIX.<get-AGGREGATE_ID_SUFFIX>|<get-AGGREGATE_ID_SUFFIX>(){}[0]
+    }
 }
 
 final class com.mena97villalobos.composeplotlib.core.layout/ViolinChartPlan { // com.mena97villalobos.composeplotlib.core.layout/ViolinChartPlan|null[0]
@@ -5043,6 +5136,89 @@ final class com.mena97villalobos.composeplotlib.core.spec/TreemapChartSpec { // 
     final fun toString(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapChartSpec.toString|toString(){}[0]
 }
 
+final class com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode { // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/Double = ..., com.mena97villalobos.composeplotlib.core.model/ChartColor? = ..., kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode> = ...) // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.<init>|<init>(kotlin.String;kotlin.String;kotlin.Double;com.mena97villalobos.composeplotlib.core.model.ChartColor?;kotlin.collections.List<com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode>){}[0]
+
+    final val children // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.children|{}children[0]
+        final fun <get-children>(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode> // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.children.<get-children>|<get-children>(){}[0]
+    final val color // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.color|{}color[0]
+        final fun <get-color>(): com.mena97villalobos.composeplotlib.core.model/ChartColor? // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.color.<get-color>|<get-color>(){}[0]
+    final val id // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.id|{}id[0]
+        final fun <get-id>(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.id.<get-id>|<get-id>(){}[0]
+    final val label // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.label|{}label[0]
+        final fun <get-label>(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.label.<get-label>|<get-label>(){}[0]
+    final val value // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.value|{}value[0]
+        final fun <get-value>(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.value.<get-value>|<get-value>(){}[0]
+
+    final fun component1(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.component1|component1(){}[0]
+    final fun component2(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.component2|component2(){}[0]
+    final fun component3(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.component3|component3(){}[0]
+    final fun component4(): com.mena97villalobos.composeplotlib.core.model/ChartColor? // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.component4|component4(){}[0]
+    final fun component5(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode> // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.component5|component5(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/Double = ..., com.mena97villalobos.composeplotlib.core.model/ChartColor? = ..., kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode> = ...): com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.copy|copy(kotlin.String;kotlin.String;kotlin.Double;com.mena97villalobos.composeplotlib.core.model.ChartColor?;kotlin.collections.List<com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode.toString|toString(){}[0]
+}
+
+final class com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec { // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec|null[0]
+    constructor <init>(kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode>, kotlin/Int = ..., kotlin/String = ..., kotlin.collections/List<com.mena97villalobos.composeplotlib.core.model/ChartColor> = ..., kotlin/Double = ..., kotlin/Double = ..., kotlin/Double = ..., kotlin/Double = ..., kotlin/Boolean = ..., com.mena97villalobos.composeplotlib.core.model/ChartColor? = ..., kotlin/Function1<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode, kotlin/String>? = ..., kotlin/Double = ..., kotlin/Function1<kotlin/Int, kotlin/String> = ..., com.mena97villalobos.composeplotlib.core.model/ChartColor? = ..., com.mena97villalobos.composeplotlib.core.spec/ChartAccessibilitySpec = ..., com.mena97villalobos.composeplotlib.core.geometry/InsetsD = ...) // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.<init>|<init>(kotlin.collections.List<com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode>;kotlin.Int;kotlin.String;kotlin.collections.List<com.mena97villalobos.composeplotlib.core.model.ChartColor>;kotlin.Double;kotlin.Double;kotlin.Double;kotlin.Double;kotlin.Boolean;com.mena97villalobos.composeplotlib.core.model.ChartColor?;kotlin.Function1<com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode,kotlin.String>?;kotlin.Double;kotlin.Function1<kotlin.Int,kotlin.String>;com.mena97villalobos.composeplotlib.core.model.ChartColor?;com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec;com.mena97villalobos.composeplotlib.core.geometry.InsetsD){}[0]
+
+    final val accessibility // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.accessibility|{}accessibility[0]
+        final fun <get-accessibility>(): com.mena97villalobos.composeplotlib.core.spec/ChartAccessibilitySpec // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.accessibility.<get-accessibility>|<get-accessibility>(){}[0]
+    final val aggregateColor // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.aggregateColor|{}aggregateColor[0]
+        final fun <get-aggregateColor>(): com.mena97villalobos.composeplotlib.core.model/ChartColor? // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.aggregateColor.<get-aggregateColor>|<get-aggregateColor>(){}[0]
+    final val aggregateLabel // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.aggregateLabel|{}aggregateLabel[0]
+        final fun <get-aggregateLabel>(): kotlin/Function1<kotlin/Int, kotlin/String> // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.aggregateLabel.<get-aggregateLabel>|<get-aggregateLabel>(){}[0]
+    final val contentPadding // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.contentPadding|{}contentPadding[0]
+        final fun <get-contentPadding>(): com.mena97villalobos.composeplotlib.core.geometry/InsetsD // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.contentPadding.<get-contentPadding>|<get-contentPadding>(){}[0]
+    final val headerHeightPx // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.headerHeightPx|{}headerHeightPx[0]
+        final fun <get-headerHeightPx>(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.headerHeightPx.<get-headerHeightPx>|<get-headerHeightPx>(){}[0]
+    final val id // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.id|{}id[0]
+        final fun <get-id>(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.id.<get-id>|<get-id>(){}[0]
+    final val labelColor // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.labelColor|{}labelColor[0]
+        final fun <get-labelColor>(): com.mena97villalobos.composeplotlib.core.model/ChartColor? // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.labelColor.<get-labelColor>|<get-labelColor>(){}[0]
+    final val maxDepth // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.maxDepth|{}maxDepth[0]
+        final fun <get-maxDepth>(): kotlin/Int // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.maxDepth.<get-maxDepth>|<get-maxDepth>(){}[0]
+    final val minTileSidePx // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.minTileSidePx|{}minTileSidePx[0]
+        final fun <get-minTileSidePx>(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.minTileSidePx.<get-minTileSidePx>|<get-minTileSidePx>(){}[0]
+    final val nodePaddingPx // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.nodePaddingPx|{}nodePaddingPx[0]
+        final fun <get-nodePaddingPx>(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.nodePaddingPx.<get-nodePaddingPx>|<get-nodePaddingPx>(){}[0]
+    final val nodes // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.nodes|{}nodes[0]
+        final fun <get-nodes>(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode> // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.nodes.<get-nodes>|<get-nodes>(){}[0]
+    final val palette // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.palette|{}palette[0]
+        final fun <get-palette>(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.model/ChartColor> // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.palette.<get-palette>|<get-palette>(){}[0]
+    final val showLabels // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.showLabels|{}showLabels[0]
+        final fun <get-showLabels>(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.showLabels.<get-showLabels>|<get-showLabels>(){}[0]
+    final val tileCornerRadiusPx // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.tileCornerRadiusPx|{}tileCornerRadiusPx[0]
+        final fun <get-tileCornerRadiusPx>(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.tileCornerRadiusPx.<get-tileCornerRadiusPx>|<get-tileCornerRadiusPx>(){}[0]
+    final val tileGapPx // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.tileGapPx|{}tileGapPx[0]
+        final fun <get-tileGapPx>(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.tileGapPx.<get-tileGapPx>|<get-tileGapPx>(){}[0]
+    final val valueFormatter // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.valueFormatter|{}valueFormatter[0]
+        final fun <get-valueFormatter>(): kotlin/Function1<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode, kotlin/String>? // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.valueFormatter.<get-valueFormatter>|<get-valueFormatter>(){}[0]
+
+    final fun component1(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode> // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component1|component1(){}[0]
+    final fun component10(): com.mena97villalobos.composeplotlib.core.model/ChartColor? // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component10|component10(){}[0]
+    final fun component11(): kotlin/Function1<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode, kotlin/String>? // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component11|component11(){}[0]
+    final fun component12(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component12|component12(){}[0]
+    final fun component13(): kotlin/Function1<kotlin/Int, kotlin/String> // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component13|component13(){}[0]
+    final fun component14(): com.mena97villalobos.composeplotlib.core.model/ChartColor? // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component14|component14(){}[0]
+    final fun component15(): com.mena97villalobos.composeplotlib.core.spec/ChartAccessibilitySpec // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component15|component15(){}[0]
+    final fun component16(): com.mena97villalobos.composeplotlib.core.geometry/InsetsD // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component16|component16(){}[0]
+    final fun component2(): kotlin/Int // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component2|component2(){}[0]
+    final fun component3(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.model/ChartColor> // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component4|component4(){}[0]
+    final fun component5(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component5|component5(){}[0]
+    final fun component6(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component6|component6(){}[0]
+    final fun component7(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component7|component7(){}[0]
+    final fun component8(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component8|component8(){}[0]
+    final fun component9(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.component9|component9(){}[0]
+    final fun copy(kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode> = ..., kotlin/Int = ..., kotlin/String = ..., kotlin.collections/List<com.mena97villalobos.composeplotlib.core.model/ChartColor> = ..., kotlin/Double = ..., kotlin/Double = ..., kotlin/Double = ..., kotlin/Double = ..., kotlin/Boolean = ..., com.mena97villalobos.composeplotlib.core.model/ChartColor? = ..., kotlin/Function1<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode, kotlin/String>? = ..., kotlin/Double = ..., kotlin/Function1<kotlin/Int, kotlin/String> = ..., com.mena97villalobos.composeplotlib.core.model/ChartColor? = ..., com.mena97villalobos.composeplotlib.core.spec/ChartAccessibilitySpec = ..., com.mena97villalobos.composeplotlib.core.geometry/InsetsD = ...): com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.copy|copy(kotlin.collections.List<com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode>;kotlin.Int;kotlin.String;kotlin.collections.List<com.mena97villalobos.composeplotlib.core.model.ChartColor>;kotlin.Double;kotlin.Double;kotlin.Double;kotlin.Double;kotlin.Boolean;com.mena97villalobos.composeplotlib.core.model.ChartColor?;kotlin.Function1<com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode,kotlin.String>?;kotlin.Double;kotlin.Function1<kotlin.Int,kotlin.String>;com.mena97villalobos.composeplotlib.core.model.ChartColor?;com.mena97villalobos.composeplotlib.core.spec.ChartAccessibilitySpec;com.mena97villalobos.composeplotlib.core.geometry.InsetsD){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec.toString|toString(){}[0]
+}
+
 final class com.mena97villalobos.composeplotlib.core.spec/TreemapNode { // com.mena97villalobos.composeplotlib.core.spec/TreemapNode|null[0]
     constructor <init>(kotlin/String, kotlin/String, kotlin/Double, com.mena97villalobos.composeplotlib.core.model/ChartColor) // com.mena97villalobos.composeplotlib.core.spec/TreemapNode.<init>|<init>(kotlin.String;kotlin.String;kotlin.Double;com.mena97villalobos.composeplotlib.core.model.ChartColor){}[0]
 
@@ -5612,6 +5788,7 @@ final object com.mena97villalobos.composeplotlib.core.layout/ChartPlanner { // c
     final fun planStackedAreaChart(com.mena97villalobos.composeplotlib.core.layout/ChartLayoutInput, com.mena97villalobos.composeplotlib.core.spec/StackedAreaChartSpec, com.mena97villalobos.composeplotlib.core.layout.planning/TickValuePass? = ...): com.mena97villalobos.composeplotlib.core.layout/StackedAreaChartPlan // com.mena97villalobos.composeplotlib.core.layout/ChartPlanner.planStackedAreaChart|planStackedAreaChart(com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput;com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec;com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePass?){}[0]
     final fun planSunburstChart(com.mena97villalobos.composeplotlib.core.layout/ChartLayoutInput, com.mena97villalobos.composeplotlib.core.spec/SunburstChartSpec): com.mena97villalobos.composeplotlib.core.layout/SunburstChartPlan // com.mena97villalobos.composeplotlib.core.layout/ChartPlanner.planSunburstChart|planSunburstChart(com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput;com.mena97villalobos.composeplotlib.core.spec.SunburstChartSpec){}[0]
     final fun planTreemapChart(com.mena97villalobos.composeplotlib.core.layout/ChartLayoutInput, com.mena97villalobos.composeplotlib.core.spec/TreemapChartSpec): com.mena97villalobos.composeplotlib.core.layout/TreemapChartPlan // com.mena97villalobos.composeplotlib.core.layout/ChartPlanner.planTreemapChart|planTreemapChart(com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput;com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec){}[0]
+    final fun planTreemapHierarchy(com.mena97villalobos.composeplotlib.core.layout/ChartLayoutInput, com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec, kotlin/String? = ..., com.mena97villalobos.composeplotlib.core.layout/TreemapLabelMeasurer = ...): com.mena97villalobos.composeplotlib.core.layout/TreemapHierarchyPlan // com.mena97villalobos.composeplotlib.core.layout/ChartPlanner.planTreemapHierarchy|planTreemapHierarchy(com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput;com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchySpec;kotlin.String?;com.mena97villalobos.composeplotlib.core.layout.TreemapLabelMeasurer){}[0]
     final fun planViolinChart(com.mena97villalobos.composeplotlib.core.layout/ChartLayoutInput, com.mena97villalobos.composeplotlib.core.spec/ViolinChartSpec, com.mena97villalobos.composeplotlib.core.layout.planning/TickValuePass? = ...): com.mena97villalobos.composeplotlib.core.layout/ViolinChartPlan // com.mena97villalobos.composeplotlib.core.layout/ChartPlanner.planViolinChart|planViolinChart(com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput;com.mena97villalobos.composeplotlib.core.spec.ViolinChartSpec;com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePass?){}[0]
     final fun planWaterfallChart(com.mena97villalobos.composeplotlib.core.layout/ChartLayoutInput, com.mena97villalobos.composeplotlib.core.spec/WaterfallChartSpec, com.mena97villalobos.composeplotlib.core.selection/ChartSelection? = ..., com.mena97villalobos.composeplotlib.core.layout.planning/TickValuePass? = ...): com.mena97villalobos.composeplotlib.core.layout/WaterfallChartPlan // com.mena97villalobos.composeplotlib.core.layout/ChartPlanner.planWaterfallChart|planWaterfallChart(com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput;com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec;com.mena97villalobos.composeplotlib.core.selection.ChartSelection?;com.mena97villalobos.composeplotlib.core.layout.planning.TickValuePass?){}[0]
 }
@@ -5810,12 +5987,17 @@ final val com.mena97villalobos.composeplotlib.core.spec/DefaultPieSliceValueForm
     final fun <get-DefaultPieSliceValueFormatter>(): kotlin/Function1<com.mena97villalobos.composeplotlib.core.model/PieChartSlice, kotlin/String> // com.mena97villalobos.composeplotlib.core.spec/DefaultPieSliceValueFormatter.<get-DefaultPieSliceValueFormatter>|<get-DefaultPieSliceValueFormatter>(){}[0]
 final val com.mena97villalobos.composeplotlib.core.spec/DefaultRadarAxisValueFormatter // com.mena97villalobos.composeplotlib.core.spec/DefaultRadarAxisValueFormatter|{}DefaultRadarAxisValueFormatter[0]
     final fun <get-DefaultRadarAxisValueFormatter>(): kotlin/Function2<kotlin/String, kotlin/Double, kotlin/String> // com.mena97villalobos.composeplotlib.core.spec/DefaultRadarAxisValueFormatter.<get-DefaultRadarAxisValueFormatter>|<get-DefaultRadarAxisValueFormatter>(){}[0]
+final val com.mena97villalobos.composeplotlib.core.spec/DefaultTreemapAggregateLabel // com.mena97villalobos.composeplotlib.core.spec/DefaultTreemapAggregateLabel|{}DefaultTreemapAggregateLabel[0]
+    final fun <get-DefaultTreemapAggregateLabel>(): kotlin/Function1<kotlin/Int, kotlin/String> // com.mena97villalobos.composeplotlib.core.spec/DefaultTreemapAggregateLabel.<get-DefaultTreemapAggregateLabel>|<get-DefaultTreemapAggregateLabel>(){}[0]
 
 final fun (com.mena97villalobos.composeplotlib.core.layout/ChartLayoutInput).com.mena97villalobos.composeplotlib.core.layout.planning/toPlanningBounds(): com.mena97villalobos.composeplotlib.core.layout.planning/PlanningBounds // com.mena97villalobos.composeplotlib.core.layout.planning/toPlanningBounds|toPlanningBounds@com.mena97villalobos.composeplotlib.core.layout.ChartLayoutInput(){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.layout/DrawCommand).com.mena97villalobos.composeplotlib.core.layout/visitDepthFirst(kotlin/Function1<com.mena97villalobos.composeplotlib.core.layout/DrawCommand, kotlin/Unit>) // com.mena97villalobos.composeplotlib.core.layout/visitDepthFirst|visitDepthFirst@com.mena97villalobos.composeplotlib.core.layout.DrawCommand(kotlin.Function1<com.mena97villalobos.composeplotlib.core.layout.DrawCommand,kotlin.Unit>){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.model/BarGroup).com.mena97villalobos.composeplotlib.core.model/toXyPoints(): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.domain/XyPoint> // com.mena97villalobos.composeplotlib.core.model/toXyPoints|toXyPoints@com.mena97villalobos.composeplotlib.core.model.BarGroup(){}[0]
+final fun (com.mena97villalobos.composeplotlib.core.model/ChartColor).com.mena97villalobos.composeplotlib.core.model/contrastRatio(com.mena97villalobos.composeplotlib.core.model/ChartColor): kotlin/Double // com.mena97villalobos.composeplotlib.core.model/contrastRatio|contrastRatio@com.mena97villalobos.composeplotlib.core.model.ChartColor(com.mena97villalobos.composeplotlib.core.model.ChartColor){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.model/ChartColor).com.mena97villalobos.composeplotlib.core.model/darken(kotlin/Double): com.mena97villalobos.composeplotlib.core.model/ChartColor // com.mena97villalobos.composeplotlib.core.model/darken|darken@com.mena97villalobos.composeplotlib.core.model.ChartColor(kotlin.Double){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.model/ChartColor).com.mena97villalobos.composeplotlib.core.model/lighten(kotlin/Double): com.mena97villalobos.composeplotlib.core.model/ChartColor // com.mena97villalobos.composeplotlib.core.model/lighten|lighten@com.mena97villalobos.composeplotlib.core.model.ChartColor(kotlin.Double){}[0]
+final fun (com.mena97villalobos.composeplotlib.core.model/ChartColor).com.mena97villalobos.composeplotlib.core.model/readableContentColor(): com.mena97villalobos.composeplotlib.core.model/ChartColor // com.mena97villalobos.composeplotlib.core.model/readableContentColor|readableContentColor@com.mena97villalobos.composeplotlib.core.model.ChartColor(){}[0]
+final fun (com.mena97villalobos.composeplotlib.core.model/ChartColor).com.mena97villalobos.composeplotlib.core.model/relativeLuminance(): kotlin/Double // com.mena97villalobos.composeplotlib.core.model/relativeLuminance|relativeLuminance@com.mena97villalobos.composeplotlib.core.model.ChartColor(){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.spec/CalendarHeatmapSpec).com.mena97villalobos.composeplotlib.core.spec/resolvedWeekCount(): kotlin/Int // com.mena97villalobos.composeplotlib.core.spec/resolvedWeekCount|resolvedWeekCount@com.mena97villalobos.composeplotlib.core.spec.CalendarHeatmapSpec(){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.spec/GaugeChartSpec).com.mena97villalobos.composeplotlib.core.spec/clampedProgress(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/clampedProgress|clampedProgress@com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec(){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.spec/GaugeChartSpec).com.mena97villalobos.composeplotlib.core.spec/hasDrawableSweep(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.spec/hasDrawableSweep|hasDrawableSweep@com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec(){}[0]
@@ -5826,6 +6008,9 @@ final fun (com.mena97villalobos.composeplotlib.core.spec/RadarChartSpec).com.men
 final fun (com.mena97villalobos.composeplotlib.core.spec/RadialBarChartSpec).com.mena97villalobos.composeplotlib.core.spec/hasDrawableSweep(): kotlin/Boolean // com.mena97villalobos.composeplotlib.core.spec/hasDrawableSweep|hasDrawableSweep@com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec(){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.spec/RadialBarChartSpec).com.mena97villalobos.composeplotlib.core.spec/resolvedMaxValue(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/resolvedMaxValue|resolvedMaxValue@com.mena97villalobos.composeplotlib.core.spec.RadialBarChartSpec(){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.spec/SunburstNode).com.mena97villalobos.composeplotlib.core.spec/totalValue(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/totalValue|totalValue@com.mena97villalobos.composeplotlib.core.spec.SunburstNode(){}[0]
+final fun (com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode).com.mena97villalobos.composeplotlib.core.spec/layoutSize(): kotlin/Double // com.mena97villalobos.composeplotlib.core.spec/layoutSize|layoutSize@com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode(){}[0]
+final fun (com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec).com.mena97villalobos.composeplotlib.core.spec/findNode(kotlin/String): com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode? // com.mena97villalobos.composeplotlib.core.spec/findNode|findNode@com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchySpec(kotlin.String){}[0]
+final fun (com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchySpec).com.mena97villalobos.composeplotlib.core.spec/findPath(kotlin/String): kotlin.collections/List<com.mena97villalobos.composeplotlib.core.spec/TreemapHierarchyNode>? // com.mena97villalobos.composeplotlib.core.spec/findPath|findPath@com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchySpec(kotlin.String){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.table/ChartDataTable).com.mena97villalobos.composeplotlib.core.export/toCsv(kotlin/Char = ..., kotlin/String = ...): kotlin/String // com.mena97villalobos.composeplotlib.core.export/toCsv|toCsv@com.mena97villalobos.composeplotlib.core.table.ChartDataTable(kotlin.Char;kotlin.String){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.table/ChartDataTable).com.mena97villalobos.composeplotlib.core.export/toJson(): kotlin/String // com.mena97villalobos.composeplotlib.core.export/toJson|toJson@com.mena97villalobos.composeplotlib.core.table.ChartDataTable(){}[0]
 final fun (com.mena97villalobos.composeplotlib.core.viewport/ChartViewport).com.mena97villalobos.composeplotlib.core.viewport/normalizedNonDegenerate(kotlin/Double = ...): com.mena97villalobos.composeplotlib.core.viewport/ChartViewport // com.mena97villalobos.composeplotlib.core.viewport/normalizedNonDegenerate|normalizedNonDegenerate@com.mena97villalobos.composeplotlib.core.viewport.ChartViewport(kotlin.Double){}[0]

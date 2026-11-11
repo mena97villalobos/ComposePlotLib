@@ -82,6 +82,7 @@ import com.mena97villalobos.composeplotlib.core.spec.SelectionStyle
 import com.mena97villalobos.composeplotlib.core.spec.StackedAreaChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.SunburstChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.TreemapChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchySpec
 import com.mena97villalobos.composeplotlib.core.spec.ViolinChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.WaterfallChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.clampedProgress
@@ -1193,6 +1194,21 @@ object ChartPlanner {
                 ),
         )
     }
+
+    /**
+     * Hierarchical treemap: lays out the children of the displayed root (the top level of [spec] when [rootNodeId]
+     * is `null` or unknown) as squarified tiles, nesting each tile's own children inside it down to
+     * [TreemapHierarchySpec.maxDepth] levels, merging tiles below [TreemapHierarchySpec.minTileSidePx] into an
+     * aggregate per parent, and fitting two-line labels with [labelMeasurer].
+     *
+     * The result is deterministic for a given spec, root, canvas size and measurer.
+     */
+    fun planTreemapHierarchy(
+        input: ChartLayoutInput,
+        spec: TreemapHierarchySpec,
+        rootNodeId: String? = null,
+        labelMeasurer: TreemapLabelMeasurer = TreemapLabelMeasurer.estimate(),
+    ): TreemapHierarchyPlan = TreemapHierarchyPlanner.plan(input, spec, rootNodeId, labelMeasurer)
 
     /**
      * Bullet graph: horizontal qualitative range [bands][BulletChartSpec.bands] behind a featured measure bar
