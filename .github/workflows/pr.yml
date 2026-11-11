@@ -59,7 +59,7 @@ jobs:
   ios:
     # Compile the Kotlin/Native iOS targets so a commonMain change that breaks iOS
     # is caught at PR time, not at release (release.yml is the only other place iOS builds).
-    runs-on: macos-14
+    runs-on: macos-latest
     env:
       COMPOSEPLOTLIB_FORCE_IOS_TARGETS: "true"
     steps:
