@@ -106,11 +106,12 @@ brushing, linked viewports, and PNG export.
 
 | | |
 |---|---|
-| Kotlin | 2.4.0 |
-| Compose Multiplatform | 1.11.1 |
-| Android | `minSdk` 28, `compileSdk` 36 |
+| Kotlin | 2.4.21 (built with); consumers on Kotlin 2.4.x |
+| Compose Multiplatform | 1.12.0 (the floor this library publishes; any 1.12.x consumer resolves its own patch) |
+| Material 3 | `org.jetbrains.compose.material3:material3` 1.9.0 (stable; on Android it resolves to `androidx.compose.material3` 1.4.x) |
+| Android | `minSdk` 28, `compileSdk` 37 (androidx.compose 1.12 requires 37); built with AGP 9.5.1, consumable from AGP 9.1+ |
 | JVM target | 11 |
-| iOS | `iosArm64`, `iosSimulatorArm64` — **no `iosX64`**, because Compose Multiplatform 1.11.1 ships no `ios_x64` artifacts. Intel-Mac simulators are blocked upstream, not by choice. |
+| iOS | `iosArm64`, `iosSimulatorArm64` — **no `iosX64`**, because Compose Multiplatform 1.12 still ships no `ios_x64` artifacts. Intel-Mac simulators are blocked upstream, not by choice. |
 
 ## Install (GitHub Packages)
 
@@ -179,7 +180,7 @@ Before opening a PR, run what CI runs:
 
 ```shell
 ./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity \
-  :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest \
+  :chart-core:jvmTest :chart-core:testAndroidHostTest :chart-compose:testAndroidHostTest \
   :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
 ```
 

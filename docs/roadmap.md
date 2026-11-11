@@ -52,7 +52,7 @@ summary yet.**
 **Performance:** viewport windowing → pixel clip, Uniform / MinMaxY / LTTB decimation, plot-width pixel budget,
 progressive frame-chunked reveal (`rememberProgressiveReveal`), tick-value reuse, grid-line cache.
 
-**Platforms:** Kotlin Multiplatform — `androidTarget`, `iosArm64`, `iosSimulatorArm64` for both `chart-core`
+**Platforms:** Kotlin Multiplatform — Android (via AGP's `com.android.kotlin.multiplatform.library`), `iosArm64`, `iosSimulatorArm64` for both `chart-core`
 and `chart-compose`; JVM target on `chart-core` for tests/tooling. iOS is supported **as a library only**
 (no in-repo demo app); the Android `samples/android-showcase` is the sole runnable sample. CI compiles the
 iOS targets on macOS and publishes Android + JVM + iOS + KMP-metadata artifacts.
@@ -310,7 +310,7 @@ Mirror CI locally before opening a PR:
 ./gradlew ktlintCheck :chart-core:apiCheck :chart-compose:apiCheck :chart-core:verifyChartCorePurity
 
 # unit tests (JVM + Android)
-./gradlew :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest
+./gradlew :chart-core:jvmTest :chart-core:testAndroidHostTest :chart-compose:testAndroidHostTest
 
 # Roborazzi screenshot verification (record after intentional UI changes)
 ./gradlew :samples:android-showcase:verifyRoborazziDebug

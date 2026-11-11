@@ -8,19 +8,23 @@ you render with) and `chart-core` (the non-UI planning engine).
 
 | | |
 |---|---|
-| Kotlin | 2.4.0 |
-| Compose Multiplatform | 1.11.1 |
-| Android | `minSdk` 28, `compileSdk` 36 |
+| Kotlin | 2.4.21 (built with); consumers on Kotlin 2.4.x |
+| Compose Multiplatform | 1.12.0 (a floor: an app on any 1.12.x resolves its own patch) |
+| Material 3 | `org.jetbrains.compose.material3:material3` 1.9.0, a stable release (1.3.0 exposed `1.11.0-alpha07`) |
+| Android | `minSdk` 28, `compileSdk` 37 |
 | JVM target | 11 (both modules) |
 | iOS | `iosArm64`, `iosSimulatorArm64` |
-| Building the repo itself | JDK 17, Gradle 8.14.3, AGP 8.13.2 |
+| Building the repo itself | JDK 17, Gradle 9.9.1, AGP 9.5.1 (consumers need AGP 9.1+, which androidx.compose 1.12 already requires) |
+
+These are the versions from **1.4.0** on. 1.3.0 was built with Kotlin 2.4.10, Compose Multiplatform
+1.11.1, `compileSdk` 36 and AGP 8.13.2.
 
 Versions come from
 [`gradle/libs.versions.toml`](https://github.com/mena97villalobos/ComposePlotLib/blob/main/gradle/libs.versions.toml).
 
 ### There is deliberately no `iosX64`
 
-Compose Multiplatform 1.11.1 ships no `ios_x64` artifacts, so Intel-Mac simulators are unsupported;
+Compose Multiplatform (1.11.1, and still 1.12) ships no `ios_x64` artifacts, so Intel-Mac simulators are unsupported;
 Apple-silicon simulators (`iosSimulatorArm64`) and devices (`iosArm64`) are fully supported. Why
 that is an upstream limitation rather than a project decision is explained in the
 [iOS Guide](iOS-Guide).

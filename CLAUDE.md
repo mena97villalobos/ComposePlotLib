@@ -53,13 +53,13 @@ successor to MPAndroidChart. It targets Android and iOS.
 ./gradlew ktlintCheck
 
 # Unit tests (JVM + Android)
-./gradlew :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest
+./gradlew :chart-core:jvmTest :chart-core:testAndroidHostTest :chart-compose:testAndroidHostTest
 
 # Roborazzi screenshot verification
 ./gradlew :samples:android-showcase:verifyRoborazziDebug
 
 # Full pre-PR build (mirrors CI)
-./gradlew :chart-core:testDebugUnitTest :chart-compose:compileDebugKotlinAndroid :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
+./gradlew :chart-core:testAndroidHostTest :chart-compose:compileAndroidMain :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
 
 # After intentional UI changes — refresh screenshot baselines
 ./gradlew :samples:android-showcase:recordRoborazziDebug
@@ -145,7 +145,7 @@ marker overrides), and bubble point sizing.
 
 1. Add planner logic and spec types to `chart-core`.
 2. Add the public composable to `chart-compose`.
-3. **Required**: Add a showcase screen in `samples/android-showcase/src/commonMain/kotlin/.../screens`
+3. **Required**: Add a showcase screen in `samples/android-showcase/src/main/kotlin/.../screens`
    and wire it into `ShowcaseApp.kt` (with a Roborazzi screenshot scenario).
 4. Update docs: `AGENTS.md`, `docs/architecture.md`, `docs/api-and-state.md`,
    `docs/module-guide.md`, `docs/roadmap.md`, and any other file whose

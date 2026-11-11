@@ -142,6 +142,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartGestureConfig$
 public final class com/mena97villalobos/composeplotlib/chart/ChartMarkerCalloutLeader {
 	public static final field $stable I
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerCalloutLeader$Companion;
+	public fun <init> ()V
 	public synthetic fun <init> (ZFJLcom/mena97villalobos/composeplotlib/chart/ChartMarkerCustomCallout;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (ZFJLcom/mena97villalobos/composeplotlib/chart/ChartMarkerCustomCallout;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Z
@@ -211,6 +212,7 @@ public final class com/mena97villalobos/composeplotlib/chart/ChartMarkerKt {
 public final class com/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement {
 	public static final field $stable I
 	public static final field Companion Lcom/mena97villalobos/composeplotlib/chart/ChartMarkerPlacement$Companion;
+	public fun <init> ()V
 	public synthetic fun <init> (FLcom/mena97villalobos/composeplotlib/chart/ChartMarkerContainment;ZLcom/mena97villalobos/composeplotlib/chart/ChartMarkerCalloutLeader;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (FLcom/mena97villalobos/composeplotlib/chart/ChartMarkerContainment;ZLcom/mena97villalobos/composeplotlib/chart/ChartMarkerCalloutLeader;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-D9Ej5fM ()F

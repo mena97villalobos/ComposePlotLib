@@ -7,7 +7,7 @@
 <!-- Tick what you ran. If you skipped something (e.g. no macOS for the iOS compile), say so. -->
 
 - [ ] `./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity`
-- [ ] `./gradlew :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest`
+- [ ] `./gradlew :chart-core:jvmTest :chart-core:testAndroidHostTest :chart-compose:testAndroidHostTest`
 - [ ] `./gradlew :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug`
 - [ ] iOS compile (macOS only): `./gradlew :chart-compose:compileKotlinIosSimulatorArm64`
 

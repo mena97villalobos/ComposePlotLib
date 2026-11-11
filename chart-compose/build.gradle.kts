@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.dokka)
@@ -41,14 +41,18 @@ val isMacOsHost: Boolean =
 kotlin {
     applyDefaultHierarchyTemplate()
 
-    androidTarget {
-        publishLibraryVariants("release")
+    android {
+        namespace = "com.mena97villalobos.composeplotlib.chart"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
+        // Runs commonTest on the Android host JVM (`testAndroidHostTest`).
+        withHostTest {}
     }
 
-    // No iosX64: Compose Multiplatform 1.11.1 publishes no ios_x64 klib variants (verified —
+    // No iosX64: Compose Multiplatform (1.11.1, and still 1.12.0) publishes no ios_x64 klib variants (verified —
     // compose.runtime / foundation / material3 / ui all fail variant resolution for that target),
     // so Intel-simulator support is blocked upstream rather than by choice. chart-core alone would
     // compile for it, but shipping the target for only half the library would be worse than not
@@ -66,14 +70,14 @@ kotlin {
             api(project(":chart-core"))
             // `api`, not `implementation`: these artifacts appear in chart-compose's own public
             // signatures (Composer, Modifier, Color, ImageBitmap, BoxScope, material3 ColorScheme),
-            // so consumers need them on their compile classpath, not only at runtime.
+            // so consumers need them on their compile classpath, not only at runtime. Because they
+            // are `api`, every version here is published to consumers: keep them all stable
+            // releases (see the material3 note in gradle/libs.versions.toml).
             api(libs.compose.runtime)
             api(libs.compose.foundation)
             api(libs.compose.material3)
             api(libs.compose.ui)
             implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -81,16 +85,3 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.mena97villalobos.composeplotlib.chart"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-}

@@ -3,7 +3,7 @@
 This file is the working guide for AI agents and future contributors operating inside `ComposePlotLib`.
 
 ## Obligations for AI agents and contributors
-- **Showcase (`samples/android-showcase`)** — When you add a **new public chart family** (new top-level composable wired to `chart-core` planning), you **must** add a showcase screen in [`samples/android-showcase/.../screens`](samples/android-showcase/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/samples/android/screens), wire it into **`ShowcaseApp.kt`**, and add a **Roborazzi** scenario so the family is screenshot-tested.
+- **Showcase (`samples/android-showcase`)** — When you add a **new public chart family** (new top-level composable wired to `chart-core` planning), you **must** add a showcase screen in [`samples/android-showcase/.../screens`](samples/android-showcase/src/main/kotlin/com/mena97villalobos/composeplotlib/samples/android/screens), wire it into **`ShowcaseApp.kt`**, and add a **Roborazzi** scenario so the family is screenshot-tested.
 - **Documentation** — You **must** update documentation to match the **current** behavior and surface area: at minimum **`AGENTS.md`**, **`docs/api-and-state.md`**, **`docs/architecture.md`**, and any other `docs/*.md` file whose claims become false (e.g. **`docs/module-guide.md`**, **`docs/roadmap.md`**). For releases or broad API changes, walk **`docs/api-checklist.md`** and refresh it if the supported surface changes. Do not leave docs describing fewer charts than the code ships.
 
 ## Project Intent
@@ -72,7 +72,7 @@ When adding features, fit them into this flow instead of bypassing it.
 - Add or update `chart-core` tests for new math, transform, tick-generation, or selection logic.
 - **CI** — the PR workflow (`.github/workflows/pr.yml`) runs on **Ubuntu**: `ktlintCheck`, `apiCheck`, `:chart-core:verifyChartCorePurity`, JVM + Android unit tests, Roborazzi, and `:samples:android-showcase:assembleDebug`; a separate **macOS** job compiles both iOS targets. The release workflow (`.github/workflows/release.yml`) additionally publishes iOS + KMP metadata from macOS. See **`docs/github-ci-packages-and-pages.md`** for GitHub Packages consumption and Pages setup.
 - Build at least what PR CI gates — `apiCheck` and `verifyChartCorePurity` are easy to miss locally and will fail your PR:
-  `./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug`
+  `./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity :chart-core:jvmTest :chart-core:testAndroidHostTest :chart-compose:testAndroidHostTest :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug`
 - If you changed the public API surface on purpose, refresh the dumps with `./gradlew apiDump` and review the `.api` diff — a changed constructor or `copy()` signature on a public spec type is a breaking change, not a routine refresh.
 - On **macOS**, when changing shared model or Compose code paths used on iOS, also run:
   `./gradlew :chart-compose:compileKotlinIosSimulatorArm64` (and `:chart-compose:compileKotlinIosArm64` if you need device slices).
@@ -102,7 +102,7 @@ When adding features, fit them into this flow instead of bypassing it.
   `chart-compose/.../chart/*.kt` and relevant `state/*`
 - If the feature is a **new chart family** composable, add a **showcase screen** and update **docs** (see **Obligations**).
 - If the feature needs a visual example, add a screen in:
-  `samples/android-showcase/src/commonMain/kotlin/.../screens`
+  `samples/android-showcase/src/main/kotlin/.../screens`
 
 ## New chart families
 Prefer this order (see `docs/roadmap.md`):
@@ -148,7 +148,7 @@ Cartesian planning is split for clarity: tick/chrome (`ChartChromeLayout.kt`), f
 - `chart-compose/src/commonMain/kotlin/.../chart/CombinedCartesianChart.kt`
 - `chart-compose/src/commonMain/kotlin/.../chart/internal/canvas/ComposeCanvasAdapter.kt`
 - `chart-compose/src/commonMain/kotlin/.../chart/state/ChartViewportState.kt`
-- `samples/android-showcase/src/commonMain/kotlin/.../ShowcaseApp.kt`
+- `samples/android-showcase/src/main/kotlin/.../ShowcaseApp.kt`
 - `chart-compose/src/commonMain/kotlin/.../theme/MaterialChartPalette.kt`, `.../theme/MaterialChartSpecTheme.kt`
 - `docs/ios-library-usage.md`
 

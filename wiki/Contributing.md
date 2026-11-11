@@ -22,7 +22,7 @@ The Android showcase app is where you see and manually verify chart behavior.
 
 ```shell
 ./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity \
-  :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest \
+  :chart-core:jvmTest :chart-core:testAndroidHostTest :chart-compose:testAndroidHostTest \
   :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
 ```
 
@@ -53,7 +53,7 @@ Beyond the code, three things are required and checked in review:
 
 ## Public API changes
 
-The ABI is tracked by binary-compatibility-validator. Specs are immutable `data class`es, so
+The ABI is tracked by the Kotlin Gradle plugin's built-in ABI validation (`apiCheck` / `apiDump`). Specs are immutable `data class`es, so
 **adding a constructor parameter changes `copy()` and breaks binary compatibility** even though it
 is source-compatible. That is a major-version change, not a routine `apiDump` refresh — prefer
 adding a new spec type over widening an existing one.

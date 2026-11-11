@@ -148,10 +148,11 @@ All four return a new spec — topology is untouched, only colors change.
 `ColorScheme` appears in the public signature of `toMaterialChartPalette()`, and `chartChromeTheme()` reads
 `MaterialTheme`. In **1.2.0** `chart-compose` still declared `org.jetbrains.compose.material3:material3` as
 `implementation`, so you must declare it yourself in the module that calls those helpers (see
-[FAQ and Troubleshooting](FAQ-and-Troubleshooting)). On `main` it — along with `compose.runtime`,
-`compose.foundation` and `compose.ui` — is an **`api`** dependency, which will put material3
-**1.11.0-alpha07** (the build pinned by Compose Multiplatform 1.11.1; the JetBrains material3 1.10+ line has no
-stable release) on your compile classpath, where an incompatible material3 version in your app can conflict.
+[FAQ and Troubleshooting](FAQ-and-Troubleshooting)). Since 1.3.0 it — along with `compose.runtime`,
+`compose.foundation` and `compose.ui` — is an **`api`** dependency. 1.3.0 put material3
+**1.11.0-alpha07** on your compile classpath; from **1.4.0** it is **1.9.0**, the newest *stable*
+JetBrains material3 (its 1.10+ line has only alpha/beta builds), which on Android resolves to
+`androidx.compose.material3` 1.4.x. An app on a newer stable Material 3 simply resolves its own.
 If you do not use Material, the rest of the library still works: pass `ChartChromeTheme.Light` / `.Dark`
 explicitly and skip the palette helpers entirely.
 

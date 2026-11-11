@@ -91,7 +91,7 @@ Android showcase JVM tests include a small **line showcase** matrix:
 | `lineChartShowcaseScreen_compactWidth` | Default Material, **320×720** dp (narrow width) |
 | `lineChartShowcaseScreen_elevatedFontScale` | Default Material, **fontScale 1.4**, 400×720 dp |
 
-Goldens live under `samples/android-showcase/src/androidUnitTest/resources/roborazzi/`. After intentional UI changes, run `./gradlew :samples:android-showcase:recordRoborazziDebug`; CI uses `verifyRoborazziDebug`. See **`docs/showcase-guide.md`**.
+Goldens live under `samples/android-showcase/src/test/resources/roborazzi/`. After intentional UI changes, run `./gradlew :samples:android-showcase:recordRoborazziDebug`; CI uses `verifyRoborazziDebug`. See **`docs/showcase-guide.md`**.
 
 ## Font scale and label density
 

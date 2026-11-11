@@ -80,6 +80,6 @@ body:
     attributes:
       label: Platform
       description: Android API level or iOS version, plus Kotlin and Compose Multiplatform versions.
-      placeholder: "Android API 34, Kotlin 2.4.0, CMP 1.11.1"
+      placeholder: "Android API 36, Kotlin 2.4.21, CMP 1.12.0"
     validations:
       required: true

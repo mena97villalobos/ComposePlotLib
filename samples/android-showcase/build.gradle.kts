@@ -1,52 +1,14 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
+    // A plain Android application: the showcase is Android-only, and AGP 9 no longer allows
+    // `com.android.application` together with the Kotlin Multiplatform plugin. Kotlin comes from
+    // AGP's built-in Kotlin support.
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.roborazzi)
 }
 
-kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.activity.compose)
-        }
-        commonMain.dependencies {
-            implementation(project(":chart-compose"))
-            implementation(libs.compose.runtime)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.uiToolingPreview)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
-        val androidUnitTest by getting {
-            dependencies {
-                implementation(libs.junit)
-                implementation(libs.androidx.testExt.junit)
-                implementation(libs.robolectric)
-                implementation(libs.roborazzi)
-                implementation(libs.roborazzi.compose)
-                implementation(libs.roborazzi.junit.rule)
-                implementation(libs.compose.uiTest.junit4)
-            }
-        }
-    }
-}
-
 roborazzi {
-    outputDir.set(layout.projectDirectory.dir("src/androidUnitTest/resources/roborazzi"))
+    outputDir.set(layout.projectDirectory.dir("src/test/resources/roborazzi"))
 }
 
 android {
@@ -88,6 +50,28 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
+}
+
 dependencies {
+    implementation(project(":chart-compose"))
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.uiToolingPreview)
+    implementation(libs.androidx.activity.compose)
     debugImplementation(libs.compose.uiTooling)
+
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.testExt.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
+    testImplementation(libs.compose.uiTest.junit4)
 }
