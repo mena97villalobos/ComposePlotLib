@@ -53,6 +53,7 @@ import com.mena97villalobos.composeplotlib.core.spec.FunnelChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GaugeChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.GridLineStyle
 import com.mena97villalobos.composeplotlib.core.spec.HeatmapChartSpec
+import com.mena97villalobos.composeplotlib.core.spec.HierarchyHighlightStyle
 import com.mena97villalobos.composeplotlib.core.spec.LegendSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineChartSpec
 import com.mena97villalobos.composeplotlib.core.spec.LineInterpolation
@@ -1194,6 +1195,20 @@ object ChartPlanner {
                 ),
         )
     }
+
+    /**
+     * Sunburst with node identity: the same drawing as [planSunburstChart], plus a [PlannedSunburstSegment] per drawn
+     * node for hit-testing ([com.mena97villalobos.composeplotlib.core.selection.SunburstHitResolver]), an optional
+     * displayed root ([rootNodeId], matched against [com.mena97villalobos.composeplotlib.core.spec.nodeId]; unknown ids
+     * show the spec's root), and outlines for [highlightedNodeIds] per [highlight].
+     */
+    fun planSunburstHierarchy(
+        input: ChartLayoutInput,
+        spec: SunburstChartSpec,
+        rootNodeId: String? = null,
+        highlightedNodeIds: Set<String> = emptySet(),
+        highlight: HierarchyHighlightStyle = HierarchyHighlightStyle(),
+    ): SunburstHierarchyPlan = SunburstHierarchyPlanner.plan(input, spec, rootNodeId, highlightedNodeIds, highlight)
 
     /**
      * Hierarchical treemap: lays out the children of the displayed root (the top level of [spec] when [rootNodeId]

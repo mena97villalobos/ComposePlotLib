@@ -474,7 +474,8 @@ public final class com/mena97villalobos/composeplotlib/chart/StackedBarChartKt {
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/SunburstChartKt {
-	public static final fun SunburstChart (Lcom/mena97villalobos/composeplotlib/core/spec/SunburstChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+	public static final synthetic fun SunburstChart (Lcom/mena97villalobos/composeplotlib/core/spec/SunburstChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SunburstChart (Lcom/mena97villalobos/composeplotlib/core/spec/SunburstChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Ljava/lang/String;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/mena97villalobos/composeplotlib/core/spec/HierarchyHighlightStyle;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/TreemapChartKt {
