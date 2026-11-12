@@ -5,13 +5,15 @@ import com.vanniktech.maven.publish.SourcesJar
 import java.io.File
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
     alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.composeMultiplatform) apply false
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
@@ -20,14 +22,45 @@ plugins {
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.mavenPublish) apply false
     alias(libs.plugins.dokka)
-    alias(libs.plugins.binaryCompatibilityValidator)
 }
 
 // Track the published binary API (JVM/Android ABI) so `copy()`/constructor/signature changes on the
 // public spec, model, and composable surface are a reviewed `.api` diff (run `apiDump` to refresh).
-// Only the published library modules are validated; apps, the showcase, and benchmarks are excluded.
-apiValidation {
-    ignoredProjects.addAll(listOf("android-showcase", "chart-core-benchmarks"))
+// Only the two published library modules are validated.
+//
+// This uses the Kotlin Gradle plugin's built-in ABI validation rather than the standalone
+// binary-compatibility-validator plugin: BCV only recognises an Android target whose compilation is
+// named `release`, so under AGP 9's `com.android.kotlin.multiplatform.library` plugin (one `main`
+// compilation) it silently stopped checking the Android ABI. The dump format and the `api/` layout are
+// the same. `apiCheck` / `apiDump` stay as the entry points CI and contributors use.
+//
+// KGP also dumps the KLib (iOS) ABI to api/<module>.klib.api. It is checked wherever the iOS targets are
+// declared (macOS hosts); the Linux CI host does not declare them, so there only the JVM and Android dumps
+// are checked.
+val abiValidatedProjects = setOf("chart-core", "chart-compose")
+subprojects {
+    if (name in abiValidatedProjects) {
+        pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+            extensions.configure<KotlinMultiplatformExtension> {
+                // Calling the block is what enables validation; the defaults (api/ reference dumps) are kept.
+                @OptIn(ExperimentalAbiValidation::class)
+                abiValidation {
+                }
+            }
+            val apiCheck =
+                tasks.register("apiCheck") {
+                    group = "verification"
+                    description = "Fails if the public ABI differs from the committed api/ dump."
+                    dependsOn("checkKotlinAbi")
+                }
+            tasks.register("apiDump") {
+                group = "other"
+                description = "Rewrites the committed api/ dump from the current public ABI."
+                dependsOn("updateKotlinAbi")
+            }
+            tasks.named("check") { dependsOn(apiCheck) }
+        }
+    }
 }
 
 val composeplotlibVersion: String =

@@ -5,6 +5,35 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
+## Unreleased
+
+### Changed
+
+- **Toolchain aligned with Compose Multiplatform 1.12.** Built with Kotlin 2.4.21, Compose
+  Multiplatform **1.12.0**, AGP 9.5.1, Gradle 9.9.1 and `compileSdk` **37** (androidx.compose 1.12
+  requires 37, so consumers on the 1.12 line already compile against it). `minSdk` stays 28.
+  Compose Multiplatform is published as a floor: an app on any 1.12.x resolves its own patch.
+- **No pre-release Material 3 reaches consumers any more.** `chart-compose` now depends on
+  `org.jetbrains.compose.material3:material3` **1.9.0**, the newest stable JetBrains Material 3 (its
+  1.10+ line is alpha/beta only); 1.3.0 exposed `1.11.0-alpha07` at compile scope, which Gradle then
+  selected over a stable Material 3 in the consuming app. On Android 1.9.0 resolves to
+  `androidx.compose.material3` 1.4.x; an app on a newer stable Material 3 resolves its own. No
+  dependency in the published POMs is an alpha, beta, rc or dev build. The Material bridge
+  (`materialChartPalette`, `toMaterialChartPalette`, …) stays in `chart-compose`, unchanged.
+- `chart-compose` no longer declares the unused `lifecycle-viewmodel-compose` /
+  `lifecycle-runtime-compose` runtime dependencies.
+- **Build:** both library modules use AGP's `com.android.kotlin.multiplatform.library` plugin (AGP 9
+  no longer accepts `com.android.library` next to the Kotlin Multiplatform plugin). The Android
+  artifacts keep their coordinates (`chart-core-android`, `chart-compose-android`). For contributors:
+  Android host tests are now `:chart-core:testAndroidHostTest` / `:chart-compose:testAndroidHostTest`
+  (formerly `testDebugUnitTest`), and the showcase is a plain Android application with sources under
+  `samples/android-showcase/src/main` and screenshot goldens under `src/test/resources/roborazzi`.
+- **Build:** public-API tracking moved from the binary-compatibility-validator plugin to the Kotlin
+  Gradle plugin's built-in ABI validation. BCV only recognises an Android compilation named
+  `release`, so under the new Android plugin it silently stopped checking the Android ABI. `apiCheck`
+  and `apiDump` remain the entry points; the macOS host now also tracks the iOS klib ABI
+  (`api/*.klib.api`).
+
 ## 1.3.0 — 2026-08-05
 
 Open-source release preparation, plus a set of selection/axis correctness fixes found in review.

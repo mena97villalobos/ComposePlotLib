@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
@@ -47,8 +47,8 @@ jobs:
         run: >
           ./gradlew
           :chart-core:jvmTest
-          :chart-core:testDebugUnitTest
-          :chart-compose:testDebugUnitTest
+          :chart-core:testAndroidHostTest
+          :chart-compose:testAndroidHostTest
 
       - name: Roborazzi verification
         run: ./gradlew :samples:android-showcase:verifyRoborazziDebug
@@ -59,7 +59,7 @@ jobs:
   ios:
     # Compile the Kotlin/Native iOS targets so a commonMain change that breaks iOS
     # is caught at PR time, not at release (release.yml is the only other place iOS builds).
-    runs-on: macos-14
+    runs-on: macos-latest
     env:
       COMPOSEPLOTLIB_FORCE_IOS_TARGETS: "true"
     steps:
@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17

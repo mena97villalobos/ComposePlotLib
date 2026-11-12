@@ -49,7 +49,7 @@ jobs:
         run: echo "COMPOSEPLOTLIB_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
@@ -74,8 +74,8 @@ jobs:
         run: >
           ./gradlew
           :chart-core:jvmTest
-          :chart-core:testDebugUnitTest
-          :chart-compose:testDebugUnitTest
+          :chart-core:testAndroidHostTest
+          :chart-compose:testAndroidHostTest
 
       - name: Roborazzi verification
         run: ./gradlew :samples:android-showcase:verifyRoborazziDebug
@@ -93,9 +93,9 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
         run: >
           ./gradlew
-          :chart-core:publishAndroidReleasePublicationToGitHubPackagesRepository
+          :chart-core:publishAndroidPublicationToGitHubPackagesRepository
           :chart-core:publishJvmPublicationToGitHubPackagesRepository
-          :chart-compose:publishAndroidReleasePublicationToGitHubPackagesRepository
+          :chart-compose:publishAndroidPublicationToGitHubPackagesRepository
 
       - name: Zip Dokka site
         run: (cd build/dokka/html && zip -r "$GITHUB_WORKSPACE/dokka-html.zip" .)
@@ -122,7 +122,7 @@ jobs:
         run: echo "COMPOSEPLOTLIB_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
@@ -177,7 +177,7 @@ jobs:
         run: echo "COMPOSEPLOTLIB_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17

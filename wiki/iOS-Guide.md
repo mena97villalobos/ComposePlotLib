@@ -33,7 +33,7 @@ platform-specific pieces in `chart-compose` are both implemented for iOS:
 
 ## No `iosX64` — and why
 
-Compose Multiplatform 1.11.1 (the version this library builds against, see
+Compose Multiplatform 1.12 (the version this library builds against, see
 [`gradle/libs.versions.toml`](https://github.com/mena97villalobos/ComposePlotLib/blob/main/gradle/libs.versions.toml))
 publishes **no `ios_x64` klib variants** — `compose.runtime`, `compose.foundation`,
 `compose.material3` and `compose.ui` all fail variant resolution for that target. This is an

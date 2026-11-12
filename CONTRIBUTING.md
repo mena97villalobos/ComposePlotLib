@@ -25,7 +25,7 @@ will fail your PR:
 
 ```shell
 ./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity \
-  :chart-core:jvmTest :chart-core:testDebugUnitTest :chart-compose:testDebugUnitTest \
+  :chart-core:jvmTest :chart-core:testAndroidHostTest :chart-compose:testAndroidHostTest \
   :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug
 ```
 
@@ -83,7 +83,7 @@ This has extra obligations, all enforced by review:
 
 1. Planner logic and spec types in `chart-core`.
 2. The public composable in `chart-compose`.
-3. **A showcase screen** in `samples/android-showcase/src/commonMain/.../screens`, wired into
+3. **A showcase screen** in `samples/android-showcase/src/main/kotlin/.../screens`, wired into
    `ShowcaseApp.kt`, **with a Roborazzi scenario** so the family is screenshot-tested.
 4. **Docs updated** so nothing claims fewer families than the code ships:
    `docs/chart-families-overview.md` (the source of truth for the family list), `AGENTS.md`,
@@ -92,9 +92,10 @@ This has extra obligations, all enforced by review:
 
 ## Public API changes
 
-The public/binary surface is tracked by
-[binary-compatibility-validator](https://github.com/Kotlin/binary-compatibility-validator). Dumps
-live in `chart-core/api/` and `chart-compose/api/` and are checked on every PR.
+The public/binary surface is tracked by the Kotlin Gradle plugin's built-in
+[ABI validation](https://kotlinlang.org/docs/gradle-binary-compatibility-validation.html), behind the
+`apiCheck` / `apiDump` tasks. Dumps live in `chart-core/api/` and `chart-compose/api/` and are checked
+on every PR: the JVM and Android dumps on Linux, and the iOS (`*.klib.api`) dump as well on macOS.
 
 If you intentionally changed the API, run `./gradlew apiDump` and **read the resulting diff**.
 `apiDump` records whatever you did — it does not tell you whether it was safe.

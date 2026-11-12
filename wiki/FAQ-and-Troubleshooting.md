@@ -18,7 +18,7 @@ id, so it is not a channel yet. Full setup in [Installation](Installation).
 
 ### Gradle cannot resolve the dependency on my Intel Mac
 
-There is no `iosX64` target. Compose Multiplatform `1.11.1` publishes no `ios_x64` artifacts, so a
+There is no `iosX64` target. Compose Multiplatform (1.11.1, and still 1.12) publishes no `ios_x64` artifacts, so a
 Compose-dependent `iosX64` target cannot resolve its own dependencies — Intel-Mac simulators are
 blocked upstream. Supported Apple targets are `iosArm64` and `iosSimulatorArm64`. The full rationale
 is in the [iOS Guide](iOS-Guide).
@@ -41,8 +41,8 @@ that appear in its public signatures — `Modifier`, `Color`, `ImageBitmap`, `Bo
 Multiplatform app already does, which is why this mostly hits minimal or non-Compose-first modules.
 
 This is fixed in **1.3.0** (those four are now `api`). On 1.2.0, declare the Compose dependencies in
-the module that calls the chart API. Note that the fix puts material3 `1.11.0-alpha07` on the
-consumer compile classpath.
+the module that calls the chart API. Note that in 1.3.0 the fix put material3 `1.11.0-alpha07` on the
+consumer compile classpath; from **1.4.0** it is the stable `1.9.0`.
 
 ### My custom formatter compiles for Android but not for iOS
 
