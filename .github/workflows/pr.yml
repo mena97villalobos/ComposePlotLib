@@ -1,9 +1,9 @@
 name: PR checks
 
+# Every pull request, whatever its base: stacked PRs target the branch of the PR below them, and they
+# need the same checks as a PR against main.
 on:
   pull_request:
-    branches:
-      - main
 
 permissions:
   contents: read
