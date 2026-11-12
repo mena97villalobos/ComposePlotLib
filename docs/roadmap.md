@@ -17,7 +17,7 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ---
 
-## 1. Current state (as of 2026-07, `1.2.0` released)
+## 1. Current state (as of 2026-11, `1.4.0` released)
 
 **Chart families (26):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
@@ -138,8 +138,8 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~First-class stacked area (+ percent / streamgraph offsets)~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `StackedAreaChart` / `StackedAreaChartSpec` / `StackedAreaSeries` with `AreaStackOffset.Zero` / `Expand` / `Silhouette` (streamgraph). |
 | ~~Funnel family~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `FunnelChart` / `FunnelChartSpec` / `FunnelStage` — stacked centered trapezoids (read-only, gauge-style). |
 | ~~Radial bar / circular progress-bar~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `RadialBarChart` / `RadialBarChartSpec` / `RadialBarTrack` — concentric progress rings (track + value arc per ring), read-only with a legend. |
-| ~~Treemap~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `TreemapChart` / `TreemapChartSpec` / `TreemapNode` — squarified area-proportional tiles (aspect ratios near 1) with label fitting. Hierarchy (nested tiles, minimum tile size with an aggregate tile, two-line labels) is on `main` via `TreemapHierarchySpec`. |
-| ~~Sunburst / hierarchical radial~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `SunburstChart` / `SunburstChartSpec` / `SunburstNode` — concentric rings by depth, angular span ∝ value within each parent (`sunburstLayout` in `chart-core`); auto branch palette + lightened descendants. |
+| ~~Treemap~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `TreemapChart` / `TreemapChartSpec` / `TreemapNode` — squarified area-proportional tiles (aspect ratios near 1) with label fitting. **1.4.0:** hierarchical and interactive via `TreemapHierarchySpec` — nested tiles, minimum tile size with an aggregate tile, two-line contrast-aware labels, tap / long-press (`HierarchyNodeHit`), drill-in (`rootNodeId` + `ChartDrillState`), highlight, per-tile accessibility (see [`treemap.md`](treemap.md)). Open: a baseline profile for the cold first draw (#41) and a mid-range-device measurement (#33). |
+| ~~Sunburst / hierarchical radial~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `SunburstChart` / `SunburstChartSpec` / `SunburstNode` — concentric rings by depth, angular span ∝ value within each parent (`sunburstLayout` in `chart-core`); auto branch palette + lightened descendants. **1.4.0:** tap / long-press, drill-in and highlight with the treemap's callback shape (`SunburstNode.id`). |
 | ~~Circle-packing / bubble-pack~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `CirclePackChart` / `CirclePackChartSpec` / `CirclePackNode` — greedy tangent packing (area ∝ value, no overlap), fit to plot (`circlePackLayout` / `fitPackedCircles` in `chart-core`). Single-level (flat). |
 | ~~Parallel coordinates~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `ParallelCoordinatesChart` / `ParallelCoordinatesChartSpec` / `ParallelAxis` / `ParallelSeries` — one vertical axis per dimension (own range), one polyline per record. Per-axis brushing is a future extension. |
 | ~~Calendar / year heatmap~~ ✅ | ~~P3~~ | M | strong | **Shipped:** `CalendarHeatmapChart` / `CalendarHeatmapSpec` / `CalendarHeatmapDay` — GitHub-style week×weekday grid, colored via `HeatmapColorScale`; caller supplies 0-based day offsets (KMP-safe, no date lib). |
@@ -251,7 +251,8 @@ correctness, parity, and polish on what already ships.
   (bounds → ticks → measure → final layout → draw commands) via incremental refactors; consider memoizing the
   whole `ChartLayoutPlan` in Compose beyond the current pass-2 tick and grid-line reuse.
 - **Theming depth.** A full design-system token bridge beyond the `MaterialChartPalette` snapshot, and
-  theme/token integration for data strokes (not just chrome).
+  theme/token integration for data strokes (not just chrome). The role mapping for non-Material design systems is
+  documented in [`style-and-theme.md`](style-and-theme.md) (1.4.0); a code-level bridge is still open.
 - **Performance CI.** Optional non-blocking JMH / Android Macrobenchmark baselines on pinned hardware
   (see [`performance-benchmarks.md`](performance-benchmarks.md)); currently local-only. Further oversample /
   scatter-decimation default tuning as product feedback warrants.

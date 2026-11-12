@@ -22,6 +22,8 @@ Read in this order:
    containment, accessibility.
 7. **[`accessibility-custom-actions.md`](accessibility-custom-actions.md)** —
    `chartViewportAccessibilityActions` plus your app's own custom actions.
+8. **[`treemap.md`](treemap.md)** — the hierarchical, interactive treemap: sizes, minimum tile size, labels,
+   tap / long-press, drill-in, highlight, accessibility.
 
 Combined-chart semantics (shared vs dual *Y*, z-order, hit testing) live in
 [`design-combined-cartesian-layers.md`](design-combined-cartesian-layers.md).

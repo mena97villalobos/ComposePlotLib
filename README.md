@@ -43,7 +43,7 @@ Add the dependency — most apps only need `chart-compose`, which re-exports `ch
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.3.0")
+            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.4.0")
         }
     }
 }
@@ -91,7 +91,7 @@ All 26 families ship today. See
 |-------|----------|
 | Cartesian | `LineChart`, `BarChart`, `StackedBarChart`, `StackedAreaChart`, `ScatterChart`, `BubbleChart`, `CombinedCartesianChart`, `CandlestickChart`, `BoxPlotChart`, `ViolinChart`, `WaterfallChart`, `BulletChart`, `ParallelCoordinatesChart` |
 | Radial | `PieChart` (+ donut), `RadarChart`, `PolarChart`, `GaugeChart`, `RadialBarChart`, `SunburstChart` |
-| Hierarchical | `TreemapChart`, `CirclePackChart` |
+| Hierarchical | `TreemapChart` (flat, or nested and interactive — [guide](./docs/treemap.md)), `CirclePackChart` |
 | Flow | `SankeyChart`, `FunnelChart` |
 | Matrix | `HeatmapChart`, `CalendarHeatmapChart` |
 | Minimal | `Sparkline` (axis-less wrapper) |
@@ -128,7 +128,7 @@ gpr.key=YOUR_TOKEN_WITH_read:packages
 For planner-only usage with no Compose dependency:
 
 ```kotlin
-implementation("com.mena97villalobos.composeplotlib:chart-core:1.3.0")
+implementation("com.mena97villalobos.composeplotlib:chart-core:1.4.0")
 ```
 
 Android, iOS (`iosArm64`, `iosSimulatorArm64`) and Kotlin-Multiplatform-metadata artifacts are

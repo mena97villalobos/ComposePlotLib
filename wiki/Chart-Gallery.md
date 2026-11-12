@@ -1,6 +1,6 @@
 # Chart Gallery
 
-Visual index of the 26 chart families shipped in ComposePlotLib 1.3.0. Every family follows the same
+Visual index of the 26 chart families shipped in ComposePlotLib 1.4.0. Every family follows the same
 shape: build an immutable spec type in `chart-core`, hand it to a composable in `chart-compose`.
 
 ```kotlin
@@ -127,8 +127,10 @@ Spec: `SunburstChartSpec`.
 
 ## Hierarchical (2)
 
-**`TreemapChart`** — area-proportional tiling of a flat set of values, squarified for readable aspect
-ratios. Spec: `TreemapChartSpec`.
+**`TreemapChart`** — area-proportional tiling, squarified for readable aspect ratios. Flat with
+`TreemapChartSpec`, or (1.4.0) hierarchical and interactive with `TreemapHierarchySpec`: nested tiles, a minimum
+tile size with a "smaller items" tile, two-line labels, tap / long-press, drill-in, highlight and per-tile
+accessibility. Guide: [`docs/treemap.md`](https://github.com/mena97villalobos/ComposePlotLib/blob/main/docs/treemap.md).
 
 <img src="https://raw.githubusercontent.com/mena97villalobos/ComposePlotLib/main/docs/images/treemap-chart.png" width="320">
 
