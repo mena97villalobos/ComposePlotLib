@@ -2,7 +2,7 @@
 
 Answers to the things that actually bite people, grouped by when they bite: getting the dependency,
 compiling against it, running it, and contributing to it. Everything here is verified against
-`1.3.0` and the current `main`; where the two differ, it says so.
+`1.4.0` and the current `main`; where the two differ, it says so.
 
 ## Dependency resolution
 
@@ -167,8 +167,9 @@ Tracked in [roadmap.md](https://github.com/mena97villalobos/ComposePlotLib/blob/
 - **Three or more Y axes are not supported.** Dual-Y ships on `CombinedCartesianChart` (with an
   independent `secondaryYViewport` channel); a third overlaid axis is an explicit deferral. Stacked
   panels are achievable with `ChartFacetGrid(columns = 1)` plus `SyncChartViewports(axis = ChartSyncAxis.X)`.
-- **Treemap, sunburst and circle-pack are single-level**, and parallel coordinates has no per-axis
-  brushing yet.
+- **Circle-pack is single-level**, and parallel coordinates has no per-axis brushing yet. The treemap is
+  hierarchical and interactive since 1.4.0 (`TreemapHierarchySpec`), and the sunburst has tap / drill-in /
+  highlight.
 
 Something not covered here? Open an issue with the chart family, a minimal spec that reproduces it,
 what you expected, your platform (Android API level or iOS version), and the library version.

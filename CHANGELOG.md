@@ -5,13 +5,19 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
-## Unreleased
+## 1.4.0 — 2026-11-11
+
+Interactive, multi-level treemap, sunburst interaction, and a toolchain aligned with Compose Multiplatform 1.12.
+
+A minor release: all API changes are additions. Code compiled against 1.3.0 keeps linking, including against
+`SunburstNode` and `SunburstChart`, whose 1.3 signatures remain as hidden members. Consumers now need
+`compileSdk` 37 and AGP 9.1+, which Compose Multiplatform 1.12 (androidx.compose 1.12) already requires.
 
 ### Added
 
 - **Hierarchical treemap.** `TreemapHierarchySpec` / `TreemapHierarchyNode` (id, label, value, optional color,
   children) with a new `TreemapChart(spec: TreemapHierarchySpec, …)` overload and
-  `ChartPlanner.planTreemapHierarchy(input, spec, rootNodeId, labelMeasurer)`. Each parent's children are laid out
+  `ChartPlanner.planTreemapHierarchy(input, spec, rootNodeId, highlightedNodeIds, labelMeasurer)`. Each parent's children are laid out
   inside its tile with the same squarified algorithm, below a header band carrying the parent's label, down to
   `maxDepth` levels (default 2); tile areas are proportional to node sizes within each parent. A parent's size is the
   larger of its own `value` and its children's sum, so an explicit larger value leaves an undrawn remainder (for

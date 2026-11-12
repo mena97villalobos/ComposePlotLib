@@ -144,6 +144,27 @@ LaunchedEffect(selectionState.selection) {
 if (drill.canDrillUp) TextButton(onClick = drill::drillUp) { Text("Back") }
 ```
 
+`rememberSaveableChartDrillState(root)` is the same state kept across configuration changes (levels must be
+saveable values, such as ids).
+
+## Hierarchical charts: tap, long-press, drill-in, highlight
+
+The hierarchical `TreemapChart` (`TreemapHierarchySpec`) and `SunburstChart` report taps through callbacks rather
+than `ChartSelectionState`: `onNodeClick` / `onNodeLongClick` receive a `HierarchyNodeHit` (node id, ancestor path,
+value, `hasChildren`, aggregate `memberIds`, bounds). `rootNodeId` shows any node's subtree and
+`highlightedNodeIds` outlines nodes. Without callbacks the chart adds no pointer input.
+
+```kotlin
+val drill = rememberSaveableChartDrillState<String?>(null)
+TreemapChart(
+    spec = spec,
+    rootNodeId = drill.current,
+    onNodeClick = { hit -> if (hit.hasChildren) drill.drillDown(hit.nodeId) },
+)
+```
+
+Full guide: [`docs/treemap.md`](https://github.com/mena97villalobos/ComposePlotLib/blob/main/docs/treemap.md).
+
 ## Range brushing
 
 `LineChart` accepts an opt-in `rangeBrush: ChartRangeBrush`. While attached it takes over the drag
