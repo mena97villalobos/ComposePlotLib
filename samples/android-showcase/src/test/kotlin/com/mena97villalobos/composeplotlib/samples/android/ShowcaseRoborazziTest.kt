@@ -62,7 +62,7 @@ import org.robolectric.annotation.GraphicsMode
  * while CI runs on Linux; Robolectric font/renderer output differs enough to fail that check. This
  * comparator allows small cross-host drift while still catching meaningful visual changes.
  */
-private val showcaseRoborazziOptions =
+internal val showcaseRoborazziOptions =
     RoborazziOptions(
         compareOptions =
             RoborazziOptions.CompareOptions(
@@ -71,7 +71,7 @@ private val showcaseRoborazziOptions =
             ),
     )
 
-private fun SemanticsNodeInteraction.captureShowcaseRoboImage() {
+internal fun SemanticsNodeInteraction.captureShowcaseRoboImage() {
     captureRoboImage(roborazziOptions = showcaseRoborazziOptions)
 }
 

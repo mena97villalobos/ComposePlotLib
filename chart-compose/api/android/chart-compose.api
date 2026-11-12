@@ -479,6 +479,7 @@ public final class com/mena97villalobos/composeplotlib/chart/SunburstChartKt {
 
 public final class com/mena97villalobos/composeplotlib/chart/TreemapChartKt {
 	public static final fun TreemapChart (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapChartSpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
+	public static final fun TreemapChart (Lcom/mena97villalobos/composeplotlib/core/spec/TreemapHierarchySpec;Landroidx/compose/ui/Modifier;Lcom/mena97villalobos/composeplotlib/chart/theme/ChartChromeTheme;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/mena97villalobos/composeplotlib/chart/ViolinChartKt {

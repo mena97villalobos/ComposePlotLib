@@ -7,6 +7,27 @@ Versions are published to GitHub Packages from the Release workflow: pushing a s
 
 ## Unreleased
 
+### Added
+
+- **Hierarchical treemap.** `TreemapHierarchySpec` / `TreemapHierarchyNode` (id, label, value, optional color,
+  children) with a new `TreemapChart(spec: TreemapHierarchySpec, …)` overload and
+  `ChartPlanner.planTreemapHierarchy(input, spec, rootNodeId, labelMeasurer)`. Each parent's children are laid out
+  inside its tile with the same squarified algorithm, below a header band carrying the parent's label, down to
+  `maxDepth` levels (default 2); tile areas are proportional to node sizes within each parent. A parent's size is the
+  larger of its own `value` and its children's sum, so an explicit larger value leaves an undrawn remainder (for
+  example a folder's own files). The plan (`TreemapHierarchyPlan`) lists every drawn tile as a `PlannedTreemapTile`
+  with its stable node id and ancestor path. The flat `TreemapChartSpec` API and its rendering are unchanged.
+- **Minimum tile size with an aggregate tile.** `TreemapHierarchySpec.minTileSidePx` guarantees every drawn tile is
+  at least that wide and tall: each parent's smallest children are merged into one aggregate tile
+  (`PlannedTreemapTile.isAggregate`, `memberIds`, a synthetic id ending in `#aggregate`) labeled by
+  `aggregateLabel` (default "N smaller items"). Rendered values always add up to their parent.
+- **Two-line treemap labels.** Node name plus the `valueFormatter` text, drawn only when they fit (both lines, the
+  name only, or nothing), with long names shortened with `…`; parents label their header band. Text is black or white
+  per tile, whichever contrasts more (always at least 4.5:1 on an opaque fill), unless `labelColor` overrides it. The
+  planner measures text through `TreemapLabelMeasurer`, which the composable backs with Compose text layout.
+- `ChartColor.relativeLuminance()`, `ChartColor.contrastRatio(other)` and `ChartColor.readableContentColor()` (WCAG
+  2.x).
+
 ### Changed
 
 - **Toolchain aligned with Compose Multiplatform 1.12.** Built with Kotlin 2.4.21, Compose
