@@ -1199,16 +1199,18 @@ object ChartPlanner {
      * Hierarchical treemap: lays out the children of the displayed root (the top level of [spec] when [rootNodeId]
      * is `null` or unknown) as squarified tiles, nesting each tile's own children inside it down to
      * [TreemapHierarchySpec.maxDepth] levels, merging tiles below [TreemapHierarchySpec.minTileSidePx] into an
-     * aggregate per parent, and fitting two-line labels with [labelMeasurer].
+     * aggregate per parent, and fitting two-line labels with [labelMeasurer]. Tiles whose id is in
+     * [highlightedNodeIds] (or aggregates containing one) are outlined per [TreemapHierarchySpec.highlight].
      *
-     * The result is deterministic for a given spec, root, canvas size and measurer.
+     * The result is deterministic for a given spec, root, highlight set, canvas size and measurer.
      */
     fun planTreemapHierarchy(
         input: ChartLayoutInput,
         spec: TreemapHierarchySpec,
         rootNodeId: String? = null,
+        highlightedNodeIds: Set<String> = emptySet(),
         labelMeasurer: TreemapLabelMeasurer = TreemapLabelMeasurer.estimate(),
-    ): TreemapHierarchyPlan = TreemapHierarchyPlanner.plan(input, spec, rootNodeId, labelMeasurer)
+    ): TreemapHierarchyPlan = TreemapHierarchyPlanner.plan(input, spec, rootNodeId, highlightedNodeIds, labelMeasurer)
 
     /**
      * Bullet graph: horizontal qualitative range [bands][BulletChartSpec.bands] behind a featured measure bar

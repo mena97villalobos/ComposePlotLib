@@ -53,6 +53,20 @@ typealias TreemapAggregateLabel = (memberCount: Int) -> String
 val DefaultTreemapAggregateLabel: TreemapAggregateLabel = { count -> "$count smaller items" }
 
 /**
+ * Outline and optional dimming for highlighted nodes on hierarchical charts (treemap, sunburst).
+ *
+ * @property outlineColor stroke color; `null` picks black or white per node, whichever contrasts more with its fill.
+ * @property outlineWidthPx stroke width in pixels, drawn inside the node's shape.
+ * @property dimOthersAlpha when non-null and something is highlighted, every node that is neither highlighted nor
+ *   inside a highlighted node is drawn at this opacity (`0..1`); `null` (default) leaves them as they are.
+ */
+data class HierarchyHighlightStyle(
+    val outlineColor: ChartColor? = null,
+    val outlineWidthPx: Double = 3.0,
+    val dimOthersAlpha: Double? = null,
+)
+
+/**
  * Immutable configuration for a **hierarchical treemap**: [nodes] (the top level) and their descendants laid out as
  * nested squarified rectangles. Each parent's children fill the parent's tile below a header band that carries the
  * parent's label; tile areas are proportional to [layoutSize] within each parent.
@@ -86,8 +100,13 @@ val DefaultTreemapAggregateLabel: TreemapAggregateLabel = { count -> "$count sma
  *   and a level where not even that fits draws nothing. `0` (default) disables all of this.
  * @property aggregateLabel label of an aggregate tile, given its member count.
  * @property aggregateColor fill of aggregate tiles; `null` uses a neutral gray.
+ * @property highlight how the composable's `highlightedNodeIds` are drawn.
  * @property accessibility host-agnostic accessibility strings; [ChartAccessibilitySpec.contentDescription] overrides
  *   the generated chart summary.
+ * @property maxAccessibleTiles cap on per-tile accessibility nodes. When more tiles are drawn, only the top level is
+ *   exposed tile by tile (at most this many, largest first) and the chart summary says how many are left out; offer
+ *   another accessible path to the rest, such as a list of the same data.
+ * @property longClickActionLabel label of the accessibility action that performs a tile's long-press.
  * @property contentPadding padding around the tiling in pixels.
  */
 data class TreemapHierarchySpec(
@@ -105,7 +124,10 @@ data class TreemapHierarchySpec(
     val minTileSidePx: Double = 0.0,
     val aggregateLabel: TreemapAggregateLabel = DefaultTreemapAggregateLabel,
     val aggregateColor: ChartColor? = null,
+    val highlight: HierarchyHighlightStyle = HierarchyHighlightStyle(),
     val accessibility: ChartAccessibilitySpec = ChartAccessibilitySpec(),
+    val maxAccessibleTiles: Int = 100,
+    val longClickActionLabel: String = "More options",
     val contentPadding: InsetsD = InsetsD(left = 8.0, top = 8.0, right = 8.0, bottom = 8.0),
 )
 

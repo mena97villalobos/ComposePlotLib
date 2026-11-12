@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 
 /**
  * A **drill-down** back-stack over levels of type [T]: start at a root, [drillDown] into a mark the user selects,
@@ -50,3 +53,19 @@ class ChartDrillState<T> internal constructor(
 /** Remembers a [ChartDrillState] starting at [root]. */
 @Composable
 fun <T> rememberChartDrillState(root: T): ChartDrillState<T> = remember { ChartDrillState(root) }
+
+/**
+ * Like [rememberChartDrillState], but the drill path is kept with [rememberSaveable], so it survives configuration
+ * changes and process recreation. Every level must be a value the platform can save (on Android a `String`, a number,
+ * a `Parcelable`, …; `null` levels are fine), such as the node ids a hierarchical chart reports.
+ */
+@Composable
+fun <T> rememberSaveableChartDrillState(root: T): ChartDrillState<T> = rememberSaveable(saver = chartDrillStateSaver()) { ChartDrillState(root) }
+
+private fun <T> chartDrillStateSaver(): Saver<ChartDrillState<T>, Any> =
+    listSaver(
+        save = { state -> state.path },
+        restore = { path ->
+            ChartDrillState(path.first()).also { state -> path.drop(1).forEach(state::drillDown) }
+        },
+    )

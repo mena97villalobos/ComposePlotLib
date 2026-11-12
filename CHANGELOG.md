@@ -27,6 +27,23 @@ Versions are published to GitHub Packages from the Release workflow: pushing a s
   planner measures text through `TreemapLabelMeasurer`, which the composable backs with Compose text layout.
 - `ChartColor.relativeLuminance()`, `ChartColor.contrastRatio(other)` and `ChartColor.readableContentColor()` (WCAG
   2.x).
+- **Treemap tap and long-press.** The hierarchical `TreemapChart` takes `onNodeClick` / `onNodeLongClick`, called
+  with a `HierarchyNodeHit` (node id, ancestor path, value and value text, depth, `hasChildren`, aggregate
+  `memberIds`, tile bounds). A touch resolves to the deepest tile under it; a parent's header band, padding and the
+  gaps between its children report the parent, the gaps between top-level tiles report nothing
+  (`TreemapHitResolver.resolve` / `resolveAtDepth`). Without callbacks the chart adds no pointer input.
+- **Treemap drill-in.** `rootNodeId` shows any node's children as the full chart; drive it from a `ChartDrillState`.
+  `rememberSaveableChartDrillState(root)` keeps the drill path across configuration changes. With
+  `ChartAnimationPolicy.viewportChangesEnabled` the change zooms in from the tapped tile (or out to it), and is
+  instantaneous under the system's reduced-motion setting.
+- **Treemap highlight.** `highlightedNodeIds` outlines tiles (or the aggregate containing them) per
+  `TreemapHierarchySpec.highlight` (`HierarchyHighlightStyle`: outline color, width, optional dimming of the other
+  tiles). Unknown or hidden ids are ignored.
+- **Treemap accessibility.** One semantics node per tile with label, value text, position, a click action and a
+  long-press custom action (`longClickActionLabel`), nested under its parent; capped by `maxAccessibleTiles` with the
+  overflow named in the chart summary (see `docs/accessibility-custom-actions.md`).
+- An **interactive treemap** showcase screen: a storage-style folder tree with a breadcrumb, drill-in, long-press
+  details and a list synced with the highlighted tile.
 
 ### Changed
 
