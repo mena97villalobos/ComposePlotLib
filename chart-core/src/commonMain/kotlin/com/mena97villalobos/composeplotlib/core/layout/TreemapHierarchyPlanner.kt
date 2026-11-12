@@ -189,6 +189,12 @@ internal object TreemapHierarchyPlanner {
         }
 
         private val gap = spec.tileGapPx.coerceAtLeast(0.0)
+
+        /**
+         * Height of one name line, measured once from a sample string: tiles shorter than this cannot show a label,
+         * so most of a large treemap's tiny tiles are rejected without measuring their text.
+         */
+        private val nameLineHeight: Double by lazy { measurer.measure("Ag", TreemapLabelLine.Name).height }
         private val minSide = spec.minTileSidePx.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
 
         /** Lays out [nodes] in [area]; returns how many tiles were placed at this level. */
@@ -445,7 +451,7 @@ internal object TreemapHierarchyPlanner {
             if (!spec.showLabels || name.isEmpty()) return
             val availableWidth = tile.width - 2 * LABEL_PADDING_PX
             val availableHeight = tile.height - 2 * LABEL_PADDING_PX
-            if (availableWidth <= 0.0 || availableHeight <= 0.0) return
+            if (availableWidth <= 0.0 || availableHeight <= 0.0 || nameLineHeight > availableHeight) return
             val nameSize = measurer.measure(name, TreemapLabelLine.Name)
             if (nameSize.height > availableHeight) return
             val shownName = fitText(name, availableWidth, TreemapLabelLine.Name) ?: return

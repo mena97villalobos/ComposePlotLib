@@ -12,8 +12,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        // `--es destination <ShowcaseDestination name>` opens a screen directly (used for on-device measurements).
+        val destination = intent?.getStringExtra("destination")
         setContent {
-            ShowcaseApp()
+            ShowcaseApp(initialDestination = destination)
         }
     }
 }

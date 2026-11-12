@@ -76,6 +76,7 @@ public class CoreVisibleBenchmark {
                 2048,
                 LineDecimationStrategy.Uniform,
                 1,
+                false,
                 false
         );
         bh.consume(LineRenderPipeline.INSTANCE.prepareIndexed(state.points, state.viewport, spec));
