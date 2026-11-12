@@ -58,6 +58,14 @@ Versions are published to GitHub Packages from the Release workflow: pushing a s
 - An **interactive treemap** showcase screen: a storage-style folder tree with a breadcrumb, drill-in, long-press
   details and a list synced with the highlighted tile.
 
+### Documentation
+
+- **Theming from a non-Material design system** (`docs/style-and-theme.md`): which design-system role to use for
+  series, plot border, grid, axis and legend text, legend panel, tile labels and positive/negative values, in light and
+  dark, with an adapter built only from existing public API (`Color.toChartColor()`, `ChartChromeTheme`, spec color
+  fields). The showcase tests compile that adapter and check its contrast guidance. The library still has no
+  dependency on any design system.
+
 ### Changed
 
 - **Toolchain aligned with Compose Multiplatform 1.12.** Built with Kotlin 2.4.21, Compose
