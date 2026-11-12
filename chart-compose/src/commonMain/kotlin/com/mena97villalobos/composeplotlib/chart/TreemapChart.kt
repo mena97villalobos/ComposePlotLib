@@ -157,7 +157,9 @@ fun TreemapChart(
     animation: ChartAnimationPolicy = ChartAnimationPolicy.Default,
     chromeTheme: ChartChromeTheme? = null,
 ) {
-    val textMeasurer = rememberTextMeasurer()
+    // Large enough to hold every drawn label: the planner measures each label once to fit it, and the canvas then
+    // reuses that layout instead of measuring again on every draw (the default cache holds 8).
+    val textMeasurer = rememberTextMeasurer(cacheSize = TREEMAP_TEXT_LAYOUT_CACHE_SIZE)
     val labelStyles = chartLabelTextStyles(spec)
     val chromeResolved = chromeTheme ?: chartChromeTheme()
     val renderStyles =
@@ -248,6 +250,8 @@ fun TreemapChart(
         }
     }
 }
+
+private const val TREEMAP_TEXT_LAYOUT_CACHE_SIZE = 512
 
 /** A running drill transition: the [previous] plan and the [tile] the new level zooms out of (or back into). */
 private class TreemapDrillTransition(

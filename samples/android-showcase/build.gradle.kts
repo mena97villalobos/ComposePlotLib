@@ -33,6 +33,13 @@ android {
         getByName("release") {
             isMinifyEnabled = false
         }
+        // Release code (not debuggable, so ART optimizes it as in production) signed with the debug key, for
+        // on-device timing such as the treemap performance screen. Not used by tests.
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += "release"
+        }
     }
 
     compileOptions {

@@ -50,6 +50,11 @@ Versions are published to GitHub Packages from the Release workflow: pushing a s
   draws when nothing is drilled into or highlighted. The 1.3 `SunburstNode` constructor and `copy`, and the 1.3
   three-parameter `SunburstChart`, remain in the binary as hidden members, so code compiled against 1.3 still links;
   Kotlin source is unaffected (Java source calling the old `SunburstNode` constructor must pass the new `id`).
+- **Treemap benchmarks.** `TreemapLayoutBenchmark` (JMH) for the hierarchical layout at 100 / 500 / 2,000 nodes, flat
+  and two-level, with and without aggregation, and a showcase **Treemap performance** screen that measures layout plus
+  first draw of 500 tiles on a device (`benchmark` build type, `--es destination TreemapPerformance`). Results are in
+  `docs/performance-benchmarks.md`. The existing `CoreVisibleBenchmark` compiles again (it had not been updated for
+  `LineRenderSpec.connectAcrossGaps`).
 - An **interactive treemap** showcase screen: a storage-style folder tree with a breadcrumb, drill-in, long-press
   details and a list synced with the highlighted tile.
 

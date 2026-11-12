@@ -58,15 +58,18 @@ import com.mena97villalobos.composeplotlib.samples.android.screens.ScatterChartS
 import com.mena97villalobos.composeplotlib.samples.android.screens.StackedAreaChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.SunburstChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.TreemapChartShowcaseScreen
+import com.mena97villalobos.composeplotlib.samples.android.screens.TreemapPerformanceShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.ViolinChartShowcaseScreen
 import com.mena97villalobos.composeplotlib.samples.android.screens.WaterfallChartShowcaseScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun ShowcaseApp() {
+fun ShowcaseApp(initialDestination: String? = null) {
     MaterialTheme {
-        var destination by rememberSaveable { mutableStateOf(ShowcaseDestination.Home) }
+        var destination by rememberSaveable {
+            mutableStateOf(ShowcaseDestination.entries.firstOrNull { it.name == initialDestination } ?: ShowcaseDestination.Home)
+        }
 
         Scaffold(
             topBar = {
@@ -185,6 +188,10 @@ fun ShowcaseApp() {
                 ShowcaseDestination.InteractiveTreemap ->
                     Column(detailModifier) {
                         InteractiveTreemapShowcaseScreen()
+                    }
+                ShowcaseDestination.TreemapPerformance ->
+                    Column(detailModifier) {
+                        TreemapPerformanceShowcaseScreen()
                     }
                 ShowcaseDestination.Sunburst ->
                     Column(detailModifier) {
@@ -395,6 +402,12 @@ private fun ShowcaseHomeScreen(
             Text("Interactive treemap (drill-in)")
         }
         OutlinedButton(
+            onClick = { onOpenDestination(ShowcaseDestination.TreemapPerformance) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Treemap performance (500 tiles)")
+        }
+        OutlinedButton(
             onClick = { onOpenDestination(ShowcaseDestination.Sunburst) },
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -512,6 +525,7 @@ private enum class ShowcaseDestination(
     CandlestickVariants("Candlestick variants"),
     Treemap("Treemap"),
     InteractiveTreemap("Interactive treemap"),
+    TreemapPerformance("Treemap performance"),
     Sunburst("Sunburst"),
     CirclePack("Circle packing"),
     ParallelCoordinates("Parallel coordinates"),
