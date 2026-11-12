@@ -80,6 +80,76 @@ There is **no** global singleton theme in the library: pass `chromeTheme` per ch
 
 The planner does not auto-shift series colors for dark mode.
 
+## Theming from a non-Material design system
+
+The Material helpers above only read `MaterialTheme.colorScheme`. If your app styles itself with its own color
+scheme instead (for example ComposeDesignSystem's `FinanceColorScheme`), map that scheme onto the chart's color slots
+yourself. The library deliberately takes no dependency on any design system; everything below is existing public API:
+`Color.toChartColor()`, `ChartChromeTheme(...)`, and the color fields on the specs.
+
+### Which role goes where
+
+Pick roles by **meaning**; every design system has some version of each.
+
+| Chart slot | API | Design-system role to use |
+|---|---|---|
+| Series / category / top-level tile colors | series styles, `BarGroup` colors, `PieChartSlice.color`, `TreemapHierarchySpec.palette`, `SunburstNode.color` | the categorical or accent set (data-viz colors if it has them), at least 3 that are distinguishable from each other **and** reach 3:1 against the chart background |
+| Plot border | `ChartChromeTheme.plotBorderColor` | the divider / hairline border role |
+| Grid lines | `GridSpec.lineStyle.color` | the divider role, at about half its alpha |
+| Axis lines | `AxisSpec.lineStyle.color` | the divider or border role |
+| Axis tick labels, legend text | `AxisSpec.labelStyle.color`, `LegendSpec.style.textColor` | the muted / secondary text role (it must still reach 4.5:1 on the background) |
+| Legend panel | `ChartChromeTheme.legendBackgroundColor` / `legendBorderColor` | the card or elevated-surface role and its border, or `null` for no panel |
+| Treemap tile labels | `TreemapHierarchySpec.labelColor` | leave it `null`: the chart picks black or white per tile for contrast |
+| Treemap "smaller items" tile | `TreemapHierarchySpec.aggregateColor` | a neutral fill role (chip or track fill) |
+| Positive / negative values | waterfall increase/decrease, candlestick bull/bear | the success and danger roles |
+
+Check text against your background with `ChartColor.contrastRatio(other)` (WCAG 2.x); `readableContentColor()`
+returns black or white, whichever reads better on a fill.
+
+### Light and dark
+
+Build the mapping from whichever scheme is current, inside the composable that draws the chart, so a theme switch
+recomposes the chart with the matching colors. The chart composables never read your scheme themselves.
+
+```kotlin
+/** Your design system's roles, named for what they mean (illustrative; use your scheme's real properties). */
+class BrandColors(
+    val background: Color,
+    val accents: List<Color>,
+    val divider: Color,
+    val mutedText: Color,
+    val card: Color,
+)
+
+/** One function from the design-system scheme to everything a chart needs. */
+class BrandChartColors(colors: BrandColors) {
+    val series: List<ChartColor> = colors.accents.map { it.toChartColor() }
+    val chrome =
+        ChartChromeTheme(
+            plotBorderColor = colors.divider,
+            plotBorderStrokeWidthPx = 1f,
+            legendBackgroundColor = colors.card,
+            legendBorderColor = colors.divider,
+            legendBorderStrokeWidthPx = 1f,
+            legendCornerRadiusPx = 6f,
+            clipCanvasToCanvasBounds = true,
+            clipLegendToLegendBounds = true,
+        )
+    val axisLabels = AxisLabelStyle(color = colors.mutedText.toChartColor())
+    val grid = GridSpec(lineStyle = GridLineStyle(color = colors.divider.copy(alpha = 0.5f).toChartColor()))
+    val legendText = colors.mutedText.toChartColor()
+}
+
+@Composable
+fun StorageTreemap(spec: TreemapHierarchySpec, colors: BrandColors) {
+    val chart = remember(colors) { BrandChartColors(colors) }
+    TreemapChart(spec = spec.copy(palette = chart.series), chromeTheme = chart.chrome)
+}
+```
+
+`colors` comes from your theme's composition local (light or dark). A compiled copy of this adapter, with a contrast
+check for both modes, lives in the showcase tests (`DesignSystemColorBridgeTest`).
+
 ## Roborazzi theme matrix (starter)
 
 Android showcase JVM tests include a small **line showcase** matrix:
