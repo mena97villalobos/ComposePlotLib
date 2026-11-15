@@ -17,7 +17,7 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ---
 
-## 1. Current state (as of 2026-11, `1.4.0` released)
+## 1. Current state (as of 2026-11, `1.5.0` released)
 
 **Chart families (26):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
@@ -138,7 +138,7 @@ reflect fit + demand; sizes are rough. "Also in" names representative libraries 
 | ~~First-class stacked area (+ percent / streamgraph offsets)~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `StackedAreaChart` / `StackedAreaChartSpec` / `StackedAreaSeries` with `AreaStackOffset.Zero` / `Expand` / `Silhouette` (streamgraph). |
 | ~~Funnel family~~ ✅ | ~~P2~~ | M | strong | **Shipped:** `FunnelChart` / `FunnelChartSpec` / `FunnelStage` — stacked centered trapezoids (read-only, gauge-style). |
 | ~~Radial bar / circular progress-bar~~ ✅ | ~~P3~~ | S | strong | **Shipped:** `RadialBarChart` / `RadialBarChartSpec` / `RadialBarTrack` — concentric progress rings (track + value arc per ring), read-only with a legend. |
-| ~~Treemap~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `TreemapChart` / `TreemapChartSpec` / `TreemapNode` — squarified area-proportional tiles (aspect ratios near 1) with label fitting. **1.4.0:** hierarchical and interactive via `TreemapHierarchySpec` — nested tiles, minimum tile size with an aggregate tile, two-line contrast-aware labels, tap / long-press (`HierarchyNodeHit`), drill-in (`rootNodeId` + `ChartDrillState`), highlight, per-tile accessibility (see [`treemap.md`](treemap.md)). Open: a baseline profile for the cold first draw (#41) and a mid-range-device measurement (#33). |
+| ~~Treemap~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `TreemapChart` / `TreemapChartSpec` / `TreemapNode` — squarified area-proportional tiles (aspect ratios near 1) with label fitting. **1.4.0:** hierarchical and interactive via `TreemapHierarchySpec` — nested tiles, minimum tile size with an aggregate tile, two-line contrast-aware labels, tap / long-press (`HierarchyNodeHit`), drill-in (`rootNodeId` + `ChartDrillState`), highlight, per-tile accessibility (see [`treemap.md`](treemap.md)). **1.5.0:** labels keep clear of the highlight outline (`labelPaddingPx`, `labelInsetPx()`), and the plan reports each tile's label rectangle and drawn lines (`PlannedTreemapTile.labelBounds` / `labels`). Open: a baseline profile for the cold first draw (#41) and a mid-range-device measurement (#33). |
 | ~~Sunburst / hierarchical radial~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `SunburstChart` / `SunburstChartSpec` / `SunburstNode` — concentric rings by depth, angular span ∝ value within each parent (`sunburstLayout` in `chart-core`); auto branch palette + lightened descendants. **1.4.0:** tap / long-press, drill-in and highlight with the treemap's callback shape (`SunburstNode.id`). |
 | ~~Circle-packing / bubble-pack~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `CirclePackChart` / `CirclePackChartSpec` / `CirclePackNode` — greedy tangent packing (area ∝ value, no overlap), fit to plot (`circlePackLayout` / `fitPackedCircles` in `chart-core`). Single-level (flat). |
 | ~~Parallel coordinates~~ ✅ | ~~P3~~ | L | moderate | **Shipped:** `ParallelCoordinatesChart` / `ParallelCoordinatesChartSpec` / `ParallelAxis` / `ParallelSeries` — one vertical axis per dimension (own range), one polyline per record. Per-axis brushing is a future extension. |

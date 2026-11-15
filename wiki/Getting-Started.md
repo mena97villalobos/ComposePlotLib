@@ -5,7 +5,7 @@ already have a Compose Multiplatform or Android Compose project.
 
 ## Prerequisites
 
-1.4.0 is built against **Kotlin 2.4.21** and **Compose Multiplatform 1.12.0** (`compileSdk` 37),
+1.5.0 is built against **Kotlin 2.4.21** and **Compose Multiplatform 1.12.0** (`compileSdk` 37),
 targets Android `minSdk` 28 and `iosArm64` / `iosSimulatorArm64`, and needs **JDK 17** to build. The full
 compatibility matrix — including why there is no `iosX64` — is in [Installation](Installation);
 the versions themselves come from
@@ -21,7 +21,7 @@ packages**. Once the repository is configured:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.4.0")
+            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.5.0")
         }
     }
 }
