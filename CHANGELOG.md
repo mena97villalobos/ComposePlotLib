@@ -5,7 +5,14 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
-## Unreleased
+## 1.5.0 — 2026-11-14
+
+Treemap labels that stay readable on highlighted tiles, and the label layout in the plan.
+
+A minor release: all API changes are additions. Code compiled against 1.4.0 keeps linking, including against
+`TreemapHierarchySpec` and `PlannedTreemapTile`, whose 1.4 constructors and `copy` remain as hidden members. With
+default settings every chart renders exactly as in 1.4.0; a treemap whose highlight outline is wider than 3 px draws its
+labels further in, on every tile.
 
 ### Fixed
 

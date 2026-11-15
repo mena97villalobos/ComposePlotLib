@@ -2,7 +2,7 @@
 
 Answers to the things that actually bite people, grouped by when they bite: getting the dependency,
 compiling against it, running it, and contributing to it. Everything here is verified against
-`1.4.0` and the current `main`; where the two differ, it says so.
+`1.5.0` and the current `main`; where the two differ, it says so.
 
 ## Dependency resolution
 
