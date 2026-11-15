@@ -100,6 +100,33 @@ class TreemapHierarchyRoborazziTest {
             sampleStorageTreemapSpec().copy(highlight = HierarchyHighlightStyle(dimOthersAlpha = 0.35))
         }
 
+    /**
+     * The highlight at 3x density with a 3dp (9px) outline and the default label padding: every label, a folder's header
+     * name and its right-aligned size included, starts 10px in (the outline plus 1px), clear of the outline, on every
+     * tile, highlighted or not.
+     */
+    @Test
+    @Config(qualifiers = "w640dp-h800dp-xxhdpi")
+    fun treemapHierarchy_highlightedWideOutline_xxhdpi() =
+        capture(360.dp, 360.dp, highlighted = setOf("movies/concert", "download")) {
+            sampleStorageTreemapSpec(minTileSidePx = 144.0).copy(
+                headerHeightPx = 66.0,
+                highlight = HierarchyHighlightStyle(outlineWidthPx = 9.0),
+            )
+        }
+
+    /** At 3x density, `labelPaddingPx` of 6dp (18px) with a 3dp outline: every label sits 18px in, highlighted or not. */
+    @Test
+    @Config(qualifiers = "w640dp-h800dp-xxhdpi")
+    fun treemapHierarchy_labelPadding_xxhdpi() =
+        capture(360.dp, 360.dp, highlighted = setOf("movies/concert", "download")) {
+            sampleStorageTreemapSpec(minTileSidePx = 144.0).copy(
+                headerHeightPx = 66.0,
+                highlight = HierarchyHighlightStyle(outlineWidthPx = 9.0),
+                labelPaddingPx = 18.0,
+            )
+        }
+
     @Test
     fun treemapHierarchy_drilledIntoAFolder() = capture(400.dp, 400.dp, rootNodeId = "dcim")
 

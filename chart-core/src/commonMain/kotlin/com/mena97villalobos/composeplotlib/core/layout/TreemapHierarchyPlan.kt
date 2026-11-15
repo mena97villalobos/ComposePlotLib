@@ -22,6 +22,12 @@ import com.mena97villalobos.composeplotlib.core.model.ChartColor
  * @property hasChildren true when the node has children at all (drawn or not); aggregates never do.
  * @property isAggregate true for a tile that merges several nodes that were too small to draw on their own.
  * @property memberIds for an aggregate, the ids of the merged nodes (largest first); empty otherwise.
+ * @property labelBounds the content rectangle the tile's label is laid out in, in canvas pixels: [bounds] less the
+ *   spec's label inset ([com.mena97villalobos.composeplotlib.core.spec.labelInsetPx]) on every side, or, when
+ *   [hasDrawnChildren], the header band less the inset on its left and right. It is the same whether or not the tile
+ *   is highlighted. `null` when labels are off or the rectangle is empty. Overlays can keep their decorations out of
+ *   it.
+ * @property labels the label lines actually drawn for this tile, in drawing order (empty when none fits).
  */
 data class PlannedTreemapTile(
     val nodeId: String,
@@ -36,6 +42,88 @@ data class PlannedTreemapTile(
     val hasChildren: Boolean,
     val isAggregate: Boolean = false,
     val memberIds: List<String> = emptyList(),
+    val labelBounds: RectD? = null,
+    val labels: List<PlannedTreemapLabel> = emptyList(),
+) {
+    /** The 1.4 constructor, kept so code compiled against it still links. */
+    @Deprecated("Kept for binary compatibility.", level = DeprecationLevel.HIDDEN)
+    constructor(
+        nodeId: String,
+        path: List<String>,
+        depth: Int,
+        bounds: RectD,
+        value: Double,
+        label: String,
+        valueText: String?,
+        color: ChartColor,
+        hasDrawnChildren: Boolean,
+        hasChildren: Boolean,
+        isAggregate: Boolean = false,
+        memberIds: List<String> = emptyList(),
+    ) : this(
+        nodeId = nodeId,
+        path = path,
+        depth = depth,
+        bounds = bounds,
+        value = value,
+        label = label,
+        valueText = valueText,
+        color = color,
+        hasDrawnChildren = hasDrawnChildren,
+        hasChildren = hasChildren,
+        isAggregate = isAggregate,
+        memberIds = memberIds,
+        labelBounds = null,
+        labels = emptyList(),
+    )
+
+    /** The 1.4 `copy`, kept so code compiled against it still links; it keeps [labelBounds] and [labels]. */
+    @Deprecated("Kept for binary compatibility.", level = DeprecationLevel.HIDDEN)
+    fun copy(
+        nodeId: String = this.nodeId,
+        path: List<String> = this.path,
+        depth: Int = this.depth,
+        bounds: RectD = this.bounds,
+        value: Double = this.value,
+        label: String = this.label,
+        valueText: String? = this.valueText,
+        color: ChartColor = this.color,
+        hasDrawnChildren: Boolean = this.hasDrawnChildren,
+        hasChildren: Boolean = this.hasChildren,
+        isAggregate: Boolean = this.isAggregate,
+        memberIds: List<String> = this.memberIds,
+    ): PlannedTreemapTile =
+        copy(
+            nodeId = nodeId,
+            path = path,
+            depth = depth,
+            bounds = bounds,
+            value = value,
+            label = label,
+            valueText = valueText,
+            color = color,
+            hasDrawnChildren = hasDrawnChildren,
+            hasChildren = hasChildren,
+            isAggregate = isAggregate,
+            memberIds = memberIds,
+            labelBounds = labelBounds,
+            labels = labels,
+        )
+}
+
+/**
+ * One line of text the treemap draws for a tile.
+ *
+ * @property text the text as drawn (a name may be shortened with `…`).
+ * @property line which line it is; [TreemapLabelLine.Header] for a parent's header band, whose value is a second
+ *   `Header` line aligned to the band's right edge.
+ * @property bounds the text's measured box in canvas pixels: its top-left corner is where the text is drawn and its
+ *   size is what the planner's [TreemapLabelMeasurer] returned for [text].
+ */
+data class PlannedTreemapLabel(
+    val text: String,
+    val line: TreemapLabelLine,
+    val bounds: RectD,
 )
 
 /**

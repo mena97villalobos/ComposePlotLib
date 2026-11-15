@@ -6,8 +6,10 @@ import com.mena97villalobos.composeplotlib.core.geometry.SizeD
 import com.mena97villalobos.composeplotlib.core.model.ChartColor
 import com.mena97villalobos.composeplotlib.core.range.ClosedRangeD
 import com.mena97villalobos.composeplotlib.core.spec.ChartPalettes
+import com.mena97villalobos.composeplotlib.core.spec.HierarchyHighlightStyle
 import com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode
 import com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchySpec
+import com.mena97villalobos.composeplotlib.core.spec.labelInsetPx
 import com.mena97villalobos.composeplotlib.core.spec.layoutSize
 import com.mena97villalobos.composeplotlib.core.viewport.ChartViewport
 import kotlin.test.Test
@@ -545,6 +547,170 @@ class TreemapHierarchyPlannerTest {
     @Test
     fun labels_hiddenWhenShowLabelsIsFalse() {
         assertTrue(plan(TreemapHierarchySpec(nodes = twoLevel, showLabels = false)).layout.overlayDrawCommands.isEmpty())
+    }
+
+    // --- Label inset (labelPaddingPx and the highlight outline) -----------------------------------------------------
+
+    private fun wideOutline(
+        nodes: List<TreemapHierarchyNode>,
+        outlineWidthPx: Double = 9.0,
+        labelPaddingPx: Double = TreemapHierarchySpec.DEFAULT_LABEL_PADDING_PX,
+    ) = TreemapHierarchySpec(
+        nodes = nodes,
+        valueFormatter = { "${it.layoutSize().toInt()} B" },
+        highlight = HierarchyHighlightStyle(outlineWidthPx = outlineWidthPx),
+        labelPaddingPx = labelPaddingPx,
+    )
+
+    private fun RectD.deflate(by: Double) = RectD(left + by, top + by, right - by, bottom - by)
+
+    @Test
+    fun labelInset_isThePaddingOrTheOutlinePlusOne_whicheverIsLarger() {
+        // The defaults keep the 1.4 inset: 4 px padding against a 3 px outline.
+        assertEquals(4.0, TreemapHierarchySpec(nodes = twoLevel).labelInsetPx())
+        assertEquals(10.0, wideOutline(twoLevel, outlineWidthPx = 9.0).labelInsetPx())
+        assertEquals(18.0, wideOutline(twoLevel, outlineWidthPx = 9.0, labelPaddingPx = 18.0).labelInsetPx())
+        assertEquals(6.0, wideOutline(twoLevel, outlineWidthPx = 0.0, labelPaddingPx = 6.0).labelInsetPx())
+        assertEquals(0.0, wideOutline(twoLevel, outlineWidthPx = Double.NaN, labelPaddingPx = -3.0).labelInsetPx())
+        assertEquals(4.0, wideOutline(twoLevel, outlineWidthPx = Double.POSITIVE_INFINITY).labelInsetPx())
+    }
+
+    @Test
+    fun defaults_placeLabelsFourPixelsIn_andReportThem() {
+        val spec =
+            TreemapHierarchySpec(
+                nodes = listOf(leaf("n", 1.0)),
+                valueFormatter = { "1 GB" },
+                tileGapPx = 0.0,
+                contentPadding = InsetsD(0.0, 0.0, 0.0, 0.0),
+            )
+        val tile = plan(spec, width = 100.0, height = 40.0).tiles.single()
+        assertEquals(RectD(4.0, 4.0, 96.0, 36.0), tile.labelBounds)
+        assertEquals(
+            listOf(
+                PlannedTreemapLabel("n", TreemapLabelLine.Name, RectD(4.0, 4.0, 11.0, 20.0)),
+                PlannedTreemapLabel("1 GB", TreemapLabelLine.Value, RectD(4.0, 20.0, 32.0, 36.0)),
+            ),
+            tile.labels,
+        )
+    }
+
+    @Test
+    fun wideOutline_keepsEveryLabelClearOfIt_andLabelsDoNotMoveWhenTheHighlightChanges() {
+        val spec = wideOutline(twoLevel, outlineWidthPx = 9.0)
+        val plain = plan(spec)
+        val ids = plain.tiles.map { it.nodeId }.toSet()
+        val highlighted = ChartPlanner.planTreemapHierarchy(input(), spec, null, highlightedNodeIds = ids, labelMeasurer = measurer)
+        // Same tiles, same labels: only the outlines are added.
+        assertEquals(plain.tiles, highlighted.tiles)
+        assertTrue(plain.tiles.any { it.labels.isNotEmpty() && it.hasDrawnChildren })
+        assertTrue(plain.tiles.any { it.labels.isNotEmpty() && !it.hasDrawnChildren })
+        highlighted.tiles.forEach { tile ->
+            val clear = tile.bounds.deflate(9.0)
+            tile.labels.forEach { label ->
+                assertTrue(label.bounds.left >= clear.left + 1.0 - 1e-9, "${label.text} starts under the outline")
+                assertTrue(label.bounds.right <= clear.right - 1.0 + 1e-9, "${label.text} ends under the outline")
+                if (label.line != TreemapLabelLine.Header) assertTrue(label.bounds.top >= clear.top + 1.0 - 1e-9)
+            }
+        }
+        // A header's value ends the inset from the band's right edge.
+        val a = plain.tiles.first { it.nodeId == "a" }
+        val headerValue = a.labels.last()
+        assertEquals("10 B", headerValue.text)
+        assertEquals(a.bounds.right - 10.0, headerValue.bounds.right, 1e-9)
+        val headerName = a.labels.first()
+        assertEquals(a.bounds.left + 10.0, headerName.bounds.left, 1e-9)
+        assertEquals(RectD(a.bounds.left + 10.0, a.bounds.top, a.bounds.right - 10.0, a.bounds.top + 18.0), a.labelBounds)
+    }
+
+    @Test
+    fun labelPadding_largerThanTheOutline_insetsEveryLabel() {
+        val plan = plan(wideOutline(twoLevel, outlineWidthPx = 3.0, labelPaddingPx = 12.0))
+        val c = plan.tiles.single { it.nodeId == "c" }
+        assertEquals(c.bounds.deflate(12.0), c.labelBounds)
+        val name = c.labels.first()
+        assertEquals(c.bounds.left + 12.0, name.bounds.left, 1e-9)
+        assertEquals(c.bounds.top + 12.0, name.bounds.top, 1e-9)
+    }
+
+    @Test
+    fun aTileBarelyLargeEnough_fitsByTheInset() {
+        // Inset 10 (a 9 px outline); lines are 16 px tall and 7 px per character.
+        fun texts(
+            width: Double,
+            height: Double,
+        ): List<String> {
+            val spec =
+                wideOutline(listOf(leaf("n", 1.0)), outlineWidthPx = 9.0).copy(
+                    valueFormatter = { "1 GB" },
+                    tileGapPx = 0.0,
+                    contentPadding = InsetsD(0.0, 0.0, 0.0, 0.0),
+                )
+            return plan(spec, width = width, height = height)
+                .tiles
+                .single()
+                .labels
+                .map { it.text }
+        }
+        assertEquals(listOf("n", "1 GB"), texts(100.0, 52.0))
+        assertEquals(listOf("n"), texts(100.0, 51.0))
+        assertEquals(listOf("n"), texts(100.0, 36.0))
+        assertEquals(emptyList(), texts(100.0, 35.0))
+        // The value line needs 28 px of width inside the inset; the name 7 px.
+        assertEquals(listOf("n", "1 GB"), texts(48.0, 52.0))
+        assertEquals(listOf("n"), texts(47.0, 52.0))
+        assertEquals(listOf("n"), texts(27.0, 52.0))
+        assertEquals(emptyList(), texts(26.0, 52.0))
+    }
+
+    @Test
+    fun wideInset_ellipsizesWithinTheInset() {
+        val spec =
+            wideOutline(listOf(TreemapHierarchyNode("n", "Downloads and other things", 1.0)), outlineWidthPx = 9.0)
+                .copy(tileGapPx = 0.0, contentPadding = InsetsD(0.0, 0.0, 0.0, 0.0))
+        val tile = plan(spec, width = 80.0, height = 40.0).tiles.single()
+        val name = tile.labels.single()
+        assertTrue(name.text.endsWith("…"), name.text)
+        assertEquals(measurer.measure(name.text, TreemapLabelLine.Name).width, name.bounds.width, 1e-9)
+        assertTrue(name.bounds.right <= 80.0 - 10.0)
+    }
+
+    @Test
+    fun tilesHeadersAndAggregates_doNotDependOnTheLabelInset() {
+        fun geometry(spec: TreemapHierarchySpec) = plan(spec, width = 412.0, height = 300.0).tiles.map { listOf(it.nodeId, it.bounds, it.isAggregate, it.memberIds, it.hasDrawnChildren) }
+        val base = TreemapHierarchySpec(nodes = longTail, minTileSidePx = 48.0)
+        val reference = geometry(base)
+        assertTrue(reference.any { it[2] == true }, "the long tail has an aggregate tile")
+        assertEquals(reference, geometry(base.copy(labelPaddingPx = 20.0)))
+        assertEquals(reference, geometry(base.copy(highlight = HierarchyHighlightStyle(outlineWidthPx = 15.0))))
+        assertEquals(reference, geometry(base.copy(labelPaddingPx = 0.0)))
+        // Every tile still honours the 48 px minimum.
+        plan(base.copy(labelPaddingPx = 20.0), width = 412.0, height = 300.0).tiles.forEach {
+            assertTrue(it.bounds.width >= 48.0 - 1e-9 && it.bounds.height >= 48.0 - 1e-9, it.nodeId)
+        }
+    }
+
+    @Test
+    fun plannedLabels_areExactlyTheDrawnText() {
+        val spec = wideOutline(longTail + twoLevel, outlineWidthPx = 6.0).copy(minTileSidePx = 24.0)
+        val plan = plan(spec)
+        val drawn =
+            plan.layout.overlayDrawCommands
+                .filterIsInstance<DrawCommand.ClipRect>()
+                .flatMap { clip -> clip.children.map { (it as DrawCommand.Text).let { t -> Triple(t.text, t.position.x, t.position.y) } } }
+        val planned = plan.tiles.flatMap { tile -> tile.labels.map { Triple(it.text, it.bounds.left, it.bounds.top) } }
+        assertEquals(drawn.sortedBy { it.toString() }, planned.sortedBy { it.toString() })
+        assertTrue(planned.isNotEmpty())
+        plan.tiles.forEach { tile ->
+            val box = tile.labelBounds ?: return@forEach
+            tile.labels.forEach { assertTrue(box.containsRect(it.bounds) || it.line == TreemapLabelLine.Header, "${it.text} outside its content box") }
+        }
+    }
+
+    @Test
+    fun labelBounds_absentWhenLabelsAreOff() {
+        val plan = plan(TreemapHierarchySpec(nodes = twoLevel, showLabels = false))
+        assertTrue(plan.tiles.all { it.labelBounds == null && it.labels.isEmpty() })
     }
 
     @Test
