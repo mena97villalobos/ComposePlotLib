@@ -5,6 +5,30 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
+## Unreleased
+
+### Fixed
+
+- **A treemap highlight outline no longer covers labels.** The outline of `highlightedNodeIds` is drawn inside the tile,
+  but labels started a fixed 4 px from the tile's edge, so an outline wider than 3 px (3 dp is 9 px at 3x) hid the
+  first letters of the highlighted tile's label, and of a folder's header name and right-aligned value. Labels now keep
+  `TreemapHierarchySpec.labelInsetPx()` clear of the edges: the larger of `labelPaddingPx` and the outline width plus
+  1 px. The inset comes from the spec alone, so labels do not move when the highlight changes, and tile bounds, header
+  bands, the minimum tile size, aggregation and hit-testing are unchanged. With the default 3 px outline the inset is
+  the old 4 px, so default rendering is identical; specs with a wider outline get labels further in on every tile (and,
+  on small tiles, may lose a line or shorten a name sooner).
+
+### Added
+
+- `TreemapHierarchySpec.labelPaddingPx` (default `4.0`, `DEFAULT_LABEL_PADDING_PX`): the minimum space between a tile's
+  edges and its label text, previously fixed at 4 px. The 1.4 constructor and `copy` remain as hidden members, so code
+  compiled against 1.4.0 keeps linking.
+- `TreemapHierarchySpec.labelInsetPx()`: the inset the planner actually uses (see **Fixed**).
+- `PlannedTreemapTile.labelBounds` (the rectangle a tile's label is laid out in: the tile less the inset, or a parent's
+  header band less the inset on the left and right) and `PlannedTreemapTile.labels` (the lines actually drawn, as
+  `PlannedTreemapLabel(text, line, bounds)`), so overlays can place decorations around labels without re-deriving the
+  label layout. The 1.4 constructor and `copy` remain as hidden members.
+
 ## 1.4.0 — 2026-11-11
 
 Interactive, multi-level treemap, sunburst interaction, and a toolchain aligned with Compose Multiplatform 1.12.

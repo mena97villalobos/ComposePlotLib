@@ -9,6 +9,7 @@ import com.mena97villalobos.composeplotlib.core.model.readableContentColor
 import com.mena97villalobos.composeplotlib.core.spec.ChartPalettes
 import com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchyNode
 import com.mena97villalobos.composeplotlib.core.spec.TreemapHierarchySpec
+import com.mena97villalobos.composeplotlib.core.spec.labelInsetPx
 import com.mena97villalobos.composeplotlib.core.spec.layoutSize
 import kotlin.math.max
 import kotlin.math.min
@@ -18,9 +19,6 @@ import kotlin.math.min
  * the flat treemap ([squarifiedTreemap]); children are placed inside their parent's tile below a header band.
  */
 internal object TreemapHierarchyPlanner {
-    /** Inset between a tile's edge and its label text. */
-    const val LABEL_PADDING_PX: Double = 4.0
-
     /** Horizontal space kept between a header's name and its right-aligned value. */
     private const val HEADER_VALUE_SPACING_PX = 8.0
 
@@ -190,6 +188,9 @@ internal object TreemapHierarchyPlanner {
 
         private val gap = spec.tileGapPx.coerceAtLeast(0.0)
 
+        /** Inset between a tile's edges and its label text ([labelInsetPx]); the same for every tile. */
+        private val labelInset = spec.labelInsetPx()
+
         /**
          * Height of one name line, measured once from a sample string: tiles shorter than this cannot show a label,
          * so most of a large treemap's tiny tiles are rejected without measuring their text.
@@ -302,11 +303,19 @@ internal object TreemapHierarchyPlanner {
                         )
                 }
             }
-            if (childrenDrawn > 0) {
-                tiles[tileIndex] = tiles[tileIndex].copy(hasDrawnChildren = true)
-                headerLabel(node.label, valueText, color, tileRect, headerHeight, owner = tileIndex)
-            } else {
-                tileLabel(node.label, valueText, color, tileRect, owner = tileIndex)
+            val label =
+                if (childrenDrawn > 0) {
+                    headerLabel(node.label, valueText, color, tileRect, headerHeight, owner = tileIndex)
+                } else {
+                    tileLabel(node.label, valueText, color, tileRect, owner = tileIndex)
+                }
+            if (childrenDrawn > 0 || label != null) {
+                tiles[tileIndex] =
+                    tiles[tileIndex].copy(
+                        hasDrawnChildren = childrenDrawn > 0,
+                        labelBounds = label?.bounds,
+                        labels = label?.lines.orEmpty(),
+                    )
             }
         }
 
@@ -345,7 +354,10 @@ internal object TreemapHierarchyPlanner {
                     isAggregate = true,
                     memberIds = aggregate.members.map { it.node.id },
                 )
-            tileLabel(label, valueText, color, tileRect, owner = tiles.size - 1)
+            val tileIndex = tiles.size - 1
+            tileLabel(label, valueText, color, tileRect, owner = tileIndex)?.let {
+                tiles[tileIndex] = tiles[tileIndex].copy(labelBounds = it.bounds, labels = it.lines)
+            }
         }
 
         /**
@@ -441,41 +453,69 @@ internal object TreemapHierarchyPlanner {
             return items.mapIndexed { i, item -> item to rects[i] }
         }
 
+        /** A tile's label content rectangle and the lines drawn in it. */
+        private class TileLabel(
+            val bounds: RectD,
+            val lines: List<PlannedTreemapLabel>,
+        )
+
+        /**
+         * Lays out a tile's two-line label inside the tile less [labelInset] on every side: the name, then the value
+         * text under it when both fit. Returns `null` when labels are off or no space is left at all.
+         */
         private fun tileLabel(
             name: String,
             valueText: String?,
             fill: ChartColor,
             tile: RectD,
             owner: Int,
-        ) {
-            if (!spec.showLabels || name.isEmpty()) return
-            val availableWidth = tile.width - 2 * LABEL_PADDING_PX
-            val availableHeight = tile.height - 2 * LABEL_PADDING_PX
-            if (availableWidth <= 0.0 || availableHeight <= 0.0 || nameLineHeight > availableHeight) return
+        ): TileLabel? {
+            if (!spec.showLabels) return null
+            val availableWidth = tile.width - 2 * labelInset
+            val availableHeight = tile.height - 2 * labelInset
+            if (availableWidth <= 0.0 || availableHeight <= 0.0) return null
+            val left = tile.left + labelInset
+            val top = tile.top + labelInset
+            val none = TileLabel(RectD(left, top, tile.right - labelInset, tile.bottom - labelInset), emptyList())
+            if (name.isEmpty() || nameLineHeight > availableHeight) return none
             val nameSize = measurer.measure(name, TreemapLabelLine.Name)
-            if (nameSize.height > availableHeight) return
-            val shownName = fitText(name, availableWidth, TreemapLabelLine.Name) ?: return
+            if (nameSize.height > availableHeight) return none
+            val shownName = fitText(name, availableWidth, TreemapLabelLine.Name) ?: return none
+            val shownNameWidth = if (shownName === name) nameSize.width else measurer.measure(shownName, TreemapLabelLine.Name).width
             val color = spec.labelColor ?: fill.readableContentColor()
-            val left = tile.left + LABEL_PADDING_PX
-            val top = tile.top + LABEL_PADDING_PX
             val children = ArrayList<DrawCommand>(2)
+            val lines = ArrayList<PlannedTreemapLabel>(2)
             children += DrawCommand.Text(text = shownName, position = OffsetD(left, top), color = color)
+            lines += PlannedTreemapLabel(shownName, TreemapLabelLine.Name, RectD(left, top, left + shownNameWidth, top + nameSize.height))
             if (valueText != null && valueText.isNotEmpty()) {
                 val valueSize = measurer.measure(valueText, TreemapLabelLine.Value)
                 if (nameSize.height + valueSize.height <= availableHeight && valueSize.width <= availableWidth) {
+                    val valueTop = top + nameSize.height
                     children +=
                         DrawCommand.Text(
                             text = valueText,
-                            position = OffsetD(left, top + nameSize.height),
+                            position = OffsetD(left, valueTop),
                             color = color,
                             isYAxisTick = true,
+                        )
+                    lines +=
+                        PlannedTreemapLabel(
+                            valueText,
+                            TreemapLabelLine.Value,
+                            RectD(left, valueTop, left + valueSize.width, valueTop + valueSize.height),
                         )
                 }
             }
             labels += DrawCommand.ClipRect(tile, children)
             labelOwners += owner
+            return TileLabel(none.bounds, lines)
         }
 
+        /**
+         * Lays out a parent's header: the name [labelInset] from the band's left edge and, when both fit, the value text
+         * ending [labelInset] from its right edge, vertically centered in the band. Returns `null` when labels are off
+         * or the band has no width left.
+         */
         private fun headerLabel(
             name: String,
             valueText: String?,
@@ -483,33 +523,44 @@ internal object TreemapHierarchyPlanner {
             tile: RectD,
             headerHeight: Double,
             owner: Int,
-        ) {
-            if (!spec.showLabels || name.isEmpty()) return
+        ): TileLabel? {
+            if (!spec.showLabels) return null
             val band = RectD(tile.left, tile.top, tile.right, min(tile.bottom, tile.top + headerHeight))
-            val availableWidth = band.width - 2 * LABEL_PADDING_PX
-            if (availableWidth <= 0.0) return
+            val availableWidth = band.width - 2 * labelInset
+            if (availableWidth <= 0.0 || band.height <= 0.0) return null
+            val left = band.left + labelInset
+            val right = band.right - labelInset
+            val none = TileLabel(RectD(left, band.top, right, band.bottom), emptyList())
+            if (name.isEmpty()) return none
             val nameSize = measurer.measure(name, TreemapLabelLine.Header)
-            if (nameSize.height > band.height) return
+            if (nameSize.height > band.height) return none
             val color = spec.labelColor ?: fill.readableContentColor()
             val top = band.top + (band.height - nameSize.height) / 2.0
             val children = ArrayList<DrawCommand>(2)
-            val valueSize =
-                if (valueText != null && valueText.isNotEmpty()) measurer.measure(valueText, TreemapLabelLine.Header) else null
-            if (valueSize != null && nameSize.width + HEADER_VALUE_SPACING_PX + valueSize.width <= availableWidth) {
-                children += DrawCommand.Text(text = name, position = OffsetD(band.left + LABEL_PADDING_PX, top), color = color, isPieSliceLabel = true)
+            val lines = ArrayList<PlannedTreemapLabel>(2)
+            val value = valueText?.takeIf { it.isNotEmpty() }
+            val valueSize = value?.let { measurer.measure(it, TreemapLabelLine.Header) }
+            if (value != null && valueSize != null && nameSize.width + HEADER_VALUE_SPACING_PX + valueSize.width <= availableWidth) {
+                val valueLeft = right - valueSize.width
+                children += DrawCommand.Text(text = name, position = OffsetD(left, top), color = color, isPieSliceLabel = true)
                 children +=
                     DrawCommand.Text(
-                        text = valueText!!,
-                        position = OffsetD(band.right - LABEL_PADDING_PX - valueSize.width, top),
+                        text = value,
+                        position = OffsetD(valueLeft, top),
                         color = color,
                         isPieSliceLabel = true,
                     )
+                lines += PlannedTreemapLabel(name, TreemapLabelLine.Header, RectD(left, top, left + nameSize.width, top + nameSize.height))
+                lines += PlannedTreemapLabel(value, TreemapLabelLine.Header, RectD(valueLeft, top, valueLeft + valueSize.width, top + valueSize.height))
             } else {
-                val shownName = fitText(name, availableWidth, TreemapLabelLine.Header) ?: return
-                children += DrawCommand.Text(text = shownName, position = OffsetD(band.left + LABEL_PADDING_PX, top), color = color, isPieSliceLabel = true)
+                val shownName = fitText(name, availableWidth, TreemapLabelLine.Header) ?: return none
+                val shownWidth = if (shownName === name) nameSize.width else measurer.measure(shownName, TreemapLabelLine.Header).width
+                children += DrawCommand.Text(text = shownName, position = OffsetD(left, top), color = color, isPieSliceLabel = true)
+                lines += PlannedTreemapLabel(shownName, TreemapLabelLine.Header, RectD(left, top, left + shownWidth, top + nameSize.height))
             }
             labels += DrawCommand.ClipRect(band, children)
             labelOwners += owner
+            return TileLabel(none.bounds, lines)
         }
 
         /** [text] if it fits [maxWidth], else its longest prefix plus `…` that does, else `null`. */

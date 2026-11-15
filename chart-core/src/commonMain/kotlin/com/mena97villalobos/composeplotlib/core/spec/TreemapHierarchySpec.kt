@@ -56,7 +56,8 @@ val DefaultTreemapAggregateLabel: TreemapAggregateLabel = { count -> "$count sma
  * Outline and optional dimming for highlighted nodes on hierarchical charts (treemap, sunburst).
  *
  * @property outlineColor stroke color; `null` picks black or white per node, whichever contrasts more with its fill.
- * @property outlineWidthPx stroke width in pixels, drawn inside the node's shape.
+ * @property outlineWidthPx stroke width in pixels, drawn inside the node's shape. On a treemap, labels are kept clear
+ *   of an outline of this width on every tile, highlighted or not (see [TreemapHierarchySpec.labelPaddingPx]).
  * @property dimOthersAlpha when non-null and something is highlighted, every node that is neither highlighted nor
  *   inside a highlighted node is drawn at this opacity (`0..1`); `null` (default) leaves them as they are.
  */
@@ -108,6 +109,13 @@ data class HierarchyHighlightStyle(
  *   another accessible path to the rest, such as a list of the same data.
  * @property longClickActionLabel label of the accessibility action that performs a tile's long-press.
  * @property contentPadding padding around the tiling in pixels.
+ * @property labelPaddingPx minimum space between a tile's edges and its label text. The inset actually used
+ *   ([labelInsetPx]) is the larger of this and, when the [highlight] outline is wider than `0`, the outline width plus
+ *   1 px, so a highlighted tile's outline never covers its label and labels do not move when the highlight changes. A
+ *   tile label starts that inset from the tile's left and top edges and must fit within the tile less the inset on
+ *   every side; a header starts its name that inset from the band's left edge and ends its value that inset from the
+ *   band's right edge, and stays vertically centered in the band. Tile bounds, header bands and hit-testing do not
+ *   depend on it. Default `4.0`, the fixed inset of 1.4; non-finite or negative values count as `0`.
  */
 data class TreemapHierarchySpec(
     val nodes: List<TreemapHierarchyNode>,
@@ -129,7 +137,120 @@ data class TreemapHierarchySpec(
     val maxAccessibleTiles: Int = 100,
     val longClickActionLabel: String = "More options",
     val contentPadding: InsetsD = InsetsD(left = 8.0, top = 8.0, right = 8.0, bottom = 8.0),
-)
+    val labelPaddingPx: Double = DEFAULT_LABEL_PADDING_PX,
+) {
+    /** The 1.4 constructor, kept so code compiled against it still links. */
+    @Deprecated("Kept for binary compatibility.", level = DeprecationLevel.HIDDEN)
+    constructor(
+        nodes: List<TreemapHierarchyNode>,
+        maxDepth: Int = 2,
+        id: String = "treemap",
+        palette: List<ChartColor> = ChartPalettes.Tableau10,
+        tileGapPx: Double = 2.0,
+        tileCornerRadiusPx: Double = 2.0,
+        nodePaddingPx: Double = 3.0,
+        headerHeightPx: Double = 18.0,
+        showLabels: Boolean = true,
+        labelColor: ChartColor? = null,
+        valueFormatter: TreemapValueFormatter? = null,
+        minTileSidePx: Double = 0.0,
+        aggregateLabel: TreemapAggregateLabel = DefaultTreemapAggregateLabel,
+        aggregateColor: ChartColor? = null,
+        highlight: HierarchyHighlightStyle = HierarchyHighlightStyle(),
+        accessibility: ChartAccessibilitySpec = ChartAccessibilitySpec(),
+        maxAccessibleTiles: Int = 100,
+        longClickActionLabel: String = "More options",
+        contentPadding: InsetsD = InsetsD(left = 8.0, top = 8.0, right = 8.0, bottom = 8.0),
+    ) : this(
+        nodes = nodes,
+        maxDepth = maxDepth,
+        id = id,
+        palette = palette,
+        tileGapPx = tileGapPx,
+        tileCornerRadiusPx = tileCornerRadiusPx,
+        nodePaddingPx = nodePaddingPx,
+        headerHeightPx = headerHeightPx,
+        showLabels = showLabels,
+        labelColor = labelColor,
+        valueFormatter = valueFormatter,
+        minTileSidePx = minTileSidePx,
+        aggregateLabel = aggregateLabel,
+        aggregateColor = aggregateColor,
+        highlight = highlight,
+        accessibility = accessibility,
+        maxAccessibleTiles = maxAccessibleTiles,
+        longClickActionLabel = longClickActionLabel,
+        contentPadding = contentPadding,
+        labelPaddingPx = DEFAULT_LABEL_PADDING_PX,
+    )
+
+    /** The 1.4 `copy`, kept so code compiled against it still links; it keeps [labelPaddingPx]. */
+    @Deprecated("Kept for binary compatibility.", level = DeprecationLevel.HIDDEN)
+    fun copy(
+        nodes: List<TreemapHierarchyNode> = this.nodes,
+        maxDepth: Int = this.maxDepth,
+        id: String = this.id,
+        palette: List<ChartColor> = this.palette,
+        tileGapPx: Double = this.tileGapPx,
+        tileCornerRadiusPx: Double = this.tileCornerRadiusPx,
+        nodePaddingPx: Double = this.nodePaddingPx,
+        headerHeightPx: Double = this.headerHeightPx,
+        showLabels: Boolean = this.showLabels,
+        labelColor: ChartColor? = this.labelColor,
+        valueFormatter: TreemapValueFormatter? = this.valueFormatter,
+        minTileSidePx: Double = this.minTileSidePx,
+        aggregateLabel: TreemapAggregateLabel = this.aggregateLabel,
+        aggregateColor: ChartColor? = this.aggregateColor,
+        highlight: HierarchyHighlightStyle = this.highlight,
+        accessibility: ChartAccessibilitySpec = this.accessibility,
+        maxAccessibleTiles: Int = this.maxAccessibleTiles,
+        longClickActionLabel: String = this.longClickActionLabel,
+        contentPadding: InsetsD = this.contentPadding,
+    ): TreemapHierarchySpec =
+        copy(
+            nodes = nodes,
+            maxDepth = maxDepth,
+            id = id,
+            palette = palette,
+            tileGapPx = tileGapPx,
+            tileCornerRadiusPx = tileCornerRadiusPx,
+            nodePaddingPx = nodePaddingPx,
+            headerHeightPx = headerHeightPx,
+            showLabels = showLabels,
+            labelColor = labelColor,
+            valueFormatter = valueFormatter,
+            minTileSidePx = minTileSidePx,
+            aggregateLabel = aggregateLabel,
+            aggregateColor = aggregateColor,
+            highlight = highlight,
+            accessibility = accessibility,
+            maxAccessibleTiles = maxAccessibleTiles,
+            longClickActionLabel = longClickActionLabel,
+            contentPadding = contentPadding,
+            labelPaddingPx = labelPaddingPx,
+        )
+
+    companion object {
+        /** Default [labelPaddingPx]: the fixed label inset of 1.4. */
+        const val DEFAULT_LABEL_PADDING_PX: Double = 4.0
+    }
+}
+
+/**
+ * The inset between a tile's edges and its label text that the treemap planner uses for this spec: the larger of
+ * [TreemapHierarchySpec.labelPaddingPx] and, when the [TreemapHierarchySpec.highlight] outline is wider than `0`, the
+ * outline width plus 1 px. It depends on the spec only, never on which nodes are highlighted, so labels stay put when
+ * the highlight changes. Non-finite or negative widths count as `0`. With the defaults (4 px padding, 3 px outline) it
+ * is 4 px.
+ */
+fun TreemapHierarchySpec.labelInsetPx(): Double {
+    val padding = labelPaddingPx.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
+    val outline = highlight.outlineWidthPx.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
+    return if (outline > 0.0) maxOf(padding, outline + OUTLINE_LABEL_GAP_PX) else padding
+}
+
+/** Clear space kept between a treemap's highlight outline and its label text. */
+private const val OUTLINE_LABEL_GAP_PX = 1.0
 
 /**
  * Finds the node with [id] anywhere under [TreemapHierarchySpec.nodes], or `null`. Depth-first, in list order.

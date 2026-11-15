@@ -72,7 +72,8 @@ All sizes are **pixels**, like every spec in the library. Convert `dp` with `Loc
 
 `ChartPlanner.planTreemapHierarchy(input, spec, rootNodeId, highlightedNodeIds, labelMeasurer)` is the pure planner
 behind the composable. Its `TreemapHierarchyPlan.tiles` lists every drawn tile (`PlannedTreemapTile`: id, path,
-depth, bounds, value, label, value text, color, aggregate members) in pre-order, parents before their children.
+depth, bounds, value, label, value text, color, aggregate members, and from 1.5.0 its label rectangle and drawn label
+lines) in pre-order, parents before their children.
 
 ## Minimum tile size and the aggregate tile
 
@@ -102,6 +103,27 @@ Each tile gets up to two lines: the node `label` and the `valueFormatter` text (
 formatter of its own). They are drawn only when they fit, as both lines, the name only, or nothing; long names are
 shortened with `…`. Parents label their header band, with the value right-aligned when there is room. Labels are
 clipped to their tile.
+
+**Label inset.** Labels keep `labelInsetPx()` clear of their tile's edges: the larger of `labelPaddingPx` (default
+4 px) and, when the highlight outline is wider than 0, `highlight.outlineWidthPx` plus 1 px. The inset depends on the
+spec only, never on which tiles are highlighted, so a highlighted tile's outline never covers its label and no label
+moves when the highlight changes. With the defaults (4 px padding, 3 px outline) it is 4 px, as in 1.4.0.
+
+- A tile label starts the inset from the tile's left and top edges. Its name line is drawn when its height fits the
+  tile height less twice the inset (shortened with `…` to the tile width less twice the inset); the value line is drawn
+  under it when both lines fit that height and the value fits that width.
+- A header starts its name the inset from the band's left edge and ends its value the inset from the band's right edge;
+  the value is shown when name, 8 px and value fit the band width less twice the inset, otherwise the name alone,
+  shortened with `…`. The text stays vertically centered in the band, and the band's height does not depend on the
+  inset. If your outline is wide compared with the header text's top leading, raise `headerHeightPx` to at least the
+  header text height plus twice the inset.
+- Tile bounds, header bands, the minimum tile size, aggregation and hit-testing do not depend on the inset.
+
+Tiles are in pixels, so set `labelPaddingPx` from `dp` like the other sizes; to give every label the same room as a
+highlighted one, use a padding at least the outline width plus 1 px. Each `PlannedTreemapTile` reports its
+`labelBounds` (the tile less the inset, or for a parent its header band less the inset on the left and right) and its
+`labels`: the lines actually drawn, as `PlannedTreemapLabel(text, line, bounds)` with the measured box of each. An
+overlay that draws over the tiles can place its marks around those instead of re-deriving the label layout.
 
 Text is black or white per tile, whichever contrasts more with the fill. That always reaches at least 4.5:1 against an
 opaque fill, so it holds for every built-in palette color and shade. Set `labelColor` to override it. The planner
@@ -141,7 +163,8 @@ on, the default) the change is instantaneous.
 
 `highlightedNodeIds` outlines those tiles, and an aggregate tile when it contains one of them, as set by
 `TreemapHierarchySpec.highlight` (`HierarchyHighlightStyle`): `outlineColor` (black or white per tile by default),
-`outlineWidthPx`, and optional `dimOthersAlpha` to fade every tile outside the highlighted subtrees. Ids that are not
+`outlineWidthPx` (drawn inside the tile; labels keep clear of it, see [Labels](#labels)), and optional
+`dimOthersAlpha` to fade every tile outside the highlighted subtrees. Ids that are not
 drawn (another branch, below `maxDepth`, unknown) are ignored. The highlight is keyed by id, so it follows the node
 through drill-in and resize. Pair it with a list: select a row to highlight the tile, and select the row of a tapped
 tile.
