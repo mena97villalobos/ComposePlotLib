@@ -50,7 +50,7 @@ Summarize against **[`module-guide.md`](module-guide.md)** and **`api-and-state.
 ## Cross-platform
 
 - [ ] Every shipped chart family has a **showcase screen** wired into **`ShowcaseApp`** with a **Roborazzi** scenario (**`AGENTS.md`** obligations).
-- [ ] **Android showcase** + **Roborazzi** are **Android-only**; iOS is a **library** target and validation stays manual via a consuming app (**[`ios-library-usage.md`](ios-library-usage.md)**).
+- [ ] **Android showcase** + **Roborazzi** are **Android-only**; iOS and Wasm are **library** targets and validation stays manual via a consuming app (**[`ios-library-usage.md`](ios-library-usage.md)**; for Wasm, a Compose for Web app). CI compiles both and runs `chart-core`'s tests on Wasm.
 
 ## Documentation when the API changes
 

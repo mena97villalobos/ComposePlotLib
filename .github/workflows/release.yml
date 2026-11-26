@@ -138,17 +138,25 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
 
-      # Compile before publishing: this job runs on macOS, so it is the only place a
-      # Kotlin/Native break would surface before artifacts go out.
-      - name: Compile iOS targets
+      # Compile and check before publishing: this job runs on macOS, the only host that declares the klib
+      # targets (iOS and Wasm), so it is the only place a break in them would surface before artifacts go
+      # out. The Linux job's apiCheck skips the klib dump; this one checks it.
+      - name: Compile iOS and Wasm targets
         run: >
           ./gradlew
           :chart-core:compileKotlinIosArm64
           :chart-core:compileKotlinIosSimulatorArm64
           :chart-compose:compileKotlinIosArm64
           :chart-compose:compileKotlinIosSimulatorArm64
+          :chart-core:compileKotlinWasmJs
+          :chart-compose:compileKotlinWasmJs
 
-      - name: Publish iOS and KMP metadata to GitHub Packages
+      - name: chart-core tests on Wasm and klib API check
+        run: ./gradlew :chart-core:wasmJsNodeTest apiCheck
+
+      # The KMP metadata (root) module published here lists every target's variant, Wasm included, so
+      # each target it names must be published by this job or the Linux one.
+      - name: Publish iOS, Wasm and KMP metadata to GitHub Packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -157,13 +165,15 @@ jobs:
           ./gradlew
           :chart-core:publishIosArm64PublicationToGitHubPackagesRepository
           :chart-core:publishIosSimulatorArm64PublicationToGitHubPackagesRepository
+          :chart-core:publishWasmJsPublicationToGitHubPackagesRepository
           :chart-core:publishKotlinMultiplatformPublicationToGitHubPackagesRepository
           :chart-compose:publishIosArm64PublicationToGitHubPackagesRepository
           :chart-compose:publishIosSimulatorArm64PublicationToGitHubPackagesRepository
+          :chart-compose:publishWasmJsPublicationToGitHubPackagesRepository
           :chart-compose:publishKotlinMultiplatformPublicationToGitHubPackagesRepository
 
   # Central Portal validates and releases a deployment as ONE bundle, so every target (JVM, Android,
-  # both iOS targets and the Kotlin metadata module) must be built and uploaded in a single run on
+  # both iOS targets, Wasm and the Kotlin metadata module) must be built and uploaded in a single run on
   # macOS. It cannot be split across Linux + macOS jobs the way GitHub Packages publishing is above:
   # a bundle missing the iOS modules would publish a broken -kotlinMultiplatform root module.
   #

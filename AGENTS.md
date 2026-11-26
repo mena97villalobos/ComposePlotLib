@@ -40,7 +40,7 @@ Current priorities:
 - Prefer shared primitives over chart-specific duplication.
   Reuse geometry, transforms, draw commands, tick generation, and selection logic whenever possible.
 - **Every line of code must be Kotlin Multiplatform compatible.**
-  `chart-core` and `chart-compose` both target Android **and** iOS via KMP `commonMain`. Never use
+  `chart-core` and `chart-compose` both target Android, iOS **and** Wasm (`wasmJs`, the browser) via KMP `commonMain`. Never use
   JVM/Android-only APIs in `commonMain` source sets. Common violations to avoid:
   - `String.format` / `"...".format(...)` — JVM-only; use `kotlin.math` + manual string building instead.
   - `java.*` imports of any kind.
@@ -70,7 +70,7 @@ When adding features, fit them into this flow instead of bypassing it.
 
 ## Testing Expectations
 - Add or update `chart-core` tests for new math, transform, tick-generation, or selection logic.
-- **CI** — the PR workflow (`.github/workflows/pr.yml`) runs on **Ubuntu**: `ktlintCheck`, `apiCheck`, `:chart-core:verifyChartCorePurity`, JVM + Android unit tests, Roborazzi, and `:samples:android-showcase:assembleDebug`; a separate **macOS** job compiles both iOS targets. The release workflow (`.github/workflows/release.yml`) additionally publishes iOS + KMP metadata from macOS. See **`docs/github-ci-packages-and-pages.md`** for GitHub Packages consumption and Pages setup.
+- **CI** — the PR workflow (`.github/workflows/pr.yml`) runs on **Ubuntu**: `ktlintCheck`, `apiCheck`, `:chart-core:verifyChartCorePurity`, JVM + Android unit tests, Roborazzi, and `:samples:android-showcase:assembleDebug`; a separate **macOS** job compiles both iOS targets and the Wasm target, runs `:chart-core:wasmJsNodeTest`, and runs `apiCheck` (the only job that checks the klib ABI dump: the iOS and Wasm targets are declared on macOS hosts only, because Kotlin 2.4 dumps every declared klib target together). The release workflow (`.github/workflows/release.yml`) additionally publishes iOS + Wasm + KMP metadata from macOS. See **`docs/github-ci-packages-and-pages.md`** for GitHub Packages consumption and Pages setup.
 - Build at least what PR CI gates — `apiCheck` and `verifyChartCorePurity` are easy to miss locally and will fail your PR:
   `./gradlew ktlintCheck apiCheck :chart-core:verifyChartCorePurity :chart-core:jvmTest :chart-core:testAndroidHostTest :chart-compose:testAndroidHostTest :samples:android-showcase:verifyRoborazziDebug :samples:android-showcase:assembleDebug`
 - If you changed the public API surface on purpose, refresh the dumps with `./gradlew apiDump` and review the `.api` diff — a changed constructor or `copy()` signature on a public spec type is a breaking change, not a routine refresh.

@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -16,7 +17,7 @@ dokka {
 }
 
 // Kotlin/Native iOS targets require Xcode; Linux CI only builds JVM + Android.
-// Set COMPOSEPLOTLIB_FORCE_IOS_TARGETS=false on a Mac to match Linux CI (no Apple targets).
+// Set COMPOSEPLOTLIB_FORCE_IOS_TARGETS=false on a Mac to match Linux CI (no Apple or Wasm targets).
 val isMacOsHost: Boolean =
     when (System.getenv("COMPOSEPLOTLIB_FORCE_IOS_TARGETS")?.lowercase()) {
         "true", "1", "yes" -> true
@@ -45,6 +46,17 @@ kotlin {
     if (isMacOsHost) {
         iosArm64()
         iosSimulatorArm64()
+
+        // Kotlin/Wasm would build on any host, but it shares the klib ABI dump (api/chart-core.klib.api) with
+        // the iOS targets, and Kotlin 2.4 always dumps every declared klib target: a Linux host declaring Wasm
+        // alone would dump Wasm alone and fail apiCheck. So every klib target lives on the macOS host, which
+        // builds, checks and publishes them together. nodejs() runs the common tests on Wasm
+        // (`wasmJsNodeTest`) without a browser; browser() is the environment consumers use.
+        @OptIn(ExperimentalWasmDsl::class)
+        wasmJs {
+            browser()
+            nodejs()
+        }
     }
 
     sourceSets {

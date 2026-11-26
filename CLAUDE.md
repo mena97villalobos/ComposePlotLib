@@ -44,7 +44,7 @@ Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
 ## Project Overview
 
 `ComposePlotLib` is a Kotlin Multiplatform (KMP) + Compose Multiplatform charting library — a modern
-successor to MPAndroidChart. It targets Android and iOS.
+successor to MPAndroidChart. It targets Android, iOS and the web (Kotlin/Wasm, `wasmJs`).
 
 ## Build Commands
 
@@ -66,6 +66,9 @@ successor to MPAndroidChart. It targets Android and iOS.
 
 # iOS compilation check (macOS only) — the library targets iOS; there is no iOS demo app
 ./gradlew :chart-compose:compileKotlinIosSimulatorArm64
+
+# Wasm (macOS only, like iOS: the klib targets share one ABI dump) — compile, then chart-core's tests on Node.js
+./gradlew :chart-compose:compileKotlinWasmJs :chart-core:wasmJsNodeTest
 
 # JMH microbenchmarks (optional)
 ./gradlew :chart-core-benchmarks:jmh --no-configuration-cache
@@ -93,8 +96,9 @@ rendering.
 
 Dependency direction: `chart-core` → `chart-compose` → `android-showcase`
 
-The library targets Android and iOS, but the only runnable sample app is the Android showcase; iOS is
-covered as a library target (compile-gated in CI), with no bundled iOS demo app.
+The library targets Android, iOS and Wasm, but the only runnable sample app is the Android showcase; iOS
+and Wasm are covered as library targets (compile-gated in CI, and `chart-core`'s tests also run on Wasm),
+with no bundled iOS or web demo app. The iOS and Wasm (klib) targets are declared on macOS hosts only.
 
 ### Data Flow
 
@@ -165,7 +169,8 @@ marker overrides), and bubble point sizing.
 ## CI
 
 PRs run on Ubuntu: `ktlintCheck`, `apiCheck`, `:chart-core:verifyChartCorePurity`, JVM + Android unit
-tests, Roborazzi verification, `:samples:android-showcase:assembleDebug`, plus a macOS iOS compile
-gate for `chart-core` / `chart-compose`. Releases trigger on semver tags (`v*.*.*`) and publish to
-GitHub Packages (Android/JVM from Ubuntu, iOS + KMP metadata from macOS) + GitHub Pages.
+tests, Roborazzi verification, `:samples:android-showcase:assembleDebug`, plus a macOS job that
+compiles the iOS and Wasm targets of `chart-core` / `chart-compose`, runs `chart-core`'s tests on Wasm
+and runs `apiCheck` with the klib dump. Releases trigger on semver tags (`v*.*.*`) and publish to
+GitHub Packages (Android/JVM from Ubuntu, iOS + Wasm + KMP metadata from macOS) + GitHub Pages.
 

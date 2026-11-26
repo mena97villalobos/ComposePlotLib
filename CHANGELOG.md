@@ -5,6 +5,23 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
+## Unreleased
+
+### Added
+
+- **Kotlin/Wasm (`wasmJs`) target.** `chart-core` and `chart-compose` now publish `wasmJs` artifacts
+  (`chart-core-wasm-js`, `chart-compose-wasm-js`), so Compose Multiplatform for Web apps can use every chart family.
+  The public API is the same as on iOS (the klib ABI dump lists `wasmJs` beside the iOS targets). On the web,
+  `encodeToChartPng()` encodes through Skia, as on iOS, and `ChartAnimationPolicy.respectSystemReducedMotion` follows
+  the browser's `prefers-reduced-motion: reduce`. `chart-core`'s common tests also run on Wasm (Node.js).
+
+### Build
+
+- The Wasm targets are declared with the iOS targets, on macOS hosts only: Kotlin 2.4 always dumps every declared klib
+  target, so a Linux host declaring Wasm alone could never match the committed klib ABI dump. The PR workflow's macOS
+  job now compiles Wasm, runs `chart-core`'s tests on Wasm and runs `apiCheck` (the only job that checks the klib dump);
+  the release workflow's macOS job checks and publishes the Wasm artifacts with the iOS ones.
+
 ## 1.5.0 — 2026-11-14
 
 Treemap labels that stay readable on highlighted tiles, and the label layout in the plan.

@@ -21,8 +21,8 @@ Release workflows strip the leading `v` from the tag (e.g. `v1.2.3` → `1.2.3`)
 
 Publishing happens across two release jobs:
 
-- **`build-and-release` (ubuntu)** publishes the JVM + Android artifacts: `chart-core` Android + JVM, and `chart-compose` Android. `chart-compose` targets Android and iOS only (no JVM target), so it has no JVM publication.
-- **`publish-ios` (macOS)** publishes the `iosArm64` and `iosSimulatorArm64` artifacts plus the `kotlinMultiplatform` metadata publication for **both** `chart-core` and `chart-compose`. The KMP metadata publication lets multiplatform consumers depend on the root coordinates (`com.mena97villalobos.composeplotlib:chart-core` / `:chart-compose`) and have Gradle resolve the right platform variant automatically.
+- **`build-and-release` (ubuntu)** publishes the JVM + Android artifacts: `chart-core` Android + JVM, and `chart-compose` Android. `chart-compose` targets Android, iOS and Wasm only (no JVM target), so it has no JVM publication.
+- **`publish-ios` (macOS)** publishes the `iosArm64`, `iosSimulatorArm64` and `wasmJs` artifacts plus the `kotlinMultiplatform` metadata publication for **both** `chart-core` and `chart-compose`. The Wasm target is declared on macOS hosts only, with the iOS targets, because Kotlin 2.4 writes one klib ABI dump for all of them; this job also compiles Wasm, runs `chart-core`'s tests on it and runs `apiCheck` against that dump before publishing. The KMP metadata publication lets multiplatform consumers depend on the root coordinates (`com.mena97villalobos.composeplotlib:chart-core` / `:chart-compose`) and have Gradle resolve the right platform variant automatically.
 
 Add the Maven repository and authenticate with a token that has `read:packages` (classic PAT) or the GitHub Packages read scope (fine-grained PAT).
 

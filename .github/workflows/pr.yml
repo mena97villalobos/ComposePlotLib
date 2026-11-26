@@ -57,8 +57,9 @@ jobs:
         run: ./gradlew :samples:android-showcase:assembleDebug
 
   ios:
-    # Compile the Kotlin/Native iOS targets so a commonMain change that breaks iOS
-    # is caught at PR time, not at release (release.yml is the only other place iOS builds).
+    # The klib targets (iOS and Wasm) are declared on macOS only (see chart-core/build.gradle.kts), so this
+    # job is where a commonMain change that breaks them is caught at PR time, not at release, and the only
+    # PR job that checks the klib ABI dump.
     runs-on: macos-latest
     env:
       COMPOSEPLOTLIB_FORCE_IOS_TARGETS: "true"
@@ -72,6 +73,10 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      # apiCheck below also checks the Android ABI, which needs the SDK.
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
 
@@ -82,3 +87,15 @@ jobs:
           :chart-core:compileKotlinIosSimulatorArm64
           :chart-compose:compileKotlinIosArm64
           :chart-compose:compileKotlinIosSimulatorArm64
+
+      - name: Compile Wasm targets
+        run: >
+          ./gradlew
+          :chart-core:compileKotlinWasmJs
+          :chart-compose:compileKotlinWasmJs
+
+      - name: chart-core tests on Wasm (Node.js)
+        run: ./gradlew :chart-core:wasmJsNodeTest
+
+      - name: Binary API check (with the klib dump)
+        run: ./gradlew apiCheck

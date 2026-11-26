@@ -34,9 +34,10 @@ plugins {
 // compilation) it silently stopped checking the Android ABI. The dump format and the `api/` layout are
 // the same. `apiCheck` / `apiDump` stay as the entry points CI and contributors use.
 //
-// KGP also dumps the KLib (iOS) ABI to api/<module>.klib.api. It is checked wherever the iOS targets are
-// declared (macOS hosts); the Linux CI host does not declare them, so there only the JVM and Android dumps
-// are checked.
+// KGP also dumps the KLib (iOS and Wasm) ABI to api/<module>.klib.api. It is checked wherever those targets
+// are declared (macOS hosts); the Linux CI host declares none of them, so there only the JVM and Android
+// dumps are checked. They must stay together: Kotlin 2.4 always dumps every declared klib target, so a host
+// declaring some of them would write, and check against, a dump missing the others.
 val abiValidatedProjects = setOf("chart-core", "chart-compose")
 subprojects {
     if (name in abiValidatedProjects) {
@@ -115,7 +116,7 @@ subprojects {
                         name.set("ComposePlotLib ${project.name}")
                         description.set(
                             "Kotlin Multiplatform + Compose Multiplatform charting library " +
-                                "for Android and iOS.",
+                                "for Android, iOS and the web (Kotlin/Wasm).",
                         )
                         url.set("https://github.com/mena97villalobos/ComposePlotLib")
                         licenses {

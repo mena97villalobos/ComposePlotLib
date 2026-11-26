@@ -52,10 +52,11 @@ summary yet.**
 **Performance:** viewport windowing → pixel clip, Uniform / MinMaxY / LTTB decimation, plot-width pixel budget,
 progressive frame-chunked reveal (`rememberProgressiveReveal`), tick-value reuse, grid-line cache.
 
-**Platforms:** Kotlin Multiplatform — Android (via AGP's `com.android.kotlin.multiplatform.library`), `iosArm64`, `iosSimulatorArm64` for both `chart-core`
-and `chart-compose`; JVM target on `chart-core` for tests/tooling. iOS is supported **as a library only**
+**Platforms:** Kotlin Multiplatform — Android (via AGP's `com.android.kotlin.multiplatform.library`), `iosArm64`, `iosSimulatorArm64` and `wasmJs` (browser) for both `chart-core`
+and `chart-compose`; JVM target on `chart-core` for tests/tooling. iOS and Wasm are supported **as libraries only**
 (no in-repo demo app); the Android `samples/android-showcase` is the sole runnable sample. CI compiles the
-iOS targets on macOS and publishes Android + JVM + iOS + KMP-metadata artifacts.
+iOS and Wasm targets on macOS, runs `chart-core`'s tests on Wasm, and publishes Android + JVM + iOS + Wasm + KMP-metadata artifacts.
+A desktop (JVM) target for `chart-compose` is not shipped.
 
 For the exact public types, see [`api-and-state.md`](api-and-state.md).
 

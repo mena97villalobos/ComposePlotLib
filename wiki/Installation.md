@@ -14,6 +14,7 @@ you render with) and `chart-core` (the non-UI planning engine).
 | Android | `minSdk` 28, `compileSdk` 37 |
 | JVM target | 11 (both modules) |
 | iOS | `iosArm64`, `iosSimulatorArm64` |
+| Web | `wasmJs` (browser), from 1.6.0; no Kotlin/JS (`js`) target |
 | Building the repo itself | JDK 17, Gradle 9.9.1, AGP 9.5.1 (consumers need AGP 9.1+, which androidx.compose 1.12 already requires) |
 
 These are the versions from **1.4.0** on. 1.3.0 was built with Kotlin 2.4.10, Compose Multiplatform
@@ -54,8 +55,8 @@ non-Compose renderer:
 implementation("com.mena97villalobos.composeplotlib:chart-core:1.5.0")
 ```
 
-Note the platform difference: `chart-compose` targets **Android and iOS only** (no JVM/desktop
-target), while `chart-core` additionally publishes a **JVM** artifact.
+Note the platform difference: `chart-compose` targets **Android, iOS and Wasm only** (no
+JVM/desktop target), while `chart-core` additionally publishes a **JVM** artifact.
 
 ## GitHub Packages setup
 
@@ -98,14 +99,14 @@ In CI, set `GITHUB_ACTOR` and `GITHUB_TOKEN` (or your own secrets) as environmen
 Releases are cut from semver tags (`v1.2.0` publishes version `1.2.0`) across two jobs, so both
 modules end up complete:
 
-| Module | Android | JVM | `iosArm64` / `iosSimulatorArm64` | KMP metadata |
-|--------|:-------:|:---:|:-------------------------------:|:------------:|
-| `chart-core` | yes | yes | yes | yes |
-| `chart-compose` | yes | — | yes | yes |
+| Module | Android | JVM | `iosArm64` / `iosSimulatorArm64` | `wasmJs` | KMP metadata |
+|--------|:-------:|:---:|:-------------------------------:|:--------:|:------------:|
+| `chart-core` | yes | yes | yes | yes | yes |
+| `chart-compose` | yes | — | yes | yes | yes |
 
 The `kotlinMultiplatform` metadata publication is what lets you depend on the root coordinates
 (`com.mena97villalobos.composeplotlib:chart-compose:1.5.0`) from `commonMain` and have Gradle pick
-the right platform variant per target. Apple artifacts are published from a macOS job — no local Mac
+the right platform variant per target. Apple and Wasm artifacts are published from a macOS job — no local Mac
 build or manual publishing step is required on your side.
 
 ## Maven Central
