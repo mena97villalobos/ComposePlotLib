@@ -17,7 +17,7 @@ cleanly a feature sits in this library's architecture (strong / moderate / weak)
 
 ---
 
-## 1. Current state (as of 2026-11, `1.5.0` released)
+## 1. Current state (as of 2026-11, `1.6.0` released)
 
 **Chart families (26):** `LineChart`, `BarChart`, `StackedBarChart`, `ScatterChart`,
 `CombinedCartesianChart` (ordered line/bar/scatter layers, shared or secondary Y), `PieChart`/donut,
@@ -56,7 +56,7 @@ progressive frame-chunked reveal (`rememberProgressiveReveal`), tick-value reuse
 and `chart-compose`; JVM target on `chart-core` for tests/tooling. iOS and Wasm are supported **as libraries only**
 (no in-repo demo app); the Android `samples/android-showcase` is the sole runnable sample. CI compiles the
 iOS and Wasm targets on macOS, runs `chart-core`'s tests on Wasm, and publishes Android + JVM + iOS + Wasm + KMP-metadata artifacts.
-A desktop (JVM) target for `chart-compose` is not shipped.
+`wasmJs` ships from **1.6.0**. A desktop (JVM) target for `chart-compose` is not shipped.
 
 For the exact public types, see [`api-and-state.md`](api-and-state.md).
 

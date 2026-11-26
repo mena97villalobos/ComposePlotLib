@@ -6,8 +6,8 @@ Security fixes land on the latest released minor version. Older versions are not
 
 | Version | Supported |
 |---------|-----------|
-| 1.5.x   | ✅        |
-| < 1.5   | ❌        |
+| 1.6.x   | ✅        |
+| < 1.6   | ❌        |
 
 ## Reporting a vulnerability
 

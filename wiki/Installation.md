@@ -41,7 +41,7 @@ you do not need to add `chart-core` yourself.
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.5.0")
+            implementation("com.mena97villalobos.composeplotlib:chart-compose:1.6.0")
         }
     }
 }
@@ -52,7 +52,7 @@ for example computing a `ChartLayoutPlan` on a server, in a JVM test, or feeding
 non-Compose renderer:
 
 ```kotlin
-implementation("com.mena97villalobos.composeplotlib:chart-core:1.5.0")
+implementation("com.mena97villalobos.composeplotlib:chart-core:1.6.0")
 ```
 
 Note the platform difference: `chart-compose` targets **Android, iOS and Wasm only** (no
@@ -60,7 +60,7 @@ JVM/desktop target), while `chart-core` additionally publishes a **JVM** artifac
 
 ## GitHub Packages setup
 
-1.5.0 is distributed through GitHub Packages. GitHub's Maven registry requires authentication
+1.6.0 is distributed through GitHub Packages. GitHub's Maven registry requires authentication
 **even for public packages** — an anonymous build will fail with a 401. Every consumer, and every
 consumer CI job, needs a personal access token with `read:packages` (classic PAT) or the equivalent
 GitHub Packages read scope (fine-grained PAT).
@@ -105,7 +105,7 @@ modules end up complete:
 | `chart-compose` | yes | — | yes | yes | yes |
 
 The `kotlinMultiplatform` metadata publication is what lets you depend on the root coordinates
-(`com.mena97villalobos.composeplotlib:chart-compose:1.5.0`) from `commonMain` and have Gradle pick
+(`com.mena97villalobos.composeplotlib:chart-compose:1.6.0`) from `commonMain` and have Gradle pick
 the right platform variant per target. Apple and Wasm artifacts are published from a macOS job — no local Mac
 build or manual publishing step is required on your side.
 
@@ -114,7 +114,7 @@ build or manual publishing step is required on your side.
 Publishing to Maven Central is already wired into the build (vanniktech maven-publish 0.34.0, with
 sources and Dokka javadoc jars on every publication including the metadata module), but it is
 **pending namespace verification** for the `com.mena97villalobos` group id and is gated behind a
-repository variable, so 1.5.0 is not on Central yet. Until then, GitHub Packages with a token is the
+repository variable, so 1.6.0 is not on Central yet. Until then, GitHub Packages with a token is the
 only channel. The remaining setup is tracked in
 [docs/github-ci-packages-and-pages.md](https://github.com/mena97villalobos/ComposePlotLib/blob/main/docs/github-ci-packages-and-pages.md#maven-central-central-portal).
 

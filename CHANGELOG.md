@@ -5,7 +5,13 @@ All notable changes to `ComposePlotLib` are documented here.
 Versions are published to GitHub Packages from the Release workflow: pushing a semver tag like
 `v1.1.0` publishes version `1.1.0` (see `README.md` → Install).
 
-## Unreleased
+## 1.6.0 — 2026-11-26
+
+ComposePlotLib on the web: a Kotlin/Wasm (`wasmJs`) target for both modules.
+
+A minor release: nothing in the existing API changes. Android, JVM and iOS artifacts are the same as in 1.5.0
+apart from the version; the new `chart-core-wasm-js` and `chart-compose-wasm-js` artifacts carry the same public
+API as the iOS ones.
 
 ### Added
 
