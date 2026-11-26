@@ -1,7 +1,7 @@
 # ComposePlotLib
 
 A charting library for Kotlin Multiplatform and Compose Multiplatform — **26 chart families**, one
-declarative API, Android and iOS. A modern successor to MPAndroidChart, built Compose-first around
+declarative API, Android, iOS and the web (Kotlin/Wasm). A modern successor to MPAndroidChart, built Compose-first around
 immutable specs and explicit state.
 
 <img src="https://raw.githubusercontent.com/mena97villalobos/ComposePlotLib/main/docs/images/line-chart.png" width="240"> <img src="https://raw.githubusercontent.com/mena97villalobos/ComposePlotLib/main/docs/images/radar-chart.png" width="240"> <img src="https://raw.githubusercontent.com/mena97villalobos/ComposePlotLib/main/docs/images/sankey-chart.png" width="240">

@@ -4,7 +4,7 @@
 `ComposePlotLib` is a multiplatform charting library built around a separation between:
 - platform-agnostic chart semantics and math
 - Compose-facing public APIs and rendering
-- a single Android showcase sample (the library itself targets Android and iOS; iOS is library-only)
+- a single Android showcase sample (the library itself targets Android, iOS and Wasm; iOS and Wasm are library-only)
 
 The current implementation is intentionally small, but the architecture is already shaped for extension.
 
@@ -90,7 +90,7 @@ It currently contains:
 - helpers: default viewport, gesture config (**`ChartGestureConfig`** + companion presets for hosts / iOS QA), markers + **`ChartMarkerPlacement`** / **`ChartMarkerCalloutLeader`**, no-data, **`ChartAnimationPolicy`** (opt-in programmatic viewport easing, optional gesture chase, marker highlight fade in/out on selection / clear, optional **`LineChart`** data morph), **`MaterialChartPalette`** / **`withMaterialSeriesColors`**-style helpers (`materialChartPalette()`, `Color.toChartColor()`), custom accessibility actions
 - internal gesture adapter, fling runtime, accessibility semantics (including optional **marker focus handoff** when `ChartAccessibilitySpec.requestFocusOnMarker` is set on a spec, and optional **Shift+arrow selection roam** when `keyboardSelectionRoamEnabled` is set)
 - internal Compose canvas adapter and family renderers
-- **`androidMain` / `iosMain`** for small platform probes (e.g. reduced-motion preference)
+- **`androidMain` / `iosMain` / `wasmJsMain`** for small platform probes (e.g. reduced-motion preference) and PNG export
 
 This module is allowed to depend on Compose types, pointer input, text measurement, and canvas APIs.
 
@@ -146,5 +146,5 @@ The planner matches a **multi-pass** shape (measurement is host-driven; core rea
 This structure makes it possible to:
 - add new chart types without rewriting viewport math
 - test transforms and selection without UI
-- reuse the same planning layer across Android and iOS
+- reuse the same planning layer across Android, iOS and the web (Wasm)
 - keep public API declarative instead of mutating hidden chart objects

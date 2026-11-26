@@ -62,13 +62,13 @@ Path: `chart-compose/src/commonMain/kotlin/com/mena97villalobos/composeplotlib/c
 - `ChartGestureConfig.kt`, `ChartMarker.kt`, `ChartNoData.kt`, `ChartAnimationPolicy.kt`, `ChartCustomAccessibilityAction.kt`
 - `ChartViewports.kt` (e.g. `defaultViewport`)
 - `state/ChartViewportState.kt`, `state/ChartSelectionState.kt`, `state/RememberChartStates.kt`, `state/ChartViewportSync.kt` (`SyncChartViewports` — cross-chart linked pan/zoom), `state/ChartDrillState.kt` (`rememberChartDrillState` / `rememberSaveableChartDrillState` — drill-down back-stack), `state/ChartProgressiveReveal.kt` (`rememberProgressiveReveal` — frame-chunked rendering)
-- `export/ChartImageExport.kt` (+ `.android.kt` / `.ios.kt`) — raster PNG export (`rememberChartCaptureController`, `Modifier.chartCaptureTarget`, `ImageBitmap.encodeToChartPng`)
+- `export/ChartImageExport.kt` (+ `.android.kt` / `.ios.kt` / `.wasmJs.kt`) — raster PNG export (`rememberChartCaptureController`, `Modifier.chartCaptureTarget`, `ImageBitmap.encodeToChartPng`)
 - `ChartRangeBrush.kt` + `internal/gesture/ChartRangeBrushHandler.kt` — drag-rectangle range brush / box selection (`LineChart(rangeBrush = ...)`); the domain-rect model is `chart-core` `selection/ChartRangeSelection.kt`
 - `ChartRangeSelector.kt` — range selector / minimap / brush navigator bound to a shared `ChartViewportState`
 - `ChartFacetGrid.kt` — faceting / small-multiples grid-of-charts composition helper
 
 ### Platform source sets (expect/actual)
-- `androidMain`, `iosMain` — e.g. reduced-motion probe for `ChartAnimationPolicy` (see `internal/accessibility/ChartReducedMotion.kt`, `ChartReducedMotionPreference.kt`, `ChartMarkerFocusHandoff.kt`)
+- `androidMain`, `iosMain`, `wasmJsMain` — e.g. reduced-motion probe (on the web, the `prefers-reduced-motion` media query) for `ChartAnimationPolicy` (see `internal/accessibility/ChartReducedMotion.kt`, `ChartReducedMotionPreference.kt`, `ChartMarkerFocusHandoff.kt`)
 
 ### Internal implementation files
 - `internal/canvas/ComposeCanvasAdapter.kt`

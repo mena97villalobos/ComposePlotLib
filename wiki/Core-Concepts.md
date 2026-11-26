@@ -37,7 +37,7 @@ Why you should care as a consumer:
   frames.
 - **Testable without a device.** You can assert on tick values, plot bounds, and legend rows in a
   plain JVM unit test, with no Compose rule and no screenshot harness.
-- **One layout engine on both platforms.** Android and iOS run the same `chart-core` planning code;
+- **One layout engine on every platform.** Android, iOS and the web (Wasm) run the same `chart-core` planning code;
   only the final draw step is platform Compose.
 
 ## Specs are immutable

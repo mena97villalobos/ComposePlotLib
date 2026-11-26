@@ -1,7 +1,7 @@
 # ComposePlotLib
 
 **A charting library for Kotlin Multiplatform and Compose Multiplatform — 26 chart families, one
-declarative API, Android and iOS.** A modern successor to MPAndroidChart, built Compose-first around
+declarative API, Android, iOS and the web (Kotlin/Wasm).** A modern successor to MPAndroidChart, built Compose-first around
 immutable specs and explicit state.
 
 <p align="center">
@@ -112,6 +112,7 @@ brushing, linked viewports, and PNG export.
 | Android | `minSdk` 28, `compileSdk` 37 (androidx.compose 1.12 requires 37); built with AGP 9.5.1, consumable from AGP 9.1+ |
 | JVM target | 11 |
 | iOS | `iosArm64`, `iosSimulatorArm64` — **no `iosX64`**, because Compose Multiplatform 1.12 still ships no `ios_x64` artifacts. Intel-Mac simulators are blocked upstream, not by choice. |
+| Web | `wasmJs` (browser), for Compose Multiplatform for Web. There is no Kotlin/JS (`js`) target. |
 
 ## Install (GitHub Packages)
 
@@ -131,9 +132,9 @@ For planner-only usage with no Compose dependency:
 implementation("com.mena97villalobos.composeplotlib:chart-core:1.5.0")
 ```
 
-Android, iOS (`iosArm64`, `iosSimulatorArm64`) and Kotlin-Multiplatform-metadata artifacts are
-published for both modules; `chart-core` additionally publishes a JVM artifact. The release
-workflow publishes the Apple targets from a macOS job.
+Android, iOS (`iosArm64`, `iosSimulatorArm64`), Wasm (`wasmJs`) and Kotlin-Multiplatform-metadata
+artifacts are published for both modules; `chart-core` additionally publishes a JVM artifact. The
+release workflow publishes the Apple and Wasm targets from a macOS job.
 
 ## Documentation
 

@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -29,8 +30,8 @@ composeCompiler {
     )
 }
 
-// Kotlin/Native iOS targets require Xcode; Linux CI only builds Android. iOS klibs are not produced on Linux.
-// Set COMPOSEPLOTLIB_FORCE_IOS_TARGETS=false on a Mac to match Linux CI (no Apple targets).
+// Kotlin/Native iOS targets require Xcode; Linux CI only builds Android. iOS and Wasm klibs are not produced
+// on Linux. Set COMPOSEPLOTLIB_FORCE_IOS_TARGETS=false on a Mac to match Linux CI (no Apple or Wasm targets).
 val isMacOsHost: Boolean =
     when (System.getenv("COMPOSEPLOTLIB_FORCE_IOS_TARGETS")?.lowercase()) {
         "true", "1", "yes" -> true
@@ -60,6 +61,13 @@ kotlin {
     if (isMacOsHost) {
         iosArm64()
         iosSimulatorArm64()
+
+        // Compose for Web (Kotlin/Wasm). Declared with the iOS targets, on macOS only, because they share the
+        // klib ABI dump: see the note in chart-core/build.gradle.kts.
+        @OptIn(ExperimentalWasmDsl::class)
+        wasmJs {
+            browser()
+        }
     }
 
     sourceSets {
