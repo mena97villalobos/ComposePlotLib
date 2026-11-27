@@ -3,7 +3,7 @@
 ## CI overview
 
 - **Pull requests** (`.github/workflows/pr.yml`): the `check` job on `ubuntu-latest` runs `ktlintCheck`, `apiCheck` (binary API check against the `.api` files), `:chart-core:verifyChartCorePurity` (KMP purity), unit tests (`chart-core` JVM + Android, `chart-compose` Android), Roborazzi verification, and `:samples:android-showcase:assembleDebug`. A separate `ios` job on `macos-14` (with `COMPOSEPLOTLIB_FORCE_IOS_TARGETS=true`) compiles the `iosArm64` and `iosSimulatorArm64` targets of both modules, so a `commonMain` change that breaks iOS is caught at PR time. Sets `COMPOSEPLOTLIB_VERSION=debug` (also the default from `gradle.properties` when the env var is unset).
-- **Releases** (`.github/workflows/release.yml`): triggers on tags `vMAJOR.MINOR.PATCH` or `vMAJOR.MINOR.PATCH-prerelease`. The `validate` job verifies the tag is reachable from `main`. The `build-and-release` job (ubuntu) runs `ktlintCheck`, unit tests, Roborazzi verification, and `:samples:android-showcase:assembleDebug` (note: it does *not* re-run `apiCheck`, `verifyChartCorePurity`, or the iOS compile job), builds Dokka HTML, publishes the Android + JVM artifacts to **GitHub Packages**, creates a **GitHub Release** with `dokka-html.zip`, and uploads the Pages artifact. A `publish-ios` job on `macos-latest` publishes the iOS + Kotlin Multiplatform metadata artifacts (see [Publishing](#consuming-published-artifacts-github-packages) below). A `notify-bom` job then POSTs a `repository_dispatch` (`event_type: library-released`) to the `ComposeLibsBom` repo (requires the `BOM_REPO_TOKEN` secret), and `deploy-pages` deploys the Dokka site to **GitHub Pages** (see below).
+- **Releases** (`.github/workflows/release.yml`): triggers on tags `vMAJOR.MINOR.PATCH` or `vMAJOR.MINOR.PATCH-prerelease`. The `validate` job verifies the tag is reachable from `main`. The `build-and-release` job (ubuntu) runs `ktlintCheck`, unit tests, Roborazzi verification, and `:samples:android-showcase:assembleDebug` (note: it does *not* re-run `apiCheck`, `verifyChartCorePurity`, or the iOS compile job), builds Dokka HTML, publishes the Android + JVM artifacts to **GitHub Packages**, creates a **GitHub Release** with `dokka-html.zip`, and uploads the Pages artifact. A `publish-ios` job on `macos-latest` publishes the iOS + Kotlin Multiplatform metadata artifacts (see [Publishing](#consuming-published-artifacts-github-packages) below). `deploy-pages` deploys the Dokka site to **GitHub Pages** (see below), and `publish-maven-central`, off until the repository variable `PUBLISH_TO_MAVEN_CENTRAL` is `true`, publishes to **Maven Central** (see [Maven Central](#maven-central-central-portal)).
 
 A third workflow, `.github/workflows/sample-app.yml`, builds the sample app and is outside the scope of this doc.
 
@@ -94,23 +94,40 @@ for if its javadoc jar is missing), signs everything, and uploads a single bundl
    gpg --full-generate-key                      # RSA 4096, no expiry is fine
    gpg --list-secret-keys --keyid-format=short  # note the 8-char key id
    gpg --keyserver keyserver.ubuntu.com --send-keys <FULL_FINGERPRINT>
-   gpg --armor --export-secret-keys <KEY_ID>    # the value for SIGNING_IN_MEMORY_KEY
    ```
+
+   The key cannot be replaced the way an app keystore can: consumers verify every published artifact
+   against it. Store it in klave (below) as soon as it exists.
 
 ### Repository configuration
 
-Add these **secrets** (Settings → Secrets and variables → Actions):
+The five values live in **klave**, not in GitHub secrets. The `publish-maven-central` job fetches them
+with `klave-fetch` right before its publish step; klave's grant `composeplotlib-release` lets only
+`release.yml` on a `v*` tag read them.
 
-| Secret | Contents |
-|--------|----------|
-| `MAVEN_CENTRAL_USERNAME` | Portal user-token username |
-| `MAVEN_CENTRAL_PASSWORD` | Portal user-token password |
-| `SIGNING_IN_MEMORY_KEY` | ASCII-armored private key from `gpg --armor --export-secret-keys` |
-| `SIGNING_KEY_ID` | 8-character short key id |
-| `SIGNING_KEY_PASSWORD` | Passphrase for the GPG key |
+| klave path | Contents |
+|------------|----------|
+| `composeplotlib/maven-central-username` | Portal user-token username |
+| `composeplotlib/maven-central-password` | Portal user-token password |
+| `composeplotlib/signing-key` | ASCII-armored private key from `gpg --armor --export-secret-keys` |
+| `composeplotlib/signing-key-id` | 8-character short key id |
+| `composeplotlib/signing-key-password` | Passphrase for the GPG key |
+
+Store them with klave's `scripts/klave.sh` and an automation token (klave's `docs/automation.md`), piping
+each value in so it never lands in the shell history or a file:
+
+```shell
+KLAVE=~/Desktop/bmv/klave/scripts/klave.sh
+read -rs v && printf %s "$v" | "$KLAVE" put-text composeplotlib/maven-central-username; unset v
+read -rs v && printf %s "$v" | "$KLAVE" put-text composeplotlib/maven-central-password; unset v
+gpg --armor --export-secret-keys <KEY_ID> | "$KLAVE" put-text composeplotlib/signing-key
+printf %s <KEY_ID> | "$KLAVE" put-text composeplotlib/signing-key-id
+read -rs v && printf %s "$v" | "$KLAVE" put-text composeplotlib/signing-key-password; unset v
+```
 
 Then add the **variable** `PUBLISH_TO_MAVEN_CENTRAL` = `true`. The `publish-maven-central` job in
-`release.yml` is gated on it, so releases keep succeeding until every item above is in place.
+`release.yml` is gated on it, so releases keep succeeding until every item above is in place. Once it
+is on, a Maven Central release needs klave to be up.
 
 ### Behavior
 
