@@ -217,27 +217,6 @@ jobs:
           :chart-core:publishToMavenCentral
           :chart-compose:publishToMavenCentral
 
-  notify-bom:
-    needs: [build-and-release, publish-ios]
-    runs-on: ubuntu-latest
-    permissions: {}
-    steps:
-      - name: Notify BOM repository
-        env:
-          BOM_REPO_TOKEN: ${{ secrets.BOM_REPO_TOKEN }}
-          REF_NAME: ${{ github.ref_name }}
-        run: |
-          curl -X POST https://api.github.com/repos/mena97villalobos/ComposeLibsBom/dispatches \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${BOM_REPO_TOKEN}" \
-            -d '{
-              "event_type": "library-released",
-              "client_payload": {
-                "artifact": "ComposePlotLib",
-                "version": "'"${REF_NAME}"'"
-              }
-            }'
-
   deploy-pages:
     needs: build-and-release
     runs-on: ubuntu-latest
