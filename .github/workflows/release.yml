@@ -178,8 +178,7 @@ jobs:
   # a bundle missing the iOS modules would publish a broken -kotlinMultiplatform root module.
   #
   # Gated on the PUBLISH_TO_MAVEN_CENTRAL repository variable so releases keep working until the
-  # Central Portal account, namespace verification and signing values are all in place.
-  # The five values live in klave (grant composeplotlib-release: tags, this file), not in GitHub.
+  # Central Portal account, namespace verification and signing secrets are all in place.
   # See docs/github-ci-packages-and-pages.md for the one-time setup.
   publish-maven-central:
     if: ${{ vars.PUBLISH_TO_MAVEN_CENTRAL == 'true' }}
@@ -187,7 +186,6 @@ jobs:
     runs-on: macos-latest
     permissions:
       contents: read
-      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -207,28 +205,13 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
 
-      # Fetched right before the one step that uses them, as step outputs only (export: false), so the
-      # earlier steps and third-party actions never see them. klave-fetch masks every value.
-      - name: Fetch the Maven Central and signing values from klave
-        id: klave
-        uses: mena97villalobos/klave/.github/actions/klave-fetch@61782f46e40ae07bd36bb0cb0c1b3ba2e77f124e # v0.1.4
-        with:
-          server-url: https://klave.mena97villalobos.com
-          export: false
-          secrets: |
-            MAVEN_CENTRAL_USERNAME=composeplotlib/maven-central-username
-            MAVEN_CENTRAL_PASSWORD=composeplotlib/maven-central-password
-            SIGNING_IN_MEMORY_KEY=composeplotlib/signing-key
-            SIGNING_KEY_ID=composeplotlib/signing-key-id
-            SIGNING_KEY_PASSWORD=composeplotlib/signing-key-password
-
       - name: Publish to Maven Central (Central Portal)
         env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ fromJSON(steps.klave.outputs.values).MAVEN_CENTRAL_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ fromJSON(steps.klave.outputs.values).MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ fromJSON(steps.klave.outputs.values).SIGNING_IN_MEMORY_KEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ fromJSON(steps.klave.outputs.values).SIGNING_KEY_ID }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ fromJSON(steps.klave.outputs.values).SIGNING_KEY_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
         run: >
           ./gradlew
           :chart-core:publishToMavenCentral
